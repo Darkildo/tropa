@@ -640,6 +640,21 @@ const dashes = (page, kind) => page.evaluate((k) => getComputedStyle(document.qu
   await page.close();
 }
 
+// --- the side panel keeps its scroll when the map changes
+{
+  const { page, errors } = await open({ height: 500 });
+  await node(page, "Backpropagation").click(); await wait(page, 200);
+  const side = page.locator(".tropa-side");
+  await side.evaluate((el) => (el.scrollTop = 120));
+  await page.evaluate(() => tropa.app.workspace.center.view.store.setMastered("Tropa/Example/Concepts/Chain rule.md", true)); await wait(page, 200);
+  const kept = await side.evaluate((el) => el.scrollTop);
+  ok("side panel keeps its scroll on a change", kept === 120, String(kept));
+  await page.keyboard.press("Escape"); await wait(page, 200);
+  ok("another item starts at the top", (await side.evaluate((el) => el.scrollTop)) === 0);
+  ok("side scroll: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 // --- map audit
 {
   const { page } = await open();
@@ -707,6 +722,7 @@ const auditCount = (page, kind) => page.evaluate((k) => document.querySelector(`
   ok("ar audit: no console errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
+
 // --- focus on what is near, fold branches
 const mapView = "tropa.app.workspace.center.view";
 const nodeCount = (page) => page.locator(".tropa-node").count();
@@ -1099,6 +1115,17 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   console.log(`1700 nodes from the cache drawn in ${drawMs} ms`);
   ok("large map draws without a long freeze", drawMs < 5000, `${drawMs} ms`);
   ok("switching back uses the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await page.locator(".tropa-node").count()) === 1700);
+  // A mark changes states, not places: the edges stay as they are and only their route classes change.
+  const repaint = await page.evaluate(() => {
+    const view = tropa.app.workspace.center.view;
+    const first = document.querySelector(".tropa-edges path");
+    const t = performance.now();
+    view.store.setMastered("Node 0.md", true);
+    document.body.offsetHeight;
+    return { ms: performance.now() - t, kept: first.isConnected, mastered: document.querySelector('.tropa-node[data-id="Node 0.md"]').className.includes("state-mastered") };
+  });
+  console.log(`mark on 1700 nodes: ${Math.round(repaint.ms)} ms`);
+  ok("a mark repaints without rebuilding the edges", repaint.kept && repaint.mastered, JSON.stringify(repaint));
   ok("1000 concepts: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
