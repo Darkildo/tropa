@@ -1,5 +1,5 @@
-import { PluginSettingTab, type App, type SettingDefinitionItem, type SettingGroupItem } from "obsidian";
-import { parseFolders, parseTags } from "./core/scope";
+import { Notice, PluginSettingTab, type App, type SettingDefinitionItem, type SettingGroupItem } from "obsidian";
+import { inFolders, parseFolders, parseTags } from "./core/scope";
 import { t } from "./i18n";
 import type TropaPlugin from "./main";
 
@@ -44,6 +44,15 @@ export class TropaSettingTab extends PluginSettingTab {
     else return;
     await this.plugin.saveSettings();
     this.plugin.store.rebuild(true);
+    if (key === "excludeFolders") this.warnOwnFolders();
+  }
+
+  /** Concepts and materials made from the map would land in an excluded folder and vanish from it. */
+  private warnOwnFolders() {
+    const { settings } = this.plugin;
+    for (const folder of new Set([settings.conceptsFolder, settings.sourcesFolder])) {
+      if (inFolders(folder, settings.excludeFolders)) new Notice(t.scope.ownFolderExcluded({ folder }));
+    }
   }
 
   private text(key: TextSetting): SettingGroupItem<Key> {

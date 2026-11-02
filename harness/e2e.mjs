@@ -224,7 +224,14 @@ const setScope = async (page, key, value) => {
   ok("scope: double click does not duplicate the note", !(await page.evaluate("tropa.app.vault.files.has('Tropa/Concepts/Archived.md')")));
   await page.screenshot({ path: SHOTS + "80-scope.png" });
 
+  const layoutKey = () => page.evaluate("tropa.app.workspace.center.view.layoutKey");
+  const before = await layoutKey();
   await setScope(page, "excludeFolders", "Attachments\nTropa");
+  ok("scope: a new shape is laid out again", (await layoutKey()) !== before);
+  ok("scope: the returned note gets a place on the map", (await page.evaluate("tropa.app.workspace.center.view.layout.nodes.has('Archive/Archived.md')")));
+  const notices = await page.evaluate("tropa.notices");
+  ok("scope: excluding the concepts folder is warned about", notices.some((text) => text.includes("Tropa/Concepts is excluded")) &&
+    notices.some((text) => text.includes("Tropa/Materials is excluded")), JSON.stringify(notices));
   ok("scope: folders saved as a list", JSON.stringify(await page.evaluate("tropa.plugin.data.excludeFolders")) === '["Attachments","Tropa"]');
   ok("scope: removing a folder brings the note back", !(await ghost("Archived")).includes("is-ghost"));
   ok("scope: progress mark follows the note back", (await ghost("Archived")).includes("state-mastered"));

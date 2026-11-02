@@ -45,7 +45,7 @@
     "materialsKeyDesc": "Odkazy a přílohy uvedené přímo v pojmu, bez samostatné poznámky.",
     "scope": "Rozsah mapy",
     "excludeFolders": "Vyloučené složky",
-    "excludeFoldersDesc": "Jedna složka na řádek. Poznámky v těchto složkách a pod nimi se na mapu nedostanou a odkazy na ně se stanou zárodky. Soubor s pokrokem se čte vždy.",
+    "excludeFoldersDesc": "Jedna složka na řádek. Poznámky v těchto složkách a pod nimi se na mapu nedostanou a odkazy na ně se stanou zárodky. Soubor s pokrokem se čte vždy. Nepřidávejte sem složky pojmů a materiálů: ukládá se do nich, co vytvoříte z mapy.",
     "excludeFoldersPlaceholder": "Archiv\nŠablony",
     "excludeTags": "Vyloučené štítky",
     "excludeTagsDesc": "Jeden štítek na řádek. Poznámky s těmito štítky se na mapu nedostanou, včetně vnořených: #koncept pokrývá i #koncept/starý.",
@@ -56,6 +56,7 @@
     "excludedMeta": "Mimo mapu",
     "excludedNote": "Tato poznámka je kvůli nastavení složek nebo štítků mimo mapu.",
     "goalExcluded": "Cíl {title} je kvůli nastavení složek nebo štítků mimo mapu.",
+    "ownFolderExcluded": "Složka {folder} je vyloučená, ale vytvářejí se v ní nové pojmy nebo materiály: na mapě se neobjeví.",
     "goalExcludedHint": "Cíl je vyloučen nastavením složek nebo štítků, takže není známo, co je potřeba znát předem. Vyberte jiný cíl nebo změňte nastavení."
   },
   "minutes": "{minutes} min",

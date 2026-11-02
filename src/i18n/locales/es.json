@@ -45,7 +45,7 @@
     "materialsKeyDesc": "Enlaces y adjuntos listados en el propio concepto, sin una nota aparte.",
     "scope": "Alcance del mapa",
     "excludeFolders": "Carpetas excluidas",
-    "excludeFoldersDesc": "Una carpeta por línea. Las notas de estas carpetas y sus subcarpetas quedan fuera del mapa, y los enlaces a ellas se convierten en borradores. El archivo de progreso se lee siempre.",
+    "excludeFoldersDesc": "Una carpeta por línea. Las notas de estas carpetas y sus subcarpetas quedan fuera del mapa, y los enlaces a ellas se convierten en borradores. El archivo de progreso se lee siempre. No incluyas las carpetas de conceptos y materiales: lo que creas desde el mapa va allí.",
     "excludeFoldersPlaceholder": "Archivo\nPlantillas",
     "excludeTags": "Etiquetas excluidas",
     "excludeTagsDesc": "Una etiqueta por línea. Las notas con estas etiquetas quedan fuera del mapa, incluidas las anidadas: #borrador también cubre #borrador/viejo.",
@@ -56,6 +56,7 @@
     "excludedMeta": "Fuera del mapa",
     "excludedNote": "Esta nota queda fuera del mapa por los ajustes de carpetas o etiquetas.",
     "goalExcluded": "El objetivo {title} queda fuera del mapa por los ajustes de carpetas o etiquetas.",
+    "ownFolderExcluded": "{folder} está excluida, pero ahí se crean los conceptos o materiales nuevos: no aparecerán en el mapa.",
     "goalExcludedHint": "El objetivo está excluido por los ajustes de carpetas o etiquetas, así que no se conocen sus requisitos. Elige otro objetivo o cambia los ajustes."
   },
   "minutes": "{minutes} min",

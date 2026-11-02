@@ -45,7 +45,7 @@
     "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée.",
     "scope": "Portée de la carte",
     "excludeFolders": "Dossiers exclus",
-    "excludeFoldersDesc": "Un dossier par ligne. Les notes de ces dossiers et de leurs sous-dossiers restent hors de la carte, et les liens vers elles deviennent des ébauches. Le fichier de progression est toujours lu.",
+    "excludeFoldersDesc": "Un dossier par ligne. Les notes de ces dossiers et de leurs sous-dossiers restent hors de la carte, et les liens vers elles deviennent des ébauches. Le fichier de progression est toujours lu. N’y mettez pas les dossiers des concepts et des ressources : ce que vous créez depuis la carte y est rangé.",
     "excludeFoldersPlaceholder": "Archives\nModèles",
     "excludeTags": "Tags exclus",
     "excludeTagsDesc": "Un tag par ligne. Les notes portant ces tags restent hors de la carte, tags imbriqués compris : #brouillon couvre aussi #brouillon/ancien.",
@@ -56,6 +56,7 @@
     "excludedMeta": "Hors de la carte",
     "excludedNote": "Cette note est exclue de la carte par les réglages de dossiers ou de tags.",
     "goalExcluded": "L’objectif {title} est exclu de la carte par les réglages de dossiers ou de tags.",
+    "ownFolderExcluded": "{folder} est exclu, mais les nouveaux concepts ou ressources y sont créés : ils n’apparaîtront pas sur la carte.",
     "goalExcludedHint": "L’objectif est exclu par les réglages de dossiers ou de tags, ses prérequis sont donc inconnus. Choisissez un autre objectif ou modifiez les réglages."
   },
   "minutes": "{minutes} min",

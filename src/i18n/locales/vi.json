@@ -45,7 +45,7 @@
     "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng.",
     "scope": "Phạm vi bản đồ",
     "excludeFolders": "Thư mục bị loại trừ",
-    "excludeFoldersDesc": "Mỗi dòng một thư mục. Ghi chú trong các thư mục này và thư mục con không lên bản đồ, liên kết tới chúng trở thành bản nháp. Tệp tiến độ luôn được đọc.",
+    "excludeFoldersDesc": "Mỗi dòng một thư mục. Ghi chú trong các thư mục này và thư mục con không lên bản đồ, liên kết tới chúng trở thành bản nháp. Tệp tiến độ luôn được đọc. Đừng thêm thư mục khái niệm và tài liệu vào đây: những gì bạn tạo từ bản đồ được lưu ở đó.",
     "excludeFoldersPlaceholder": "Lưu trữ\nMẫu",
     "excludeTags": "Thẻ bị loại trừ",
     "excludeTagsDesc": "Mỗi dòng một thẻ. Ghi chú có các thẻ này không lên bản đồ, kể cả thẻ lồng nhau: #nháp cũng áp dụng cho #nháp/cũ.",
@@ -56,6 +56,7 @@
     "excludedMeta": "Ngoài bản đồ",
     "excludedNote": "Ghi chú này nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
     "goalExcluded": "Mục tiêu {title} nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
+    "ownFolderExcluded": "{folder} đang bị loại trừ, nhưng khái niệm hoặc tài liệu mới được tạo ở đó: chúng sẽ không hiện trên bản đồ.",
     "goalExcludedHint": "Mục tiêu bị loại trừ bởi cài đặt thư mục hoặc thẻ nên chưa biết cần học gì trước. Hãy chọn mục tiêu khác hoặc đổi cài đặt."
   },
   "minutes": "{minutes} phút",
