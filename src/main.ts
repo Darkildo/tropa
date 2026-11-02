@@ -1,6 +1,6 @@
-import * as obsidian from "obsidian";
-import { Notice, Plugin, TFile, debounce, normalizePath } from "obsidian";
+import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath } from "obsidian";
 import { STATE_ICON } from "./core/format";
+import { attempt } from "./attempt";
 import { setLang, t, type Lang } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
 import { TropaSettingTab } from "./settings";
@@ -25,7 +25,7 @@ export default class TropaPlugin extends Plugin {
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
     this.addSettingTab(new TropaSettingTab(this.app, this));
-    this.addRibbonIcon("route", t.mapTitle, () => void this.showMap());
+    this.addRibbonIcon("route", t.mapTitle, () => attempt(this.showMap(), "open the map"));
 
     const rebuild = debounce(() => this.store.rebuild(), 120, true);
     this.app.workspace.onLayoutReady(() => {
@@ -67,10 +67,10 @@ export default class TropaPlugin extends Plugin {
   }
 
   private addCommands() {
-    this.addCommand({ id: "open-map", name: t.mapTitle, callback: () => void this.showMap() });
-    this.addCommand({ id: "open-panel", name: t.openPanel, callback: () => void this.showPanel() });
+    this.addCommand({ id: "open-map", name: t.mapTitle, callback: () => attempt(this.showMap(), "open the map") });
+    this.addCommand({ id: "open-panel", name: t.openPanel, callback: () => attempt(this.showPanel(), "open the panel") });
     this.addCommand({ id: "new-concept", name: t.newConcept, callback: () => this.promptNewConcept() });
-    this.addCommand({ id: "install-sample", name: t.installSample, callback: () => void this.installSample() });
+    this.addCommand({ id: "install-sample", name: t.installSample, callback: () => attempt(this.installSample(), "add the example map") });
 
     this.addCommand({
       id: "find-concept",
@@ -82,7 +82,7 @@ export default class TropaPlugin extends Plugin {
           icon: STATE_ICON[this.store.states.get(node.id) ?? "locked"],
         }));
         new PickModal(this.app, items, t.findConceptPrompt, (item) => {
-          void this.showMap((map) => map.focusNode(item.id));
+          attempt(this.showMap((map) => map.focusNode(item.id)), "show a concept");
         }).open();
       },
     });
@@ -94,7 +94,7 @@ export default class TropaPlugin extends Plugin {
         checkCallback: (checking) => {
           const file = this.app.workspace.getActiveFile();
           if (!file || file.extension !== "md") return false;
-          if (!checking) void this.store.classifyNote(file, kind);
+          if (!checking) attempt(this.store.classifyNote(file, kind), `mark ${file.path} as ${kind}`);
           return true;
         },
       });
@@ -147,7 +147,7 @@ export default class TropaPlugin extends Plugin {
     const { workspace } = this.app;
     const noteLeaf = workspace.getLeavesOfType("markdown")[0];
     const leaf = newTab ? workspace.getLeaf("tab") : noteLeaf ?? workspace.getLeaf("split", "vertical");
-    void leaf.openFile(file).then(() => workspace.revealLeaf(leaf));
+    attempt(leaf.openFile(file).then(() => workspace.revealLeaf(leaf)), `open ${file.path}`);
   }
 
   promptNewConcept(requires: string[] = []) {
@@ -196,14 +196,7 @@ export default class TropaPlugin extends Plugin {
   }
 }
 
-/** Obsidian's interface language. `getLanguage` appeared in 1.8, older builds keep it in local storage. */
+/** Obsidian's interface language: Russian for ru*, English otherwise. */
 function detectLang(): Lang {
-  const { getLanguage } = obsidian as { getLanguage?: () => string };
-  let code = "";
-  try {
-    code = getLanguage?.() ?? window.localStorage.getItem("language") ?? "";
-  } catch {
-    // Local storage can be unavailable.
-  }
-  return code.toLowerCase().startsWith("ru") ? "ru" : "en";
+  return getLanguage().toLowerCase().startsWith("ru") ? "ru" : "en";
 }

@@ -63,6 +63,7 @@ export const en = {
     other: "Other",
   },
 
+  actionFailed: (reason: string) => `Something went wrong: ${reason}`,
   progressNotSaved: (reason: string) => `Progress was not saved: ${reason}`,
   noteNotFound: (id: string) => `Note not found: ${id}`,
   untitled: "Untitled",

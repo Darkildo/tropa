@@ -28,6 +28,13 @@ function create(this: HTMLElement, tag: string, options: any = {}, callback?: Ca
 proto.createEl = create;
 proto.createDiv = function (options?: any, cb?: Callback) { return create.call(this, "div", options, cb); };
 proto.createSpan = function (options?: any, cb?: Callback) { return create.call(this, "span", options, cb); };
+// Obsidian's global helpers return detached elements.
+const detached = (tag: string) => (options?: any, cb?: Callback) => {
+  const el = create.call(document.createDocumentFragment(), tag, options, cb);
+  el.remove();
+  return el;
+};
+Object.assign(globalThis, { createDiv: detached("div"), createSpan: detached("span"), createEl: (tag: string, options?: any, cb?: Callback) => detached(tag)(options, cb) });
 nodeProto.empty = function () { while (this.firstChild) this.removeChild(this.firstChild); };
 elementProto.addClass = function (...c: string[]) { this.classList.add(...c); };
 elementProto.removeClass = function (...c: string[]) { this.classList.remove(...c); };

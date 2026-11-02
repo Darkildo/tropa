@@ -2,6 +2,7 @@ import { setIcon, type App } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { isGhostId, recommendMaterial, sourceState } from "../core/graph";
 import type { GraphNode } from "../core/types";
+import { attempt } from "../attempt";
 import { lang, t } from "../i18n";
 import type { Store } from "../store";
 import { PickModal, SourceModal, type PickItem } from "./pick";
@@ -97,7 +98,7 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
   ];
   new PickModal(app, items, t.materialForPrompt(node.title), (item) => {
     if (!item.create) {
-      void store.attachSource(item.id, node.id);
+      attempt(store.attachSource(item.id, node.id), `attach ${item.title}`);
       return;
     }
     new SourceModal(app, item.title, async (draft) => {
@@ -165,7 +166,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
     });
     setIcon(link, "external-link");
   }
-  if (concept) iconButton(el, "x", t.detachMaterial(source.title), () => void store.removeLink(id, "teachesKey", concept.id));
+  if (concept) iconButton(el, "x", t.detachMaterial(source.title), () => attempt(store.removeLink(id, "teachesKey", concept.id), "remove a link"));
 }
 
 function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
@@ -224,7 +225,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     button.addEventListener("click", run);
   };
 
-  if (node.ghost) action(t.createNote, state !== "available", () => void store.materialize(node.id));
+  if (node.ghost) action(t.createNote, state !== "available", () => attempt(store.materialize(node.id), `create ${node.title}`));
   if (state === "available") {
     action(t.startLearning, true, () => store.startLearning(node.id));
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
@@ -254,7 +255,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
 
   const requires = section(parent, t.knowBefore, node.requires.length);
   for (const id of node.requires) {
-    conceptRow(requires, host, id, node.ghost ? undefined : () => void store.removeLink(node.id, "requiresKey", id));
+    conceptRow(requires, host, id, node.ghost ? undefined : () => attempt(store.removeLink(node.id, "requiresKey", id), "remove a link"));
   }
   addButton(requires, t.addPrerequisite, () => pickPrerequisite(host, node));
 
@@ -262,7 +263,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   for (const id of node.requiredBy) {
     const dependent = store.graph.nodes.get(id);
     if (dependent?.kind === "concept") {
-      conceptRow(unlocks, host, id, isGhostId(id) ? undefined : () => void store.removeLink(id, "requiresKey", node.id));
+      conceptRow(unlocks, host, id, isGhostId(id) ? undefined : () => attempt(store.removeLink(id, "requiresKey", node.id), "remove a link"));
     }
   }
   addButton(unlocks, t.addNextConcept, () => pickUnlock(host, node));
@@ -297,7 +298,7 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   }
 
   const teaches = section(parent, t.teaches, node.teaches.length);
-  for (const id of node.teaches) conceptRow(teaches, host, id, () => void store.removeLink(node.id, "teachesKey", id));
+  for (const id of node.teaches) conceptRow(teaches, host, id, () => attempt(store.removeLink(node.id, "teachesKey", id), "remove a link"));
   addButton(teaches, t.addConcept, () => {
     const items = conceptItems(host, new Set(node.teaches));
     new PickModal(host.app, items, t.teachesPrompt(node.title), async (item) => {
@@ -309,7 +310,7 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
     const requires = section(parent, t.neededBefore, node.requires.length);
     for (const id of node.requires) {
       const target = store.graph.nodes.get(id);
-      if (target?.kind === "concept") conceptRow(requires, host, id, () => void store.removeLink(node.id, "requiresKey", id));
+      if (target?.kind === "concept") conceptRow(requires, host, id, () => attempt(store.removeLink(node.id, "requiresKey", id), "remove a link"));
       else if (target) materialRow(requires, host, id, null, false);
     }
   }

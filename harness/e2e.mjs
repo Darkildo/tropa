@@ -95,7 +95,7 @@ const { open, stop } = await start();
   await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 100);
   await page.keyboard.type("Seeing Theory"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
   await page.screenshot({ path: SHOTS + "16-source-modal.png" });
-  await page.locator('.modal input[placeholder="https://"]').fill("https://www.youtube.com/watch?v=x");
+  await page.locator('.modal input[placeholder="https://example.com"]').fill("https://www.youtube.com/watch?v=x");
   ok("format guessed", (await page.locator(".modal select").inputValue()) === "video");
   await page.locator(".modal input[type=number]").fill("30");
   await page.click('.modal button:text-is("Add material")'); await wait(page, 350);

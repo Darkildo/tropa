@@ -74,6 +74,7 @@ export const ru: Strings = {
     other: "Другое",
   },
 
+  actionFailed: (reason) => `Не получилось: ${reason}`,
   progressNotSaved: (reason) => `Прогресс не сохранён: ${reason}`,
   noteNotFound: (id) => `Заметка не найдена: ${id}`,
   untitled: "Без названия",

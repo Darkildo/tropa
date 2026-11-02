@@ -1,4 +1,4 @@
-import dagre from "@dagrejs/dagre";
+import dagre, { type EdgeLabel, type GraphLabel, type NodeLabel } from "@dagrejs/dagre";
 import type { LearningGraph } from "./graph";
 
 export interface Point {
@@ -52,7 +52,7 @@ export function layoutGraph(graph: LearningGraph, options: LayoutOptions): Layou
     }
   }
 
-  const g = new dagre.graphlib.Graph({ multigraph: false });
+  const g = new dagre.graphlib.Graph<GraphLabel, NodeLabel, EdgeLabel>({ multigraph: false });
   g.setGraph({ rankdir: "TB", nodesep: 40, ranksep: 64, edgesep: 18, marginx: 0, marginy: 0, ranker: visible.size > 150 ? "tight-tree" : "network-simplex" });
   g.setDefaultEdgeLabel(() => ({}));
 
@@ -87,14 +87,8 @@ export function layoutGraph(graph: LearningGraph, options: LayoutOptions): Layou
   let width = 0;
   let height = 0;
   for (const id of visible) {
-    const placed = g.node(id);
-    const node = {
-      id,
-      x: placed.x - placed.width / 2,
-      y: placed.y - placed.height / 2,
-      width: placed.width,
-      height: placed.height,
-    };
+    const { x = 0, y = 0, width: nodeWidth, height: nodeHeight } = g.node(id);
+    const node = { id, x: x - nodeWidth / 2, y: y - nodeHeight / 2, width: nodeWidth, height: nodeHeight };
     nodes.set(id, node);
     width = Math.max(width, node.x + node.width);
     height = Math.max(height, node.y + node.height);
