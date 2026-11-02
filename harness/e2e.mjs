@@ -1065,6 +1065,179 @@ const saveExport = async (page, id) => {
   await page.close();
 }
 
+// --- phone: touches through CDP on a 390×844 screen with Obsidian's bar and side-panel swipe
+const touchPad = async (page) => {
+  const cdp = await page.context().newCDPSession(page);
+  const send = (type, points) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: points.map((p, id) => ({ x: p.x, y: p.y, id })) });
+  const frames = (n) => page.waitForTimeout(n * 16);
+  return {
+    async drag(from, to, steps = 10) {
+      await send("touchStart", [from]);
+      for (let i = 1; i <= steps; i++) { await send("touchMove", [{ x: from.x + ((to.x - from.x) * i) / steps, y: from.y + ((to.y - from.y) * i) / steps }]); await frames(1); }
+      await send("touchEnd", []);
+    },
+    async tap(p) { await send("touchStart", [p]); await frames(3); await send("touchEnd", []); },
+    async hold(p, ms) { await send("touchStart", [p]); await page.waitForTimeout(ms); await send("touchEnd", []); },
+    async pinch(c, from, to, steps = 10) {
+      const at = (d) => [{ x: c.x - d / 2, y: c.y }, { x: c.x + d / 2, y: c.y }];
+      await send("touchStart", at(from));
+      for (let i = 1; i <= steps; i++) { await send("touchMove", at(from + ((to - from) * i) / steps)); await frames(1); }
+      await send("touchEnd", []);
+    },
+  };
+};
+const phone = (query) => open({ width: 390, height: 844, touch: true, query: `?phone&${query}` });
+const box = (page, selector) => page.evaluate((sel) => { const r = document.querySelector(sel)?.getBoundingClientRect(); return r ? { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width, height: r.height } : null; }, selector);
+const nodeBox = async (page, title) => { const b = await node(page, title).boundingBox(); return b && { left: b.x, top: b.y, right: b.x + b.width, bottom: b.y + b.height, width: b.width, height: b.height }; };
+const overlaps = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+const mapState = (page) => page.evaluate(() => { const v = tropa.app.workspace.center.view; return { x: v.x, y: v.y, k: v.k }; });
+const swipeCount = (page) => page.evaluate("tropa.swipes.length");
+const conceptPath = (page, title) => page.evaluate((t) => [...tropa.app.vault.files.keys()].find((p) => p.endsWith(`/${t}.md`)), title);
+async function phoneLayoutChecks(page, label, title) {
+  const bar = await box(page, "#center .tropa-bar");
+  const rows = await page.evaluate(() => [...document.querySelectorAll("#center .tropa-bar > *")]
+    .filter((el) => el.getClientRects().length && getComputedStyle(el).position !== "absolute")
+    .map((el) => Math.round(el.getBoundingClientRect().top)));
+  ok(`${label}: the bar is one row`, bar.height <= 56 && Math.max(...rows) - Math.min(...rows) <= 4, JSON.stringify({ height: bar.height, rows }));
+  ok(`${label}: no horizontal overflow`, await page.evaluate("document.documentElement.scrollWidth <= innerWidth"));
+  const nav = await box(page, ".mobile-navbar");
+  for (const state of ["peek", "half", "full"]) {
+    const heading = await box(page, `#center .tropa-side ${title}`);
+    const sheet = await box(page, "#center .tropa-side");
+    const zoom = await box(page, "#center .tropa-zoom");
+    const zoomShown = await page.evaluate(() => getComputedStyle(document.querySelector("#center .tropa-zoom")).display !== "none");
+    ok(`${label}: panel title above Obsidian's bar (${state})`, heading && heading.bottom <= nav.top && heading.top >= bar.bottom && sheet.bottom <= nav.top + 1, JSON.stringify({ heading, nav: nav.top, sheet }));
+    ok(`${label}: zoom buttons clear of the panel (${state})`, state === "full" ? !zoomShown : zoomShown && zoom.bottom <= sheet.top, JSON.stringify({ zoom, sheet: sheet.top }));
+    await (await touchPad(page)).tap({ x: 195, y: sheet.top + 12 }); await wait(page, 350);
+  }
+  ok(`${label}: the handle cycles back to the title`, (await page.locator("#center .tropa-side[data-sheet=peek]").count()) === 1);
+}
+{
+  const { page, errors } = await phone("lang=ru&theme=dark");
+  await page.screenshot({ path: SHOTS + "70-phone-ru-dark.png" });
+  const pad = await touchPad(page);
+  await phoneLayoutChecks(page, "phone ru", ".tropa-title");
+  const nextNode = await box(page, '.tropa-node.is-next');
+  const zoom = await box(page, "#center .tropa-zoom");
+  ok("phone: opens readable, on the next step", (await mapState(page)).k >= 0.7 && nextNode && nextNode.top > 50 && nextNode.bottom < 680 && !overlaps(nextNode, zoom), JSON.stringify({ k: (await mapState(page)).k, nextNode }));
+  ok("phone: no dots to drag links from", await page.evaluate(() => [...document.querySelectorAll(".tropa-port")].every((el) => getComputedStyle(el).display === "none")));
+  ok("phone: fold badges stay out of the way", await page.evaluate(() => [...document.querySelectorAll(".tropa-fold:not(.is-hidden)")].every((el) => getComputedStyle(el).opacity === "0")));
+
+  // Swipes: inside the map they pan and never reach Obsidian's side panels; on the bar they still do.
+  const before = await mapState(page);
+  await pad.drag({ x: 60, y: 300 }, { x: 330, y: 310 });
+  await wait(page, 100);
+  const after = await mapState(page);
+  ok("phone: a swipe on the map pans it", after.x - before.x > 200, JSON.stringify({ before, after }));
+  ok("phone: a swipe on the map does not open a side panel", (await swipeCount(page)) === 0, String(await swipeCount(page)));
+  await pad.drag({ x: 40, y: 640 }, { x: 330, y: 645 });
+  ok("phone: a swipe on the panel does not open a side panel", (await swipeCount(page)) === 0);
+  await pad.drag({ x: 100, y: 24 }, { x: 360, y: 26 });
+  ok("phone: a swipe on the bar still opens a side panel", (await swipeCount(page)) === 1, String(await swipeCount(page)));
+
+  // Pinch zooms around the fingers and pans with them.
+  const center = { x: 195, y: 380 };
+  const start = await mapState(page);
+  const worldX = (center.x - start.x) / start.k;
+  await pad.pinch(center, 100, 160);
+  await wait(page, 100);
+  const pinched = await mapState(page);
+  ok("phone: pinch zooms", Math.abs(pinched.k / start.k - 1.6) < 0.08 || pinched.k === 1.6, JSON.stringify({ start, pinched }));
+  ok("phone: pinch keeps the map under the fingers", Math.abs(center.x - (pinched.x + worldX * pinched.k)) < 3, JSON.stringify({ worldX, pinched }));
+  ok("phone: pinch does not open a side panel", (await swipeCount(page)) === 1);
+  await page.locator(".tropa-zoom button >> nth=2").click(); await wait(page, 400);
+  const fitted = await mapState(page);
+  ok("phone: fit stays readable", fitted.k >= 0.7, String(fitted.k));
+  await pad.tap({ x: 30, y: 560 }); await page.waitForTimeout(80); await pad.tap({ x: 30, y: 560 }); await wait(page, 400);
+  const tapped = await mapState(page);
+  ok("phone: double tap zooms in", Math.abs(tapped.k / fitted.k - 1.6) < 0.05 || tapped.k === 1.6, JSON.stringify({ fitted, tapped }));
+  await page.locator(".tropa-zoom button >> nth=2").click(); await wait(page, 400);
+
+  // Long press on a concept: its menu, with the way to link it now that there are no dots.
+  await page.screenshot({ path: SHOTS + "71-phone-ru-light-before-menu.png" });
+  const descent = await nodeBox(page, "Градиентный спуск");
+  await pad.hold({ x: descent.left + 40, y: descent.top + 20 }, 750); await wait(page, 150);
+  ok("phone: long press opens the concept's menu", (await page.locator('.menu-item:text-is("Связать со следующим концептом…")').count()) === 1,
+    JSON.stringify({ descent, menus: await page.locator(".menu-item").allInnerTexts(), pointers: await page.evaluate("tropa.app.workspace.center.view.pointers.size"), at: await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.className, { x: descent.left + 40, y: descent.top + 20 }) }));
+  ok("phone: long press selects the concept", (await page.locator("#center .tropa-side .tropa-title").innerText()) === "Градиентный спуск");
+  await page.screenshot({ path: SHOTS + "72-phone-ru-dark-menu.png" });
+  await page.click('.menu-item:text-is("Связать со следующим концептом…")'); await wait(page, 150);
+  await page.locator(".prompt-input").fill("Токениз"); await wait(page, 100);
+  await page.click('.suggestion-item:has-text("Токенизация")'); await wait(page, 400);
+  ok("phone: link to the next concept from the menu", (await note(page, await conceptPath(page, "Токенизация"))).includes("[[Градиентный спуск]]"));
+  const moved = await mapState(page);
+  await pad.hold({ x: 30, y: 300 }, 200);
+  await pad.drag({ x: descent.left + 40, y: descent.top + 20 }, { x: descent.left + 140, y: descent.top + 60 }, 6);
+  await wait(page, 600);
+  ok("phone: moving the finger cancels the long press", (await page.locator(".menu").count()) === 0 && (await mapState(page)).x !== moved.x);
+
+  // The menu behind "⋯": what the bar holds on a wider screen.
+  await page.click("#center .tropa-more"); await wait(page, 150);
+  const items = await page.locator(".menu-item").allInnerTexts();
+  ok("phone: ⋯ holds materials, focus, audit, export and a new concept", ["Материалы", "Фокус", "Проверка карты", "Экспортировать карту в Canvas", "Экспортировать карту в SVG", "Новый концепт"].every((text) => items.some((item) => item.startsWith(text))), items.join(" | "));
+  await page.click('.menu-item:text-is("Материалы")'); await wait(page, 500);
+  ok("phone: materials from the menu", (await page.locator(".tropa-node.is-source").count()) > 0);
+  await page.click("#center .tropa-more"); await wait(page, 150);
+  ok("phone: the menu marks materials as on", (await page.locator(".menu-item.mod-checked").allInnerTexts()).some((text) => text.startsWith("Материалы")));
+  await page.click('.menu-item:text-is("Материалы")'); await wait(page, 400);
+  await page.click('#center .tropa-mode-icons button[data-mode="all"]'); await wait(page, 500);
+  ok("phone: whole map from the icon", (await page.locator('#center .tropa-mode-icons button[data-mode="all"][aria-pressed=true]').count()) === 1 && (await page.locator('#center .tropa-mode-icons button[data-mode="all"]').getAttribute("aria-label")) === "Вся карта");
+  ok("phone: progress reads out", (await page.locator("#center .tropa-meter").getAttribute("aria-valuetext")).includes("из"));
+  ok("phone ru: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await phone("lang=ru");
+  await page.screenshot({ path: SHOTS + "73-phone-ru-light.png" });
+  await node(page, "Градиент").click(); await wait(page, 400);
+  ok("phone: picking a concept opens the panel halfway", (await page.locator("#center .tropa-side[data-sheet=half]").count()) === 1);
+  const fold = page.locator('.tropa-node:has(.tropa-node-title:text-is("Градиент")) .tropa-fold');
+  // On screen: the badge and its invisible margin, both scaled with the map.
+  const target = await fold.evaluate((el) => {
+    const k = tropa.app.workspace.center.view.k;
+    const after = getComputedStyle(el, "::after");
+    return { width: (el.offsetWidth - parseFloat(after.left) - parseFloat(after.right)) * k, height: (el.offsetHeight - parseFloat(after.top) - parseFloat(after.bottom)) * k, opacity: getComputedStyle(el).opacity };
+  });
+  ok("phone: fold badge is small, its target finger-sized", target.opacity === "1" && target.width >= 32 && target.height >= 32, JSON.stringify({ target, k: (await mapState(page)).k }));
+  await page.screenshot({ path: SHOTS + "74-phone-ru-light-half.png" });
+  ok("phone ru light: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // Without Obsidian's own opt-out the map still keeps its touches from the side-panel swipe.
+  const { page } = await phone("lang=ru&swipeAll");
+  const pad = await touchPad(page);
+  await pad.drag({ x: 60, y: 300 }, { x: 330, y: 310 });
+  ok("phone: the map holds its touches back even without data-ignore-swipe", (await swipeCount(page)) === 0);
+  await pad.drag({ x: 100, y: 24 }, { x: 360, y: 26 });
+  ok("phone: swipes elsewhere still reach Obsidian", (await swipeCount(page)) === 1);
+  await page.close();
+}
+{
+  const { page, errors } = await phone("lang=ar&theme=dark");
+  await phoneLayoutChecks(page, "phone ar", ".tropa-title");
+  const pad = await touchPad(page);
+  const next = await box(page, ".tropa-node.is-next");
+  await pad.hold({ x: next.left + 60, y: next.top + 20 }, 750); await wait(page, 150);
+  ok("phone ar: long press menu", (await page.locator('.menu-item:text-is("ربط بالمفهوم التالي…")').count()) === 1, JSON.stringify({ next, menus: await page.locator(".menu-item").allInnerTexts() }));
+  // The click a lifted finger makes is held back for a moment; a tap after that closes the menu.
+  await wait(page, 600); await page.mouse.click(5, 400); await wait(page, 100);
+  ok("phone ar: a later tap closes the menu", (await page.locator(".menu").count()) === 0);
+  await pad.drag({ x: 330, y: 300 }, { x: 60, y: 310 });
+  ok("phone ar: a swipe on the map does not open a side panel", (await swipeCount(page)) === 0,
+    JSON.stringify({ swipes: await page.evaluate("tropa.swipes"), at: await page.evaluate(() => { const el = document.elementFromPoint(330, 300); return `${el?.tagName}.${el?.className} ${el?.closest("[data-ignore-swipe]") ? "ignored" : ""}`; }) }));
+  ok("phone ar: bar right to left in one row", (await page.locator("#center .tropa-map[dir=rtl]").count()) === 1);
+  await page.screenshot({ path: SHOTS + "75-phone-ar-dark.png" });
+  ok("phone ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // A tablet or a wide window keeps the full bar.
+  const { page } = await open({ width: 1024, height: 768, query: "?theme=dark" });
+  ok("desktop: no phone bar", (await page.locator("#center .tropa-map.is-phone").count()) === 0 && (await page.locator("#center .tropa-more").isVisible()) === false && (await page.locator("#center .tropa-toggle-sources").isVisible()));
+  await page.close();
+}
+
 // --- large graph performance
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });

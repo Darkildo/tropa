@@ -448,18 +448,37 @@ export class Menu {
     const item = {
       setTitle(text: string) { row.textContent = text; return item; },
       setIcon() { return item; },
-      onClick: (fn: Callback) => { row.addEventListener("click", () => { this.el.remove(); fn(); }); return item; },
+      setChecked(checked: boolean) { row.toggleClass("mod-checked", checked); row.setAttribute("aria-checked", String(checked)); return item; },
+      setDisabled(disabled: boolean) { row.toggleClass("is-disabled", disabled); return item; },
+      onClick: (fn: Callback) => {
+        row.addEventListener("click", () => {
+          if (row.classList.contains("is-disabled")) return;
+          this.el.remove();
+          fn();
+        });
+        return item;
+      },
     };
     cb(item);
     return this;
   }
   showAtMouseEvent(event: MouseEvent) {
-    this.el.style.left = `${event.clientX}px`;
-    this.el.style.top = `${event.clientY}px`;
+    this.showAtPosition({ x: event.clientX, y: event.clientY });
+  }
+  showAtPosition(position: { x: number; y: number }) {
+    this.el.style.left = `${Math.min(position.x, innerWidth - 200)}px`;
+    this.el.style.top = `${position.y}px`;
     document.body.appendChild(this.el);
     window.setTimeout(() => document.addEventListener("click", () => this.el.remove(), { once: true }));
   }
 }
+
+/** Obsidian reports the device; the preview takes it from the classes Obsidian puts on the body. */
+export const Platform = {
+  get isMobile() { return document.body.classList.contains("is-mobile"); },
+  get isPhone() { return document.body.classList.contains("is-phone"); },
+  get isDesktop() { return !document.body.classList.contains("is-mobile"); },
+};
 
 export class Setting {
   settingEl: HTMLElement;
