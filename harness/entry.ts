@@ -5,7 +5,7 @@ import { defaultSettings } from "../src/defaults";
 
 const params = new URLSearchParams(location.search);
 const scenario = params.get("scenario") ?? "demo";
-const language = params.get("lang") === "ru" ? "ru" : "en";
+const language = params.get("lang") ?? "en";
 localStorage.setItem("language", language);
 document.documentElement.lang = language;
 document.body.classList.add(params.get("theme") === "dark" ? "theme-dark" : "theme-light");
@@ -13,7 +13,7 @@ document.body.classList.toggle("is-right-open", params.has("panel"));
 
 const vault = (app as any).vault;
 // The example can be in another language than the interface, as in a vault set up before translation.
-const sampleLanguage = (params.get("sample") ?? language) === "ru" ? "ru" : "en";
+const sampleLanguage = (params.get("sample") ?? language).startsWith("ru") ? "ru" : "en";
 const seedDemo = () => {
   const example = sample(sampleLanguage);
   for (const { path, content } of example.files) vault.seed(path, content);

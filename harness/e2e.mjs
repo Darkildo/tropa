@@ -193,6 +193,29 @@ const { open, stop } = await start();
   await page.close();
 }
 
+// --- other languages: translated, no raw placeholders, no errors
+const KEYS = /\b(mapTitle|stepsToGoal|leftToUnlock|materialCount|conceptsFirst|progressOf)\b|[{}]/;
+for (const [lang, wholeMap] of [["de", "Ganze Karte"], ["ja", "マップ全体"], ["ar", "الخريطة كاملة"], ["zh-TW", "整張地圖"], ["pt-PT", "Mapa completo"]]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  await node(page, "Tokenization").click(); await wait(page, 200);
+  const text = await page.locator("body").innerText();
+  ok(`${lang}: translated`, (await page.locator(`button:text-is("${wholeMap}")`).count()) === 1);
+  ok(`${lang}: no raw keys`, !KEYS.test(text), text.match(KEYS)?.[0]);
+  ok(`${lang}: example stays English`, (await page.locator(".tropa-goal-label").innerText()) === "Transformer");
+  ok(`${lang}: direction`, (await page.locator(".tropa-map").getAttribute("dir")) === (lang === "ar" ? "rtl" : "ltr"));
+  if (lang === "ar" || lang === "ja") {
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((dark) => document.body.classList.replace(dark ? "theme-light" : "theme-dark", dark ? "theme-dark" : "theme-light"), theme === "dark");
+      await page.screenshot({ path: `${SHOTS}60-${lang}-${theme}.png` });
+    }
+    await page.click('.tropa-side button:has-text("' + (lang === "ar" ? "إضافة مادة" : "教材を追加") + '")'); await wait(page, 150);
+    ok(`${lang}: modal direction`, (await page.locator(".modal").getAttribute("dir")) === (lang === "ar" ? "rtl" : null));
+    await page.screenshot({ path: `${SHOTS}61-${lang}-modal.png` });
+  }
+  ok(`no console errors (${lang})`, errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
 // --- dark, narrow, phone
 {
   const { page } = await open({ query: "?theme=dark", scale: 2 });
