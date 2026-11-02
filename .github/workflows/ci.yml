@@ -24,3 +24,17 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+
+  # Layout time and drawing quality against the 0.1 layout (dagre). Informational: the table goes to
+  # the job summary, and a failed quality check shows up without blocking the pull request.
+  bench:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run bench
