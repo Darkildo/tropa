@@ -6,6 +6,18 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 
 ![Learning route, light theme](docs/screenshots/route-light.png)
 
+## What's new in 0.3
+
+- **Skip, confidence and "I know this"** for maps you already know part of.
+- **Materials without a note:** links and attachments listed in a concept.
+- **Map scope:** leave folders and tags out of the map.
+- **Focus and fold** to see only what is near a concept.
+- **Map audit** with a counter in the bar.
+- **Export** to Canvas and SVG.
+- **A layout engine of its own,** run as WebAssembly in a worker: large maps lay out in a fraction of a second and draw with fewer crossings.
+
+Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
+
 ## Features
 
 - **Route to a goal.** Pick a concept you want to learn. Tropa shows only the steps that lead to it, in order, with the next one highlighted.
