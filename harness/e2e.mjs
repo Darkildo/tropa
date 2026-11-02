@@ -146,6 +146,33 @@ const { open, stop } = await start();
   await page.close();
 }
 
+// --- declarative settings
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  await page.evaluate(() => {
+    const tab = tropa.plugin.settingTab;
+    tab.display();
+    tab.containerEl.id = "settings";
+    document.getElementById("note").replaceChildren(tab.containerEl);
+    document.getElementById("note").dataset.open = "";
+  });
+  const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
+  ok("settings groups", headings.join("|") === "Files|Note properties", headings.join("|"));
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 7);
+  const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
+  ok("settings show values", (await field("conceptsFolder").inputValue()) === "Tropa/Concepts");
+  ok("settings show defaults as placeholders", (await field("progressPath").getAttribute("placeholder")) === "Tropa/Progress.md");
+  await field("conceptsFolder").fill("Learning/Concepts"); await field("conceptsFolder").dispatchEvent("change"); await wait(page, 150);
+  ok("setting saved", (await page.evaluate("tropa.plugin.data.conceptsFolder")) === "Learning/Concepts");
+  await field("conceptsFolder").fill("  "); await field("conceptsFolder").dispatchEvent("change"); await wait(page, 150);
+  ok("empty setting falls back to default", (await page.evaluate("tropa.plugin.settings.conceptsFolder")) === "Tropa/Concepts");
+  const before = await page.evaluate("tropa.plugin.store.topologyKey");
+  await field("requiresKey").fill("needs"); await field("requiresKey").dispatchEvent("change"); await wait(page, 300);
+  ok("graph reread after setting change", (await page.evaluate("tropa.plugin.store.topologyKey")) !== before);
+  ok("no console errors (settings)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
 // --- Russian interface and vaults made before translation
 {
   const { page, errors } = await open({ query: "?lang=ru" });

@@ -276,6 +276,39 @@ export class Plugin extends Component {
 export class PluginSettingTab {
   containerEl = document.createElement("div");
   constructor(readonly app: App, readonly plugin: any) {}
+  getSettingDefinitions(): any[] { return []; }
+  getControlValue(key: string): unknown { return this.plugin.settings[key]; }
+  async setControlValue(key: string, value: unknown) {
+    this.plugin.settings[key] = value;
+    await this.plugin.saveData(this.plugin.settings);
+  }
+
+  // Renders what Tropa uses of the declarative API (1.13): groups, rows and text controls.
+  display() {
+    const root = this.containerEl as any;
+    root.empty();
+    const row = (parent: any, def: any) => {
+      const item = parent.createDiv({ cls: "setting-item" });
+      const info = item.createDiv({ cls: "setting-item-info" });
+      info.createDiv({ cls: "setting-item-name", text: def.name });
+      if (def.desc) info.createDiv({ cls: "setting-item-description", text: def.desc });
+      const control = def.control;
+      if (control?.type !== "text") return;
+      const input = item.createDiv({ cls: "setting-item-control" }).createEl("input", { type: "text", attr: { placeholder: control.placeholder ?? "" } });
+      input.dataset.key = control.key;
+      input.value = String(this.getControlValue(control.key) ?? control.defaultValue ?? "");
+      input.addEventListener("change", () => void this.setControlValue(control.key, input.value));
+    };
+    for (const def of this.getSettingDefinitions()) {
+      if (def.type !== "group") {
+        row(root, def);
+        continue;
+      }
+      const group = root.createDiv({ cls: "setting-group" });
+      if (def.heading) group.createDiv({ cls: "setting-item setting-item-heading", text: def.heading });
+      for (const child of def.items ?? []) row(group, child);
+    }
+  }
 }
 
 export const notices: string[] = [];

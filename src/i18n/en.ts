@@ -31,6 +31,7 @@ export const en = {
     sourcesFolder: "Materials folder",
     sourcesFolderDesc: "Materials created from the map go here.",
     properties: "Note properties",
+    ownMarkup: "Your own markup",
     propertiesDesc: "If your vault already has its own markup, enter its property names.",
     typeKey: "Note type",
     typeKeyDesc: "Property values: concept or source.",

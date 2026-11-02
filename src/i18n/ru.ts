@@ -42,6 +42,7 @@ export const ru: Strings = {
     sourcesFolder: "Папка материалов",
     sourcesFolderDesc: "Сюда попадают материалы, созданные из карты.",
     properties: "Свойства заметок",
+    ownMarkup: "Своя разметка",
     propertiesDesc: "Если в хранилище уже есть своя разметка, укажите её названия.",
     typeKey: "Тип заметки",
     typeKeyDesc: "Значения свойства: concept или source.",
