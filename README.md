@@ -84,6 +84,7 @@ Each release has ready-made vaults with the example map and the plugin already i
 
 ```bash
 npm install
+npm run lint         # ESLint with the Obsidian plugin rules
 npm test             # core: graph, states, cycles, route, layout, example map, i18n
 npm run build        # main.js
 npm run dev          # rebuild on change

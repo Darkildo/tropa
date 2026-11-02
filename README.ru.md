@@ -86,6 +86,7 @@ requires: ["[[Производная]]"]    # концепт или другой
 
 ```bash
 npm install
+npm run lint         # ESLint с правилами для плагинов Obsidian
 npm test             # ядро: граф, состояния, циклы, маршрут, раскладка, пример карты, i18n
 npm run build        # main.js
 npm run dev          # пересборка при изменениях
