@@ -42,7 +42,20 @@
     "teachesKey": "Czego uczy materiał",
     "teachesKeyDesc": "Pojęcia, które omawia materiał.",
     "materialsKey": "Materiały w pojęciu",
-    "materialsKeyDesc": "Linki i załączniki wymienione bezpośrednio w pojęciu, bez osobnej notatki."
+    "materialsKeyDesc": "Linki i załączniki wymienione bezpośrednio w pojęciu, bez osobnej notatki.",
+    "scope": "Zakres mapy",
+    "excludeFolders": "Wykluczone foldery",
+    "excludeFoldersDesc": "Jeden folder w wierszu. Notatki z tych folderów i ich podfolderów nie trafiają na mapę, a linki do nich są pomijane. Plik postępów jest zawsze odczytywany. Nie dodawaj tu folderów pojęć i materiałów: trafia do nich to, co tworzysz z mapy.",
+    "excludeFoldersPlaceholder": "Archiwum\nSzablony",
+    "excludeTags": "Wykluczone tagi",
+    "excludeTagsDesc": "Jeden tag w wierszu. Notatki z tymi tagami nie trafiają na mapę, także z tagami zagnieżdżonymi: #szkic obejmuje też #szkic/stare.",
+    "excludeTagsPlaceholder": "#szkic\n#prywatne"
+  },
+  "scope": {
+    "excludedNote": "Ta notatka jest poza mapą przez ustawienia folderów lub tagów.",
+    "goalExcluded": "Cel {title} jest poza mapą przez ustawienia folderów lub tagów.",
+    "ownFolderExcluded": "Folder {folder} jest wykluczony, ale tworzą się w nim nowe pojęcia lub materiały: nie pojawią się na mapie.",
+    "goalExcludedHint": "Cel jest wykluczony przez ustawienia folderów lub tagów, więc nie wiadomo, co trzeba znać wcześniej. Wybierz inny cel albo zmień ustawienia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} godz.",
@@ -225,5 +238,45 @@
   "zoomOut": "Pomniejsz",
   "fitAll": "Pokaż całą mapę",
   "openNote": "Otwórz notatkę",
-  "clearMastered": "Usuń oznaczenie opanowania"
+  "clearMastered": "Usuń oznaczenie opanowania",
+  "focus": "Fokus",
+  "focusTitle": "Pokaż tylko to, co jest blisko tego pojęcia (F)",
+  "focusHint": "Wybierz pojęcie, aby zobaczyć to, co jest blisko niego",
+  "focusHere": "Pokaż to, co jest blisko",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Kroki wokół",
+  "focusSteps": {
+    "few": "{count} kroki wokół",
+    "many": "{count} kroków wokół",
+    "one": "{count} krok wokół",
+    "other": "{count} kroku wokół"
+  },
+  "exitFocus": "Wyjdź z fokusu",
+  "fold": "Ukryj to, co otwiera",
+  "unfold": {
+    "few": "Pokaż {count} ukryte pojęcia",
+    "many": "Pokaż {count} ukrytych pojęć",
+    "one": "Pokaż {count} ukryte pojęcie",
+    "other": "Pokaż {count} ukrytego pojęcia"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "few": "Ukryto {count} pojęcia",
+    "many": "Ukryto {count} pojęć",
+    "one": "Ukryto {count} pojęcie",
+    "other": "Ukryto {count} pojęcia"
+  },
+  "unfolded": {
+    "few": "Znów widać {count} pojęcia",
+    "many": "Znów widać {count} pojęć",
+    "one": "Znów widać {count} pojęcie",
+    "other": "Znów widać {count} pojęcia"
+  },
+  "foldedRoute": {
+    "few": "Tu ukryto {count} kroki trasy",
+    "many": "Tu ukryto {count} kroków trasy",
+    "one": "Tu ukryto {count} krok trasy",
+    "other": "Tu ukryto {count} kroku trasy"
+  },
+  "hiddenOnMap": "Ukryte na mapie"
 }

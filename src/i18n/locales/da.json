@@ -42,7 +42,20 @@
     "teachesKey": "Hvad et materiale lærer",
     "teachesKeyDesc": "Begreber, som materialet dækker.",
     "materialsKey": "Materialer i begrebet",
-    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note."
+    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note.",
+    "scope": "Kortets omfang",
+    "excludeFolders": "Udelukkede mapper",
+    "excludeFoldersDesc": "Én mappe pr. linje. Noter i disse mapper og undermapper kommer ikke på kortet, og links til dem ignoreres. Fremskridtsfilen læses altid. Lad mapperne til begreber og materialer være ude af listen: Det, du opretter fra kortet, havner der.",
+    "excludeFoldersPlaceholder": "Arkiv\nSkabeloner",
+    "excludeTags": "Udelukkede tags",
+    "excludeTagsDesc": "Ét tag pr. linje. Noter med disse tags kommer ikke på kortet, indlejrede tags medregnet: #kladde dækker også #kladde/gammel.",
+    "excludeTagsPlaceholder": "#kladde\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Noten holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "goalExcluded": "Målet {title} holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "ownFolderExcluded": "{folder} er udelukket, men nye begreber eller materialer oprettes der: De vises ikke på kortet.",
+    "goalExcludedHint": "Målet er udelukket af indstillingerne for mapper eller tags, så det er ukendt, hvad der skal læres først. Vælg et andet mål, eller ret indstillingerne."
   },
   "minutes": "{minutes} min.",
   "hours": "{hours} t.",
@@ -209,5 +222,35 @@
   "zoomOut": "Zoom ud",
   "fitAll": "Vis hele kortet",
   "openNote": "Åbn noten",
-  "clearMastered": "Fjern markeringen mestret"
+  "clearMastered": "Fjern markeringen mestret",
+  "focus": "Fokus",
+  "focusTitle": "Vis kun det, der ligger tæt på dette begreb (F)",
+  "focusHint": "Vælg et begreb for kun at se det, der ligger tæt på",
+  "focusHere": "Vis det nærmeste",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Trin rundt om",
+  "focusSteps": {
+    "one": "{count} trin rundt om",
+    "other": "{count} trin rundt om"
+  },
+  "exitFocus": "Afslut fokus",
+  "fold": "Skjul det, som det åbner",
+  "unfold": {
+    "one": "Vis {count} skjult begreb",
+    "other": "Vis {count} skjulte begreber"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} begreb skjult",
+    "other": "{count} begreber skjult"
+  },
+  "unfolded": {
+    "one": "{count} begreb vises igen",
+    "other": "{count} begreber vises igen"
+  },
+  "foldedRoute": {
+    "one": "Her er {count} trin på ruten skjult",
+    "other": "Her er {count} trin på ruten skjult"
+  },
+  "hiddenOnMap": "Skjult på kortet"
 }

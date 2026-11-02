@@ -42,7 +42,20 @@
     "teachesKey": "O que um material ensina",
     "teachesKeyDesc": "Conceitos que o material aborda.",
     "materialsKey": "Materiais no conceito",
-    "materialsKeyDesc": "Links e anexos listados no próprio conceito, sem uma nota separada."
+    "materialsKeyDesc": "Links e anexos listados no próprio conceito, sem uma nota separada.",
+    "scope": "Escopo do mapa",
+    "excludeFolders": "Pastas excluídas",
+    "excludeFoldersDesc": "Uma pasta por linha. As notas nessas pastas e nas subpastas ficam fora do mapa, e os links para elas são ignorados. O arquivo de progresso é sempre lido. Não inclua as pastas de conceitos e materiais: o que você cria pelo mapa vai para lá.",
+    "excludeFoldersPlaceholder": "Arquivo\nModelos",
+    "excludeTags": "Tags excluídas",
+    "excludeTagsDesc": "Uma tag por linha. As notas com essas tags ficam fora do mapa, incluindo as aninhadas: #rascunho também cobre #rascunho/antigo.",
+    "excludeTagsPlaceholder": "#rascunho\n#privado"
+  },
+  "scope": {
+    "excludedNote": "Esta nota fica fora do mapa pelas configurações de pastas ou tags.",
+    "goalExcluded": "O objetivo {title} fica fora do mapa pelas configurações de pastas ou tags.",
+    "ownFolderExcluded": "{folder} está excluída, mas é lá que os novos conceitos ou materiais são criados: eles não vão aparecer no mapa.",
+    "goalExcludedHint": "O objetivo foi excluído pelas configurações de pastas ou tags, então os pré-requisitos dele são desconhecidos. Escolha outro objetivo ou mude as configurações."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -217,5 +230,40 @@
   "zoomOut": "Afastar",
   "fitAll": "Mostrar o mapa inteiro",
   "openNote": "Abrir nota",
-  "clearMastered": "Remover marcação de dominado"
+  "clearMastered": "Remover marcação de dominado",
+  "focus": "Foco",
+  "focusTitle": "Mostrar só o que está perto deste conceito (F)",
+  "focusHint": "Escolha um conceito para ver só o que está perto dele",
+  "focusHere": "Mostrar o que está perto",
+  "focusOn": "Foco: {title}",
+  "focusDepth": "Passos ao redor",
+  "focusSteps": {
+    "many": "{count} passos ao redor",
+    "one": "{count} passo ao redor",
+    "other": "{count} passos ao redor"
+  },
+  "exitFocus": "Sair do foco",
+  "fold": "Ocultar o que ele desbloqueia",
+  "unfold": {
+    "many": "Mostrar {count} conceitos ocultos",
+    "one": "Mostrar {count} conceito oculto",
+    "other": "Mostrar {count} conceitos ocultos"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} conceitos ocultos",
+    "one": "{count} conceito oculto",
+    "other": "{count} conceitos ocultos"
+  },
+  "unfolded": {
+    "many": "{count} conceitos visíveis de novo",
+    "one": "{count} conceito visível de novo",
+    "other": "{count} conceitos visíveis de novo"
+  },
+  "foldedRoute": {
+    "many": "Aqui estão ocultos {count} passos da rota",
+    "one": "Aqui está oculto {count} passo da rota",
+    "other": "Aqui estão ocultos {count} passos da rota"
+  },
+  "hiddenOnMap": "Oculto no mapa"
 }

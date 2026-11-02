@@ -42,7 +42,20 @@
     "teachesKey": "Cosa insegna un materiale",
     "teachesKeyDesc": "I concetti trattati dal materiale.",
     "materialsKey": "Materiali nel concetto",
-    "materialsKeyDesc": "Link e allegati elencati direttamente nel concetto, senza una nota a parte."
+    "materialsKeyDesc": "Link e allegati elencati direttamente nel concetto, senza una nota a parte.",
+    "scope": "Ambito della mappa",
+    "excludeFolders": "Cartelle escluse",
+    "excludeFoldersDesc": "Una cartella per riga. Le note in queste cartelle e nelle sottocartelle restano fuori dalla mappa, e i link verso di esse vengono ignorati. Il file dei progressi viene sempre letto. Non inserire le cartelle di concetti e materiali: ciò che crei dalla mappa finisce lì.",
+    "excludeFoldersPlaceholder": "Archivio\nModelli",
+    "excludeTags": "Tag esclusi",
+    "excludeTagsDesc": "Un tag per riga. Le note con questi tag restano fuori dalla mappa, tag annidati compresi: #bozza copre anche #bozza/vecchia.",
+    "excludeTagsPlaceholder": "#bozza\n#privato"
+  },
+  "scope": {
+    "excludedNote": "Questa nota resta fuori dalla mappa per le impostazioni di cartelle o tag.",
+    "goalExcluded": "L’obiettivo {title} resta fuori dalla mappa per le impostazioni di cartelle o tag.",
+    "ownFolderExcluded": "{folder} è esclusa, ma lì vengono creati i nuovi concetti o materiali: non compariranno sulla mappa.",
+    "goalExcludedHint": "L’obiettivo è escluso dalle impostazioni di cartelle o tag, quindi i suoi prerequisiti non sono noti. Scegli un altro obiettivo o cambia le impostazioni."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -217,5 +230,40 @@
   "zoomOut": "Riduci",
   "fitAll": "Mostra tutta la mappa",
   "openNote": "Apri la nota",
-  "clearMastered": "Togli il segno di padroneggiato"
+  "clearMastered": "Togli il segno di padroneggiato",
+  "focus": "Focus",
+  "focusTitle": "Mostra solo ciò che è vicino a questo concetto (F)",
+  "focusHint": "Scegli un concetto per vedere solo ciò che gli è vicino",
+  "focusHere": "Mostra ciò che è vicino",
+  "focusOn": "Focus: {title}",
+  "focusDepth": "Passi intorno",
+  "focusSteps": {
+    "many": "{count} passi intorno",
+    "one": "{count} passo intorno",
+    "other": "{count} passi intorno"
+  },
+  "exitFocus": "Esci dal focus",
+  "fold": "Nascondi ciò che sblocca",
+  "unfold": {
+    "many": "Mostra {count} concetti nascosti",
+    "one": "Mostra {count} concetto nascosto",
+    "other": "Mostra {count} concetti nascosti"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} concetti nascosti",
+    "one": "{count} concetto nascosto",
+    "other": "{count} concetti nascosti"
+  },
+  "unfolded": {
+    "many": "{count} concetti di nuovo visibili",
+    "one": "{count} concetto di nuovo visibile",
+    "other": "{count} concetti di nuovo visibili"
+  },
+  "foldedRoute": {
+    "many": "Qui sono nascosti {count} passi del percorso",
+    "one": "Qui è nascosto {count} passo del percorso",
+    "other": "Qui sono nascosti {count} passi del percorso"
+  },
+  "hiddenOnMap": "Nascosto sulla mappa"
 }

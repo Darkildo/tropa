@@ -42,7 +42,20 @@
     "teachesKey": "자료가 가르치는 것",
     "teachesKeyDesc": "자료가 다루는 개념.",
     "materialsKey": "개념 안의 자료",
-    "materialsKeyDesc": "별도 노트 없이 개념에 직접 적힌 링크와 첨부 파일."
+    "materialsKeyDesc": "별도 노트 없이 개념에 직접 적힌 링크와 첨부 파일.",
+    "scope": "지도 범위",
+    "excludeFolders": "제외할 폴더",
+    "excludeFoldersDesc": "한 줄에 폴더 하나. 이 폴더와 하위 폴더의 노트는 지도에 나오지 않고, 그 노트로 가는 링크는 무시됩니다. 진행 파일은 항상 읽습니다. 개념 폴더와 자료 폴더는 넣지 마세요. 지도에서 만든 항목이 그곳에 저장됩니다.",
+    "excludeFoldersPlaceholder": "보관함\n템플릿",
+    "excludeTags": "제외할 태그",
+    "excludeTagsDesc": "한 줄에 태그 하나. 이 태그가 있는 노트는 지도에 나오지 않으며 중첩 태그도 포함됩니다: #초안 은 #초안/옛것 도 제외합니다.",
+    "excludeTagsPlaceholder": "#초안\n#개인"
+  },
+  "scope": {
+    "excludedNote": "이 노트는 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
+    "goalExcluded": "목표 {title}이(가) 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
+    "ownFolderExcluded": "{folder}이(가) 제외되어 있지만 새 개념이나 자료가 그곳에 만들어지므로 지도에 나타나지 않습니다.",
+    "goalExcludedHint": "목표가 폴더 또는 태그 설정으로 제외되어 먼저 알아야 할 내용을 알 수 없습니다. 다른 목표를 고르거나 설정을 바꾸세요."
   },
   "minutes": "{minutes}분",
   "hours": "{hours}시간",
@@ -201,5 +214,30 @@
   "zoomOut": "축소",
   "fitAll": "전체 지도 보기",
   "openNote": "노트 열기",
-  "clearMastered": "익힘 표시 해제"
+  "clearMastered": "익힘 표시 해제",
+  "focus": "포커스",
+  "focusTitle": "이 개념 주변만 표시 (F)",
+  "focusHint": "개념을 선택하면 그 주변만 볼 수 있습니다",
+  "focusHere": "주변만 표시",
+  "focusOn": "포커스: {title}",
+  "focusDepth": "주변 단계 수",
+  "focusSteps": {
+    "other": "주변 {count}단계"
+  },
+  "exitFocus": "포커스 종료",
+  "fold": "이 개념이 여는 항목 숨기기",
+  "unfold": {
+    "other": "숨긴 개념 {count}개 표시"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "개념 {count}개를 숨김"
+  },
+  "unfolded": {
+    "other": "개념 {count}개를 다시 표시"
+  },
+  "foldedRoute": {
+    "other": "여기에 경로 {count}단계가 숨겨져 있음"
+  },
+  "hiddenOnMap": "지도에서 숨김"
 }

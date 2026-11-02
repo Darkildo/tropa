@@ -42,7 +42,20 @@
     "teachesKey": "Mitä materiaali opettaa",
     "teachesKeyDesc": "Käsitteet, joita materiaali käsittelee.",
     "materialsKey": "Materiaalit käsitteessä",
-    "materialsKeyDesc": "Linkit ja liitteet, jotka on lueteltu suoraan käsitteessä ilman erillistä muistiinpanoa."
+    "materialsKeyDesc": "Linkit ja liitteet, jotka on lueteltu suoraan käsitteessä ilman erillistä muistiinpanoa.",
+    "scope": "Kartan rajaus",
+    "excludeFolders": "Rajatut kansiot",
+    "excludeFoldersDesc": "Yksi kansio riville. Näiden kansioiden ja niiden alikansioiden muistiinpanot jäävät pois kartalta, ja linkit niihin ohitetaan. Edistymistiedosto luetaan aina. Älä lisää tähän käsitteiden ja materiaalien kansioita: kartalta luodut asiat tallentuvat niihin.",
+    "excludeFoldersPlaceholder": "Arkisto\nMallit",
+    "excludeTags": "Rajatut tunnisteet",
+    "excludeTagsDesc": "Yksi tunniste riville. Muistiinpanot, joilla on nämä tunnisteet, jäävät pois kartalta, myös sisäkkäiset: #luonnos kattaa myös #luonnos/vanha.",
+    "excludeTagsPlaceholder": "#luonnos\n#yksityinen"
+  },
+  "scope": {
+    "excludedNote": "Tämä muistiinpano jää pois kartalta kansio- tai tunnisteasetusten vuoksi.",
+    "goalExcluded": "Tavoite {title} jää pois kartalta kansio- tai tunnisteasetusten vuoksi.",
+    "ownFolderExcluded": "{folder} on rajattu pois, mutta uudet käsitteet tai materiaalit luodaan sinne: ne eivät näy kartalla.",
+    "goalExcludedHint": "Tavoite on rajattu pois kansio- tai tunnisteasetuksilla, joten sen esitiedot eivät ole tiedossa. Valitse toinen tavoite tai muuta asetuksia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
@@ -209,5 +222,35 @@
   "zoomOut": "Loitonna",
   "fitAll": "Näytä koko kartta",
   "openNote": "Avaa muistiinpano",
-  "clearMastered": "Poista hallittu-merkintä"
+  "clearMastered": "Poista hallittu-merkintä",
+  "focus": "Fokus",
+  "focusTitle": "Näytä vain se, mikä on lähellä tätä käsitettä (F)",
+  "focusHint": "Valitse käsite, niin näet vain sen lähiympäristön",
+  "focusHere": "Näytä lähiympäristö",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Vaiheita ympärillä",
+  "focusSteps": {
+    "one": "{count} vaihe ympärillä",
+    "other": "{count} vaihetta ympärillä"
+  },
+  "exitFocus": "Poistu fokuksesta",
+  "fold": "Piilota se, minkä tämä avaa",
+  "unfold": {
+    "one": "Näytä {count} piilotettu käsite",
+    "other": "Näytä {count} piilotettua käsitettä"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} käsite piilotettu",
+    "other": "{count} käsitettä piilotettu"
+  },
+  "unfolded": {
+    "one": "{count} käsite näkyy taas",
+    "other": "{count} käsitettä näkyy taas"
+  },
+  "foldedRoute": {
+    "one": "Tähän on piilotettu {count} reitin vaihe",
+    "other": "Tähän on piilotettu {count} reitin vaihetta"
+  },
+  "hiddenOnMap": "Piilotettu kartalta"
 }

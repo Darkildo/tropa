@@ -42,7 +42,20 @@
     "teachesKey": "Qué enseña un material",
     "teachesKeyDesc": "Conceptos que cubre el material.",
     "materialsKey": "Materiales en el concepto",
-    "materialsKeyDesc": "Enlaces y adjuntos listados en el propio concepto, sin una nota aparte."
+    "materialsKeyDesc": "Enlaces y adjuntos listados en el propio concepto, sin una nota aparte.",
+    "scope": "Alcance del mapa",
+    "excludeFolders": "Carpetas excluidas",
+    "excludeFoldersDesc": "Una carpeta por línea. Las notas de estas carpetas y sus subcarpetas quedan fuera del mapa, y los enlaces a ellas se ignoran. El archivo de progreso se lee siempre. No incluyas las carpetas de conceptos y materiales: lo que creas desde el mapa va allí.",
+    "excludeFoldersPlaceholder": "Archivo\nPlantillas",
+    "excludeTags": "Etiquetas excluidas",
+    "excludeTagsDesc": "Una etiqueta por línea. Las notas con estas etiquetas quedan fuera del mapa, incluidas las anidadas: #borrador también cubre #borrador/viejo.",
+    "excludeTagsPlaceholder": "#borrador\n#privado"
+  },
+  "scope": {
+    "excludedNote": "Esta nota queda fuera del mapa por los ajustes de carpetas o etiquetas.",
+    "goalExcluded": "El objetivo {title} queda fuera del mapa por los ajustes de carpetas o etiquetas.",
+    "ownFolderExcluded": "{folder} está excluida, pero ahí se crean los conceptos o materiales nuevos: no aparecerán en el mapa.",
+    "goalExcludedHint": "El objetivo está excluido por los ajustes de carpetas o etiquetas, así que no se conocen sus requisitos. Elige otro objetivo o cambia los ajustes."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -217,5 +230,40 @@
   "zoomOut": "Alejar",
   "fitAll": "Mostrar todo el mapa",
   "openNote": "Abrir nota",
-  "clearMastered": "Quitar la marca de dominado"
+  "clearMastered": "Quitar la marca de dominado",
+  "focus": "Enfoque",
+  "focusTitle": "Mostrar solo lo que está cerca de este concepto (F)",
+  "focusHint": "Elige un concepto para ver solo lo que tiene cerca",
+  "focusHere": "Mostrar lo cercano",
+  "focusOn": "Enfoque: {title}",
+  "focusDepth": "Pasos alrededor",
+  "focusSteps": {
+    "many": "{count} pasos alrededor",
+    "one": "{count} paso alrededor",
+    "other": "{count} pasos alrededor"
+  },
+  "exitFocus": "Salir del enfoque",
+  "fold": "Ocultar lo que desbloquea",
+  "unfold": {
+    "many": "Mostrar {count} conceptos ocultos",
+    "one": "Mostrar {count} concepto oculto",
+    "other": "Mostrar {count} conceptos ocultos"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} conceptos ocultos",
+    "one": "{count} concepto oculto",
+    "other": "{count} conceptos ocultos"
+  },
+  "unfolded": {
+    "many": "{count} conceptos visibles de nuevo",
+    "one": "{count} concepto visible de nuevo",
+    "other": "{count} conceptos visibles de nuevo"
+  },
+  "foldedRoute": {
+    "many": "Aquí hay {count} pasos de la ruta ocultos",
+    "one": "Aquí hay {count} paso de la ruta oculto",
+    "other": "Aquí hay {count} pasos de la ruta ocultos"
+  },
+  "hiddenOnMap": "Oculto en el mapa"
 }

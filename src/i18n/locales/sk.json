@@ -42,7 +42,20 @@
     "teachesKey": "Čo materiál učí",
     "teachesKeyDesc": "Pojmy, ktoré materiál preberá.",
     "materialsKey": "Materiály v pojme",
-    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky."
+    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky.",
+    "scope": "Rozsah mapy",
+    "excludeFolders": "Vylúčené priečinky",
+    "excludeFoldersDesc": "Jeden priečinok na riadok. Poznámky v týchto priečinkoch a pod nimi sa na mapu nedostanú a odkazy na ne sa ignorujú. Súbor s pokrokom sa číta vždy. Nepridávajte sem priečinky pojmov a materiálov: ukladá sa do nich, čo vytvoríte z mapy.",
+    "excludeFoldersPlaceholder": "Archív\nŠablóny",
+    "excludeTags": "Vylúčené štítky",
+    "excludeTagsDesc": "Jeden štítok na riadok. Poznámky s týmito štítkami sa na mapu nedostanú, vrátane vnorených: #koncept pokrýva aj #koncept/starý.",
+    "excludeTagsPlaceholder": "#koncept\n#súkromné"
+  },
+  "scope": {
+    "excludedNote": "Táto poznámka je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "goalExcluded": "Cieľ {title} je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "ownFolderExcluded": "Priečinok {folder} je vylúčený, ale vytvárajú sa v ňom nové pojmy alebo materiály: na mape sa neobjavia.",
+    "goalExcludedHint": "Cieľ je vylúčený nastaveniami priečinkov alebo štítkov, takže nie je známe, čo treba vedieť vopred. Vyberte iný cieľ alebo zmeňte nastavenia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -225,5 +238,45 @@
   "zoomOut": "Oddialiť",
   "fitAll": "Zobraziť celú mapu",
   "openNote": "Otvoriť poznámku",
-  "clearMastered": "Zrušiť označenie zvládnuté"
+  "clearMastered": "Zrušiť označenie zvládnuté",
+  "focus": "Fokus",
+  "focusTitle": "Zobraziť len to, čo je blízko tohto pojmu (F)",
+  "focusHint": "Vyberte pojem a uvidíte len to, čo je blízko neho",
+  "focusHere": "Zobraziť, čo je blízko",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Kroky okolo",
+  "focusSteps": {
+    "few": "{count} kroky okolo",
+    "many": "{count} kroku okolo",
+    "one": "{count} krok okolo",
+    "other": "{count} krokov okolo"
+  },
+  "exitFocus": "Ukončiť fokus",
+  "fold": "Skryť, čo otvára",
+  "unfold": {
+    "few": "Zobraziť {count} skryté pojmy",
+    "many": "Zobraziť {count} skrytého pojmu",
+    "one": "Zobraziť {count} skrytý pojem",
+    "other": "Zobraziť {count} skrytých pojmov"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "few": "Skryté pojmy: {count}",
+    "many": "Skryté pojmy: {count}",
+    "one": "Skryté pojmy: {count}",
+    "other": "Skryté pojmy: {count}"
+  },
+  "unfolded": {
+    "few": "Znova zobrazené pojmy: {count}",
+    "many": "Znova zobrazené pojmy: {count}",
+    "one": "Znova zobrazené pojmy: {count}",
+    "other": "Znova zobrazené pojmy: {count}"
+  },
+  "foldedRoute": {
+    "few": "Skryté kroky trasy: {count}",
+    "many": "Skryté kroky trasy: {count}",
+    "one": "Skryté kroky trasy: {count}",
+    "other": "Skryté kroky trasy: {count}"
+  },
+  "hiddenOnMap": "Skryté na mape"
 }

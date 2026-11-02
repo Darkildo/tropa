@@ -42,7 +42,20 @@
     "teachesKey": "Hva et læremiddel lærer bort",
     "teachesKeyDesc": "Begreper som læremiddelet dekker.",
     "materialsKey": "Læremidler i begrepet",
-    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat."
+    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat.",
+    "scope": "Kartets omfang",
+    "excludeFolders": "Utelatte mapper",
+    "excludeFoldersDesc": "Én mappe per linje. Notater i disse mappene og undermappene kommer ikke på kartet, og lenker til dem ignoreres. Fremdriftsfilen leses alltid. Ikke ta med mappene for begreper og materialer: Det du lager fra kartet, havner der.",
+    "excludeFoldersPlaceholder": "Arkiv\nMaler",
+    "excludeTags": "Utelatte tagger",
+    "excludeTagsDesc": "Én tagg per linje. Notater med disse taggene kommer ikke på kartet, nestede tagger inkludert: #utkast dekker også #utkast/gammelt.",
+    "excludeTagsPlaceholder": "#utkast\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Notatet holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "goalExcluded": "Målet {title} holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "ownFolderExcluded": "{folder} er utelatt, men nye begreper eller materialer opprettes der: De vises ikke på kartet.",
+    "goalExcludedHint": "Målet er utelatt av innstillingene for mapper eller tagger, så det er ukjent hva som må læres først. Velg et annet mål eller endre innstillingene."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
@@ -209,5 +222,35 @@
   "zoomOut": "Zoom ut",
   "fitAll": "Vis hele kartet",
   "openNote": "Åpne notatet",
-  "clearMastered": "Fjern merkingen mestret"
+  "clearMastered": "Fjern merkingen mestret",
+  "focus": "Fokus",
+  "focusTitle": "Vis bare det som ligger nær dette begrepet (F)",
+  "focusHint": "Velg et begrep for å se bare det som ligger nær det",
+  "focusHere": "Vis det nærmeste",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Steg rundt",
+  "focusSteps": {
+    "one": "{count} steg rundt",
+    "other": "{count} steg rundt"
+  },
+  "exitFocus": "Avslutt fokus",
+  "fold": "Skjul det det åpner",
+  "unfold": {
+    "one": "Vis {count} skjult begrep",
+    "other": "Vis {count} skjulte begreper"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} begrep skjult",
+    "other": "{count} begreper skjult"
+  },
+  "unfolded": {
+    "one": "{count} begrep vises igjen",
+    "other": "{count} begreper vises igjen"
+  },
+  "foldedRoute": {
+    "one": "Her er {count} steg på ruten skjult",
+    "other": "Her er {count} steg på ruten skjult"
+  },
+  "hiddenOnMap": "Skjult på kartet"
 }

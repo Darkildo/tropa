@@ -42,7 +42,20 @@
     "teachesKey": "Kaynağın öğrettikleri",
     "teachesKeyDesc": "Kaynağın ele aldığı kavramlar.",
     "materialsKey": "Kavramdaki kaynaklar",
-    "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler."
+    "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler.",
+    "scope": "Harita kapsamı",
+    "excludeFolders": "Hariç tutulan klasörler",
+    "excludeFoldersDesc": "Her satıra bir klasör. Bu klasörlerdeki ve alt klasörlerindeki notlar haritaya girmez, onlara verilen bağlantılar yok sayılır. İlerleme dosyası her zaman okunur. Kavram ve materyal klasörlerini buraya eklemeyin: haritadan oluşturduklarınız oraya kaydedilir.",
+    "excludeFoldersPlaceholder": "Arşiv\nŞablonlar",
+    "excludeTags": "Hariç tutulan etiketler",
+    "excludeTagsDesc": "Her satıra bir etiket. Bu etiketleri taşıyan notlar haritaya girmez, iç içe etiketler de: #taslak, #taslak/eski etiketini de kapsar.",
+    "excludeTagsPlaceholder": "#taslak\n#özel"
+  },
+  "scope": {
+    "excludedNote": "Bu not, klasör veya etiket ayarları yüzünden harita dışında.",
+    "goalExcluded": "{title} hedefi, klasör veya etiket ayarları yüzünden harita dışında.",
+    "ownFolderExcluded": "{folder} hariç tutuluyor, ancak yeni kavramlar veya materyaller orada oluşturuluyor: haritada görünmeyecekler.",
+    "goalExcludedHint": "Hedef klasör veya etiket ayarlarıyla hariç tutulduğu için önce neyin bilinmesi gerektiği bilinmiyor. Başka bir hedef seçin ya da ayarları değiştirin."
   },
   "minutes": "{minutes} dk",
   "hours": "{hours} sa",
@@ -209,5 +222,35 @@
   "zoomOut": "Uzaklaştır",
   "fitAll": "Tüm haritayı göster",
   "openNote": "Notu aç",
-  "clearMastered": "Öğrenildi işaretini kaldır"
+  "clearMastered": "Öğrenildi işaretini kaldır",
+  "focus": "Odak",
+  "focusTitle": "Yalnızca bu kavramın yakınındakileri göster (F)",
+  "focusHint": "Yakınındakileri görmek için bir kavram seç",
+  "focusHere": "Yakınındakileri göster",
+  "focusOn": "Odak: {title}",
+  "focusDepth": "Çevredeki adım",
+  "focusSteps": {
+    "one": "Çevrede {count} adım",
+    "other": "Çevrede {count} adım"
+  },
+  "exitFocus": "Odaktan çık",
+  "fold": "Açtıklarını gizle",
+  "unfold": {
+    "one": "{count} gizli kavramı göster",
+    "other": "{count} gizli kavramı göster"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} kavram gizlendi",
+    "other": "{count} kavram gizlendi"
+  },
+  "unfolded": {
+    "one": "{count} kavram yeniden görünüyor",
+    "other": "{count} kavram yeniden görünüyor"
+  },
+  "foldedRoute": {
+    "one": "Burada rotanın {count} adımı gizli",
+    "other": "Burada rotanın {count} adımı gizli"
+  },
+  "hiddenOnMap": "Haritada gizli"
 }
