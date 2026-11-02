@@ -125,6 +125,23 @@ button.tropa-toggle-sources.is-active {
 
 button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 
+/* The audit in the bar: how many findings, shown only when there are some. A cycle turns it red. */
+button.tropa-audit-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: var(--font-ui-small);
+  font-variant-numeric: tabular-nums;
+}
+button.tropa-audit-button.is-hidden { display: none; }
+.tropa-audit-button-icon { display: inline-flex; color: var(--text-muted); }
+.tropa-audit-button-icon svg { width: 15px; height: 15px; }
+button.tropa-audit-button.has-cycles { color: var(--tropa-danger); }
+button.tropa-audit-button.has-cycles .tropa-audit-button-icon { color: var(--tropa-danger); }
+
 /* Focus: only what is near one concept */
 
 .tropa-focus { display: inline-flex; flex: none; align-items: center; gap: 6px; }
@@ -945,6 +962,7 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .tropa-map.is-narrow .tropa-segment button { flex: 1; }
 .tropa-map.is-narrow button.tropa-toggle-sources { order: 2; }
 .tropa-map.is-narrow .tropa-focus { order: 2; }
+.tropa-map.is-narrow button.tropa-audit-button { order: 2; }
 .tropa-map.is-narrow button.tropa-add-concept { order: 1; }
 .tropa-map.is-narrow .tropa-legend { display: none; }
 

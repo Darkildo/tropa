@@ -24,7 +24,7 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
   - concepts without materials;
   - notes with no links at all.
 
-  Each row opens its note or shows it on the map, and the list updates as you fix things.
+  Each row opens its note or shows it on the map, and the list updates as you fix things. When there is something to look at, a button in the map's bar shows how many, in red if there is a cycle, and opens the audit.
 - **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, F focuses on the concept or leaves the focus, 1–3 set the steps around, C folds or unfolds what the concept opens, Esc leaves the focus and then returns to the route.
 - **33 languages.** The interface follows Obsidian's language, right-to-left included. See [Languages](#languages).
 
@@ -35,6 +35,10 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 | Route | ![Route, light](docs/screenshots/route-light.png) | ![Route, dark](docs/screenshots/route-dark.png) |
 | Concept details | ![Concept, light](docs/screenshots/concept-light.png) | ![Concept, dark](docs/screenshots/concept-dark.png) |
 | Whole map with materials | ![Map, light](docs/screenshots/map-light.png) | ![Map, dark](docs/screenshots/map-dark.png) |
+
+The map audit, opened from its button in the map's bar: a cycle, a link to a missing note, a duplicate name, concepts without materials and a lone note.
+
+![Map audit, light](docs/screenshots/audit-light.png)
 
 ## Installation
 
