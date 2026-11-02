@@ -834,6 +834,183 @@ const fold = (page, title) => node(page, title).locator(".tropa-fold");
   await page.close();
 }
 
+// --- export to Canvas and SVG
+const today = () => { const d = new Date(); return [d.getFullYear(), d.getMonth() + 1, d.getDate()].map((p) => String(p).padStart(2, "0")).join("-"); };
+const exportVia = async (page, item) => {
+  await page.click(".tropa-export"); await wait(page, 100);
+  await page.click(`.menu-item:text-is("${item}")`); await wait(page, 150);
+};
+const vaultFile = (page, path) => page.evaluate((p) => tropa.app.vault.contents.get(p) ?? null, path);
+const command = (page, id) => page.evaluate((i) => tropa.plugin.commands.find((c) => c.id === i).callback(), id);
+{
+  const { page, errors } = await open();
+  const canvasPath = `Tropa/Transformer ${today()}.canvas`;
+  await exportVia(page, "Export map to Canvas");
+  ok("export asks where to save", (await page.locator(".tropa-export-path").inputValue()) === canvasPath && (await page.locator(".modal-title").innerText()) === "Export map to Canvas");
+  ok("a new file is saved, not replaced", (await page.locator(".tropa-export-save").innerText()) === "Save" && (await page.locator(".tropa-export-exists.is-hidden").count()) === 1);
+  await page.screenshot({ path: SHOTS + "95-export-modal.png" });
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  const text = await vaultFile(page, canvasPath);
+  const canvas = JSON.parse(text);
+  const shown = await page.evaluate(() => {
+    const view = tropa.app.workspace.center.view;
+    return { nodes: view.layout.nodes.size, edges: view.layout.edges.length, gradient: view.layout.nodes.get("Tropa/Example/Concepts/Gradient.md") };
+  });
+  ok("canvas has the map's nodes and edges", canvas.nodes.length === shown.nodes && canvas.edges.length === shown.edges, `${canvas.nodes.length}/${shown.nodes} ${canvas.edges.length}/${shown.edges}`);
+  const gradient = canvas.nodes.find((n) => n.file === "Tropa/Example/Concepts/Gradient.md");
+  ok("canvas keeps the map's positions", gradient && gradient.x === Math.round(shown.gradient.x) && gradient.y === Math.round(shown.gradient.y) && gradient.width === Math.round(shown.gradient.width), JSON.stringify(gradient));
+  const files = await page.evaluate(() => [...tropa.app.vault.files.keys()]);
+  ok("canvas file nodes point at vault files", canvas.nodes.filter((n) => n.type === "file").every((n) => files.includes(n.file)));
+  const ids = new Set(canvas.nodes.map((n) => n.id));
+  ok("canvas edges join its nodes", canvas.edges.every((e) => ids.has(e.fromNode) && ids.has(e.toNode) && ["top", "bottom", "left", "right"].includes(e.fromSide)));
+  ok("canvas colors mastered concepts and the goal", canvas.nodes.some((n) => n.color === "4") && canvas.nodes.filter((n) => n.color === "6").length === 1);
+  ok("export is written with tabs and opened", text.startsWith('{\n\t"nodes"') && (await page.locator(`#note .note-title[data-path="${canvasPath}"]`).count()) === 1);
+  ok("export is reported", (await page.evaluate("tropa.notices")).includes(`Saved to ${canvasPath}`));
+
+  // The same path again: nothing is replaced until asked.
+  await page.evaluate((p) => tropa.app.vault.contents.set(p, "kept"), canvasPath);
+  await exportVia(page, "Export map to Canvas");
+  ok("an existing file is named", (await page.locator(".tropa-export-exists").innerText()).includes("already exists") && (await page.locator(".tropa-export-save").innerText()) === "Replace");
+  await page.click(".tropa-export-rename"); await wait(page, 100);
+  const second = `Tropa/Transformer ${today()} 2.canvas`;
+  ok("keep both suggests a free name", (await page.locator(".tropa-export-path").inputValue()) === second && (await page.locator(".tropa-export-save").innerText()) === "Save");
+  await page.locator(".checkbox-container input").uncheck();
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  ok("keep both leaves the first file alone", (await vaultFile(page, canvasPath)) === "kept" && (await vaultFile(page, second)) !== null);
+  ok("without progress there are no colors", JSON.parse(await vaultFile(page, second)).nodes.every((n) => n.color === undefined));
+  await exportVia(page, "Export map to Canvas");
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  ok("replace is explicit and writes the map", (await vaultFile(page, canvasPath)).startsWith("{"));
+  await exportVia(page, "Export map to Canvas");
+  await page.locator(".tropa-export-path").fill("../outside");
+  ok("a path outside the vault cannot be saved", await page.locator(".tropa-export-save").isDisabled());
+  await page.keyboard.press("Escape");
+
+  // SVG of the current view, from the command.
+  await page.click('button:text-is("Whole map")'); await wait(page, 400);
+  await command(page, "export-svg"); await wait(page, 200);
+  const svgPath = `Tropa/Learning map ${today()}.svg`;
+  ok("svg export is named after the map", (await page.locator(".tropa-export-path").inputValue()) === svgPath);
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  const svg = await vaultFile(page, svgPath);
+  const check = await page.evaluate((text) => {
+    const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+    return {
+      error: doc.querySelector("parsererror")?.textContent ?? "",
+      texts: [...doc.querySelectorAll("text")].map((el) => el.textContent),
+      paths: doc.querySelectorAll("path").length,
+      background: doc.querySelector("rect")?.getAttribute("fill"),
+      edges: document.querySelectorAll(".tropa-edges path").length,
+    };
+  }, svg);
+  ok("svg is well-formed", check.error === "", check.error);
+  ok("svg has the titles, badges and edges", check.texts.includes("Probability") && check.texts.includes("Transformer") && check.texts.includes("Next step") && check.texts.includes("Goal") && check.paths >= check.edges, JSON.stringify({ paths: check.paths, edges: check.edges }));
+  ok("svg uses the light theme", check.background === "#ffffff", check.background);
+  await page.evaluate((text) => {
+    const img = document.createElement("img");
+    img.id = "svg-preview";
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
+    Object.assign(img.style, { position: "fixed", inset: "0", zIndex: 9999, background: "#888", maxWidth: "100vw", maxHeight: "100vh" });
+    document.body.appendChild(img);
+  }, svg);
+  await wait(page, 300);
+  await page.screenshot({ path: SHOTS + "96-svg-light.png" });
+  ok("export: no errors", errors.length === 0 && (await page.evaluate("tropa.missingIcons.size")) === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?theme=dark" });
+  await command(page, "export-svg"); await wait(page, 200);
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  const svg = await vaultFile(page, `Tropa/Transformer ${today()}.svg`);
+  const background = await page.evaluate((text) => new DOMParser().parseFromString(text, "image/svg+xml").querySelector("rect").getAttribute("fill"), svg);
+  ok("svg uses the dark theme", background !== "#ffffff" && /^#[0-3]/.test(background), background);
+  await page.evaluate((text) => {
+    const img = document.createElement("img");
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
+    Object.assign(img.style, { position: "fixed", inset: "0", zIndex: 9999, maxWidth: "100vw", maxHeight: "100vh" });
+    document.body.appendChild(img);
+  }, svg);
+  await wait(page, 300);
+  await page.screenshot({ path: SHOTS + "97-svg-dark.png" });
+  // While the worker lays the map out there is nothing finished to export.
+  await page.evaluate(() => (tropa.app.workspace.center.view.layoutPending = true));
+  await command(page, "export-canvas"); await wait(page, 200);
+  ok("export waits for the layout", (await page.evaluate("tropa.notices")).some((t) => t.includes("still being laid out")) && (await page.locator(".tropa-export-path").count()) === 0);
+  ok("dark export: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ru" });
+  await exportVia(page, "Экспортировать карту в Canvas");
+  ok("ru: export dialog", (await page.locator(".tropa-export-save").innerText()) === "Сохранить" && (await page.locator(".tropa-export-path").inputValue()).startsWith("Tropa/Трансформер"));
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  ok("ru: saved", (await page.evaluate("tropa.notices")).some((t) => t.startsWith("Сохранено: Tropa/Трансформер")));
+  ok("ru: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar" });
+  await exportVia(page, "تصدير الخريطة بصيغة SVG");
+  ok("ar: export dialog is right to left", (await page.locator(".modal").getAttribute("dir")) === "rtl" && (await page.locator(".tropa-export-save").innerText()) === "حفظ");
+  await page.screenshot({ path: SHOTS + "98-export-ar.png" });
+  await page.click(".tropa-export-save"); await wait(page, 300);
+  const svg = await page.evaluate(() => [...tropa.app.vault.contents.entries()].find(([p]) => p.endsWith(".svg"))?.[1] ?? "");
+  const error = await page.evaluate((text) => new DOMParser().parseFromString(text, "image/svg+xml").querySelector("parsererror")?.textContent ?? "", svg);
+  ok("ar: svg saved and well-formed", svg.length > 0 && error === "", error);
+  ok("ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- export follows the map: scope, focus, folds; the bar stays out of the drawing
+const lastExport = (page, extension) => page.evaluate((ext) => [...tropa.app.vault.contents.entries()].filter(([p]) => p.endsWith(ext)).pop()?.[1] ?? "", extension);
+const svgTexts = (page, text) => page.evaluate((t) => [...new DOMParser().parseFromString(t, "image/svg+xml").querySelectorAll("text")].map((el) => el.textContent), text);
+const saveExport = async (page, id) => {
+  await command(page, id); await wait(page, 200);
+  await page.click(".tropa-export-save"); await wait(page, 300);
+};
+{
+  const { page, errors } = await open({ query: "?scenario=scope" });
+  await page.click('button:text-is("Whole map")'); await wait(page, 400);
+  await saveExport(page, "export-canvas");
+  const canvas = JSON.parse(await lastExport(page, ".canvas"));
+  const targets = canvas.nodes.map((n) => n.file ?? n.url ?? n.text);
+  ok("export leaves out what the map scope excludes", !targets.some((f) => /Archived|Private note|Inline tagged/.test(f)) && targets.includes("Archive 2/Kept.md") && targets.length === (await nodeCount(page)), targets.join("|"));
+  await saveExport(page, "export-svg");
+  const texts = await svgTexts(page, await lastExport(page, ".svg"));
+  ok("svg leaves out what the map scope excludes", texts.includes("Kept") && !texts.some((t) => /Archived|Private note|Inline tagged/.test(t)), texts.join("|"));
+  ok("scope export: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=audit" });
+  ok("audit button is shown", await page.locator("#center .tropa-audit-button").isVisible());
+  await saveExport(page, "export-svg");
+  const svg = await lastExport(page, ".svg");
+  const texts = await svgTexts(page, svg);
+  ok("the bar and the audit button stay out of the svg", !texts.includes("11") && !svg.includes("Map audit") && !texts.includes("Whole map"), texts.join("|"));
+  ok("audit export: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open();
+  await node(page, "Gradient").click(); await wait(page, 200);
+  await node(page, "Gradient").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  await saveExport(page, "export-canvas");
+  const focused = JSON.parse(await lastExport(page, ".canvas"));
+  ok("export in focus has only what is near", focused.nodes.length === 4 && focused.nodes.length === (await nodeCount(page)), String(focused.nodes.length));
+  await page.click(".tropa-focus-exit"); await wait(page, 400);
+  await node(page, "Backpropagation").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  await saveExport(page, "export-canvas");
+  const folded = JSON.parse(await lastExport(page, ".canvas"));
+  const files = folded.nodes.map((n) => n.file ?? n.text);
+  ok("export of a folded map leaves the branch out", !files.some((f) => /Transformer|Embeddings/.test(f)) && folded.nodes.length === (await nodeCount(page)), files.join("|"));
+  await saveExport(page, "export-svg");
+  ok("svg shows the fold badge", (await svgTexts(page, await lastExport(page, ".svg"))).includes("+4"));
+  ok("focus and fold export: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 // --- large graph performance
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });

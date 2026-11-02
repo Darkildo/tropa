@@ -261,5 +261,20 @@
     "cycles": "Phụ thuộc vòng tròn",
     "cyclesHint": "Mỗi khái niệm yêu cầu khái niệm tiếp theo và khái niệm cuối yêu cầu khái niệm đầu, nên không cái nào học trước được.",
     "showOnMap": "Hiện trên bản đồ"
-  }
+  },
+  "exportMap": "Xuất bản đồ",
+  "exportCanvas": "Xuất bản đồ sang Canvas",
+  "exportSvg": "Xuất bản đồ dạng SVG",
+  "exportPath": "Tệp",
+  "exportPathDesc": "Đường dẫn trong kho. Các thư mục còn thiếu sẽ được tạo.",
+  "exportPathInvalid": "Nhập đường dẫn tệp bên trong kho",
+  "exportExists": "{path} đã tồn tại",
+  "exportReplace": "Thay thế",
+  "exportSave": "Lưu",
+  "exportKeepBoth": "Giữ cả hai",
+  "exportProgress": "Hiện tiến độ của tôi",
+  "exportProgressDesc": "Tô màu các khái niệm đã nắm vững, đang học và mục tiêu. Tắt đi để chia sẻ bản đồ mà không kèm tiến độ của bạn.",
+  "exportSaved": "Đã lưu: {path}",
+  "exportNotReady": "Bản đồ vẫn đang được sắp xếp. Hãy thử lại sau giây lát.",
+  "canvasSoftLabel": "nên học"
 }

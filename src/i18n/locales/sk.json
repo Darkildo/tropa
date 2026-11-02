@@ -306,5 +306,20 @@
     "cycles": "Cyklické závislosti",
     "cyclesHint": "Každý pojem vyžaduje ďalší a posledný vyžaduje prvý, takže žiadny sa nedá naučiť ako prvý.",
     "showOnMap": "Ukázať na mape"
-  }
+  },
+  "exportMap": "Export mapy",
+  "exportCanvas": "Exportovať mapu do Canvasu",
+  "exportSvg": "Exportovať mapu ako SVG",
+  "exportPath": "Súbor",
+  "exportPathDesc": "Cesta v trezore. Chýbajúce priečinky sa vytvoria.",
+  "exportPathInvalid": "Zadajte cestu k súboru v trezore",
+  "exportExists": "{path} už existuje",
+  "exportReplace": "Nahradiť",
+  "exportSave": "Uložiť",
+  "exportKeepBoth": "Ponechať oba",
+  "exportProgress": "Zobraziť môj postup",
+  "exportProgressDesc": "Zafarbiť zvládnuté a študované pojmy a cieľ. Vypnite, ak chcete zdieľať mapu bez svojho postupu.",
+  "exportSaved": "Uložené: {path}",
+  "exportNotReady": "Mapa sa ešte rozvrhuje. Skúste to o chvíľu.",
+  "canvasSoftLabel": "odporúčané"
 }

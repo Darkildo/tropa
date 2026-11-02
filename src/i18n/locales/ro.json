@@ -291,5 +291,20 @@
     "cycles": "Dependențe circulare",
     "cyclesHint": "Fiecare concept îl cere pe următorul, iar ultimul pe primul, așa că niciunul nu poate fi învățat primul.",
     "showOnMap": "Arată pe hartă"
-  }
+  },
+  "exportMap": "Exportă harta",
+  "exportCanvas": "Exportă harta în Canvas",
+  "exportSvg": "Exportă harta ca SVG",
+  "exportPath": "Fișier",
+  "exportPathDesc": "Calea în seif. Folderele lipsă vor fi create.",
+  "exportPathInvalid": "Introdu o cale de fișier în seif",
+  "exportExists": "{path} există deja",
+  "exportReplace": "Înlocuiește",
+  "exportSave": "Salvează",
+  "exportKeepBoth": "Păstrează-le pe amândouă",
+  "exportProgress": "Arată progresul meu",
+  "exportProgressDesc": "Colorează conceptele stăpânite și cele în studiu, precum și obiectivul. Dezactivează pentru a partaja harta fără progresul tău.",
+  "exportSaved": "Salvat: {path}",
+  "exportNotReady": "Harta încă se aranjează. Încearcă din nou peste o clipă.",
+  "canvasSoftLabel": "recomandat"
 }

@@ -276,5 +276,20 @@
     "cycles": "Cirkulära beroenden",
     "cyclesHint": "Varje begrepp kräver nästa och det sista kräver det första, så inget kan läras först.",
     "showOnMap": "Visa på kartan"
-  }
+  },
+  "exportMap": "Exportera karta",
+  "exportCanvas": "Exportera kartan till Canvas",
+  "exportSvg": "Exportera kartan som SVG",
+  "exportPath": "Fil",
+  "exportPathDesc": "Sökväg i valvet. Saknade mappar skapas.",
+  "exportPathInvalid": "Ange en filsökväg i valvet",
+  "exportExists": "{path} finns redan",
+  "exportReplace": "Ersätt",
+  "exportSave": "Spara",
+  "exportKeepBoth": "Behåll båda",
+  "exportProgress": "Visa mina framsteg",
+  "exportProgressDesc": "Färglägg behärskade och påbörjade begrepp och målet. Stäng av för att dela kartan utan dina framsteg.",
+  "exportSaved": "Sparad: {path}",
+  "exportNotReady": "Kartan ritas fortfarande upp. Försök igen om en stund.",
+  "canvasSoftLabel": "rekommenderas"
 }

@@ -276,5 +276,20 @@
     "cycles": "Zirkuläre Abhängigkeiten",
     "cyclesHint": "Jedes Konzept setzt das nächste voraus und das letzte das erste, daher kann keines zuerst gelernt werden.",
     "showOnMap": "Auf der Karte zeigen"
-  }
+  },
+  "exportMap": "Karte exportieren",
+  "exportCanvas": "Karte als Canvas exportieren",
+  "exportSvg": "Karte als SVG exportieren",
+  "exportPath": "Datei",
+  "exportPathDesc": "Pfad im Tresor. Fehlende Ordner werden angelegt.",
+  "exportPathInvalid": "Gib einen Dateipfad im Tresor ein",
+  "exportExists": "{path} existiert bereits",
+  "exportReplace": "Ersetzen",
+  "exportSave": "Speichern",
+  "exportKeepBoth": "Beide behalten",
+  "exportProgress": "Meinen Fortschritt zeigen",
+  "exportProgressDesc": "Beherrschte und begonnene Konzepte und das Ziel einfärben. Ausschalten, um die Karte ohne deinen Fortschritt zu teilen.",
+  "exportSaved": "Gespeichert: {path}",
+  "exportNotReady": "Die Karte wird noch angeordnet. Versuch es gleich noch einmal.",
+  "canvasSoftLabel": "empfohlen"
 }
