@@ -10,13 +10,15 @@
     "test": "vitest run",
     "demo": "tsx scripts/make-demo-vault.ts",
     "preview": "node harness/build.mjs",
-    "e2e": "node harness/build.mjs && python3 harness/e2e.py"
+    "e2e": "node harness/build.mjs && node harness/e2e.mjs",
+    "screenshots": "node harness/build.mjs && node harness/screenshots.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "esbuild": "^0.28.2",
     "lucide": "^1.66.0",
     "obsidian": "^1.14.4",
+    "playwright": "^1.64.1",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5",

@@ -12,12 +12,14 @@ document.body.classList.add(params.get("theme") === "dark" ? "theme-dark" : "the
 document.body.classList.toggle("is-right-open", params.has("panel"));
 
 const vault = (app as any).vault;
+// The example can be in another language than the interface, as in a vault set up before translation.
+const sampleLanguage = (params.get("sample") ?? language) === "ru" ? "ru" : "en";
 const seedDemo = () => {
-  const example = sample(language);
+  const example = sample(sampleLanguage);
   for (const { path, content } of example.files) vault.seed(path, content);
   const link = (path: string) => `"[[${path}]]"`;
   vault.seed(
-    defaultSettings(language).progressPath,
+    defaultSettings(sampleLanguage).progressPath,
     `---\ntype: learning-progress\ngoal: ${link(example.goal)}\nmastered: [${example.mastered.map(link).join(", ")}]\nlearning: []\ndone: []\n---\n`,
   );
 };
