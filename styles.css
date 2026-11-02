@@ -1062,7 +1062,9 @@ button.tropa-more { display: none; }
   width: auto;
   max-height: none;
   height: var(--tropa-sheet-height, 92px);
-  padding: 0 16px 16px;
+  /* The sheet ends above Obsidian's bar; the gap lets its last row scroll fully into view. */
+  padding: 0 16px 28px;
+  scroll-padding-bottom: 28px;
   border-top: 1px solid var(--tropa-line);
   border-radius: 14px 14px 0 0;
   box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.18);
@@ -1082,6 +1084,13 @@ button.tropa-more { display: none; }
   background: var(--background-secondary);
 }
 .tropa-map.is-phone .tropa-side[data-sheet="peek"] { overflow: hidden; }
+
+/* The route panel in Obsidian's drawer on a phone: its end scrolls clear of the navigation bar. */
+body.is-phone .tropa-panel {
+  --tropa-inset: max(var(--tropa-bottom-inset, 0px), env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(var(--tropa-inset) + 20px);
+  scroll-padding-bottom: calc(var(--tropa-inset) + 20px);
+}
 
 .tropa-sheet-handle {
   position: sticky;

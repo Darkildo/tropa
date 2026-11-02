@@ -12,6 +12,7 @@ import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
 import { openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
+import { navbarOverlap } from "./phone";
 import { ExportModal } from "./export";
 import { fileName } from "../core/export-path";
 import { buildCanvas, canvasText, CANVAS_COLOR, type ExportNode } from "../core/canvas";
@@ -940,7 +941,7 @@ export class MapView extends ItemView implements DetailHost {
   private placeSheet() {
     if (!this.root) return;
     const phone = this.root.classList.contains("is-phone");
-    this.bottomInset = phone ? bottomInset(this.root) : 0;
+    this.bottomInset = phone ? navbarOverlap(this.root) : 0;
     this.root.style.setProperty("--tropa-bottom-inset", `${this.bottomInset}px`);
     this.root.style.setProperty("--tropa-sheet-height", `${this.sheetHeight()}px`);
     this.side.dataset.sheet = this.sheet;
@@ -1831,21 +1832,6 @@ function backgroundOf(canvas: HTMLElement, color: (css: string) => string) {
 
 function nextSheet(state: SheetState): SheetState {
   return state === "peek" ? "half" : state === "half" ? "full" : "peek";
-}
-
-/**
- * How far Obsidian's navigation bar on a phone reaches into the view from the bottom. It floats over
- * the content, so it is measured rather than assumed; the safe area is added in CSS.
- */
-function bottomInset(root: HTMLElement) {
-  const bottom = root.getBoundingClientRect().bottom;
-  let inset = 0;
-  for (const bar of document.querySelectorAll<HTMLElement>(".mobile-navbar")) {
-    const rect = bar.getBoundingClientRect();
-    if (rect.height === 0 || rect.top >= bottom || rect.bottom < bottom - 240) continue;
-    inset = Math.max(inset, bottom - rect.top + 8);
-  }
-  return Math.round(inset);
 }
 
 /** Painting runs for every node on each change; untouched nodes keep their styles. */

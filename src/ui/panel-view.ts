@@ -1,8 +1,9 @@
-import { ItemView, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
+import { ItemView, Platform, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
 import type TropaPlugin from "../main";
 import { attempt } from "../attempt";
 import { isRtl, t } from "../i18n";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
+import { navbarOverlap } from "./phone";
 
 export const PANEL_VIEW = "tropa-panel";
 
@@ -38,6 +39,14 @@ export class PanelView extends ItemView implements DetailHost {
   async onOpen() {
     this.contentEl.addClass("tropa-host");
     this.body = this.contentEl.createDiv({ cls: "tropa-panel", attr: { dir: isRtl() ? "rtl" : "ltr" } });
+    if (Platform.isPhone) {
+      // On a phone the panel opens as a drawer under Obsidian's navigation bar; its end scrolls clear of it.
+      const place = () => this.body.style.setProperty("--tropa-bottom-inset", `${navbarOverlap(this.body)}px`);
+      const observer = new ResizeObserver(place);
+      observer.observe(this.body);
+      this.register(() => observer.disconnect());
+      this.registerEvent(this.app.workspace.on("layout-change", place));
+    }
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(
       this.app.workspace.on("file-open", () => {

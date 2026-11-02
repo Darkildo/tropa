@@ -1093,6 +1093,31 @@ const overlaps = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bot
 const mapState = (page) => page.evaluate(() => { const v = tropa.app.workspace.center.view; return { x: v.x, y: v.y, k: v.k }; });
 const swipeCount = (page) => page.evaluate("tropa.swipes.length");
 const conceptPath = (page, title) => page.evaluate((t) => [...tropa.app.vault.files.keys()].find((p) => p.endsWith(`/${t}.md`)), title);
+/** Scrolls a panel to its end: its last control must sit fully above Obsidian's navigation bar. */
+async function scrolledEndClear(page, selector) {
+  return page.evaluate((sel) => {
+    const panel = document.querySelector(sel);
+    panel.scrollTop = panel.scrollHeight;
+    const nav = document.querySelector(".mobile-navbar").getBoundingClientRect();
+    const view = panel.getBoundingClientRect();
+    const controls = [...panel.querySelectorAll("button, a, input, [role=button], [tabindex]")].filter((el) => el.getClientRects().length);
+    const last = controls.reduce((low, el) => (el.getBoundingClientRect().bottom > low.getBoundingClientRect().bottom ? el : low));
+    const box = last.getBoundingClientRect();
+    return { clear: box.bottom <= nav.top && box.bottom <= view.bottom, last: last.textContent.trim().slice(0, 40), bottom: Math.round(box.bottom), nav: Math.round(nav.top), panel: Math.round(view.bottom) };
+  }, selector);
+}
+async function phonePanelEnds(page, label) {
+  const view = "tropa.app.workspace.center.view";
+  for (const state of ["half", "full"]) {
+    await page.evaluate((s) => tropa.app.workspace.center.view.setSheet(s), state); await wait(page, 350);
+    const end = await scrolledEndClear(page, "#center .tropa-side");
+    ok(`${label}: the panel's last control scrolls clear of Obsidian's bar (${state})`, end.clear, JSON.stringify(end));
+  }
+  await page.evaluate(`${view}.setSheet("peek")`); await wait(page, 350);
+  const sheet = await box(page, "#center .tropa-side");
+  const nav = await box(page, ".mobile-navbar");
+  ok(`${label}: the panel ends above Obsidian's bar (peek)`, sheet.bottom <= nav.top, JSON.stringify({ sheet: sheet.bottom, nav: nav.top }));
+}
 async function phoneLayoutChecks(page, label, title) {
   const bar = await box(page, "#center .tropa-bar");
   const rows = await page.evaluate(() => [...document.querySelectorAll("#center .tropa-bar > *")]
@@ -1199,8 +1224,21 @@ async function phoneLayoutChecks(page, label, title) {
     return { width: (el.offsetWidth - parseFloat(after.left) - parseFloat(after.right)) * k, height: (el.offsetHeight - parseFloat(after.top) - parseFloat(after.bottom)) * k, opacity: getComputedStyle(el).opacity };
   });
   ok("phone: fold badge is small, its target finger-sized", target.opacity === "1" && target.width >= 32 && target.height >= 32, JSON.stringify({ target, k: (await mapState(page)).k }));
+  await page.evaluate(() => { const side = document.querySelector("#center .tropa-side"); side.scrollTop = side.scrollHeight; }); await wait(page, 150);
   await page.screenshot({ path: SHOTS + "74-phone-ru-light-half.png" });
+  await phonePanelEnds(page, "phone ru");
   ok("phone ru light: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const lang of ["ru", "ar"]) {
+  // The route panel in Obsidian's drawer: its end scrolls clear of the navigation bar too.
+  const { page, errors } = await phone(`lang=${lang}&panel`);
+  const gradient = await conceptPath(page, lang === "ru" ? "Градиент" : "Gradient");
+  await page.evaluate((id) => tropa.app.workspace.right.view.select(id), gradient); await wait(page, 300);
+  const end = await scrolledEndClear(page, "#right .tropa-panel");
+  ok(`phone ${lang}: the sidebar panel's last control scrolls clear of Obsidian's bar`, end.clear, JSON.stringify(end));
+  if (lang === "ru") await page.screenshot({ path: SHOTS + "76-phone-ru-panel.png" });
+  ok(`phone ${lang} panel: no errors`, errors.length === 0, errors.join("; "));
   await page.close();
 }
 {
@@ -1228,6 +1266,8 @@ async function phoneLayoutChecks(page, label, title) {
     JSON.stringify({ swipes: await page.evaluate("tropa.swipes"), at: await page.evaluate(() => { const el = document.elementFromPoint(330, 300); return `${el?.tagName}.${el?.className} ${el?.closest("[data-ignore-swipe]") ? "ignored" : ""}`; }) }));
   ok("phone ar: bar right to left in one row", (await page.locator("#center .tropa-map[dir=rtl]").count()) === 1);
   await page.screenshot({ path: SHOTS + "75-phone-ar-dark.png" });
+  await page.evaluate(async (title) => tropa.app.workspace.center.view.select([...tropa.app.vault.files.keys()].find((p) => p.endsWith(`/${title}.md`))), "Gradient"); await wait(page, 400);
+  await phonePanelEnds(page, "phone ar");
   ok("phone ar: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }

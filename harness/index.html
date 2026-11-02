@@ -64,6 +64,8 @@ a { color: var(--text-accent); }
 /* Obsidian mobile: the floating navigation bar and phone-sized views. */
 .mobile-navbar { position: fixed; z-index: 40; right: 16px; bottom: 14px; left: 16px; height: 58px; border-radius: 29px; background: rgba(48, 48, 48, .94); box-shadow: 0 4px 16px rgba(0,0,0,.3); }
 body.is-phone #right, body.is-phone #note { display: none; }
+/* On a phone Obsidian opens the right sidebar as a drawer over the view, under its navigation bar. */
+body.is-phone.is-right-open #right { display: block; position: fixed; z-index: 30; inset: 0 0 0 40px; width: auto; }
 body.is-phone .view-content { padding: 0; }
 .notice { position: fixed; z-index: 70; top: 16px; right: 16px; padding: 10px 14px; border-radius: 8px; background: var(--text-normal); color: var(--background-primary); }
 </style>
