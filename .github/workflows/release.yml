@@ -1,0 +1,70 @@
+name: Release
+
+# A tag such as 0.1.0 (no "v", as the Obsidian catalog expects) publishes a release.
+# Pull requests run the build as a dry run, so the release files can be checked before tagging.
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check versions
+        run: |
+          version=$(node -p 'require("./manifest.json").version')
+          node -e 'const [v, m] = [require("./versions.json"), require("./manifest.json")]; if (v[m.version] !== m.minAppVersion) process.exit(1)'
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "$GITHUB_REF_NAME" != "$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest version $version"
+            exit 1
+          fi
+      - run: npm test
+      - run: npm run build
+      - name: Demo vaults
+        run: |
+          npm run demo
+          cd dist
+          zip -qr ../tropa-demo-vault.zip "Tropa Demo"
+          zip -qr ../tropa-demo-vault-ru.zip "Tropa Demo RU"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          if-no-files-found: error
+          path: |
+            main.js
+            manifest.json
+            styles.css
+            tropa-demo-vault.zip
+            tropa-demo-vault-ru.zip
+
+  publish:
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            main.js manifest.json styles.css tropa-demo-vault.zip tropa-demo-vault-ru.zip
