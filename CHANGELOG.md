@@ -2,6 +2,22 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
+## [0.3.1] - 2026-11-02
+
+Phone fixes, after trying 0.3.0 on Android. The three new strings are machine translations into all 33 languages.
+
+### Fixed
+- Swiping or zooming on the map no longer opens Obsidian's side panels on a phone. Touches inside the map and its panel stay there (they also carry Obsidian's `data-ignore-swipe`); swipes on the bar still open the panels.
+- The panel at the bottom no longer slides under Obsidian's navigation bar: it sits above it, measured at run time, or above the safe area.
+- The zoom buttons stay above the panel instead of covering it and the nodes, and hide when the panel takes the whole screen.
+- Fitting the map on a phone no longer shrinks it past reading: below 70% it stays readable and centres on the selection, the next step or the goal.
+
+### Changed
+- On a phone the bar is one row: the goal, the route and whole-map switch as icons, and a **⋯** menu with materials, focus, the audit (with its count on the button), export and a new concept. The progress is a thin line under it.
+- Touch gestures on the map: pinch to zoom around the fingers while panning, double tap to zoom in, hold a node for its menu.
+- The panel on a phone has a handle: tap or drag it between the title, half the screen and nearly all of it. Picking a concept opens it halfway.
+- Nodes on a phone have no link dots; **Link to the next concept…** in the node's menu does that. Fold badges show only on the selected or a folded concept, smaller, with a finger-sized target.
+
 ## [0.3.0] - 2026-11-02
 
 Requires Obsidian 1.13.0 or later. The strings added in this release are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. See [Fix or add a translation](https://github.com/Darkildo/tropa#fix-or-add-a-translation).
