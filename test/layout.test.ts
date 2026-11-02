@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LearningGraph } from "../src/core/graph";
+import { computeRoute, computeStates, emptyProgress, LearningGraph } from "../src/core/graph";
 import { layoutGraph, prepareLayout, svgPaths } from "../src/core/layout";
 import { ENGINES, type EngineInput } from "../src/core/layout-engine";
 import { LayoutRunner, WORKER_FROM, shapeKey, type LayoutReply, type LayoutRequest, type LayoutWorker } from "../src/core/layout-runner";
@@ -57,6 +57,29 @@ describe("layout engine", () => {
     expect(output.pathStart).toHaveLength(input.from.length + input.softFrom.length + 1);
     expect(output.pathStart[output.pathStart.length - 1] * 2).toBe(output.pathPoints.length);
     for (let p = 0; p + 1 < output.pathStart.length; p++) expect((output.pathStart[p + 1] - output.pathStart[p] - 1) % 3).toBe(0);
+  });
+});
+
+describe("layout of a route with skipped concepts", () => {
+  const notes = generate(60, false);
+  const graph = new LearningGraph(notes);
+  const goal = notes[notes.length - 1].id;
+  const route = (skipped: string[]) => {
+    const progress = { ...emptyProgress(), goal, skipped: new Set(skipped) };
+    return computeRoute(graph, progress, computeStates(graph, progress))!;
+  };
+
+  it("keeps skipped concepts on the map of the route, where the route keeps them", () => {
+    const plain = route([]);
+    const skipped = [...plain.closure].filter((id) => id !== goal).slice(0, 5);
+    const withSkips = route(skipped);
+    expect(withSkips.closure).toEqual(plain.closure);
+    const layout = layoutGraph(graph, { showSources: false, only: withSkips.closure });
+    for (const id of skipped) expect(layout.nodes.has(id)).toBe(true);
+    // Skipping changes how nodes look, not where they stand: the same input, so the cached layout holds.
+    expect(shapeKey(prepareLayout(graph, { showSources: false, only: withSkips.closure }).input)).toBe(
+      shapeKey(prepareLayout(graph, { showSources: false, only: plain.closure }).input),
+    );
   });
 });
 
