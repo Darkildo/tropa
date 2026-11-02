@@ -8,6 +8,8 @@ interface SampleConcept {
   requires?: string[];
   recommends?: string[];
   summary: Text;
+  /** Materials listed in the concept itself, as YAML entries of its `materials` property. */
+  materials?: Partial<Record<Lang, string[]>>;
 }
 
 interface SampleSource {
@@ -97,6 +99,8 @@ const concepts: Record<string, SampleConcept> = {
     title: { en: "Recurrent networks", ru: "Рекуррентные сети" },
     requires: ["practice"],
     summary: { en: "Sequence models from before transformers.", ru: "Модели последовательностей до появления трансформеров." },
+    // A material without a note of its own: just a link listed in the concept.
+    materials: { en: ['{ url: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", title: "Understanding LSTM Networks", format: article, minutes: 40 }'] },
   },
   attention: {
     title: { en: "Attention", ru: "Механизм внимания" },
@@ -155,10 +159,14 @@ export function sample(language: Lang) {
   const list = (name: string, keys: string[] = []) =>
     keys.length ? `${name}:\n${keys.map((key) => `  - "[[${title(key)}]]"`).join("\n")}\n` : `${name}: []\n`;
 
-  const files = Object.values(concepts).map((concept) => ({
-    path: `${folders.root}/${folders.concepts}/${concept.title[language]}.md`,
-    content: `---\ntype: concept\n${list("requires", concept.requires)}${concept.recommends ? list("recommends", concept.recommends) : ""}summary: ${concept.summary[language]}\n---\n\n${concept.summary[language]}\n`,
-  }));
+  const files = Object.values(concepts).map((concept) => {
+    const listed = concept.materials?.[language];
+    const materials = listed ? `materials:\n${listed.map((entry) => `  - ${entry}`).join("\n")}\n` : "";
+    return {
+      path: `${folders.root}/${folders.concepts}/${concept.title[language]}.md`,
+      content: `---\ntype: concept\n${list("requires", concept.requires)}${concept.recommends ? list("recommends", concept.recommends) : ""}${materials}summary: ${concept.summary[language]}\n---\n\n${concept.summary[language]}\n`,
+    };
+  });
   for (const source of Object.values(sources)) {
     const url = source.url ? `url: ${source.url}\n` : "";
     const requires = source.requires ? list("requires", source.requires) : "";
