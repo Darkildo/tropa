@@ -95,6 +95,8 @@ export class TFolder extends TAbstractFile {
 
 export const normalizePath = (path: string) => path.replace(/\\/g, "/").replace(/\/+/g, "/").replace(/^\/|\/$/g, "");
 
+export const getLanguage = () => localStorage.getItem("language") ?? "en";
+
 export function debounce(fn: Callback, wait = 0) {
   let timer = 0;
   return (...args: any[]) => {

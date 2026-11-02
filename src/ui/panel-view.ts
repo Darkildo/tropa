@@ -1,5 +1,6 @@
 import { ItemView, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
 import type TropaPlugin from "../main";
+import { t } from "../i18n";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 
 export const PANEL_VIEW = "tropa-panel";
@@ -76,7 +77,7 @@ export class PanelView extends ItemView implements DetailHost {
 
   private renderOffMap(file: TFile) {
     const block = this.body.createDiv({ cls: "tropa-offmap" });
-    block.createDiv({ cls: "tropa-section-head", text: "Этой заметки нет на карте" });
+    block.createDiv({ cls: "tropa-section-head", text: t.notOnMap });
     const actions = block.createDiv({ cls: "tropa-actions" });
     const add = (label: string, icon: string, kind: "concept" | "source") => {
       const button = actions.createEl("button");
@@ -84,7 +85,7 @@ export class PanelView extends ItemView implements DetailHost {
       button.createSpan({ text: label });
       button.addEventListener("click", () => void this.store.classifyNote(file, kind));
     };
-    add("Концепт", "lightbulb", "concept");
-    add("Материал", "book-open", "source");
+    add(t.concept, "lightbulb", "concept");
+    add(t.material, "book-open", "source");
   }
 }

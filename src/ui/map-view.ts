@@ -1,8 +1,9 @@
 import { ItemView, Menu, Notice, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
-import { FORMAT_ICON, STATE_ICON, STATE_LABEL, formatMinutes, plural } from "../core/format";
+import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { layoutGraph, type Layout, type LaidOutNode } from "../core/layout";
 import { sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
+import { t } from "../i18n";
 import type TropaPlugin from "../main";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
@@ -68,7 +69,7 @@ export class MapView extends ItemView implements DetailHost {
   }
 
   getDisplayText() {
-    return "Карта обучения";
+    return t.mapTitle;
   }
 
   getIcon() {
@@ -77,6 +78,9 @@ export class MapView extends ItemView implements DetailHost {
 
   async onOpen() {
     this.root = this.contentEl.createDiv({ cls: "tropa-map" });
+    // Badges are drawn in CSS, so their text comes in through custom properties.
+    this.root.style.setProperty("--tropa-next-label", JSON.stringify(t.nextBadge));
+    this.root.style.setProperty("--tropa-goal-label", JSON.stringify(t.goalBadge));
     this.contentEl.addClass("tropa-host");
     this.bar = this.root.createDiv({ cls: "tropa-bar" });
     const body = this.root.createDiv({ cls: "tropa-body" });
@@ -143,7 +147,7 @@ export class MapView extends ItemView implements DetailHost {
     const items = this.store.graph.concepts
       .sort((a, b) => a.title.localeCompare(b.title, "ru"))
       .map((node) => ({ id: node.id, title: node.title, icon: STATE_ICON[this.store.states.get(node.id) ?? "locked"] }));
-    new PickModal(this.app, items, "Какую тему хотите освоить?", (item) => this.chooseGoal(item.id)).open();
+    new PickModal(this.app, items, t.goalPrompt, (item) => this.chooseGoal(item.id)).open();
   };
 
   private chooseGoal(id: string) {
@@ -231,7 +235,7 @@ export class MapView extends ItemView implements DetailHost {
     text.createSpan({ cls: "tropa-node-title" });
     text.createSpan({ cls: "tropa-node-meta" });
     if (node.kind === "concept") {
-      el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: "Потяните к концепту, который идёт после этого" } });
+      el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: t.portTitle } });
     }
     el.addEventListener("pointerenter", () => this.highlight(node.id));
     el.addEventListener("pointerleave", () => this.highlight(null));
@@ -261,7 +265,7 @@ export class MapView extends ItemView implements DetailHost {
         el.className = `tropa-node is-source state-${state}${isSelected ? " is-selected" : ""}`;
         setGlyph(glyph, state === "done" ? "check" : FORMAT_ICON[node.format ?? "other"]);
         meta.textContent = node.minutes ? formatMinutes(node.minutes) : "";
-        el.setAttribute("aria-label", `Материал: ${node.title}`);
+        el.setAttribute("aria-label", t.materialLabel(node.title));
         continue;
       }
 
@@ -277,7 +281,7 @@ export class MapView extends ItemView implements DetailHost {
       el.className = classes.join(" ");
       setGlyph(glyph, STATE_ICON[state]);
       meta.textContent = this.nodeMeta(node);
-      el.setAttribute("aria-label", `${node.title}. ${STATE_LABEL[state]}${isGoal ? ". Цель" : ""}${isNext ? ". Следующий шаг" : ""}`);
+      el.setAttribute("aria-label", `${node.title}. ${t.state[state]}${isGoal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`);
     }
     this.paintEdgeRoute();
   }
@@ -286,19 +290,20 @@ export class MapView extends ItemView implements DetailHost {
     const { store } = this;
     const state = store.states.get(node.id);
     if (state === "mastered") return "";
-    if (node.ghost) return "Заметки ещё нет";
+    if (node.ghost) return t.noNoteYet;
     if (state === "locked") {
       const left = node.requires.filter((id) => !store.progress.mastered.has(id)).length;
-      return `Сначала ${left} ${plural(left, "концепт", "концепта", "концептов")}`;
+      return t.conceptsFirst(left);
     }
     const count = node.taughtBy.length;
-    if (count === 0) return "Нет материалов";
+    if (count === 0) return t.noMaterials;
     const open = node.taughtBy
       .filter((id) => !store.progress.done.has(id))
       .map((id) => store.graph.nodes.get(id)?.minutes)
       .filter((minutes): minutes is number => minutes !== undefined);
-    if (open.length === 0) return `${count} ${plural(count, "материал", "материала", "материалов")}`;
-    return `${open.length > 1 ? "от " : ""}${formatMinutes(Math.min(...open))}`;
+    if (open.length === 0) return t.materialCount(count);
+    const shortest = formatMinutes(Math.min(...open));
+    return open.length > 1 ? t.from(shortest) : shortest;
   }
 
   private drawEdges() {
@@ -373,7 +378,7 @@ export class MapView extends ItemView implements DetailHost {
     const label = goalButton.querySelector<HTMLElement>(".tropa-goal-label")!;
     const { route, graph } = this.store;
     const goal = route ? graph.nodes.get(route.goal) : null;
-    label.textContent = goal ? goal.title : "Выбрать цель";
+    label.textContent = goal ? goal.title : t.chooseGoal;
     goalButton.toggleClass("has-goal", !!goal);
     goalButton.toggleClass("mod-cta", !goal);
 
@@ -383,7 +388,7 @@ export class MapView extends ItemView implements DetailHost {
       const percent = route.total ? (route.masteredCount / route.total) * 100 : 0;
       meter.querySelector<HTMLElement>(".tropa-meter-fill")!.style.width = `${percent}%`;
       meter.querySelector<HTMLElement>(".tropa-meter")!.setAttribute("aria-valuenow", String(Math.round(percent)));
-      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = `${route.masteredCount} из ${route.total}`;
+      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = t.progressOf(route.masteredCount, route.total);
       meter.querySelector<HTMLElement>(".tropa-progress-time")!.textContent = this.store.describeRemaining();
     }
 
@@ -411,7 +416,7 @@ export class MapView extends ItemView implements DetailHost {
 
     const collapse = side.createEl("button", {
       cls: "tropa-collapse clickable-icon",
-      attr: { "aria-label": this.sideCollapsed ? "Развернуть панель" : "Свернуть панель" },
+      attr: { "aria-label": this.sideCollapsed ? t.expandPanel : t.collapsePanel },
     });
     setIcon(collapse, this.sideCollapsed ? "chevron-up" : "chevron-down");
     collapse.addEventListener("click", () => {
@@ -432,19 +437,19 @@ export class MapView extends ItemView implements DetailHost {
     this.side.empty();
     if (this.canvas.querySelector(".tropa-empty")) return;
     const empty = this.canvas.createDiv({ cls: "tropa-empty" });
-    empty.createEl("h2", { text: "Постройте свою первую карту" });
+    empty.createEl("h2", { text: t.emptyTitle });
     empty.createEl("p", {
-      text: "Концепт — то, что вы хотите понять. Материал — статья, видео или книга, по которой вы его изучаете. Из связей между ними получится маршрут к любой цели.",
+      text: t.emptyText,
     });
     const actions = empty.createDiv({ cls: "tropa-actions" });
-    const sample = actions.createEl("button", { cls: "mod-cta", text: "Показать пример" });
+    const sample = actions.createEl("button", { cls: "mod-cta", text: t.showExample });
     sample.addEventListener("click", () => void this.plugin.installSample());
-    const create = actions.createEl("button", { text: "Создать первый концепт" });
+    const create = actions.createEl("button", { text: t.createFirstConcept });
     create.addEventListener("click", () => this.plugin.promptNewConcept());
   }
 
   private buildControls() {
-    const goal = this.bar.createEl("button", { cls: "tropa-goal", attr: { "aria-label": "Выбрать цель обучения" } });
+    const goal = this.bar.createEl("button", { cls: "tropa-goal", attr: { "aria-label": t.goalButton } });
     setIcon(goal.createSpan({ cls: "tropa-goal-icon" }), "flag");
     goal.createSpan({ cls: "tropa-goal-label" });
     goal.addEventListener("click", this.pickGoal);
@@ -453,15 +458,15 @@ export class MapView extends ItemView implements DetailHost {
     progress.createSpan({ cls: "tropa-progress-text" });
     const meter = progress.createDiv({
       cls: "tropa-meter",
-      attr: { role: "progressbar", "aria-label": "Пройдено по маршруту", "aria-valuemin": "0", "aria-valuemax": "100" },
+      attr: { role: "progressbar", "aria-label": t.routeProgress, "aria-valuemin": "0", "aria-valuemax": "100" },
     });
     meter.createDiv({ cls: "tropa-meter-fill" });
     progress.createSpan({ cls: "tropa-progress-time" });
 
     this.bar.createDiv({ cls: "tropa-spacer" });
 
-    const segment = this.bar.createDiv({ cls: "tropa-segment", attr: { role: "group", "aria-label": "Что показывать" } });
-    for (const [mode, text] of [["route", "Маршрут"], ["all", "Вся карта"]] as const) {
+    const segment = this.bar.createDiv({ cls: "tropa-segment", attr: { role: "group", "aria-label": t.viewMode } });
+    for (const [mode, text] of [["route", t.modeRoute], ["all", t.modeAll]] as const) {
       const button = segment.createEl("button", { text });
       button.dataset.mode = mode;
       button.addEventListener("click", () => {
@@ -473,7 +478,7 @@ export class MapView extends ItemView implements DetailHost {
       });
     }
 
-    const sources = this.bar.createEl("button", { cls: "tropa-toggle-sources", text: "Материалы" });
+    const sources = this.bar.createEl("button", { cls: "tropa-toggle-sources", text: t.materials });
     sources.addEventListener("click", () => {
       this.plugin.settings.showSources = !this.plugin.settings.showSources;
       void this.plugin.saveSettings();
@@ -482,19 +487,19 @@ export class MapView extends ItemView implements DetailHost {
       this.render();
     });
 
-    const add = this.bar.createEl("button", { cls: "tropa-add-concept clickable-icon", attr: { "aria-label": "Новый концепт" } });
+    const add = this.bar.createEl("button", { cls: "tropa-add-concept clickable-icon", attr: { "aria-label": t.newConcept } });
     setIcon(add, "plus");
     add.addEventListener("click", () => this.plugin.promptNewConcept());
 
-    const zoom = this.stage.createDiv({ cls: "tropa-zoom", attr: { role: "group", "aria-label": "Масштаб" } });
+    const zoom = this.stage.createDiv({ cls: "tropa-zoom", attr: { role: "group", "aria-label": t.zoom } });
     const zoomButton = (icon: string, label: string, run: () => void) => {
       const button = zoom.createEl("button", { cls: "clickable-icon", attr: { "aria-label": label } });
       setIcon(button, icon);
       button.addEventListener("click", run);
     };
-    zoomButton("plus", "Приблизить", () => this.zoomBy(1.25));
-    zoomButton("minus", "Отдалить", () => this.zoomBy(0.8));
-    zoomButton("maximize", "Показать всю карту", () => {
+    zoomButton("plus", t.zoomIn, () => this.zoomBy(1.25));
+    zoomButton("minus", t.zoomOut, () => this.zoomBy(0.8));
+    zoomButton("maximize", t.fitAll, () => {
       this.userMoved = true;
       this.fit(true);
     });
@@ -503,7 +508,7 @@ export class MapView extends ItemView implements DetailHost {
     for (const state of ["mastered", "learning", "available", "locked"] as const) {
       const item = legend.createDiv({ cls: "tropa-legend-item" });
       setGlyph(item.createSpan({ cls: `tropa-glyph is-small state-${state}` }), STATE_ICON[state]);
-      item.createSpan({ text: STATE_LABEL[state] });
+      item.createSpan({ text: t.state[state] });
     }
   }
 
@@ -714,22 +719,22 @@ export class MapView extends ItemView implements DetailHost {
     const node = store.graph.nodes.get(id);
     if (!node) return;
     const menu = new Menu();
-    if (node.ghost) menu.addItem((item) => item.setTitle("Создать заметку").setIcon("file-plus").onClick(() => void store.materialize(id)));
-    else menu.addItem((item) => item.setTitle("Открыть заметку").setIcon("file-text").onClick(() => this.openNote(id)));
+    if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => void store.materialize(id)));
+    else menu.addItem((item) => item.setTitle(t.openNote).setIcon("file-text").onClick(() => this.openNote(id)));
 
     if (node.kind === "concept") {
       const mastered = store.progress.mastered.has(id);
       const isGoal = store.progress.goal === id;
       menu.addItem((item) =>
-        item.setTitle(mastered ? "Снять отметку об освоении" : "Отметить освоенным").setIcon("check").onClick(() => store.setMastered(id, !mastered)),
+        item.setTitle(mastered ? t.clearMastered : t.markMastered).setIcon("check").onClick(() => store.setMastered(id, !mastered)),
       );
       menu.addItem((item) =>
-        item.setTitle(isGoal ? "Убрать цель" : "Сделать целью").setIcon("flag").onClick(() => (isGoal ? store.setGoal(null) : this.chooseGoal(id))),
+        item.setTitle(isGoal ? t.removeGoal : t.makeGoal).setIcon("flag").onClick(() => (isGoal ? store.setGoal(null) : this.chooseGoal(id))),
       );
     } else {
       const done = store.progress.done.has(id);
       menu.addItem((item) =>
-        item.setTitle(done ? "Вернуть в список" : "Отметить пройденным").setIcon("check").onClick(() => store.setDone(id, !done)),
+        item.setTitle(done ? t.markNotDone : t.markDone).setIcon("check").onClick(() => store.setDone(id, !done)),
       );
     }
     menu.showAtMouseEvent(event);
@@ -780,9 +785,9 @@ export class MapView extends ItemView implements DetailHost {
       if (!target) {
         this.plugin.promptNewConcept([fromId]);
       } else if (!allowed) {
-        new Notice("Такая связь замкнёт цикл, поэтому она не добавлена");
+        new Notice(t.cycleRefused);
       } else if (this.store.graph.nodes.get(target)?.requires.includes(fromId)) {
-        new Notice("Эта связь уже есть");
+        new Notice(t.linkExists);
       } else {
         void this.store.addLink(target, "requiresKey", fromId);
       }
@@ -803,11 +808,11 @@ export class MapView extends ItemView implements DetailHost {
     const { store } = this;
     const title = store.graph.nodes.get(id)?.title ?? "";
     const names = unlocked.map((unlockedId) => store.graph.nodes.get(unlockedId)?.title).filter(Boolean);
-    let text = `Освоено: ${title}`;
-    if (store.route && store.route.steps.length === 0) text = "Цель достигнута";
-    else if (names.length) text = `Открыто: ${names.slice(0, 3).join(", ")}${names.length > 3 ? ` и ещё ${names.length - 3}` : ""}`;
+    let text = t.mastered(title);
+    if (store.route && store.route.steps.length === 0) text = t.goalReached;
+    else if (names.length) text = t.unlocked(`${names.slice(0, 3).join(", ")}${names.length > 3 ? t.andMore(names.length - 3) : ""}`);
 
-    this.toast(text, "Отменить", () => store.restore(undo));
+    this.toast(text, t.undo, () => store.restore(undo));
     for (const unlockedId of unlocked) {
       const el = this.nodeEls.get(unlockedId);
       if (!el) continue;

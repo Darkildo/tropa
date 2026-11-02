@@ -1,28 +1,11 @@
+import { t } from "../i18n";
 import type { ConceptState, SourceFormat } from "./types";
 
-export function plural(count: number, one: string, few: string, many: string) {
-  const tens = Math.abs(count) % 100;
-  const units = tens % 10;
-  if (tens > 10 && tens < 20) return many;
-  if (units === 1) return one;
-  if (units >= 2 && units <= 4) return few;
-  return many;
-}
-
 export function formatMinutes(minutes: number) {
-  if (minutes < 60) return `${Math.round(minutes)} мин`;
+  if (minutes < 60) return t.minutes(Math.round(minutes));
   const hours = Math.floor(minutes / 60);
-  const rest = Math.round(minutes - hours * 60);
-  return rest ? `${hours} ч ${rest} мин` : `${hours} ч`;
+  return t.hours(hours, Math.round(minutes - hours * 60));
 }
-
-export const STATE_LABEL: Record<ConceptState, string> = {
-  mastered: "Освоено",
-  learning: "Изучаю",
-  available: "Можно начинать",
-  locked: "Закрыто",
-  cycle: "Цикл",
-};
 
 export const STATE_ICON: Record<ConceptState, string> = {
   mastered: "check",
@@ -30,16 +13,6 @@ export const STATE_ICON: Record<ConceptState, string> = {
   available: "circle-dot",
   locked: "lock",
   cycle: "alert-triangle",
-};
-
-export const FORMAT_LABEL: Record<SourceFormat, string> = {
-  video: "Видео",
-  article: "Статья",
-  book: "Книга",
-  paper: "Научная статья",
-  course: "Курс",
-  note: "Своя заметка",
-  other: "Другое",
 };
 
 export const FORMAT_ICON: Record<SourceFormat, string> = {
@@ -52,7 +25,7 @@ export const FORMAT_ICON: Record<SourceFormat, string> = {
   other: "file",
 };
 
-const FORMATS = Object.keys(FORMAT_LABEL) as SourceFormat[];
+const FORMATS = Object.keys(FORMAT_ICON) as SourceFormat[];
 
 export function parseFormat(value: unknown): SourceFormat {
   return typeof value === "string" && (FORMATS as string[]).includes(value) ? (value as SourceFormat) : "other";
