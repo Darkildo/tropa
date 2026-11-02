@@ -40,7 +40,9 @@
     "recommendsKey": "Liên kết nên có",
     "recommendsKeyDesc": "Hữu ích nhưng không khóa gì cả.",
     "teachesKey": "Tài liệu dạy gì",
-    "teachesKeyDesc": "Các khái niệm mà tài liệu đề cập."
+    "teachesKeyDesc": "Các khái niệm mà tài liệu đề cập.",
+    "materialsKey": "Tài liệu trong khái niệm",
+    "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng."
   },
   "minutes": "{minutes} phút",
   "hours": "{hours} giờ",
@@ -87,6 +89,11 @@
   "durationDesc": "Tính bằng phút. Ước tính lộ trình là tổng các thời gian này.",
   "addMaterial": "Thêm tài liệu",
   "materialNameRequired": "Hãy nhập tên tài liệu",
+  "inlineMaterial": "Giữ trong khái niệm",
+  "inlineMaterialDesc": "Thêm liên kết vào danh sách của chính khái niệm thay vì tạo ghi chú cho tài liệu.",
+  "inlineLinkRequired": "Nhập liên kết như https://… hoặc [[tep.pdf]]",
+  "inlineMaterialHint": "Được ghi ngay trong khái niệm, không có ghi chú riêng.",
+  "attachment": "Tệp đính kèm",
   "knowBeforePrompt": "Cần biết gì trước “{title}”?",
   "unlocksPrompt": "“{title}” mở khóa điều gì?",
   "note": "Ghi chú",

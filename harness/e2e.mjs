@@ -160,7 +160,8 @@ const { open, stop } = await start();
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
   ok("settings groups", headings.join("|") === "Files|Note properties", headings.join("|"));
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 7);
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 8);
+  ok("materials key setting", (await page.locator('#settings input[data-key="materialsKey"]').inputValue()) === "materials");
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
   ok("settings show values", (await field("conceptsFolder").inputValue()) === "Tropa/Concepts");
   ok("settings show defaults as placeholders", (await field("progressPath").getAttribute("placeholder")) === "Tropa/Progress.md");
@@ -291,6 +292,141 @@ const { open, stop } = await start();
   await page.screenshot({ path: SHOTS + "63-known-ar.png" });
   await page.keyboard.press("Escape");
   ok("no console errors (ar statuses)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
+// --- materials listed in the concept itself
+const GRADIENT = `${CONCEPTS}/Gradient.md`;
+const setMaterials = (page, path, list) =>
+  page.evaluate(([p, l]) => {
+    const vault = tropa.app.vault;
+    if (!vault.getAbstractFileByPath("Files/scan.pdf")) vault.seed("Files/scan.pdf", "");
+    return tropa.app.fileManager.processFrontMatter(vault.getAbstractFileByPath(p), (fm) => (fm.materials = l));
+  }, [path, list]);
+const rowTitles = (page) => page.locator(".tropa-side .tropa-material .tropa-row-title").allInnerTexts();
+{
+  const { page, errors } = await open();
+  await node(page, "Gradient").click(); await wait(page, 150);
+  const before = await rowTitles(page);
+  const minutesBefore = await page.evaluate("tropa.plugin.store.route.remainingMinutes");
+  await setMaterials(page, GRADIENT, [
+    { url: "https://www.khanacademy.org/math/multivariable-calculus/gradient", title: "Khan Academy, Gradient", format: "video", minutes: 15 },
+    "[[scan.pdf]]",
+    "https://NUMPY.org/doc/stable/user/quickstart.html/",
+  ]);
+  await wait(page, 300);
+  const after = await rowTitles(page);
+  ok("inline link shown", after.includes("Khan Academy, Gradient"), after.join("|"));
+  ok("inline attachment shown", after.includes("scan"), after.join("|"));
+  ok("same URL as a note shows the note", after.includes("NumPy quickstart") && after.length === before.length + 3, after.join("|"));
+  ok("one node for the note", (await page.evaluate("tropa.plugin.store.graph.sources.filter((n) => n.title === 'NumPy quickstart').length")) === 1);
+  const meta = await page.locator('.tropa-side .tropa-material:has-text("Khan Academy") .tropa-material-meta').innerText();
+  ok("inline material format and time", meta.includes("Video") && meta.includes("15 min"), meta);
+  const pdfMeta = await page.locator('.tropa-side .tropa-material:has-text("scan") .tropa-material-meta').innerText();
+  ok("attachment format guessed", pdfMeta.includes("Paper"), pdfMeta);
+  // The shortest ready material is recommended, so the 15-minute video replaces a longer one in the estimate.
+  const step = await page.evaluate(`tropa.plugin.store.route.steps.find((s) => s.id === "${GRADIENT}")?.material`);
+  ok("route uses the inline material", step === "material:https://www.khanacademy.org/math/multivariable-calculus/gradient", step);
+  ok("route time follows it", (await page.evaluate("tropa.plugin.store.route.remainingMinutes")) !== minutesBefore);
+
+  // Ticking: the URL is kept as it is, the attachment as a link that follows renames.
+  await page.locator('.tropa-side .tropa-material:has-text("Khan Academy") input').check(); await wait(page, 300);
+  await page.locator('.tropa-side .tropa-material:has-text("scan") input').check(); await wait(page, 300);
+  const progress = await page.evaluate(PROG);
+  ok("done-materials saved", /done-materials:\s*\n\s*- https:\/\/www\.khanacademy\.org\/math\/multivariable-calculus\/gradient\s*\n\s*- "?\[\[scan\.pdf\]\]/.test(progress), progress);
+  ok("note materials stay in done", !/done:\s*\n\s*- https/.test(progress), progress);
+  ok("ticking starts the concept", (await state(page, "Gradient")).includes("state-learning"));
+  await page.evaluate("tropa.plugin.store.rebuild(true)"); await wait(page, 200);
+  ok("done survives a reread", await page.locator('.tropa-side .tropa-material:has-text("scan") input').isChecked());
+
+  // Opening: the attachment in Obsidian, the link outside.
+  await page.evaluate("window.opened = []; window.open = (url) => { window.opened.push(url); return null; }");
+  await page.locator('.tropa-side .tropa-material:has-text("scan") .tropa-row-title').click(); await wait(page, 150);
+  ok("attachment opens in Obsidian", (await page.locator("#note .note-title").getAttribute("data-path")) === "Files/scan.pdf");
+  await page.locator('.tropa-side .tropa-material:has-text("Khan Academy") .tropa-row-title').click(); await wait(page, 100);
+  ok("link opens outside", (await page.evaluate("window.opened")).includes("https://www.khanacademy.org/math/multivariable-calculus/gradient"));
+
+  // The map shows them as materials, and their details say where they live.
+  await page.click('.tropa-toggle-sources'); await wait(page, 500);
+  ok("inline material on the map", (await node(page, "Khan Academy, Gradient").count()) === 1);
+  await node(page, "Khan Academy, Gradient").click(); await wait(page, 150);
+  ok("inline hint", (await page.locator(".tropa-side").innerText()).includes("Listed in the concept itself"));
+  await node(page, "Khan Academy, Gradient").click({ button: "right" }); await wait(page, 100);
+  ok("context menu opens the source", (await page.locator('.menu-item:text-is("Open source")').count()) === 1);
+  await page.keyboard.press("Escape");
+  await page.click('.tropa-toggle-sources'); await wait(page, 400);
+
+  // Detaching edits the concept's own list; the note keeps teaching its own concept.
+  await node(page, "Gradient").click(); await wait(page, 150);
+  await page.locator('.tropa-side .tropa-material:has-text("NumPy quickstart") button[aria-label^="Detach"]').click({ force: true }); await wait(page, 350);
+  ok("detached from the concept list", !(await note(page, GRADIENT)).includes("numpy"), await note(page, GRADIENT));
+  ok("note material untouched", (await note(page, "Tropa/Example/Materials/NumPy quickstart.md")).includes("[[Python and NumPy]]"));
+  ok("inline row removed", !(await rowTitles(page)).includes("NumPy quickstart"));
+
+  // Adding a link without a note.
+  await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 100);
+  await page.keyboard.type("Wikipedia, Gradient"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
+  await page.locator('.modal input[placeholder="https://example.com"]').fill("https://en.wikipedia.org/wiki/Gradient");
+  await page.locator(".modal .checkbox-container input").check();
+  await page.screenshot({ path: SHOTS + "70-inline-modal.png" });
+  await page.click('.modal button:text-is("Add material")'); await wait(page, 400);
+  ok("inline material added", (await rowTitles(page)).includes("Wikipedia, Gradient"));
+  ok("no note created", (await page.evaluate("tropa.app.vault.getMarkdownFiles().filter((f) => f.basename.startsWith('Wikipedia')).length")) === 0);
+  ok("written to the concept", (await note(page, GRADIENT)).includes("https://en.wikipedia.org/wiki/Gradient"), await note(page, GRADIENT));
+  // Keeping a material in the concept needs a link.
+  await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 100);
+  await page.keyboard.type("Nothing"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
+  await page.locator(".modal .checkbox-container input").check();
+  await page.click('.modal button:text-is("Add material")'); await wait(page, 150);
+  ok("link required", (await page.evaluate("tropa.notices")).some((text) => text.includes("[[file.pdf]]")));
+  await page.keyboard.press("Escape"); await wait(page, 100);
+
+  // Picking an attachment puts it into the concept.
+  await node(page, "Derivatives").click(); await wait(page, 150);
+  await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 100);
+  await page.keyboard.type("scan"); await wait(page, 150);
+  ok("attachment offered", (await page.locator('.suggestion-item:has-text("Attachment")').count()) === 1);
+  await page.click('.suggestion-item:has-text("Attachment")'); await wait(page, 400);
+  ok("attachment attached", (await rowTitles(page)).includes("scan"));
+  ok("attachment written as a link", (await note(page, `${CONCEPTS}/Derivatives.md`)).includes("[[scan.pdf]]"), await note(page, `${CONCEPTS}/Derivatives.md`));
+  ok("shared attachment is one node", (await page.evaluate("tropa.plugin.store.graph.nodes.get('material:Files/scan.pdf').teaches.length")) === 2);
+  await page.screenshot({ path: SHOTS + "71-inline-materials.png" });
+  ok("no console errors (inline materials)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ru" });
+  await setMaterials(page, "Tropa/Пример/Концепты/Градиент.md", [{ url: "https://ru.wikipedia.org/wiki/Градиент", title: "Википедия", minutes: 10 }]);
+  await wait(page, 300);
+  await node(page, "Градиент").click(); await wait(page, 150);
+  ok("ru: inline material", (await rowTitles(page)).includes("Википедия"));
+  await page.click('.tropa-side button:has-text("Добавить материал")'); await wait(page, 100);
+  await page.keyboard.type("Конспект"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
+  ok("ru: toggle label", (await page.locator('.modal .setting-item-name:text-is("Оставить в концепте")').count()) === 1);
+  await page.keyboard.press("Escape");
+  await page.click('.tropa-toggle-sources'); await wait(page, 500);
+  await node(page, "Википедия").click(); await wait(page, 150);
+  ok("ru: inline hint", (await page.locator(".tropa-side").innerText()).includes("Указан прямо в концепте"));
+  ok("no console errors (ru inline materials)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar" });
+  await setMaterials(page, GRADIENT, [{ url: "https://example.com/gradient", title: "What is a gradient?", minutes: 10 }]);
+  await wait(page, 300);
+  await node(page, "Gradient").click(); await wait(page, 150);
+  const title = page.locator('.tropa-side .tropa-material:has-text("What is a gradient?") .tropa-row-title');
+  ok("ar: inline material", (await title.count()) === 1);
+  ok("ar: English title keeps its direction", (await title.evaluate((el) => getComputedStyle(el).direction)) === "ltr");
+  await page.click('.tropa-side .tropa-add:has-text("إضافة مادة")'); await wait(page, 100);
+  await page.keyboard.type("x"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
+  const modal = page.locator(".modal");
+  ok("ar: modal right to left", (await page.locator(".modal-container .modal, .modal").first().evaluate((el) => el.closest("[dir]")?.getAttribute("dir"))) === "rtl");
+  ok("ar: toggle translated", (await modal.locator('.setting-item-name:text-is("إبقاؤها في المفهوم")').count()) === 1);
+  ok("ar: no raw placeholders", !/[{}]/.test(await modal.innerText()));
+  await page.screenshot({ path: SHOTS + "72-inline-modal-ar.png" });
+  await page.keyboard.press("Escape");
+  ok("no console errors (ar inline materials)", errors.length === 0, JSON.stringify(errors));
   await page.close();
 }
 

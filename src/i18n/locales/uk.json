@@ -40,7 +40,9 @@
     "recommendsKey": "Бажаний зв’язок",
     "recommendsKeyDesc": "Корисно, але не закриває доступ.",
     "teachesKey": "Чого вчить матеріал",
-    "teachesKeyDesc": "Поняття, які розкриває матеріал."
+    "teachesKeyDesc": "Поняття, які розкриває матеріал.",
+    "materialsKey": "Матеріали в понятті",
+    "materialsKeyDesc": "Посилання та вкладення, перелічені прямо в понятті, без окремої нотатки."
   },
   "minutes": "{minutes} хв",
   "hours": "{hours} год",
@@ -87,6 +89,11 @@
   "durationDesc": "У хвилинах. З цього складається оцінка маршруту.",
   "addMaterial": "Додати матеріал",
   "materialNameRequired": "Вкажіть назву матеріалу",
+  "inlineMaterial": "Залишити в понятті",
+  "inlineMaterialDesc": "Додати посилання до списку самого поняття, не створюючи нотатку для матеріалу.",
+  "inlineLinkRequired": "Вкажіть посилання на кшталт https://… або [[файл.pdf]]",
+  "inlineMaterialHint": "Вказаний прямо в понятті, окремої нотатки немає.",
+  "attachment": "Вкладення",
   "knowBeforePrompt": "Що треба знати до «{title}»?",
   "unlocksPrompt": "Що відкриє «{title}»?",
   "note": "Нотатка",

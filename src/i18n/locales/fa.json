@@ -40,7 +40,9 @@
     "recommendsKey": "پیوند پیشنهادی",
     "recommendsKeyDesc": "مفید است ولی چیزی را قفل نمی‌کند.",
     "teachesKey": "آنچه منبع آموزش می‌دهد",
-    "teachesKeyDesc": "مفهوم‌هایی که منبع به آن‌ها می‌پردازد."
+    "teachesKeyDesc": "مفهوم‌هایی که منبع به آن‌ها می‌پردازد.",
+    "materialsKey": "منابع درون مفهوم",
+    "materialsKeyDesc": "پیوندها و پیوست‌هایی که مستقیم در خود مفهوم آمده‌اند، بدون یادداشت جداگانه."
   },
   "minutes": "{minutes} دقیقه",
   "hours": "{hours} ساعت",
@@ -87,6 +89,11 @@
   "durationDesc": "به دقیقه. برآورد مسیر جمع همین زمان‌هاست.",
   "addMaterial": "افزودن منبع",
   "materialNameRequired": "نام منبع را بنویسید",
+  "inlineMaterial": "نگه داشتن در مفهوم",
+  "inlineMaterialDesc": "پیوند را به فهرست خود مفهوم اضافه کن، به‌جای ساختن یادداشت برای منبع.",
+  "inlineLinkRequired": "پیوندی مانند https://… یا [[پرونده.pdf]] وارد کنید",
+  "inlineMaterialHint": "مستقیم در خود مفهوم آمده و یادداشت جداگانه‌ای ندارد.",
+  "attachment": "پیوست",
   "knowBeforePrompt": "پیش از «{title}» چه باید دانست؟",
   "unlocksPrompt": "«{title}» چه چیزی را باز می‌کند؟",
   "note": "یادداشت",

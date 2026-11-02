@@ -40,7 +40,9 @@
     "recommendsKey": "Önerilen bağlantı",
     "recommendsKeyDesc": "Faydalı ama erişimi engellemez.",
     "teachesKey": "Kaynağın öğrettikleri",
-    "teachesKeyDesc": "Kaynağın ele aldığı kavramlar."
+    "teachesKeyDesc": "Kaynağın ele aldığı kavramlar.",
+    "materialsKey": "Kavramdaki kaynaklar",
+    "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler."
   },
   "minutes": "{minutes} dk",
   "hours": "{hours} sa",
@@ -87,6 +89,11 @@
   "durationDesc": "Dakika olarak. Rota tahmini bunların toplamıdır.",
   "addMaterial": "Kaynak ekle",
   "materialNameRequired": "Kaynağın adını yaz",
+  "inlineMaterial": "Kavramda tut",
+  "inlineMaterialDesc": "Kaynak için not oluşturmak yerine bağlantıyı kavramın kendi listesine ekle.",
+  "inlineLinkRequired": "https://… veya [[dosya.pdf]] gibi bir bağlantı girin",
+  "inlineMaterialHint": "Doğrudan kavramda listelenmiş, ayrı bir notu yok.",
+  "attachment": "Ek",
   "knowBeforePrompt": "“{title}” öncesinde ne bilinmeli?",
   "unlocksPrompt": "“{title}” neyin kilidini açar?",
   "note": "Not",

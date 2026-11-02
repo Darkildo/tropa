@@ -1,5 +1,6 @@
 import { App, Modal, Notice, Setting, SuggestModal, setIcon } from "obsidian";
 import { guessFormat } from "../core/format";
+import { fileFormat, parseMaterials } from "../core/materials";
 import type { SourceFormat } from "../core/types";
 import { isRtl, t } from "../i18n";
 import { attempt } from "../attempt";
@@ -65,11 +66,15 @@ export class PickModal extends SuggestModal<PickItem> {
   }
 }
 
+const linkFormat = (value: string) => (/^\s*\[\[/.test(value) ? fileFormat(value.replace(/[[\]]/g, "")) : guessFormat(value));
+
 export class SourceModal extends Modal {
   private draft: SourceDraft;
   private formatTouched = false;
+  /** Keep the material as a link in the concept instead of creating a note for it. */
+  private inline = false;
 
-  constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft) => void | Promise<void>) {
+  constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft, inline: boolean) => void | Promise<void>) {
     super(app);
     if (isRtl()) this.modalEl.dir = "rtl";
     this.draft = { title, url: "", format: "article" };
@@ -93,12 +98,17 @@ export class SourceModal extends Modal {
         text.setPlaceholder("https://example.com").onChange((value) => {
           this.draft.url = value.trim();
           if (!this.formatTouched) {
-            this.draft.format = guessFormat(this.draft.url);
+            this.draft.format = linkFormat(this.draft.url);
             formatControl?.setValue(this.draft.format);
           }
         });
         if (this.draft.title) window.setTimeout(() => text.inputEl.focus());
       });
+
+    new Setting(contentEl)
+      .setName(t.inlineMaterial)
+      .setDesc(t.inlineMaterialDesc)
+      .addToggle((toggle) => toggle.setValue(this.inline).onChange((value) => (this.inline = value)));
 
     new Setting(contentEl).setName(t.formatName).addDropdown((dropdown) => {
       dropdown.addOptions(t.format).setValue(this.draft.format).onChange((value) => {
@@ -122,12 +132,17 @@ export class SourceModal extends Modal {
 
     new Setting(contentEl).addButton((button) =>
       button.setButtonText(t.addMaterial).setCta().onClick(() => {
-        if (!this.draft.title.trim()) {
+        // A link in the concept names itself, a note needs a name for its file.
+        if (this.inline && parseMaterials(this.draft.url).length === 0) {
+          new Notice(t.inlineLinkRequired);
+          return;
+        }
+        if (!this.inline && !this.draft.title.trim()) {
           new Notice(t.materialNameRequired);
           return;
         }
         this.close();
-        attempt(Promise.resolve(this.onSave(this.draft)), `add material "${this.draft.title}"`);
+        attempt(Promise.resolve(this.onSave(this.draft, this.inline)), `add material "${this.draft.title}"`);
       }),
     );
   }

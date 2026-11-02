@@ -40,7 +40,9 @@
     "recommendsKey": "推奨リンク",
     "recommendsKeyDesc": "役に立ちますが、ロックはしません。",
     "teachesKey": "教材が教えること",
-    "teachesKeyDesc": "教材が扱う概念。"
+    "teachesKeyDesc": "教材が扱う概念。",
+    "materialsKey": "概念内の教材",
+    "materialsKeyDesc": "別のノートを作らず、概念に直接書かれたリンクや添付ファイル。"
   },
   "minutes": "{minutes}分",
   "hours": "{hours}時間",
@@ -87,6 +89,11 @@
   "durationDesc": "分単位。ルートの見積もりはこの合計です。",
   "addMaterial": "教材を追加",
   "materialNameRequired": "教材の名前を入力してください",
+  "inlineMaterial": "概念内に保持",
+  "inlineMaterialDesc": "教材のノートを作らずに、リンクを概念自体のリストに追加します。",
+  "inlineLinkRequired": "https://… や [[ファイル.pdf]] のようなリンクを入力してください",
+  "inlineMaterialHint": "概念に直接書かれており、別のノートはありません。",
+  "attachment": "添付ファイル",
   "knowBeforePrompt": "「{title}」の前に知っておくべきことは？",
   "unlocksPrompt": "「{title}」で解放されるものは？",
   "note": "ノート",

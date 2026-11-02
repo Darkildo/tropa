@@ -40,7 +40,9 @@
     "recommendsKey": "Tautan yang disarankan",
     "recommendsKeyDesc": "Berguna, tetapi tidak mengunci akses.",
     "teachesKey": "Yang diajarkan materi",
-    "teachesKeyDesc": "Konsep yang dibahas materi."
+    "teachesKeyDesc": "Konsep yang dibahas materi.",
+    "materialsKey": "Materi di dalam konsep",
+    "materialsKeyDesc": "Tautan dan lampiran yang dicantumkan langsung di konsep, tanpa catatan terpisah."
   },
   "minutes": "{minutes} mnt",
   "hours": "{hours} jam",
@@ -87,6 +89,11 @@
   "durationDesc": "Dalam menit. Perkiraan rute adalah jumlah semuanya.",
   "addMaterial": "Tambah materi",
   "materialNameRequired": "Isi nama materi",
+  "inlineMaterial": "Simpan di konsep",
+  "inlineMaterialDesc": "Tambahkan tautan ke daftar konsep itu sendiri alih-alih membuat catatan untuk materi.",
+  "inlineLinkRequired": "Masukkan tautan seperti https://… atau [[berkas.pdf]]",
+  "inlineMaterialHint": "Tercantum langsung di konsep, tidak ada catatan terpisah.",
+  "attachment": "Lampiran",
   "knowBeforePrompt": "Apa yang perlu diketahui sebelum “{title}”?",
   "unlocksPrompt": "Apa yang dibuka oleh “{title}”?",
   "note": "Catatan",

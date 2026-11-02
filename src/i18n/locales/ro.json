@@ -40,7 +40,9 @@
     "recommendsKey": "Legătură recomandată",
     "recommendsKeyDesc": "Utilă, dar nu blochează accesul.",
     "teachesKey": "Ce predă un material",
-    "teachesKeyDesc": "Conceptele pe care le acoperă materialul."
+    "teachesKeyDesc": "Conceptele pe care le acoperă materialul.",
+    "materialsKey": "Materiale în concept",
+    "materialsKeyDesc": "Linkuri și atașamente enumerate direct în concept, fără o notă separată."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "În minute. Estimarea traseului e suma acestora.",
   "addMaterial": "Adaugă material",
   "materialNameRequired": "Scrie numele materialului",
+  "inlineMaterial": "Păstrează în concept",
+  "inlineMaterialDesc": "Adaugă linkul în lista conceptului în loc să creezi o notă pentru material.",
+  "inlineLinkRequired": "Introdu un link de tipul https://… sau [[fisier.pdf]]",
+  "inlineMaterialHint": "Este chiar în concept, nu există o notă separată.",
+  "attachment": "Atașament",
   "knowBeforePrompt": "Ce trebuie știut înainte de „{title}”?",
   "unlocksPrompt": "Ce deblochează „{title}”?",
   "note": "Notă",

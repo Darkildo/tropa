@@ -12,8 +12,17 @@ import {
   unlockedBy,
 } from "./core/graph";
 import { readProgress, writeProgress } from "./core/progress";
-import { basename, linkTargets, toList } from "./core/links";
-import type { ConceptState, NoteInput, NoteRef, Progress, Route, SourceFormat } from "./core/types";
+import { basename, linkTargets, parseLinkTarget, toList } from "./core/links";
+import {
+  entryFormat,
+  materialId,
+  materialKey,
+  normalizeUrl,
+  parseMaterials,
+  urlTitle,
+  type MaterialEntry,
+} from "./core/materials";
+import type { ConceptState, InlineMaterial, NoteInput, NoteRef, Progress, Route, SourceFormat } from "./core/types";
 import { t } from "./i18n";
 import type { TropaSettings } from "./defaults";
 
@@ -82,6 +91,8 @@ export class Store extends Events {
         minutes: Number.isFinite(minutes) && minutes > 0 ? minutes : undefined,
         url: typeof frontmatter.url === "string" ? frontmatter.url : undefined,
         summary: typeof frontmatter.summary === "string" ? frontmatter.summary : undefined,
+        materials:
+          kind === "concept" ? parseMaterials(frontmatter[settings.materialsKey]).map((entry) => this.resolveMaterial(entry, file.path)) : undefined,
       });
     }
 
@@ -106,8 +117,33 @@ export class Store extends Events {
     if (type === "concept" || type === "source") return type;
     if (type !== undefined) return null;
     if (settings.teachesKey in frontmatter) return "source";
-    if (settings.requiresKey in frontmatter) return "concept";
+    if (settings.requiresKey in frontmatter || settings.materialsKey in frontmatter) return "concept";
     return null;
+  }
+
+  /** An entry of a concept's `materials`: a URL is keyed by its normalized form, an attachment by its path. */
+  private resolveMaterial(entry: MaterialEntry, from: string): InlineMaterial {
+    if (entry.url) {
+      return { id: materialId(normalizeUrl(entry.url)), title: entry.title ?? urlTitle(entry.url), url: entry.url, format: entryFormat(entry), minutes: entry.minutes };
+    }
+    const link = entry.link ?? "";
+    const file = this.app.metadataCache.getFirstLinkpathDest(link, from);
+    return {
+      id: materialId(file?.path ?? link),
+      title: entry.title ?? (file ? file.basename : basename(link)),
+      file: file?.path,
+      format: entryFormat(entry, file?.path),
+      minutes: entry.minutes,
+    };
+  }
+
+  /** The id a value from the progress file or a concept's list stands for. */
+  private materialIdOf(value: string, from: string) {
+    if (/^\s*\[\[/.test(value)) {
+      const link = parseLinkTarget(value) ?? value;
+      return materialId(this.app.metadataCache.getFirstLinkpathDest(link, from)?.path ?? link);
+    }
+    return materialId(normalizeUrl(value));
   }
 
   private resolve(target: string, from: string): NoteRef {
@@ -120,7 +156,11 @@ export class Store extends Events {
     const path = normalizePath(this.settings().progressPath);
     const file = this.app.vault.getAbstractFileByPath(path);
     const frontmatter = file instanceof TFile ? this.app.metadataCache.getFileCache(file)?.frontmatter : undefined;
-    this.progress = readProgress(frontmatter, (target) => this.resolve(target, path).id);
+    this.progress = readProgress(
+      frontmatter,
+      (target) => this.resolve(target, path).id,
+      (value) => this.materialIdOf(value, path),
+    );
   }
 
   onProgressFileChanged() {
@@ -169,8 +209,12 @@ export class Store extends Events {
       );
     }
     const link = (id: string) => this.linkTo(id, path);
+    const material = (id: string) => {
+      const attachment = this.fileOf(materialKey(id));
+      return attachment ? `[[${this.app.metadataCache.fileToLinktext(attachment, path, false)}]]` : materialKey(id);
+    };
     await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
-      writeProgress(frontmatter, this.progress, link);
+      writeProgress(frontmatter, this.progress, link, material);
     });
   }
 
@@ -335,6 +379,62 @@ export class Store extends Events {
     if (!file) return;
     if (this.graph.nodes.get(noteId)?.kind !== "source") await this.classifyNote(file, "source");
     await this.addLink(noteId, "teachesKey", conceptId);
+  }
+
+  /** Lists a link or an attachment in the concept itself, with no note for the material. */
+  async addInlineMaterial(conceptId: string, draft: Omit<SourceDraft, "teaches">) {
+    const file = await this.materialize(conceptId);
+    const value = draft.url.trim();
+    const entry: Record<string, unknown> = /^\s*\[\[/.test(value) ? { file: value } : { url: value };
+    if (draft.title.trim()) entry.title = draft.title.trim();
+    entry.format = draft.format;
+    if (draft.minutes) entry.minutes = draft.minutes;
+    const key = this.settings().materialsKey;
+    const id = this.materialIdOf(value, file.path);
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
+      const list = toList(frontmatter[key]).filter((item) => this.entryId(item, file.path) !== id);
+      frontmatter[key] = [...list, entry];
+    });
+  }
+
+  /** Teaches one more concept with an inline material: the same entry goes into that concept's list. */
+  async copyInlineMaterial(materialNodeId: string, conceptId: string) {
+    const node = this.graph.nodes.get(materialNodeId);
+    if (!node?.inline) return;
+    const link = node.url ?? `[[${node.file ?? materialKey(node.id)}]]`;
+    await this.addInlineMaterial(conceptId, { title: node.title, url: link, format: node.format ?? "other", minutes: node.minutes });
+  }
+
+  /**
+   * Detaches a material from a concept wherever the link lives: in the material note's
+   * `teaches`, in the concept's `materials`, or both.
+   */
+  async detachMaterial(sourceId: string, conceptId: string) {
+    const source = this.graph.nodes.get(sourceId);
+    if (source && !source.inline) await this.removeLink(sourceId, "teachesKey", conceptId);
+    const concept = this.fileOf(conceptId);
+    if (!concept) return;
+    const key = this.settings().materialsKey;
+    const sourceUrl = source?.url ? normalizeUrl(source.url) : null;
+    const matches = (item: unknown) => {
+      const id = this.entryId(item, concept.path);
+      if (!id) return false;
+      if (id === sourceId) return true;
+      const target = materialKey(id);
+      return target === sourceId || (sourceUrl !== null && target === sourceUrl);
+    };
+    const listed = toList(this.app.metadataCache.getFileCache(concept)?.frontmatter?.[key]);
+    if (!listed.some(matches)) return;
+    await this.app.fileManager.processFrontMatter(concept, (frontmatter: Record<string, unknown>) => {
+      const list = toList(frontmatter[key]).filter((item) => !matches(item));
+      if (list.length) frontmatter[key] = list;
+      else delete frontmatter[key];
+    });
+  }
+
+  private entryId(item: unknown, from: string) {
+    const [entry] = parseMaterials(item);
+    return entry ? this.resolveMaterial(entry, from).id : null;
   }
 
   fileOf(id: string) {
