@@ -122,19 +122,9 @@ export class AuditView extends ItemView {
     map.addEventListener("click", () => this.showOnMap(chain[0]));
   }
 
+  /** The map makes room for the note itself: route, materials, folds and focus. */
   private showOnMap(id: string) {
-    const { settings } = this.plugin;
-    const showMaterial = this.store.graph.nodes.get(id)?.kind === "source" && !settings.showSources;
-    if (showMaterial) {
-      settings.showSources = true;
-      attempt(this.plugin.saveSettings(), "save settings");
-    }
-    attempt(
-      this.plugin.showMap((map) => {
-        if (showMaterial) map.render();
-        map.focusNode(id);
-      }),
-      "show a note on the map",
-    );
+    attempt(this.plugin.showMap((map) => map.focusNode(id)), "show a note on the map");
   }
+
 }

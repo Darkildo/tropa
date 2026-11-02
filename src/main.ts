@@ -139,7 +139,7 @@ export default class TropaPlugin extends Plugin {
     onActiveConcept("mark-known", t.markKnownCommand, (id) => openKnownModal(this.app, this.store, id));
   }
 
-  async showMap(then?: (map: MapView) => void) {
+  async showMap(then?: (map: MapView) => unknown) {
     const { workspace } = this.app;
     let leaf = workspace.getLeavesOfType(MAP_VIEW)[0];
     if (!leaf) {
@@ -147,7 +147,7 @@ export default class TropaPlugin extends Plugin {
       await leaf.setViewState({ type: MAP_VIEW, active: true });
     }
     await workspace.revealLeaf(leaf);
-    if (leaf.view instanceof MapView) then?.(leaf.view);
+    if (leaf.view instanceof MapView) await then?.(leaf.view);
   }
 
   async showPanel() {
