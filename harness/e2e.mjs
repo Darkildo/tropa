@@ -1088,7 +1088,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
 }
 {
   // 1000 concepts; materials on make it 1700 nodes: about 0.7 s for the WebAssembly engine, 1.5 s for TypeScript.
-  const { page, errors } = await open({ query: "?scenario=large&n=1000&materials" });
+  const { page, errors } = await open({ query: "?scenario=large&n=1000&materials&holdlayout" });
   await layoutDone(page);
   ok("1000 concepts render", (await page.locator(".tropa-node").count()) === 1000);
   // Let the browser finish drawing the first map before timing anything.
@@ -1109,6 +1109,9 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
     };
     tick();
   });
+  // The answer is held until after the click below: the WebAssembly engine can finish 1700 nodes before a
+  // click lands on a busy machine, and the click must come while the layout is pending.
+  await page.evaluate(() => Object.assign(window.layoutHold, { on: true, since: performance.now(), arrived: 0 }));
   await page.click(".tropa-toggle-sources");
   ok("layout runs in the background", (await page.locator(".tropa-canvas.is-laying-out[aria-busy=true]").count()) === 1);
   // Timers alone first: a click or a screenshot makes the page draw, which is not the layout's doing.
@@ -1122,8 +1125,10 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   const stillLaying = (await page.locator(".tropa-canvas.is-laying-out").count()) === 1;
   ok("a click is handled while the layout runs", (await zoom()) !== before && stillLaying, `${clickMs} ms`);
   await page.screenshot({ path: SHOTS + "51-laying-out.png" });
+  await page.evaluate(() => window.layoutHold.release());
   await layoutDone(page);
-  const total = await page.evaluate(() => ((window.freeze.on = false), window.freeze.pending));
+  // The worker's own time, from the toggle to its answer: the hold only delays the delivery.
+  const total = await page.evaluate(() => ((window.freeze.on = false), (window.layoutHold.arrived || performance.now()) - window.layoutHold.since));
   console.log(`1700 nodes in the worker: ${Math.round(total)} ms; first ${Math.round(freeze.pending)} ms: longest pause ${Math.round(freeze.longest)} ms; click ${clickMs} ms`);
   ok("interface stays responsive during layout", freeze.pending > 200 && freeze.longest < 150, JSON.stringify(freeze));
   ok("materials laid out", (await page.locator(".tropa-node").count()) === 1700);
