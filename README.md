@@ -28,6 +28,8 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 
 ## Installation
 
+Tropa requires Obsidian 1.13.0 or later.
+
 ### From Community plugins
 
 Once Tropa is listed: open **Settings → Community plugins → Browse**, search for **Tropa**, install it and enable it.
@@ -84,6 +86,7 @@ Each release has ready-made vaults with the example map and the plugin already i
 
 ```bash
 npm install
+npm run lint         # ESLint with the Obsidian plugin rules
 npm test             # core: graph, states, cycles, route, layout, example map, i18n
 npm run build        # main.js
 npm run dev          # rebuild on change

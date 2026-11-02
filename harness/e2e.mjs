@@ -23,6 +23,8 @@ const { open, stop } = await start();
   const { page, errors } = await open();
   await page.screenshot({ path: SHOTS + "10-start-light.png" });
   await node(page, "Gradient").click(); await wait(page, 150);
+  const padding = await page.evaluate("getComputedStyle(document.querySelector('#center .view-content.tropa-host')).padding");
+  ok("map view has no padding", padding === "0px", padding);
   ok("inspector opens", (await page.locator(".tropa-side .tropa-title").innerText()) === "Gradient");
   await page.screenshot({ path: SHOTS + "11-detail.png" });
   await page.click('.tropa-side button:text-is("Start learning")'); await wait(page, 200);
@@ -95,7 +97,7 @@ const { open, stop } = await start();
   await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 100);
   await page.keyboard.type("Seeing Theory"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
   await page.screenshot({ path: SHOTS + "16-source-modal.png" });
-  await page.locator('.modal input[placeholder="https://"]').fill("https://www.youtube.com/watch?v=x");
+  await page.locator('.modal input[placeholder="https://example.com"]').fill("https://www.youtube.com/watch?v=x");
   ok("format guessed", (await page.locator(".modal select").inputValue()) === "video");
   await page.locator(".modal input[type=number]").fill("30");
   await page.click('.modal button:text-is("Add material")'); await wait(page, 350);
@@ -143,6 +145,33 @@ const { open, stop } = await start();
   ok("sample installed", count >= 15, String(count));
   ok("sample route", (await page.locator(".tropa-goal-label").innerText()) === "Transformer");
   ok("no console errors (empty)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
+// --- declarative settings
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  await page.evaluate(() => {
+    const tab = tropa.plugin.settingTab;
+    tab.display();
+    tab.containerEl.id = "settings";
+    document.getElementById("note").replaceChildren(tab.containerEl);
+    document.getElementById("note").dataset.open = "";
+  });
+  const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
+  ok("settings groups", headings.join("|") === "Files|Note properties", headings.join("|"));
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 7);
+  const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
+  ok("settings show values", (await field("conceptsFolder").inputValue()) === "Tropa/Concepts");
+  ok("settings show defaults as placeholders", (await field("progressPath").getAttribute("placeholder")) === "Tropa/Progress.md");
+  await field("conceptsFolder").fill("Learning/Concepts"); await field("conceptsFolder").dispatchEvent("change"); await wait(page, 150);
+  ok("setting saved", (await page.evaluate("tropa.plugin.data.conceptsFolder")) === "Learning/Concepts");
+  await field("conceptsFolder").fill("  "); await field("conceptsFolder").dispatchEvent("change"); await wait(page, 150);
+  ok("empty setting falls back to default", (await page.evaluate("tropa.plugin.settings.conceptsFolder")) === "Tropa/Concepts");
+  const before = await page.evaluate("tropa.plugin.store.topologyKey");
+  await field("requiresKey").fill("needs"); await field("requiresKey").dispatchEvent("change"); await wait(page, 300);
+  ok("graph reread after setting change", (await page.evaluate("tropa.plugin.store.topologyKey")) !== before);
+  ok("no console errors (settings)", errors.length === 0, JSON.stringify(errors));
   await page.close();
 }
 

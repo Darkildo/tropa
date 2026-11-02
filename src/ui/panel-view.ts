@@ -1,5 +1,6 @@
 import { ItemView, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
 import type TropaPlugin from "../main";
+import { attempt } from "../attempt";
 import { t } from "../i18n";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 
@@ -70,7 +71,7 @@ export class PanelView extends ItemView implements DetailHost {
     else if (node) renderSource(body, this, node);
     else {
       if (file?.extension === "md" && file.path !== this.plugin.settings.progressPath) this.renderOffMap(file);
-      renderRoute(body, this, () => this.plugin.showMap((map) => map.pickGoal()));
+      renderRoute(body, this, () => attempt(this.plugin.showMap((map) => map.pickGoal()), "choose a goal"));
     }
     body.scrollTop = scroll;
   }
@@ -83,7 +84,7 @@ export class PanelView extends ItemView implements DetailHost {
       const button = actions.createEl("button");
       setIcon(button.createSpan(), icon);
       button.createSpan({ text: label });
-      button.addEventListener("click", () => void this.store.classifyNote(file, kind));
+      button.addEventListener("click", () => attempt(this.store.classifyNote(file, kind), `mark ${file.path} as ${kind}`));
     };
     add(t.concept, "lightbulb", "concept");
     add(t.material, "book-open", "source");

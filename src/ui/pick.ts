@@ -2,6 +2,7 @@ import { App, Modal, Notice, Setting, SuggestModal, setIcon } from "obsidian";
 import { guessFormat } from "../core/format";
 import type { SourceFormat } from "../core/types";
 import { t } from "../i18n";
+import { attempt } from "../attempt";
 import type { SourceDraft } from "../store";
 
 export interface PickItem {
@@ -18,7 +19,7 @@ export class PickModal extends SuggestModal<PickItem> {
     app: App,
     private readonly items: PickItem[],
     placeholder: string,
-    private readonly onPick: (item: PickItem) => void,
+    private readonly onPick: (item: PickItem) => void | Promise<void>,
     private readonly createLabel?: (query: string) => string,
   ) {
     super(app);
@@ -50,7 +51,7 @@ export class PickModal extends SuggestModal<PickItem> {
   }
 
   onChooseSuggestion(item: PickItem) {
-    this.onPick(item);
+    attempt(Promise.resolve(this.onPick(item)), `apply "${item.title}"`);
   }
 }
 
@@ -58,7 +59,7 @@ export class SourceModal extends Modal {
   private draft: SourceDraft;
   private formatTouched = false;
 
-  constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft) => void) {
+  constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft) => void | Promise<void>) {
     super(app);
     this.draft = { title, url: "", format: "article" };
   }
@@ -77,7 +78,7 @@ export class SourceModal extends Modal {
       .setName(t.link)
       .setDesc(t.linkDesc)
       .addText((text) => {
-        text.setPlaceholder("https://").onChange((value) => {
+        text.setPlaceholder("https://example.com").onChange((value) => {
           this.draft.url = value.trim();
           if (!this.formatTouched) {
             this.draft.format = guessFormat(this.draft.url);
@@ -114,7 +115,7 @@ export class SourceModal extends Modal {
           return;
         }
         this.close();
-        this.onSave(this.draft);
+        attempt(Promise.resolve(this.onSave(this.draft)), `add material "${this.draft.title}"`);
       }),
     );
   }

@@ -168,8 +168,10 @@ export class Store extends Events {
 
   private async writeProgress() {
     const path = normalizePath(this.settings().progressPath);
-    let file = this.app.vault.getAbstractFileByPath(path);
-    if (!(file instanceof TFile)) {
+    const existing = this.app.vault.getAbstractFileByPath(path);
+    let file: TFile;
+    if (existing instanceof TFile) file = existing;
+    else {
       await this.ensureFolder(path.split("/").slice(0, -1).join("/"));
       file = await this.app.vault.create(
         path,
@@ -177,7 +179,7 @@ export class Store extends Events {
       );
     }
     const link = (id: string) => this.linkTo(id, path);
-    await this.app.fileManager.processFrontMatter(file as TFile, (frontmatter) => {
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       frontmatter.type = "learning-progress";
       frontmatter.goal = this.progress.goal ? link(this.progress.goal) : null;
       frontmatter.mastered = [...this.progress.mastered].map(link);
@@ -227,7 +229,7 @@ export class Store extends Events {
     const file = await this.materialize(id);
     const value = this.linkTo(target, file.path);
     const property = this.settings()[key];
-    await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       const list = toList(frontmatter[property]);
       if (!list.includes(value)) list.push(value);
       frontmatter[property] = list;
@@ -238,7 +240,7 @@ export class Store extends Events {
     const file = this.fileOf(id);
     if (!file) return;
     const property = this.settings()[key];
-    await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       frontmatter[property] = toList(frontmatter[property]).filter((value) => {
         const [link] = linkTargets(value);
         return !link || this.resolve(link, file.path).id !== target;
@@ -268,7 +270,7 @@ export class Store extends Events {
     const settings = this.settings();
     const path = await this.freePath(settings.sourcesFolder, draft.title);
     const file = await this.app.vault.create(path, `---\n${settings.typeKey}: source\n---\n\n`);
-    await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       frontmatter.format = draft.format;
       if (draft.url) frontmatter.url = draft.url;
       if (draft.minutes) frontmatter.minutes = draft.minutes;
@@ -279,7 +281,7 @@ export class Store extends Events {
 
   async classifyNote(file: TFile, kind: "concept" | "source") {
     const settings = this.settings();
-    await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+    await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       frontmatter[settings.typeKey] = kind;
       const key = kind === "concept" ? settings.requiresKey : settings.teachesKey;
       frontmatter[key] ??= [];

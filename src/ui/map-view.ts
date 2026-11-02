@@ -3,6 +3,7 @@ import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { layoutGraph, type Layout, type LaidOutNode } from "../core/layout";
 import { sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
+import { attempt } from "../attempt";
 import { t } from "../i18n";
 import type TropaPlugin from "../main";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
@@ -134,7 +135,7 @@ export class MapView extends ItemView implements DetailHost {
   focusNode(id: string) {
     if (this.effectiveMode() === "route" && !this.store.route?.closure.has(id)) {
       this.plugin.settings.mapMode = "all";
-      void this.plugin.saveSettings();
+      attempt(this.plugin.saveSettings(), "save settings");
       this.render();
     }
     this.select(id);
@@ -224,8 +225,7 @@ export class MapView extends ItemView implements DetailHost {
   }
 
   private createNode(node: GraphNode) {
-    const el = document.createElement("div");
-    el.className = `tropa-node is-${node.kind}`;
+    const el = createDiv({ cls: `tropa-node is-${node.kind}` });
     el.dataset.id = node.id;
     el.dataset.kind = node.kind;
     el.tabIndex = 0;
@@ -243,7 +243,7 @@ export class MapView extends ItemView implements DetailHost {
     el.addEventListener("blur", () => this.highlight(null));
     el.addEventListener("keydown", (event) => this.onNodeKey(event, node.id));
     el.addEventListener("dblclick", () => {
-      if (this.store.graph.nodes.get(node.id)?.ghost) void this.store.materialize(node.id);
+      if (this.store.graph.nodes.get(node.id)?.ghost) attempt(this.store.materialize(node.id), `create ${node.title}`);
       else this.openNote(node.id);
     });
     el.addEventListener("contextmenu", (event) => this.openContextMenu(event, node.id));
@@ -443,7 +443,7 @@ export class MapView extends ItemView implements DetailHost {
     });
     const actions = empty.createDiv({ cls: "tropa-actions" });
     const sample = actions.createEl("button", { cls: "mod-cta", text: t.showExample });
-    sample.addEventListener("click", () => void this.plugin.installSample());
+    sample.addEventListener("click", () => attempt(this.plugin.installSample(), "add the example map"));
     const create = actions.createEl("button", { text: t.createFirstConcept });
     create.addEventListener("click", () => this.plugin.promptNewConcept());
   }
@@ -471,7 +471,7 @@ export class MapView extends ItemView implements DetailHost {
       button.dataset.mode = mode;
       button.addEventListener("click", () => {
         this.plugin.settings.mapMode = mode;
-        void this.plugin.saveSettings();
+        attempt(this.plugin.saveSettings(), "save settings");
         this.needsFit = true;
         this.overview = true;
         this.render();
@@ -481,7 +481,7 @@ export class MapView extends ItemView implements DetailHost {
     const sources = this.bar.createEl("button", { cls: "tropa-toggle-sources", text: t.materials });
     sources.addEventListener("click", () => {
       this.plugin.settings.showSources = !this.plugin.settings.showSources;
-      void this.plugin.saveSettings();
+      attempt(this.plugin.saveSettings(), "save settings");
       this.needsFit = true;
       this.overview = true;
       this.render();
@@ -719,7 +719,7 @@ export class MapView extends ItemView implements DetailHost {
     const node = store.graph.nodes.get(id);
     if (!node) return;
     const menu = new Menu();
-    if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => void store.materialize(id)));
+    if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => attempt(store.materialize(id), `create ${node.title}`)));
     else menu.addItem((item) => item.setTitle(t.openNote).setIcon("file-text").onClick(() => this.openNote(id)));
 
     if (node.kind === "concept") {
@@ -789,7 +789,7 @@ export class MapView extends ItemView implements DetailHost {
       } else if (this.store.graph.nodes.get(target)?.requires.includes(fromId)) {
         new Notice(t.linkExists);
       } else {
-        void this.store.addLink(target, "requiresKey", fromId);
+        attempt(this.store.addLink(target, "requiresKey", fromId), "link concepts");
       }
     };
 
