@@ -122,7 +122,7 @@ npm run screenshots  # картинки для README в docs/screenshots
 - `src/ui`: карта, боковая панель, модальные окна.
 - `harness`: заглушка Obsidian API, чтобы запускать настоящий код плагина в браузере.
 
-Релиз: `npm version patch` (или `minor`, `major`) и `git push --follow-tags`. Workflow соберёт плагин и опубликует релиз с `main.js`, `manifest.json`, `styles.css` и демо-хранилищами.
+Релиз: добавить раздел новой версии в [`CHANGELOG.md`](CHANGELOG.md), затем `npm version patch` (или `minor`, `major`) и `git push --follow-tags`. Workflow соберёт плагин и опубликует релиз с `main.js`, `manifest.json`, `styles.css` и демо-хранилищами. Текст релиза берётся из раздела CHANGELOG, без него сборка падает.
 
 ## Ограничения
 
