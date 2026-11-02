@@ -1,0 +1,775 @@
+/*
+  Tropa takes its surfaces, text and accent from the active Obsidian theme.
+  The only added idea is the trail: the route is the one strong line on the map.
+*/
+.tropa-host {
+  --tropa-route: var(--interactive-accent);
+  --tropa-walked: var(--color-green);
+  --tropa-learning: var(--color-yellow);
+  --tropa-danger: var(--color-red);
+  --tropa-line: var(--background-modifier-border);
+  --tropa-line-strong: color-mix(in srgb, var(--text-muted) 55%, transparent);
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.tropa-map {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--background-primary);
+}
+
+/* Top bar */
+
+.tropa-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--tropa-line);
+  background: var(--background-primary);
+}
+
+.tropa-spacer { flex: 1; }
+
+button.tropa-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 280px;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+}
+
+.tropa-goal-icon { display: inline-flex; flex: none; }
+.tropa-goal-icon svg { width: 15px; height: 15px; }
+button.tropa-goal.has-goal .tropa-goal-icon { color: var(--tropa-route); }
+.tropa-goal-label { overflow: hidden; text-overflow: ellipsis; }
+
+.tropa-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  white-space: nowrap;
+}
+
+.tropa-progress.is-hidden { display: none; }
+.tropa-progress-text { color: var(--text-normal); font-variant-numeric: tabular-nums; }
+
+.tropa-meter {
+  width: 120px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--background-modifier-border);
+}
+
+.tropa-meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--tropa-walked);
+  transition: width 320ms ease;
+}
+
+.tropa-segment {
+  display: inline-flex;
+  flex: none;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--background-modifier-hover);
+}
+
+.tropa-segment button {
+  height: 28px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  cursor: pointer;
+}
+
+.tropa-segment button.is-active {
+  background: var(--background-primary);
+  color: var(--text-normal);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.tropa-segment button:disabled { opacity: 0.5; cursor: default; }
+
+button.tropa-toggle-sources {
+  flex: none;
+  height: 32px;
+  padding: 0 11px;
+  font-size: var(--font-ui-small);
+}
+
+button.tropa-toggle-sources.is-active {
+  background: var(--background-modifier-active-hover);
+  color: var(--text-accent);
+}
+
+button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
+
+/* Stage */
+
+.tropa-body { position: relative; display: flex; flex: 1; min-height: 0; }
+
+.tropa-stage { position: relative; flex: 1; min-width: 0; overflow: hidden; }
+
+.tropa-canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  background-image: radial-gradient(circle, var(--background-modifier-border) 1px, transparent 1.2px);
+  background-size: 28px 28px;
+}
+
+.tropa-canvas.is-panning { cursor: grabbing; }
+
+.tropa-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+
+.tropa-world.is-moving { transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+.tropa-edges { position: absolute; overflow: visible; pointer-events: none; }
+
+.tropa-edge {
+  fill: none;
+  stroke: var(--tropa-line-strong);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transition: opacity 140ms ease, stroke 200ms ease;
+}
+
+.tropa-edge.is-recommends { stroke-dasharray: 2 6; }
+.tropa-edge.is-teaches { stroke-dasharray: 5 5; stroke-width: 1.25; }
+.tropa-edge.is-route { stroke: color-mix(in srgb, var(--tropa-route) 50%, var(--background-primary)); stroke-width: 2; }
+.tropa-edge.is-frontier { stroke: var(--tropa-route); stroke-width: 3; }
+.tropa-edge.is-walked { stroke: var(--tropa-walked); stroke-width: 3; }
+.tropa-edge.is-loop { stroke: var(--tropa-danger); stroke-width: 2.5; }
+.tropa-edge.is-wire { stroke: var(--tropa-route); stroke-width: 2.5; stroke-dasharray: 6 5; }
+
+.tropa-world.has-focus .tropa-edge:not(.is-related) { opacity: 0.3; }
+.tropa-world.has-focus .tropa-node:not(.is-related) { opacity: 0.55; }
+
+.tropa-world.is-drawing .tropa-edge.is-route {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tropa-draw 420ms ease-out var(--tropa-delay, 0ms) forwards;
+}
+
+@keyframes tropa-draw { to { stroke-dashoffset: 0; } }
+
+/* Nodes */
+
+.tropa-node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 0 12px;
+  border: 1.5px solid var(--tropa-line);
+  border-radius: 14px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 140ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.tropa-node:hover { border-color: var(--text-muted); }
+
+.tropa-node:focus-visible,
+.tropa-step:focus-visible,
+.tropa-row:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+.tropa-node.is-selected {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 32%, transparent);
+}
+
+.tropa-node-text { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+
+.tropa-node-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: var(--font-medium);
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.tropa-node-meta {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tropa-node-meta:empty { display: none; }
+.tropa-world.is-far .tropa-node-meta { display: none; }
+
+.tropa-glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: 50%;
+  color: var(--text-muted);
+}
+
+.tropa-glyph svg { width: 15px; height: 15px; stroke-width: 2.25; }
+.tropa-glyph.is-small { width: 20px; height: 20px; }
+.tropa-glyph.is-small svg { width: 11px; height: 11px; }
+
+.tropa-glyph.state-mastered,
+.state-mastered > .tropa-glyph {
+  border-color: var(--tropa-walked);
+  background: var(--tropa-walked);
+  color: var(--background-primary);
+}
+
+.tropa-glyph.state-learning,
+.state-learning > .tropa-glyph {
+  border-color: var(--tropa-learning);
+  background: color-mix(in srgb, var(--tropa-learning) 22%, transparent);
+  color: var(--tropa-learning);
+}
+
+.tropa-glyph.state-available,
+.state-available > .tropa-glyph {
+  border-color: var(--tropa-route);
+  color: var(--tropa-route);
+}
+
+.tropa-glyph.state-locked,
+.state-locked > .tropa-glyph {
+  border-color: transparent;
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+}
+
+.tropa-glyph.state-cycle,
+.state-cycle > .tropa-glyph {
+  border-color: var(--tropa-danger);
+  color: var(--tropa-danger);
+}
+
+.tropa-node.state-mastered {
+  border-color: color-mix(in srgb, var(--tropa-walked) 45%, transparent);
+  background: color-mix(in srgb, var(--tropa-walked) 10%, var(--background-primary));
+}
+
+.tropa-node.state-learning {
+  border-color: var(--tropa-learning);
+  background: color-mix(in srgb, var(--tropa-learning) 8%, var(--background-primary));
+}
+
+.tropa-node.state-available { border-color: var(--tropa-line-strong); }
+
+.tropa-node.state-locked { border-style: dashed; border-color: var(--tropa-line-strong); background: var(--background-primary); }
+.tropa-node.state-locked .tropa-node-title { color: var(--text-muted); }
+
+.tropa-node.state-cycle { border-color: var(--tropa-danger); }
+
+.tropa-node.is-ghost .tropa-node-title { font-style: italic; }
+
+.tropa-node.is-next {
+  border-width: 2px;
+  border-color: var(--tropa-route);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tropa-route) 20%, transparent);
+}
+
+.tropa-node.is-next.is-selected {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--tropa-route) 36%, transparent);
+}
+
+.tropa-node.is-next::before {
+  content: "Следующий шаг";
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--tropa-route);
+  color: var(--text-on-accent);
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  line-height: 1.5;
+}
+
+.tropa-node.is-goal {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--tropa-route);
+}
+
+.tropa-node.is-goal::after {
+  content: "Цель";
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  padding: 1px 7px;
+  border: 1.5px solid var(--tropa-route);
+  border-radius: 6px;
+  background: var(--background-primary);
+  color: var(--text-accent);
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  line-height: 1.4;
+}
+
+.tropa-node.just-unlocked { animation: tropa-unlock 1.2s ease-out; }
+
+@keyframes tropa-unlock {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tropa-route) 70%, transparent); }
+  100% { box-shadow: 0 0 0 22px transparent; }
+}
+
+.tropa-node.is-drop-ok { border-color: var(--tropa-walked); box-shadow: 0 0 0 4px color-mix(in srgb, var(--tropa-walked) 30%, transparent); }
+.tropa-node.is-drop-bad { border-color: var(--tropa-danger); box-shadow: 0 0 0 4px color-mix(in srgb, var(--tropa-danger) 30%, transparent); }
+
+.tropa-port {
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border: 2px solid var(--background-primary);
+  border-radius: 50%;
+  background: var(--tropa-route);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 120ms ease, transform 120ms ease;
+  cursor: crosshair;
+}
+
+.tropa-node:hover .tropa-port,
+.tropa-port:hover { opacity: 1; transform: scale(1); }
+.is-connecting .tropa-port { display: none; }
+.is-connecting .tropa-canvas { cursor: crosshair; }
+
+.tropa-node.is-source {
+  gap: 8px;
+  padding: 0 12px 0 8px;
+  border-style: solid;
+  border-radius: 8px;
+  background: var(--background-secondary);
+}
+
+.tropa-node.is-source .tropa-glyph {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+}
+
+.tropa-node.is-source .tropa-glyph svg { width: 14px; height: 14px; }
+.tropa-node.is-source .tropa-node-title { font-size: 12.5px; font-weight: var(--font-normal); -webkit-line-clamp: 1; }
+.tropa-node.is-source .tropa-node-meta { font-size: 11px; }
+.tropa-node.is-source.state-done .tropa-glyph { background: var(--tropa-walked); color: var(--background-primary); }
+.tropa-node.is-source.state-locked { opacity: 0.8; }
+
+/* Floating controls */
+
+.tropa-zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 3px;
+  border: 1px solid var(--tropa-line);
+  border-radius: 10px;
+  background: var(--background-primary);
+}
+
+.tropa-zoom button { width: 30px; height: 30px; padding: 0; background: transparent; box-shadow: none; }
+.tropa-zoom svg, button.tropa-add-concept svg { width: 16px; height: 16px; }
+
+.tropa-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--tropa-line);
+  border-radius: 10px;
+  background: var(--background-primary);
+  color: var(--text-muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.tropa-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+
+.tropa-toast {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(520px, calc(100% - 32px));
+  padding: 8px 8px 8px 16px;
+  border-radius: 12px;
+  background: var(--text-normal);
+  color: var(--background-primary);
+  font-size: var(--font-ui-small);
+  transform: translateX(-50%);
+  animation: tropa-toast 200ms ease-out;
+}
+
+.tropa-toast button {
+  flex: none;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font-weight: var(--font-semibold);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes tropa-toast {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.tropa-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(440px, calc(100% - 48px));
+  transform: translate(-50%, -50%);
+  cursor: default;
+  user-select: text;
+  text-align: left;
+}
+
+.tropa-empty h2 { margin: 0 0 8px; font-size: 22px; }
+.tropa-empty p { margin: 0 0 16px; color: var(--text-muted); line-height: 1.5; }
+
+.tropa-map.is-empty .tropa-bar,
+.tropa-map.is-empty .tropa-side,
+.tropa-map.is-empty .tropa-zoom,
+.tropa-map.is-empty .tropa-legend { display: none; }
+
+/* Side panel */
+
+.tropa-side {
+  position: relative;
+  flex: none;
+  width: 340px;
+  overflow-y: auto;
+  padding: 16px;
+  border-left: 1px solid var(--tropa-line);
+  background: var(--background-secondary);
+}
+
+.tropa-panel { height: 100%; overflow-y: auto; padding: 14px; }
+
+button.tropa-collapse { display: none; }
+
+.tropa-title { margin: 0 0 6px; font-size: 18px; font-weight: var(--font-semibold); line-height: 1.3; }
+.tropa-title a { color: var(--text-normal); text-decoration: none; }
+.tropa-title a:hover { color: var(--text-accent); text-decoration: underline; }
+
+button.tropa-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  margin: -4px 0 8px -6px;
+  padding: 0 8px 0 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  cursor: pointer;
+}
+
+button.tropa-back:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+button.tropa-back svg { width: 14px; height: 14px; }
+
+.tropa-status-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+.tropa-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.tropa-panel > .tropa-status,
+.tropa-side > .tropa-status { margin-bottom: 12px; }
+
+.tropa-status svg { width: 14px; height: 14px; }
+.tropa-status.state-mastered { color: var(--tropa-walked); }
+.tropa-status.state-learning { color: var(--tropa-learning); }
+.tropa-status.state-available { color: var(--text-accent); }
+.tropa-status.state-cycle { color: var(--tropa-danger); }
+.tropa-status.is-goal { color: var(--text-accent); }
+
+.tropa-summary { margin: 0 0 14px; line-height: 1.5; }
+
+.tropa-hint { margin: 0 0 12px; color: var(--text-muted); font-size: var(--font-ui-small); line-height: 1.45; }
+.tropa-hint.is-warning { color: var(--text-warning, var(--color-orange)); }
+
+.tropa-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.tropa-actions button { display: inline-flex; align-items: center; gap: 6px; }
+.tropa-actions button svg { width: 14px; height: 14px; }
+
+.tropa-wide { width: 100%; margin-bottom: 12px; }
+
+.tropa-link-button { align-self: center; font-size: var(--font-ui-small); }
+
+.tropa-callout {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--background-modifier-hover);
+  font-size: var(--font-ui-small);
+  line-height: 1.45;
+}
+
+.tropa-callout.is-danger { background: color-mix(in srgb, var(--tropa-danger) 12%, transparent); }
+.tropa-callout p { margin: 4px 0 8px; }
+
+.tropa-section { margin-top: 20px; }
+
+.tropa-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-semibold);
+}
+
+.tropa-section-count { color: var(--text-faint); font-weight: var(--font-normal); }
+
+.tropa-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  margin: 0 -6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.tropa-row.is-link { cursor: pointer; }
+.tropa-row.is-link:hover { background: var(--background-modifier-hover); }
+
+.tropa-row-title { flex: 1; min-width: 0; line-height: 1.3; overflow-wrap: anywhere; }
+
+button.tropa-icon-button,
+a.tropa-icon-button {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-faint);
+  opacity: 0;
+}
+
+.tropa-icon-button svg { width: 14px; height: 14px; }
+.tropa-row:hover .tropa-icon-button,
+.tropa-row:focus-within button.tropa-icon-button,
+a.tropa-icon-button { opacity: 1; }
+
+.tropa-material { align-items: flex-start; padding-top: 7px; padding-bottom: 7px; }
+.tropa-material input[type="checkbox"] { flex: none; margin: 2px 0 0; }
+.tropa-material-body { flex: 1; min-width: 0; }
+.tropa-material .tropa-row-title { display: block; color: var(--text-normal); text-decoration: none; }
+.tropa-material .tropa-row-title:hover { color: var(--text-accent); text-decoration: underline; }
+.tropa-material.is-done .tropa-row-title { color: var(--text-muted); text-decoration: line-through; }
+
+.tropa-material-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.tropa-material-meta svg { width: 12px; height: 12px; }
+
+.tropa-material-note { margin-top: 2px; color: var(--text-muted); font-size: 12px; }
+.tropa-material-note.is-accent { color: var(--text-accent); font-weight: var(--font-medium); }
+
+button.tropa-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  margin: 2px 0 0 -6px;
+  padding: 0 8px 0 6px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  cursor: pointer;
+}
+
+button.tropa-add:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+button.tropa-add svg { width: 14px; height: 14px; }
+
+/* Route list: a small version of the trail */
+
+.tropa-steps { position: relative; margin: 8px 0 0; padding: 0; list-style: none; counter-reset: tropa-step; }
+
+.tropa-step {
+  position: relative;
+  padding: 7px 8px 7px 34px;
+  border-radius: 8px;
+  counter-increment: tropa-step;
+  cursor: pointer;
+}
+
+.tropa-step:hover { background: var(--background-modifier-hover); }
+
+.tropa-step::before {
+  content: counter(tropa-step);
+  position: absolute;
+  z-index: 1;
+  top: 7px;
+  left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--background-secondary);
+  box-shadow: inset 0 0 0 1.5px var(--tropa-line-strong);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tropa-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: -18px;
+  left: 14px;
+  width: 2px;
+  background: var(--tropa-line);
+}
+
+.tropa-step.is-next::before,
+.tropa-step.state-learning::before {
+  background: var(--tropa-route);
+  box-shadow: none;
+  color: var(--text-on-accent);
+}
+
+.tropa-step-title { line-height: 1.3; }
+.tropa-step.is-next .tropa-step-title { font-weight: var(--font-semibold); }
+.tropa-step.state-locked .tropa-step-title { color: var(--text-muted); }
+.tropa-step-meta { margin-top: 2px; color: var(--text-muted); font-size: 12px; line-height: 1.35; }
+
+.tropa-offmap { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--tropa-line); }
+
+/* Search rows */
+
+.tropa-pick { display: flex; align-items: center; gap: 10px; }
+.tropa-pick-icon { display: inline-flex; color: var(--text-muted); }
+.tropa-pick-icon svg { width: 15px; height: 15px; }
+.tropa-pick-hint { color: var(--text-muted); font-size: var(--font-ui-smaller); }
+
+/* Narrow panes and phones */
+
+.tropa-map.is-narrow .tropa-bar { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+.tropa-map.is-narrow button.tropa-goal { flex: 1 1 calc(100% - 44px); max-width: calc(100% - 44px); }
+.tropa-map.is-narrow .tropa-progress { order: 3; width: 100%; }
+.tropa-map.is-narrow .tropa-progress.is-hidden { display: none; }
+.tropa-map.is-narrow .tropa-meter { flex: 1; width: auto; }
+.tropa-map.is-narrow .tropa-spacer { display: none; }
+.tropa-map.is-narrow .tropa-segment { flex: 1; order: 2; }
+.tropa-map.is-narrow .tropa-segment button { flex: 1; }
+.tropa-map.is-narrow button.tropa-toggle-sources { order: 2; }
+.tropa-map.is-narrow button.tropa-add-concept { order: 1; }
+.tropa-map.is-narrow .tropa-legend { display: none; }
+
+.tropa-map.is-narrow .tropa-body { flex-direction: column; }
+
+.tropa-map.is-narrow .tropa-side {
+  width: 100%;
+  max-height: 46%;
+  border-top: 1px solid var(--tropa-line);
+  border-left: 0;
+}
+
+.tropa-map.is-narrow .tropa-side.is-collapsed { max-height: 48px; overflow: hidden; }
+
+.tropa-map.is-narrow button.tropa-collapse {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.is-mobile button.tropa-icon-button,
+a.tropa-icon-button { opacity: 1; }
+.is-mobile .tropa-port { opacity: 1; transform: scale(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tropa-node,
+  .tropa-edge,
+  .tropa-world.is-moving,
+  .tropa-meter-fill,
+  .tropa-toast { transition: none; animation: none; }
+  .tropa-node.just-unlocked { animation: none; }
+}

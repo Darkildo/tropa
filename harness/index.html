@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tropa Preview</title>
+<style>
+:root {
+  --font-interface: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  --font-ui-small: 13px; --font-ui-smaller: 12px;
+  --font-normal: 400; --font-medium: 500; --font-semibold: 600;
+  --background-primary: #fff; --background-secondary: #f6f6f6;
+  --background-modifier-border: #e0e0e0; --background-modifier-hover: rgba(0,0,0,.067);
+  --background-modifier-active-hover: rgba(120,82,238,.15);
+  --text-normal: #222; --text-muted: #5c5c5c; --text-faint: #ababab; --text-accent: #7852ee; --text-on-accent: #fff;
+  --interactive-accent: #7852ee; --interactive-normal: #fff; --interactive-hover: #f2f3f5;
+  --color-green: #08b94e; --color-yellow: #e0ac00; --color-red: #e93147; --color-orange: #ec7500;
+}
+:root[data-theme="dark"] {
+  --background-primary: #1e1e1e; --background-secondary: #262626;
+  --background-modifier-border: #363636; --background-modifier-hover: rgba(255,255,255,.075);
+  --background-modifier-active-hover: rgba(138,92,245,.2);
+  --text-normal: #dadada; --text-muted: #a3a3a3; --text-faint: #666; --text-accent: #a68af9; --text-on-accent: #fff;
+  --interactive-accent: #8a5cf5; --interactive-normal: #363636; --interactive-hover: #3f3f3f;
+  --color-green: #44cf6e; --color-yellow: #e0de71; --color-red: #fb464c; --color-orange: #e9973f;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { display: flex; background: var(--background-primary); color: var(--text-normal); font: 14px/1.4 var(--font-interface); }
+button { display: inline-flex; align-items: center; justify-content: center; height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--interactive-normal); box-shadow: 0 0 0 1px var(--background-modifier-border); color: var(--text-normal); font: inherit; font-size: 13px; cursor: pointer; }
+button:hover { background: var(--interactive-hover); }
+button.mod-cta { background: var(--interactive-accent); box-shadow: none; color: var(--text-on-accent); }
+a { color: var(--text-accent); }
+.clickable-icon { display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
+#center { flex: 1; min-width: 0; }
+#right, #note { display: none; width: 320px; border-left: 1px solid var(--background-modifier-border); overflow: auto; }
+.is-right-open #right { display: block; background: var(--background-secondary); }
+#note[data-open] { display: block; padding: 16px; }
+.note-title { margin: 0 0 12px; font-size: 20px; }
+.note-source { width: 100%; height: 300px; font: 12px/1.4 monospace; background: var(--background-primary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); }
+.workspace-leaf-content, .view-content { height: 100%; }
+.modal-container { position: fixed; z-index: 50; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+.modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.modal { position: relative; width: min(520px, calc(100% - 24px)); max-height: 70vh; overflow: auto; padding: 18px; border-radius: 10px; background: var(--background-primary); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+.modal.prompt { padding: 0; }
+.modal-title { margin-bottom: 12px; font-size: 17px; font-weight: 600; }
+.prompt-input { width: 100%; height: 44px; padding: 0 14px; border: 0; border-bottom: 1px solid var(--background-modifier-border); background: transparent; color: var(--text-normal); font: inherit; outline: 0; }
+.prompt-results { max-height: 320px; overflow: auto; padding: 6px; }
+.suggestion-item { padding: 7px 10px; border-radius: 6px; cursor: pointer; }
+.suggestion-item.is-selected { background: var(--background-modifier-hover); }
+.suggestion-empty { padding: 10px; color: var(--text-muted); }
+.setting-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--background-modifier-border); }
+.setting-item-name { font-weight: 500; }
+.setting-item-description { color: var(--text-muted); font-size: 12px; }
+.setting-item input, .dropdown { height: 30px; padding: 0 8px; border: 1px solid var(--background-modifier-border); border-radius: 6px; background: var(--background-primary); color: var(--text-normal); font: inherit; }
+.menu { position: fixed; z-index: 60; min-width: 190px; padding: 5px; border: 1px solid var(--background-modifier-border); border-radius: 8px; background: var(--background-primary); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+.menu-item { padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+.menu-item:hover { background: var(--background-modifier-hover); }
+.notice { position: fixed; z-index: 70; top: 16px; right: 16px; padding: 10px 14px; border-radius: 8px; background: var(--text-normal); color: var(--background-primary); }
+</style>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="center"></div>
+<div id="note"></div>
+<div id="right"></div>
+<script src="preview.js" type="module"></script>
+</body>
+</html>

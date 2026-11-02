@@ -1,0 +1,28 @@
+{
+  "name": "tropa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal learning routes on top of your Obsidian notes",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit && node esbuild.config.mjs production",
+    "test": "vitest run",
+    "demo": "tsx scripts/make-demo-vault.ts",
+    "preview": "node harness/build.mjs",
+    "e2e": "node harness/build.mjs && python3 harness/e2e.py"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "lucide": "^1.66.0",
+    "obsidian": "^1.14.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "yaml": "^2.9.1"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.1.3"
+  }
+}

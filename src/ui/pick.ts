@@ -1,0 +1,124 @@
+import { App, Modal, Notice, Setting, SuggestModal, setIcon } from "obsidian";
+import { FORMAT_LABEL, guessFormat } from "../core/format";
+import type { SourceFormat } from "../core/types";
+import type { SourceDraft } from "../store";
+
+export interface PickItem {
+  id: string;
+  title: string;
+  hint?: string;
+  icon?: string;
+  /** Marks the row that creates a new item from the typed text. */
+  create?: boolean;
+}
+
+export class PickModal extends SuggestModal<PickItem> {
+  constructor(
+    app: App,
+    private readonly items: PickItem[],
+    placeholder: string,
+    private readonly onPick: (item: PickItem) => void,
+    private readonly createLabel?: (query: string) => string,
+  ) {
+    super(app);
+    this.setPlaceholder(placeholder);
+    this.emptyStateText = "Ничего не найдено";
+    this.setInstructions([
+      { command: "↑↓", purpose: "выбрать" },
+      { command: "↵", purpose: "подтвердить" },
+      { command: "esc", purpose: "закрыть" },
+    ]);
+  }
+
+  getSuggestions(query: string): PickItem[] {
+    const text = query.trim().toLowerCase();
+    const found = this.items.filter((item) => item.title.toLowerCase().includes(text));
+    const exact = found.some((item) => item.title.toLowerCase() === text);
+    if (this.createLabel && query.trim() && !exact) {
+      found.push({ id: "", title: query.trim(), hint: this.createLabel(query.trim()), icon: "plus", create: true });
+    }
+    return found;
+  }
+
+  renderSuggestion(item: PickItem, el: HTMLElement) {
+    el.addClass("tropa-pick");
+    if (item.icon) setIcon(el.createSpan({ cls: "tropa-pick-icon" }), item.icon);
+    const text = el.createDiv({ cls: "tropa-pick-text" });
+    text.createDiv({ text: item.create ? item.hint : item.title });
+    if (item.hint && !item.create) text.createDiv({ cls: "tropa-pick-hint", text: item.hint });
+  }
+
+  onChooseSuggestion(item: PickItem) {
+    this.onPick(item);
+  }
+}
+
+export class SourceModal extends Modal {
+  private draft: SourceDraft;
+  private formatTouched = false;
+
+  constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft) => void) {
+    super(app);
+    this.draft = { title, url: "", format: "article" };
+  }
+
+  onOpen() {
+    this.setTitle("Новый материал");
+    const { contentEl } = this;
+    let formatControl: { setValue(value: string): unknown } | undefined;
+
+    new Setting(contentEl).setName("Название").addText((text) => {
+      text.setValue(this.draft.title).onChange((value) => (this.draft.title = value));
+      if (!this.draft.title) window.setTimeout(() => text.inputEl.focus());
+    });
+
+    new Setting(contentEl)
+      .setName("Ссылка")
+      .setDesc("Необязательно. Для своих конспектов оставьте пустой.")
+      .addText((text) => {
+        text.setPlaceholder("https://").onChange((value) => {
+          this.draft.url = value.trim();
+          if (!this.formatTouched) {
+            this.draft.format = guessFormat(this.draft.url);
+            formatControl?.setValue(this.draft.format);
+          }
+        });
+        if (this.draft.title) window.setTimeout(() => text.inputEl.focus());
+      });
+
+    new Setting(contentEl).setName("Формат").addDropdown((dropdown) => {
+      dropdown.addOptions(FORMAT_LABEL).setValue(this.draft.format).onChange((value) => {
+        this.formatTouched = true;
+        this.draft.format = value as SourceFormat;
+      });
+      formatControl = dropdown;
+    });
+
+    new Setting(contentEl)
+      .setName("Сколько времени займёт")
+      .setDesc("В минутах. Из этого складывается оценка маршрута.")
+      .addText((text) => {
+        text.inputEl.type = "number";
+        text.inputEl.min = "1";
+        text.onChange((value) => {
+          const minutes = Number(value);
+          this.draft.minutes = minutes > 0 ? minutes : undefined;
+        });
+      });
+
+    new Setting(contentEl).addButton((button) =>
+      button.setButtonText("Добавить материал").setCta().onClick(() => {
+        if (!this.draft.title.trim()) {
+          new Notice("Укажите название материала");
+          return;
+        }
+        this.close();
+        this.onSave(this.draft);
+      }),
+    );
+  }
+
+  onClose() {
+    this.contentEl.empty();
+  }
+}

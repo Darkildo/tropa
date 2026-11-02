@@ -1,0 +1,299 @@
+import type {
+  ConceptState,
+  GraphNode,
+  NoteInput,
+  NoteRef,
+  Progress,
+  Route,
+  RouteStep,
+  SourceState,
+} from "./types";
+
+export const GHOST_PREFIX = "ghost:";
+
+export const isGhostId = (id: string) => id.startsWith(GHOST_PREFIX);
+export const ghostId = (title: string) => GHOST_PREFIX + title;
+
+export function emptyProgress(): Progress {
+  return { goal: null, mastered: new Set(), learning: new Set(), done: new Set() };
+}
+
+export class LearningGraph {
+  readonly nodes = new Map<string, GraphNode>();
+  /** Strongly connected groups of `requires` links. Each one can never be finished in order. */
+  readonly cycles: string[][] = [];
+  private readonly inCycle = new Set<string>();
+
+  constructor(notes: NoteInput[]) {
+    for (const note of notes) {
+      this.nodes.set(note.id, {
+        id: note.id,
+        title: note.title,
+        kind: note.kind,
+        ghost: false,
+        requires: [],
+        requiredBy: [],
+        recommends: [],
+        teaches: [],
+        taughtBy: [],
+        format: note.format,
+        minutes: note.minutes,
+        url: note.url,
+        summary: note.summary,
+      });
+    }
+
+    const ensure = (ref: NoteRef) => {
+      if (!this.nodes.has(ref.id)) {
+        this.nodes.set(ref.id, {
+          id: ref.id,
+          title: ref.title,
+          kind: "concept",
+          ghost: true,
+          requires: [],
+          requiredBy: [],
+          recommends: [],
+          teaches: [],
+          taughtBy: [],
+        });
+      }
+      return ref.id;
+    };
+
+    for (const note of notes) {
+      if (note.kind !== "source") continue;
+      const node = this.nodes.get(note.id)!;
+      for (const ref of note.teaches) {
+        const id = ensure(ref);
+        const target = this.nodes.get(id)!;
+        if (target.kind !== "concept" || id === note.id) continue;
+        pushUnique(node.teaches, id);
+        pushUnique(target.taughtBy, note.id);
+      }
+    }
+
+    for (const note of notes) {
+      const node = this.nodes.get(note.id)!;
+      for (const ref of note.requires) {
+        const id = ensure(ref);
+        const target = this.nodes.get(id)!;
+        // A concept cannot wait for a source directly: it waits for what the source teaches.
+        const prerequisites = note.kind === "concept" && target.kind === "source" ? target.teaches : [id];
+        for (const prerequisite of prerequisites) pushUnique(node.requires, prerequisite);
+      }
+      for (const ref of note.recommends) pushUnique(node.recommends, ensure(ref));
+    }
+
+    for (const node of this.nodes.values()) {
+      for (const id of node.requires) pushUnique(this.nodes.get(id)!.requiredBy, node.id);
+    }
+
+    this.findCycles();
+  }
+
+  get concepts(): GraphNode[] {
+    return [...this.nodes.values()].filter((node) => node.kind === "concept");
+  }
+
+  get sources(): GraphNode[] {
+    return [...this.nodes.values()].filter((node) => node.kind === "source");
+  }
+
+  isInCycle(id: string) {
+    return this.inCycle.has(id);
+  }
+
+  /** Every node that `id` depends on, transitively, without `id` itself. */
+  ancestors(id: string): Set<string> {
+    return this.walk(id, (node) => node.requires);
+  }
+
+  /** Every node that depends on `id`, transitively, without `id` itself. */
+  descendants(id: string): Set<string> {
+    return this.walk(id, (node) => node.requiredBy);
+  }
+
+  /** True when `dependent` requiring `prerequisite` would close a loop. */
+  wouldCreateCycle(dependent: string, prerequisite: string) {
+    return dependent === prerequisite || this.ancestors(prerequisite).has(dependent);
+  }
+
+  private walk(id: string, next: (node: GraphNode) => string[]) {
+    const seen = new Set<string>();
+    const stack = [id];
+    while (stack.length) {
+      const node = this.nodes.get(stack.pop()!);
+      if (!node) continue;
+      for (const neighbour of next(node)) {
+        if (seen.has(neighbour) || neighbour === id) continue;
+        seen.add(neighbour);
+        stack.push(neighbour);
+      }
+    }
+    return seen;
+  }
+
+  /** Iterative Tarjan, so a very long chain of notes cannot overflow the stack. */
+  private findCycles() {
+    let counter = 0;
+    const index = new Map<string, number>();
+    const low = new Map<string, number>();
+    const onStack = new Set<string>();
+    const stack: string[] = [];
+
+    for (const root of this.nodes.keys()) {
+      if (index.has(root)) continue;
+      const work: { id: string; next: number }[] = [{ id: root, next: 0 }];
+      while (work.length) {
+        const frame = work[work.length - 1];
+        if (frame.next === 0) {
+          index.set(frame.id, counter);
+          low.set(frame.id, counter);
+          counter++;
+          stack.push(frame.id);
+          onStack.add(frame.id);
+        }
+        const requires = this.nodes.get(frame.id)!.requires;
+        if (frame.next < requires.length) {
+          const neighbour = requires[frame.next++];
+          if (!index.has(neighbour)) {
+            work.push({ id: neighbour, next: 0 });
+          } else if (onStack.has(neighbour)) {
+            low.set(frame.id, Math.min(low.get(frame.id)!, index.get(neighbour)!));
+          }
+          continue;
+        }
+        work.pop();
+        const parent = work[work.length - 1];
+        if (parent) low.set(parent.id, Math.min(low.get(parent.id)!, low.get(frame.id)!));
+        if (low.get(frame.id) !== index.get(frame.id)) continue;
+
+        const component: string[] = [];
+        let member: string;
+        do {
+          member = stack.pop()!;
+          onStack.delete(member);
+          component.push(member);
+        } while (member !== frame.id);
+
+        const selfLoop = this.nodes.get(frame.id)!.requires.includes(frame.id);
+        if (component.length > 1 || selfLoop) {
+          this.cycles.push(component.reverse());
+          component.forEach((id) => this.inCycle.add(id));
+        }
+      }
+    }
+  }
+}
+
+function pushUnique(list: string[], value: string) {
+  if (!list.includes(value)) list.push(value);
+}
+
+export function computeStates(graph: LearningGraph, progress: Progress) {
+  const states = new Map<string, ConceptState>();
+  for (const node of graph.concepts) {
+    if (progress.mastered.has(node.id)) states.set(node.id, "mastered");
+    else if (graph.isInCycle(node.id)) states.set(node.id, "cycle");
+    else if (progress.learning.has(node.id) || node.taughtBy.some((id) => progress.done.has(id))) states.set(node.id, "learning");
+    else if (node.requires.every((id) => progress.mastered.has(id))) states.set(node.id, "available");
+    else states.set(node.id, "locked");
+  }
+  return states;
+}
+
+export function sourceState(graph: LearningGraph, progress: Progress, id: string): SourceState {
+  if (progress.done.has(id)) return "done";
+  const node = graph.nodes.get(id);
+  if (!node) return "locked";
+  const ready = node.requires.every((requirement) =>
+    graph.nodes.get(requirement)?.kind === "source" ? progress.done.has(requirement) : progress.mastered.has(requirement),
+  );
+  return ready ? "ready" : "locked";
+}
+
+/** Picks what to study a concept from: ready sources first, then the shortest. */
+export function recommendMaterial(graph: LearningGraph, progress: Progress, conceptId: string): string | null {
+  const concept = graph.nodes.get(conceptId);
+  if (!concept) return null;
+  const open = concept.taughtBy.filter((id) => !progress.done.has(id));
+  const rank = (id: string) => (sourceState(graph, progress, id) === "ready" ? 0 : 1);
+  const length = (id: string) => graph.nodes.get(id)?.minutes ?? Number.POSITIVE_INFINITY;
+  return [...open].sort((a, b) => rank(a) - rank(b) || length(a) - length(b) || a.localeCompare(b))[0] ?? null;
+}
+
+export function computeRoute(
+  graph: LearningGraph,
+  progress: Progress,
+  states: Map<string, ConceptState>,
+): Route | null {
+  const goal = progress.goal;
+  if (!goal || graph.nodes.get(goal)?.kind !== "concept") return null;
+
+  const closure = new Set([goal, ...graph.ancestors(goal)]);
+  for (const id of [...closure]) if (graph.nodes.get(id)?.kind !== "concept") closure.delete(id);
+
+  const byPriority = (a: string, b: string) => {
+    const started = Number(states.get(b) === "learning") - Number(states.get(a) === "learning");
+    return started || graph.nodes.get(a)!.title.localeCompare(graph.nodes.get(b)!.title, "ru");
+  };
+
+  // Depth-first post-order keeps one chain of prerequisites together instead of
+  // hopping between unrelated branches the way a plain Kahn sort would.
+  const order: string[] = [];
+  const visited = new Set<string>();
+  const visit = (id: string) => {
+    if (visited.has(id)) return;
+    visited.add(id);
+    if (progress.mastered.has(id)) return;
+    const prerequisites = graph.nodes.get(id)!.requires.filter((req) => graph.nodes.get(req)?.kind === "concept");
+    for (const prerequisite of [...prerequisites].sort(byPriority)) visit(prerequisite);
+    order.push(id);
+  };
+  visit(goal);
+
+  // Prefer a material the route already uses: one book covering three steps is one book to read.
+  const chosen = new Set<string>();
+  const steps: RouteStep[] = order.map((id) => {
+    const material =
+      graph.nodes.get(id)!.taughtBy.find((source) => chosen.has(source) && !progress.done.has(source)) ??
+      recommendMaterial(graph, progress, id);
+    if (material) chosen.add(material);
+    return { id, state: states.get(id) ?? "locked", material };
+  });
+
+  let remainingMinutes = 0;
+  let unestimated = 0;
+  const gaps: string[] = [];
+  const counted = new Set<string>();
+  for (const step of steps) {
+    if (graph.nodes.get(step.id)!.taughtBy.length === 0) gaps.push(step.id);
+    if (step.material && counted.has(step.material)) continue;
+    const minutes = step.material ? graph.nodes.get(step.material)?.minutes : undefined;
+    if (step.material) counted.add(step.material);
+    if (minutes === undefined) unestimated++;
+    else remainingMinutes += minutes;
+  }
+
+  return {
+    goal,
+    closure,
+    steps,
+    next: steps.find((step) => step.state === "learning" || step.state === "available")?.id ?? null,
+    masteredCount: [...closure].filter((id) => progress.mastered.has(id)).length,
+    total: closure.size,
+    remainingMinutes,
+    unestimated,
+    gaps,
+  };
+}
+
+/** Concepts that become available once `id` is mastered. */
+export function unlockedBy(graph: LearningGraph, progress: Progress, id: string): string[] {
+  const after: Progress = { ...progress, mastered: new Set(progress.mastered).add(id) };
+  const before = computeStates(graph, progress);
+  const now = computeStates(graph, after);
+  return graph.concepts
+    .map((node) => node.id)
+    .filter((conceptId) => before.get(conceptId) === "locked" && now.get(conceptId) === "available");
+}
