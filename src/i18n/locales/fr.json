@@ -306,5 +306,8 @@
   "exportProgressDesc": "Colorer les concepts maîtrisés et en cours ainsi que l’objectif. Désactivez pour partager la carte sans votre progression.",
   "exportSaved": "Enregistré : {path}",
   "exportNotReady": "La carte est encore en cours de disposition. Réessayez dans un instant.",
-  "canvasSoftLabel": "recommandé"
+  "canvasSoftLabel": "recommandé",
+  "moreActions": "Plus d’actions",
+  "sheetHandle": "Taille du panneau : touchez ou faites glisser",
+  "linkNext": "Relier au concept suivant…"
 }

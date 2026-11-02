@@ -291,5 +291,8 @@
   "exportProgressDesc": "Öğrenilen ve çalışılan kavramları ve hedefi renklendir. Haritayı ilerlemen olmadan paylaşmak için kapat.",
   "exportSaved": "Kaydedildi: {path}",
   "exportNotReady": "Harita hâlâ yerleştiriliyor. Birazdan yeniden dene.",
-  "canvasSoftLabel": "önerilen"
+  "canvasSoftLabel": "önerilen",
+  "moreActions": "Diğer işlemler",
+  "sheetHandle": "Panel boyutu: dokun ya da sürükle",
+  "linkNext": "Sonraki kavrama bağla…"
 }

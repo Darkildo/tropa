@@ -1,4 +1,4 @@
-import { ItemView, Menu, Notice, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, Notice, Platform, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
@@ -10,7 +10,7 @@ import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
 import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
-import { openKnownModal, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
+import { openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
 import { ExportModal } from "./export";
 import { fileName } from "../core/export-path";
@@ -23,6 +23,15 @@ const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.6;
 const READABLE_ZOOM = 0.6;
 const CLOSE_ZOOM = 0.8;
+/** On a phone the map never opens or fits smaller than this: below it titles cannot be read. */
+const PHONE_MIN_ZOOM = 0.7;
+const DOUBLE_TAP_MS = 320;
+const LONG_PRESS_MS = 500;
+/** A finger moves a little even when it means to stay put. */
+const TOUCH_SLOP = 10;
+/** Heights of the panel on a phone: the title, half the map, nearly all of it. */
+const SHEET_PEEK = 92;
+type SheetState = "peek" | "half" | "full";
 /**
  * A zoomed-out map with more edges than this draws them without dashes. Dashed paths are slow to
  * rasterise: on a 1700-node map (3400 edges) the browser froze for over 30 s. Maps of 400 concepts
@@ -51,6 +60,17 @@ interface Press {
   originX: number;
   originY: number;
   moved: boolean;
+  touch: boolean;
+}
+
+/** Two fingers: where they started, so the map under them follows both zoom and pan. */
+interface Pinch {
+  distance: number;
+  centerX: number;
+  centerY: number;
+  k: number;
+  x: number;
+  y: number;
 }
 
 export class MapView extends ItemView implements DetailHost {
@@ -61,6 +81,7 @@ export class MapView extends ItemView implements DetailHost {
   private world!: HTMLElement;
   private svg!: SVGSVGElement;
   private side!: HTMLElement;
+  private body!: HTMLElement;
   private toastEl: HTMLElement | null = null;
   private toastTimer = 0;
 
@@ -83,7 +104,17 @@ export class MapView extends ItemView implements DetailHost {
 
   private press: Press | null = null;
   private readonly pointers = new Map<number, { x: number; y: number }>();
-  private pinch: { distance: number; k: number } | null = null;
+  private pinch: Pinch | null = null;
+  private lastTap: { time: number; x: number; y: number } | null = null;
+  /** When a finger last touched the map: the browser's own long-press menu and double-click are ignored then. */
+  private lastTouch = 0;
+  private longPress = 0;
+  /** After a long press the lifted finger makes a click, which would close the menu it just opened. */
+  private swallowClick: ((event: Event) => void) | null = null;
+  private sheet: SheetState = "peek";
+  private sheetDrag: { startY: number; height: number; moved: boolean } | null = null;
+  /** How much of the bottom of the view Obsidian's own bar on a phone covers. */
+  private bottomInset = 0;
   private needsFit = true;
   private sideCollapsed = false;
   /** Until the person pans or zooms, the view keeps itself framed. */
@@ -137,7 +168,7 @@ export class MapView extends ItemView implements DetailHost {
     this.root.style.setProperty("--tropa-goal-label", JSON.stringify(t.goalBadge));
     this.contentEl.addClass("tropa-host");
     this.bar = this.root.createDiv({ cls: "tropa-bar" });
-    const body = this.root.createDiv({ cls: "tropa-body" });
+    const body = (this.body = this.root.createDiv({ cls: "tropa-body" }));
     this.stage = body.createDiv({ cls: "tropa-stage" });
     this.canvas = this.stage.createDiv({ cls: "tropa-canvas" });
     this.world = this.canvas.createDiv({ cls: "tropa-world" });
@@ -145,18 +176,24 @@ export class MapView extends ItemView implements DetailHost {
     this.svg.addClass("tropa-edges");
     this.world.appendChild(this.svg);
     this.side = body.createDiv({ cls: "tropa-side" });
+    this.root.toggleClass("is-phone", Platform.isPhone);
 
     this.buildControls();
     this.bindCanvas();
 
     const observer = new ResizeObserver(() => {
       this.root.toggleClass("is-narrow", this.root.clientWidth < 760);
+      this.placeSheet();
       if (!this.userMoved && this.layout) this.frame();
     });
     observer.observe(this.root);
     this.register(() => observer.disconnect());
     this.register(() => this.layouts.dispose());
+    this.register(() => this.releaseClick());
 
+    // Obsidian's bar at the bottom of a phone can appear after the view; measure again once it has.
+    this.registerEvent(this.app.workspace.on("layout-change", () => this.placeSheet()));
+    window.setTimeout(() => this.placeSheet(), 400);
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(this.store.on("mastered", (id, unlocked, undo) => this.celebrate(id, unlocked, undo)));
     this.registerEvent(this.store.on("undoable", (message, unlocked, undo) => this.announce(message, unlocked, undo)));
@@ -200,6 +237,8 @@ export class MapView extends ItemView implements DetailHost {
 
   select(id: string | null) {
     if (id) this.bringIntoView(id);
+    // On a phone the details of what was picked show in the panel, so it opens halfway.
+    if (id && this.sheet === "peek" && this.root?.classList.contains("is-phone")) this.setSheet("half");
     this.selected = id;
     this.sideCollapsed = false;
     this.renderSide();
@@ -450,6 +489,8 @@ export class MapView extends ItemView implements DetailHost {
     el.addEventListener("blur", () => this.highlight(null));
     el.addEventListener("keydown", (event) => this.onNodeKey(event, node.id));
     el.addEventListener("dblclick", () => {
+      // A double tap zooms the map; it does not open the note.
+      if (Date.now() - this.lastTouch < 1000) return;
       if (this.store.graph.nodes.get(node.id)?.ghost) attempt(this.store.materialize(node.id), `create ${node.title}`);
       else this.openNote(node.id);
     });
@@ -670,7 +711,18 @@ export class MapView extends ItemView implements DetailHost {
       const skipped = route.skippedCount ? `${t.listSeparator}${t.skippedCount({ count: route.skippedCount })}` : "";
       meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = done + skipped;
       meter.querySelector<HTMLElement>(".tropa-progress-time")!.textContent = this.store.describeRemaining();
+      // On a phone only the line shows; its words are for screen readers and a long press.
+      const words = `${done}${skipped}${t.listSeparator}${this.store.describeRemaining()}`;
+      meter.querySelector<HTMLElement>(".tropa-meter")!.setAttribute("aria-valuetext", words);
+      meter.setAttribute("title", words);
     }
+    const count = this.audited ? auditCount(this.audited.audit) : 0;
+    const more = this.bar.querySelector<HTMLElement>(".tropa-more")!;
+    const badge = more.querySelector<HTMLElement>(".tropa-more-badge")!;
+    badge.toggleClass("is-hidden", count === 0);
+    badge.toggleClass("has-cycles", (this.audited?.audit.cycles.length ?? 0) > 0);
+    badge.textContent = count ? new Intl.NumberFormat(locale()).format(count) : "";
+    more.setAttribute("aria-label", count ? `${t.moreActions}. ${t.audit.title}: ${t.audit.summary({ count })}` : t.moreActions);
 
     const mode = this.effectiveMode();
     this.bar.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((button) => {
@@ -683,6 +735,37 @@ export class MapView extends ItemView implements DetailHost {
     sources.toggleClass("is-active", this.plugin.settings.showSources);
     sources.setAttribute("aria-pressed", String(this.plugin.settings.showSources));
     this.renderFocusControls();
+  }
+
+  private toggleSources() {
+    this.plugin.settings.showSources = !this.plugin.settings.showSources;
+    attempt(this.plugin.saveSettings(), "save settings");
+    this.needsFit = true;
+    this.overview = true;
+    this.render();
+  }
+
+  /** What the bar holds on a wider screen, as one menu on a phone. */
+  private openMore(event: MouseEvent) {
+    const menu = new Menu();
+    menu.addItem((item) => item.setTitle(t.materials).setIcon("book-open").setChecked(this.plugin.settings.showSources).onClick(() => this.toggleSources()));
+    const focus = this.focus;
+    if (focus) {
+      menu.addItem((item) => item.setTitle(t.exitFocus).setIcon("x").onClick(() => this.exitFocus()));
+      for (let depth = 1; depth <= MAX_FOCUS_DEPTH; depth++) {
+        menu.addItem((item) => item.setTitle(t.focusSteps({ count: depth })).setChecked(depth === focus.depth).onClick(() => this.setFocusDepth(depth)));
+      }
+    } else {
+      menu.addItem((item) => item.setTitle(t.focus).setIcon("focus").setDisabled(!this.selected).onClick(() => this.enterFocus(this.selected)));
+    }
+    const count = this.audited ? auditCount(this.audited.audit) : 0;
+    menu.addItem((item) =>
+      item.setTitle(count ? `${t.audit.title}: ${t.audit.summary({ count })}` : t.audit.title).setIcon("list-checks").onClick(() => attempt(this.plugin.showAudit(), "open the map audit")),
+    );
+    menu.addItem((item) => item.setTitle(t.exportCanvas).setIcon("layout-dashboard").onClick(() => this.exportCanvas()));
+    menu.addItem((item) => item.setTitle(t.exportSvg).setIcon("image").onClick(() => this.exportSvg()));
+    menu.addItem((item) => item.setTitle(t.newConcept).setIcon("plus").onClick(() => this.plugin.promptNewConcept()));
+    menu.showAtMouseEvent(event);
   }
 
   private renderFocusControls() {
@@ -766,15 +849,19 @@ export class MapView extends ItemView implements DetailHost {
     const node = this.selected ? store.graph.nodes.get(this.selected) : null;
     if (this.selected && !node) this.selected = null;
 
-    const collapse = side.createEl("button", {
-      cls: "tropa-collapse clickable-icon",
-      attr: { "aria-label": this.sideCollapsed ? t.expandPanel : t.collapsePanel },
-    });
-    setIcon(collapse, this.sideCollapsed ? "chevron-up" : "chevron-down");
-    collapse.addEventListener("click", () => {
-      this.sideCollapsed = !this.sideCollapsed;
-      this.renderSide();
-    });
+    if (this.root.classList.contains("is-phone")) {
+      this.sheetHandle(side.createDiv({ cls: "tropa-sheet-handle", attr: { role: "button", tabindex: "0", "aria-label": t.sheetHandle } }));
+    } else {
+      const collapse = side.createEl("button", {
+        cls: "tropa-collapse clickable-icon",
+        attr: { "aria-label": this.sideCollapsed ? t.expandPanel : t.collapsePanel },
+      });
+      setIcon(collapse, this.sideCollapsed ? "chevron-up" : "chevron-down");
+      collapse.addEventListener("click", () => {
+        this.sideCollapsed = !this.sideCollapsed;
+        this.renderSide();
+      });
+    }
 
     if (node?.kind === "concept") renderConcept(side, this, node);
     else if (node) renderSource(side, this, node);
@@ -785,6 +872,79 @@ export class MapView extends ItemView implements DetailHost {
     // Setting it lays the page out, so only when there is somewhere to scroll back to.
     const target = previous === showing ? scroll : 0;
     if (target > 0 || scroll > 0) side.scrollTop = target;
+  }
+
+  // The panel on a phone: a sheet over the bottom of the map, above Obsidian's own bar
+
+  private sheetHandle(handle: HTMLElement) {
+    handle.createSpan({ cls: "tropa-sheet-grip" });
+    handle.setAttribute("aria-expanded", String(this.sheet !== "peek"));
+    handle.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      this.setSheet(nextSheet(this.sheet));
+    });
+    handle.addEventListener("pointerdown", (event) => {
+      handle.setPointerCapture(event.pointerId);
+      this.sheetDrag = { startY: event.clientY, height: this.sheetHeight(), moved: false };
+      this.side.addClass("is-dragging");
+    });
+    handle.addEventListener("pointermove", (event) => {
+      const drag = this.sheetDrag;
+      if (!drag) return;
+      const dy = event.clientY - drag.startY;
+      if (!drag.moved && Math.abs(dy) < TOUCH_SLOP) return;
+      if (!drag.moved) drag.height = this.sheetHeight();
+      drag.moved = true;
+      this.root.style.setProperty("--tropa-sheet-height", `${this.clampSheet(drag.height - dy)}px`);
+    });
+    const end = (event: PointerEvent) => {
+      const drag = this.sheetDrag;
+      if (!drag) return;
+      this.sheetDrag = null;
+      this.side.removeClass("is-dragging");
+      if (!drag.moved) {
+        if (event.type === "pointerup") this.setSheet(nextSheet(this.sheet));
+        return;
+      }
+      // Lands on the nearest of the three heights.
+      const height = this.clampSheet(drag.height - (event.clientY - drag.startY));
+      const states: SheetState[] = ["peek", "half", "full"];
+      const nearest = states.reduce((best, state) => (Math.abs(this.sheetHeightOf(state) - height) < Math.abs(this.sheetHeightOf(best) - height) ? state : best));
+      this.setSheet(nearest);
+    };
+    handle.addEventListener("pointerup", end);
+    handle.addEventListener("pointercancel", end);
+  }
+
+  private setSheet(state: SheetState) {
+    this.sheet = state;
+    this.placeSheet();
+    this.side.querySelector(".tropa-sheet-handle")?.setAttribute("aria-expanded", String(state !== "peek"));
+  }
+
+  private sheetHeightOf(state: SheetState) {
+    const full = Math.max(SHEET_PEEK, this.body.clientHeight - this.bottomInset - 8);
+    return state === "peek" ? SHEET_PEEK : state === "half" ? Math.max(SHEET_PEEK, Math.round(full * 0.5)) : full;
+  }
+
+  private sheetHeight() {
+    return this.root?.classList.contains("is-phone") ? this.sheetHeightOf(this.sheet) : 0;
+  }
+
+  private clampSheet(height: number) {
+    return clamp(height, SHEET_PEEK, this.sheetHeightOf("full"));
+  }
+
+  /** Sizes the sheet and keeps it, and the zoom buttons above it, clear of Obsidian's bar. */
+  private placeSheet() {
+    if (!this.root) return;
+    const phone = this.root.classList.contains("is-phone");
+    this.bottomInset = phone ? bottomInset(this.root) : 0;
+    this.root.style.setProperty("--tropa-bottom-inset", `${this.bottomInset}px`);
+    this.root.style.setProperty("--tropa-sheet-height", `${this.sheetHeight()}px`);
+    this.side.dataset.sheet = this.sheet;
+    this.root.toggleClass("is-sheet-full", phone && this.sheet === "full");
   }
 
   private renderEmpty() {
@@ -819,27 +979,30 @@ export class MapView extends ItemView implements DetailHost {
 
     this.bar.createDiv({ cls: "tropa-spacer" });
 
-    const segment = this.bar.createDiv({ cls: "tropa-segment", attr: { role: "group", "aria-label": t.viewMode } });
-    for (const [mode, text] of [["route", t.modeRoute], ["all", t.modeAll]] as const) {
-      const button = segment.createEl("button", { text });
-      button.dataset.mode = mode;
-      button.addEventListener("click", () => {
-        this.plugin.settings.mapMode = mode;
-        attempt(this.plugin.saveSettings(), "save settings");
-        this.needsFit = true;
-        this.overview = true;
-        this.render();
-      });
-    }
-
-    const sources = this.bar.createEl("button", { cls: "tropa-toggle-sources", text: t.materials });
-    sources.addEventListener("click", () => {
-      this.plugin.settings.showSources = !this.plugin.settings.showSources;
+    const setMode = (mode: "route" | "all") => {
+      this.plugin.settings.mapMode = mode;
       attempt(this.plugin.saveSettings(), "save settings");
       this.needsFit = true;
       this.overview = true;
       this.render();
-    });
+    };
+    const segment = this.bar.createDiv({ cls: "tropa-segment tropa-modes", attr: { role: "group", "aria-label": t.viewMode } });
+    for (const [mode, text] of [["route", t.modeRoute], ["all", t.modeAll]] as const) {
+      const button = segment.createEl("button", { text });
+      button.dataset.mode = mode;
+      button.addEventListener("click", () => setMode(mode));
+    }
+    // A phone has room for one row: the same switch as icons, the rest in a menu.
+    const icons = this.bar.createDiv({ cls: "tropa-segment tropa-mode-icons", attr: { role: "group", "aria-label": t.viewMode } });
+    for (const [mode, text, icon] of [["route", t.modeRoute, "route"], ["all", t.modeAll, "map"]] as const) {
+      const button = icons.createEl("button", { attr: { "aria-label": text, title: text } });
+      setIcon(button, icon);
+      button.dataset.mode = mode;
+      button.addEventListener("click", () => setMode(mode));
+    }
+
+    const sources = this.bar.createEl("button", { cls: "tropa-toggle-sources", text: t.materials });
+    sources.addEventListener("click", () => this.toggleSources());
 
     const focus = this.bar.createDiv({ cls: "tropa-focus", attr: { role: "group", "aria-label": t.focus } });
     const enter = focus.createEl("button", { cls: "tropa-focus-toggle" });
@@ -875,6 +1038,11 @@ export class MapView extends ItemView implements DetailHost {
     const add = this.bar.createEl("button", { cls: "tropa-add-concept clickable-icon", attr: { "aria-label": t.newConcept } });
     setIcon(add, "plus");
     add.addEventListener("click", () => this.plugin.promptNewConcept());
+
+    const more = this.bar.createEl("button", { cls: "tropa-more clickable-icon", attr: { "aria-label": t.moreActions } });
+    setIcon(more.createSpan({ cls: "tropa-more-icon" }), "more-horizontal");
+    more.createSpan({ cls: "tropa-more-badge is-hidden" });
+    more.addEventListener("click", (event) => this.openMore(event));
 
     const zoom = this.stage.createDiv({ cls: "tropa-zoom", attr: { role: "group", "aria-label": t.zoom } });
     const zoomButton = (icon: string, label: string, run: () => void) => {
@@ -1066,12 +1234,27 @@ export class MapView extends ItemView implements DetailHost {
   // Interaction
 
   private bindCanvas() {
+    this.guardSwipes(this.stage);
+    this.guardSwipes(this.side);
     this.registerDomEvent(this.canvas, "pointerdown", (event) => this.onPointerDown(event));
     this.registerDomEvent(this.canvas, "pointermove", (event) => this.onPointerMove(event));
     this.registerDomEvent(this.canvas, "pointerup", (event) => this.onPointerUp(event));
     this.registerDomEvent(this.canvas, "pointercancel", (event) => this.onPointerUp(event));
     this.registerDomEvent(this.canvas, "wheel", (event) => this.onWheel(event), { passive: false });
     this.registerDomEvent(this.root, "keydown", (event) => this.onKey(event));
+  }
+
+  /**
+   * Obsidian on a phone opens its side panels with a horizontal swipe, built from touch events that
+   * bubble up to the document. On the map a drag pans and two fingers zoom, and the panel at the
+   * bottom is dragged by its handle, so their touches stop here; the map itself works with pointer
+   * events, which this does not touch. `data-ignore-swipe` is Obsidian's own opt-out for an element.
+   */
+  private guardSwipes(el: HTMLElement) {
+    el.setAttribute("data-ignore-swipe", "");
+    for (const type of ["touchstart", "touchmove", "touchend", "touchcancel"] as const) {
+      this.registerDomEvent(el, type, (event) => event.stopPropagation(), { passive: true });
+    }
   }
 
   /** Map-wide keys. F and C act on the focused node, or on the selected one. */
@@ -1100,21 +1283,27 @@ export class MapView extends ItemView implements DetailHost {
     if (this.store.isEmpty || (event.button !== 0 && event.button !== 1)) return;
     const target = event.target as HTMLElement;
     if (target.closest(".tropa-empty")) return;
+    const touch = event.pointerType === "touch";
+    if (touch) this.lastTouch = Date.now();
     const port = target.closest(".tropa-port");
     const nodeEl = target.closest<HTMLElement>(".tropa-node");
-    if (port && nodeEl) {
+    if (port && nodeEl && !touch) {
       event.stopPropagation();
       this.startConnecting(event, nodeEl.dataset.id!);
       return;
     }
     this.canvas.setPointerCapture(event.pointerId);
+    // A new gesture starts clean, even if a finger of the last one never reported lifting.
+    if (event.isPrimary) {
+      this.pointers.clear();
+      this.pinch = null;
+    }
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (this.pointers.size === 2) {
-      const [a, b] = [...this.pointers.values()];
-      this.pinch = { distance: Math.hypot(a.x - b.x, a.y - b.y), k: this.k };
-      this.press = null;
+      this.startPinch();
       return;
     }
+    if (this.pointers.size > 2) return;
     this.press = {
       nodeId: nodeEl?.dataset.id ?? null,
       startX: event.clientX,
@@ -1122,23 +1311,77 @@ export class MapView extends ItemView implements DetailHost {
       originX: this.x,
       originY: this.y,
       moved: false,
+      touch,
     };
+    const nodeId = nodeEl?.dataset.id;
+    if (touch && nodeId) {
+      const at = { x: event.clientX, y: event.clientY };
+      this.longPress = window.setTimeout(() => {
+        if (!this.press || this.press.moved || this.pointers.size !== 1) return;
+        this.press = null;
+        this.select(nodeId);
+        this.swallowNextClick();
+        this.openContextMenu(at, nodeId);
+      }, LONG_PRESS_MS);
+    }
+  }
+
+  private swallowNextClick() {
+    this.releaseClick();
+    const swallow = (event: Event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      this.releaseClick();
+    };
+    this.swallowClick = swallow;
+    window.addEventListener("click", swallow, { capture: true });
+    // If no click follows the finger lifting, the next real tap is not lost.
+    window.setTimeout(() => this.swallowClick === swallow && this.releaseClick(), 1500);
+  }
+
+  private releaseClick() {
+    if (this.swallowClick) window.removeEventListener("click", this.swallowClick, { capture: true });
+    this.swallowClick = null;
+  }
+
+  private startPinch() {
+    window.clearTimeout(this.longPress);
+    const [a, b] = [...this.pointers.values()];
+    const rect = this.canvas.getBoundingClientRect();
+    this.pinch = {
+      distance: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)),
+      centerX: (a.x + b.x) / 2 - rect.left,
+      centerY: (a.y + b.y) / 2 - rect.top,
+      k: this.k,
+      x: this.x,
+      y: this.y,
+    };
+    this.press = null;
   }
 
   private onPointerMove(event: PointerEvent) {
     if (this.pointers.has(event.pointerId)) this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (this.pinch && this.pointers.size === 2) {
+    const pinch = this.pinch;
+    if (pinch && this.pointers.size === 2) {
+      // The point of the map that was under the fingers stays under them: zoom and pan at once.
       const [a, b] = [...this.pointers.values()];
       const rect = this.canvas.getBoundingClientRect();
-      const scale = (this.pinch.k * Math.hypot(a.x - b.x, a.y - b.y)) / this.pinch.distance;
-      this.zoomAt(scale, (a.x + b.x) / 2 - rect.left, (a.y + b.y) / 2 - rect.top);
+      const k = clamp((pinch.k * Math.hypot(a.x - b.x, a.y - b.y)) / pinch.distance, MIN_ZOOM, MAX_ZOOM);
+      const worldX = (pinch.centerX - pinch.x) / pinch.k;
+      const worldY = (pinch.centerY - pinch.y) / pinch.k;
+      this.k = k;
+      this.x = (a.x + b.x) / 2 - rect.left - worldX * k;
+      this.y = (a.y + b.y) / 2 - rect.top - worldY * k;
+      this.userMoved = true;
+      this.applyTransform();
       return;
     }
     const press = this.press;
     if (!press) return;
     const dx = event.clientX - press.startX;
     const dy = event.clientY - press.startY;
-    if (!press.moved && Math.hypot(dx, dy) < 4) return;
+    if (!press.moved && Math.hypot(dx, dy) < (press.touch ? TOUCH_SLOP : 4)) return;
+    if (!press.moved) window.clearTimeout(this.longPress);
     press.moved = true;
     this.userMoved = true;
     this.canvas.addClass("is-panning");
@@ -1149,11 +1392,32 @@ export class MapView extends ItemView implements DetailHost {
 
   private onPointerUp(event: PointerEvent) {
     this.pointers.delete(event.pointerId);
-    if (this.pointers.size < 2) this.pinch = null;
+    window.clearTimeout(this.longPress);
+    const swallow = this.swallowClick;
+    if (swallow) window.setTimeout(() => this.swallowClick === swallow && this.releaseClick(), 400);
+    if (this.pinch) {
+      if (this.pointers.size < 2) this.pinch = null;
+      // The finger that stays carries on panning from where the map is now.
+      const [rest] = [...this.pointers.values()];
+      this.press = rest ? { nodeId: null, startX: rest.x, startY: rest.y, originX: this.x, originY: this.y, moved: true, touch: true } : null;
+      return;
+    }
     const press = this.press;
     this.press = null;
     this.canvas.removeClass("is-panning");
     if (!press || press.moved || event.type === "pointercancel") return;
+    if (press.touch) {
+      const tap = { time: Date.now(), x: event.clientX, y: event.clientY };
+      const last = this.lastTap;
+      if (last && tap.time - last.time < DOUBLE_TAP_MS && Math.hypot(tap.x - last.x, tap.y - last.y) < 30) {
+        this.lastTap = null;
+        const rect = this.canvas.getBoundingClientRect();
+        this.animate();
+        this.zoomAt(this.k * 1.6, tap.x - rect.left, tap.y - rect.top);
+        return;
+      }
+      this.lastTap = tap;
+    }
     this.select(press.nodeId);
   }
 
@@ -1183,7 +1447,13 @@ export class MapView extends ItemView implements DetailHost {
 
   private zoomBy(factor: number) {
     this.animate();
-    this.zoomAt(this.k * factor, this.canvas.clientWidth / 2, this.canvas.clientHeight / 2);
+    this.zoomAt(this.k * factor, this.canvas.clientWidth / 2, this.visibleHeight() / 2);
+  }
+
+  /** The part of the map not under the panel and Obsidian's bar at the bottom of a phone. */
+  private visibleHeight() {
+    if (!this.root.classList.contains("is-phone")) return this.canvas.clientHeight;
+    return Math.max(120, this.canvas.clientHeight - this.bottomInset - this.sheetHeight());
   }
 
   private applyTransform() {
@@ -1201,14 +1471,30 @@ export class MapView extends ItemView implements DetailHost {
   private fit(animated: boolean) {
     const layout = this.layout;
     if (!layout) return;
-    const margin = 56;
+    const phone = this.root.classList.contains("is-phone");
+    const margin = phone ? 16 : 56;
     const width = this.canvas.clientWidth;
-    const height = this.canvas.clientHeight;
+    const height = this.visibleHeight();
     this.k = clamp(Math.min((width - margin * 2) / layout.width, (height - margin * 2) / layout.height), MIN_ZOOM, 1.05);
     this.x = (width - layout.width * this.k) / 2;
     this.y = (height - layout.height * this.k) / 2;
+    // A whole map too small to read is no use on a phone: it stays readable and shows where to go on.
+    if (phone && this.k < PHONE_MIN_ZOOM) {
+      const node = this.anchorNode(layout);
+      this.k = PHONE_MIN_ZOOM;
+      if (node) {
+        this.x = width / 2 - (node.x + node.width / 2) * this.k;
+        this.y = height * 0.35 - (node.y + node.height / 2) * this.k;
+      }
+    }
     if (animated) this.animate();
     this.applyTransform();
+  }
+
+  /** Where to look first on a map too big for the screen: the selection, the next step, the goal. */
+  private anchorNode(layout: Layout) {
+    const id = (this.selected && layout.nodes.has(this.selected) ? this.selected : null) ?? this.store.route?.next ?? this.store.route?.goal;
+    return (id ? layout.nodes.get(id) : undefined) ?? [...layout.nodes.values()][0];
   }
 
   /** Opening view: the whole map if it stays readable, otherwise the place to continue from. */
@@ -1216,20 +1502,19 @@ export class MapView extends ItemView implements DetailHost {
     const layout = this.layout;
     if (!layout) return;
     this.fit(true);
-    if (this.k >= READABLE_ZOOM) return;
-    const anchor = this.store.route?.next ?? this.store.route?.goal;
-    const node = anchor ? layout.nodes.get(anchor) : [...layout.nodes.values()][0];
+    if (this.k >= READABLE_ZOOM && !(this.root.classList.contains("is-phone") && this.k <= PHONE_MIN_ZOOM)) return;
+    const node = this.anchorNode(layout);
     if (!node) return;
-    this.k = CLOSE_ZOOM;
+    this.k = Math.max(this.k, CLOSE_ZOOM);
     this.x = this.canvas.clientWidth / 2 - (node.x + node.width / 2) * this.k;
-    this.y = this.canvas.clientHeight * 0.3 - (node.y + node.height / 2) * this.k;
+    this.y = this.visibleHeight() * 0.3 - (node.y + node.height / 2) * this.k;
     this.applyTransform();
   }
 
   private centerOn(node: LaidOutNode) {
     this.animate();
     this.x = this.canvas.clientWidth / 2 - (node.x + node.width / 2) * this.k;
-    this.y = this.canvas.clientHeight / 2 - (node.y + node.height / 2) * this.k;
+    this.y = this.visibleHeight() / 2 - (node.y + node.height / 2) * this.k;
     this.applyTransform();
   }
 
@@ -1240,7 +1525,7 @@ export class MapView extends ItemView implements DetailHost {
     const top = node.y * this.k + this.y;
     const right = left + node.width * this.k;
     const bottom = top + node.height * this.k;
-    if (left < 8 || top < 8 || right > this.canvas.clientWidth - 8 || bottom > this.canvas.clientHeight - 8) this.centerOn(node);
+    if (left < 8 || top < 8 || right > this.canvas.clientWidth - 8 || bottom > this.visibleHeight() - 8) this.centerOn(node);
   }
 
   private onNodeKey(event: KeyboardEvent, id: string) {
@@ -1284,8 +1569,12 @@ export class MapView extends ItemView implements DetailHost {
     this.reveal(best);
   }
 
-  private openContextMenu(event: MouseEvent, id: string) {
-    event.preventDefault();
+  private openContextMenu(event: MouseEvent | { x: number; y: number }, id: string) {
+    if (event instanceof MouseEvent) {
+      event.preventDefault();
+      // A long press on a phone opens the menu from its own timer; the browser's one would come twice.
+      if (Date.now() - this.lastTouch < 1000) return;
+    }
     const { store } = this;
     const node = store.graph.nodes.get(id);
     if (!node) return;
@@ -1317,13 +1606,16 @@ export class MapView extends ItemView implements DetailHost {
       menu.addItem((item) =>
         item.setTitle(isGoal ? t.removeGoal : t.makeGoal).setIcon("flag").onClick(() => (isGoal ? store.setGoal(null) : this.chooseGoal(id))),
       );
+      // On a phone there is no dot to drag a link from.
+      menu.addItem((item) => item.setTitle(t.linkNext).setIcon("git-branch-plus").onClick(() => pickUnlock(this, node)));
     } else {
       const done = store.progress.done.has(id);
       menu.addItem((item) =>
         item.setTitle(done ? t.markNotDone : t.markDone).setIcon("check").onClick(() => store.setDone(id, !done)),
       );
     }
-    menu.showAtMouseEvent(event);
+    if (event instanceof MouseEvent) menu.showAtMouseEvent(event);
+    else menu.showAtPosition(event);
   }
 
   // Drawing a link by hand
@@ -1535,6 +1827,25 @@ function backgroundOf(canvas: HTMLElement, color: (css: string) => string) {
     if (fill !== "none") return fill;
   }
   return "#ffffff";
+}
+
+function nextSheet(state: SheetState): SheetState {
+  return state === "peek" ? "half" : state === "half" ? "full" : "peek";
+}
+
+/**
+ * How far Obsidian's navigation bar on a phone reaches into the view from the bottom. It floats over
+ * the content, so it is measured rather than assumed; the safe area is added in CSS.
+ */
+function bottomInset(root: HTMLElement) {
+  const bottom = root.getBoundingClientRect().bottom;
+  let inset = 0;
+  for (const bar of document.querySelectorAll<HTMLElement>(".mobile-navbar")) {
+    const rect = bar.getBoundingClientRect();
+    if (rect.height === 0 || rect.top >= bottom || rect.bottom < bottom - 240) continue;
+    inset = Math.max(inset, bottom - rect.top + 8);
+  }
+  return Math.round(inset);
 }
 
 /** Painting runs for every node on each change; untouched nodes keep their styles. */

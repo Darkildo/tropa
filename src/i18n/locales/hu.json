@@ -291,5 +291,8 @@
   "exportProgressDesc": "Az elsajátított és tanult fogalmak, valamint a cél színezése. Kapcsold ki, ha haladásod nélkül osztanád meg a térképet.",
   "exportSaved": "Mentve: {path}",
   "exportNotReady": "A térkép elrendezése még folyik. Próbáld újra egy pillanat múlva.",
-  "canvasSoftLabel": "ajánlott"
+  "canvasSoftLabel": "ajánlott",
+  "moreActions": "További műveletek",
+  "sheetHandle": "Panel mérete: koppints vagy húzd",
+  "linkNext": "Összekapcsolás a következő fogalommal…"
 }

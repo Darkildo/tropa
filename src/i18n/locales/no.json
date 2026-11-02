@@ -291,5 +291,8 @@
   "exportProgressDesc": "Farg mestrede og påbegynte begreper og målet. Slå av for å dele kartet uten fremgangen din.",
   "exportSaved": "Lagret: {path}",
   "exportNotReady": "Kartet legges fortsatt ut. Prøv igjen om et øyeblikk.",
-  "canvasSoftLabel": "anbefalt"
+  "canvasSoftLabel": "anbefalt",
+  "moreActions": "Flere handlinger",
+  "sheetHandle": "Panelstørrelse: trykk eller dra",
+  "linkNext": "Koble til neste begrep …"
 }

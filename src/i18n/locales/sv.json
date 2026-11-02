@@ -291,5 +291,8 @@
   "exportProgressDesc": "Färglägg behärskade och påbörjade begrepp och målet. Stäng av för att dela kartan utan dina framsteg.",
   "exportSaved": "Sparad: {path}",
   "exportNotReady": "Kartan ritas fortfarande upp. Försök igen om en stund.",
-  "canvasSoftLabel": "rekommenderas"
+  "canvasSoftLabel": "rekommenderas",
+  "moreActions": "Fler åtgärder",
+  "sheetHandle": "Panelens storlek: tryck eller dra",
+  "linkNext": "Koppla till nästa begrepp …"
 }

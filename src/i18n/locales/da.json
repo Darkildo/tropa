@@ -291,5 +291,8 @@
   "exportProgressDesc": "Farv mestrede og igangværende begreber og målet. Slå fra for at dele kortet uden dine fremskridt.",
   "exportSaved": "Gemt: {path}",
   "exportNotReady": "Kortet er stadig ved at blive lagt ud. Prøv igen om et øjeblik.",
-  "canvasSoftLabel": "anbefalet"
+  "canvasSoftLabel": "anbefalet",
+  "moreActions": "Flere handlinger",
+  "sheetHandle": "Panelets størrelse: tryk eller træk",
+  "linkNext": "Forbind med det næste begreb …"
 }

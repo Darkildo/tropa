@@ -276,5 +276,8 @@
   "exportProgressDesc": "習得済み・学習中の概念と目標に色を付けます。進捗なしでマップを共有するにはオフにします。",
   "exportSaved": "保存しました: {path}",
   "exportNotReady": "マップはまだ配置中です。少し待ってからもう一度お試しください。",
-  "canvasSoftLabel": "推奨"
+  "canvasSoftLabel": "推奨",
+  "moreActions": "その他の操作",
+  "sheetHandle": "パネルの大きさ：タップまたはドラッグ",
+  "linkNext": "次の概念とつなぐ…"
 }

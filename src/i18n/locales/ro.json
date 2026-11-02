@@ -306,5 +306,8 @@
   "exportProgressDesc": "Colorează conceptele stăpânite și cele în studiu, precum și obiectivul. Dezactivează pentru a partaja harta fără progresul tău.",
   "exportSaved": "Salvat: {path}",
   "exportNotReady": "Harta încă se aranjează. Încearcă din nou peste o clipă.",
-  "canvasSoftLabel": "recomandat"
+  "canvasSoftLabel": "recomandat",
+  "moreActions": "Mai multe acțiuni",
+  "sheetHandle": "Mărimea panoului: atinge sau trage",
+  "linkNext": "Leagă de conceptul următor…"
 }

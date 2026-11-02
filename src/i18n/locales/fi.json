@@ -291,5 +291,8 @@
   "exportProgressDesc": "Väritä hallitut ja opiskeltavat käsitteet sekä tavoite. Poista käytöstä, jos haluat jakaa kartan ilman edistymistäsi.",
   "exportSaved": "Tallennettu: {path}",
   "exportNotReady": "Karttaa asetellaan vielä. Yritä hetken päästä uudelleen.",
-  "canvasSoftLabel": "suositeltu"
+  "canvasSoftLabel": "suositeltu",
+  "moreActions": "Lisää toimintoja",
+  "sheetHandle": "Paneelin koko: napauta tai vedä",
+  "linkNext": "Yhdistä seuraavaan käsitteeseen…"
 }

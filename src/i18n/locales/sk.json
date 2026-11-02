@@ -321,5 +321,8 @@
   "exportProgressDesc": "Zafarbiť zvládnuté a študované pojmy a cieľ. Vypnite, ak chcete zdieľať mapu bez svojho postupu.",
   "exportSaved": "Uložené: {path}",
   "exportNotReady": "Mapa sa ešte rozvrhuje. Skúste to o chvíľu.",
-  "canvasSoftLabel": "odporúčané"
+  "canvasSoftLabel": "odporúčané",
+  "moreActions": "Ďalšie akcie",
+  "sheetHandle": "Veľkosť panela: ťuknite alebo potiahnite",
+  "linkNext": "Prepojiť s ďalším pojmom…"
 }

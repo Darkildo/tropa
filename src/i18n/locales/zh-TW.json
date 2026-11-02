@@ -276,5 +276,8 @@
   "exportProgressDesc": "為已掌握、學習中的概念和目標著色。關閉後可分享不含個人進度的地圖。",
   "exportSaved": "已儲存：{path}",
   "exportNotReady": "地圖仍在排列中，請稍後再試。",
-  "canvasSoftLabel": "推薦"
+  "canvasSoftLabel": "推薦",
+  "moreActions": "更多操作",
+  "sheetHandle": "面板大小：點按或拖曳",
+  "linkNext": "連結到下一個概念…"
 }

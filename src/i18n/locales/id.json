@@ -276,5 +276,8 @@
   "exportProgressDesc": "Beri warna pada konsep yang dikuasai, yang sedang dipelajari, dan tujuan. Matikan untuk membagikan peta tanpa kemajuan Anda.",
   "exportSaved": "Disimpan: {path}",
   "exportNotReady": "Peta masih disusun. Coba lagi sebentar lagi.",
-  "canvasSoftLabel": "disarankan"
+  "canvasSoftLabel": "disarankan",
+  "moreActions": "Tindakan lainnya",
+  "sheetHandle": "Ukuran panel: ketuk atau seret",
+  "linkNext": "Tautkan ke konsep berikutnya…"
 }

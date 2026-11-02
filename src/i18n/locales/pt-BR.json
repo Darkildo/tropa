@@ -306,5 +306,8 @@
   "exportProgressDesc": "Colorir os conceitos dominados e em estudo e o objetivo. Desative para compartilhar o mapa sem o seu progresso.",
   "exportSaved": "Salvo: {path}",
   "exportNotReady": "O mapa ainda está sendo organizado. Tente de novo em instantes.",
-  "canvasSoftLabel": "recomendado"
+  "canvasSoftLabel": "recomendado",
+  "moreActions": "Mais ações",
+  "sheetHandle": "Tamanho do painel: toque ou arraste",
+  "linkNext": "Ligar ao próximo conceito…"
 }
