@@ -658,6 +658,25 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   ok("large graph: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
+// A scope change on a large map: a new shape, laid out again by WebAssembly in the worker.
+{
+  const { page, errors } = await open({ query: "?scenario=large&n=400&archive" });
+  await layoutDone(page);
+  ok("scope (large): all notes before the change", (await page.locator(".tropa-node").count()) === 400);
+  const key = await page.evaluate(`${view}.layoutKey`);
+  const cached = await page.evaluate(`${view}.layouts.stats.cached`);
+  const inWorker = await page.evaluate(`${view}.layouts.stats.inWorker`);
+  await setScope(page, "excludeFolders", "Archive");
+  await layoutDone(page);
+  ok("scope (large): excluded folder leaves the map", (await page.locator(".tropa-node").count()) === 360, String(await page.locator(".tropa-node").count()));
+  ok("scope (large): new layout key", (await page.evaluate(`${view}.layoutKey`)) !== key);
+  ok("scope (large): the new shape is not taken from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) === cached);
+  ok("scope (large): laid out in the worker", (await page.evaluate(`${view}.layouts.stats.inWorker`)) > inWorker);
+  const engine = await page.evaluate(`${view}.layouts.stats.engine`);
+  ok("scope (large): by WebAssembly", engine === "wasm in a worker", engine);
+  ok("scope (large): no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
 {
   // 1000 concepts; materials on make it 1700 nodes: about 0.7 s for the WebAssembly engine, 1.5 s for TypeScript.
   const { page, errors } = await open({ query: "?scenario=large&n=1000&materials" });

@@ -39,7 +39,9 @@ if (scenario === "large") {
     const reqs = [i - 1 - (i % 7), i - 3 - (i % 11), Math.floor(i / 2)].filter((n) => n >= 0 && n < i);
     // `materials` adds soft links and about 0.7 materials per concept, like the benchmark's "+m" graphs.
     const soft = params.has("materials") && i % 2 ? `recommends: ${links([(i * 37) % count].filter((n) => n !== i))}\n` : "";
-    vault.seed(`Node ${i}.md`, `---\ntype: concept\nrequires: ${links(reqs)}\n${soft}---\n`);
+    // `archive` puts every tenth note in a folder, for the map scope checks.
+    const folder = params.has("archive") && i % 10 === 5 ? "Archive/" : "";
+    vault.seed(`${folder}Node ${i}.md`, `---\ntype: concept\nrequires: ${links(reqs)}\n${soft}---\n`);
   }
   if (params.has("materials")) {
     for (let i = 0; i < Math.round(count * 0.7); i++) {
