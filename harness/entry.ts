@@ -11,6 +11,32 @@ document.documentElement.lang = language;
 document.body.classList.add(params.get("theme") === "dark" ? "theme-dark" : "theme-light");
 document.body.classList.toggle("is-right-open", params.has("panel"));
 
+// `holdlayout` lets a test keep the worker's answer back while it acts on the map, so the action is sure to
+// land while the layout is pending. The worker still computes as usual; only the delivery waits.
+if (params.has("holdlayout")) {
+  const hold = { on: false, since: 0, arrived: 0, held: [] as (() => void)[] };
+  const release = () => {
+    hold.on = false;
+    hold.held.splice(0).forEach((deliver) => deliver());
+  };
+  Object.assign(window, { layoutHold: Object.assign(hold, { release }) });
+  const Real = window.Worker;
+  window.Worker = class extends Real {
+    private handler: ((event: MessageEvent) => void) | null = null;
+    get onmessage() {
+      return this.handler;
+    }
+    set onmessage(handler: ((event: MessageEvent) => void) | null) {
+      this.handler = handler;
+      super.onmessage = (event: MessageEvent) => {
+        if (!hold.on) return handler?.call(this, event);
+        hold.arrived = performance.now();
+        hold.held.push(() => handler?.call(this, event));
+      };
+    }
+  } as typeof Worker;
+}
+
 const vault = (app as any).vault;
 // The example can be in another language than the interface, as in a vault set up before translation.
 const sampleLanguage = (params.get("sample") ?? language).startsWith("ru") ? "ru" : "en";

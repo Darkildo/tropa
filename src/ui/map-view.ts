@@ -292,6 +292,8 @@ export class MapView extends ItemView implements DetailHost {
     if (!this.root) return;
     // Read before anything changes: reading it after the nodes are repainted would lay out the whole map.
     const sideScroll = this.side.scrollTop;
+    // A focus restored with the workspace waits for the vault to be read.
+    if (!this.store.isEmpty) this.dropGoneFocus();
     const empty = this.store.isEmpty;
     this.root.toggleClass("is-empty", empty);
     this.renderBar();
@@ -356,7 +358,6 @@ export class MapView extends ItemView implements DetailHost {
   /** Concepts to lay out: the focus, the route or everything, without folded branches. `undefined` is all. */
   private shownConcepts(mode: "route" | "all"): Set<string> | undefined {
     const { graph, route } = this.store;
-    if (this.focus && !graph.nodes.has(this.focus.center)) this.focus = null;
     let only: Set<string> | undefined;
     if (this.focus) only = neighborhood(graph, this.focus.center, this.focus.depth);
     else if (mode === "route") only = route!.closure;
@@ -730,6 +731,19 @@ export class MapView extends ItemView implements DetailHost {
     } else {
       this.renderFocusControls();
     }
+  }
+
+  /**
+   * The focused note can leave the graph: deleted, or left out by the map scope. The focus ends with it before
+   * the bar is drawn, and the map goes back to where it was, as when leaving the focus by hand.
+   */
+  private dropGoneFocus() {
+    if (!this.focus || this.store.graph.nodes.has(this.focus.center)) return;
+    this.focus = null;
+    this.restoreView = this.beforeFocus;
+    this.beforeFocus = null;
+    this.needsFit = !this.restoreView;
+    this.saveViewState();
   }
 
   private exitFocus() {
