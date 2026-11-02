@@ -574,6 +574,7 @@ const fold = (page, title) => node(page, title).locator(".tropa-fold");
   const sources = await page.locator(".tropa-node.is-source").count();
   ok("materials of what is in focus", sources > 0 && (await page.locator(".tropa-node.is-concept").count()) === 8, String(sources));
   await page.click(".tropa-toggle-sources"); await wait(page, 400);
+  ok("focus lays out its own shape", (await page.evaluate(`${mapView}.layoutKey`)).split("#").pop().split("|").length === 8);
   ok("focus kept with the view", (await page.evaluate(`${mapView}.getState().focus?.depth`)) === 2 && (await page.evaluate("tropa.app.workspace.layoutSaves")) > 0);
   await page.screenshot({ path: SHOTS + "90-focus.png" });
   await page.keyboard.press("Escape"); await wait(page, 600);
@@ -709,9 +710,11 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
 {
   // Folding a branch of a big map: the fold itself is cheap, the worker lays out the rest without a freeze,
   // unfolding comes back from the cache.
-  const { page, errors } = await open({ query: "?scenario=large&n=1000" });
+  const { page, errors, logs } = await open({ query: "?scenario=large&n=1000" });
   await layoutDone(page);
   await wait(page, 1500);
+  const shape = () => page.evaluate(`({ key: ${mapView}.layoutKey, ...${mapView}.layouts.stats })`);
+  const before = await shape();
   const timing = await page.evaluate(async () => {
     const view = tropa.app.workspace.center.view;
     let foldMs = 0;
@@ -750,6 +753,9 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   console.log(`fold on 1000 concepts: ${hidden} hidden; fold ${Math.round(timing.foldMs)} ms, click handler ${Math.round(timing.clickMs)} ms, longest pause during layout ${Math.round(timing.longest)} ms, all ${Math.round(timing.total)} ms`);
   ok("fold on a big map hides its branch", left < 1000 && left + hidden === 1000, `${left} + ${hidden}`);
   ok("fold on a big map is cheap and the layout does not freeze", timing.foldMs < 50 && timing.longest < 150, JSON.stringify(timing));
+  const after = await shape();
+  ok("a fold is a new map shape laid out by wasm in the worker", after.key !== before.key && after.inWorker > before.inWorker && after.engine === "wasm in a worker", JSON.stringify({ before, after }));
+  ok("the engine is logged", logs.includes("Tropa: map layout by wasm in a worker"), logs.join(" | "));
   await page.evaluate(() => document.querySelector('.tropa-node[data-id="Node 100.md"] .tropa-fold').click());
   ok("unfold comes from the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await nodeCount(page)) === 1000);
   ok("big fold: no errors", errors.length === 0, errors.join("; "));
