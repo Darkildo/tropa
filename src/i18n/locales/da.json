@@ -252,5 +252,44 @@
     "one": "Her er {count} trin på ruten skjult",
     "other": "Her er {count} trin på ruten skjult"
   },
-  "hiddenOnMap": "Skjult på kortet"
+  "hiddenOnMap": "Skjult på kortet",
+  "audit": {
+    "command": "Gennemgå kortet",
+    "title": "Gennemgang af kortet",
+    "summary": {
+      "one": "{count} ting at se på",
+      "other": "{count} ting at se på"
+    },
+    "clean": "Intet at rette: hvert begreb har materialer, hvert link har en note, og intet kræver sig selv.",
+    "noMaterials": "Begreber uden materialer",
+    "noMaterialsHint": "Intet underviser i dem endnu. Tilføj et materiale til hvert, eller knyt et, du allerede har.",
+    "orphans": "Ikke forbundet",
+    "orphansHint": "Ingen links til eller fra andre noter på kortet.",
+    "ghosts": "Links til manglende noter",
+    "ghostsHint": "Andre noter linker til disse begreber, men noterne findes ikke endnu.",
+    "linkedFrom": {
+      "one": "Linket fra {count} note",
+      "other": "Linket fra {count} noter"
+    },
+    "duplicates": "Mulige dubletter",
+    "duplicatesHint": "Navne, der kun adskiller sig ved store/små bogstaver eller accenter. Flet dem, eller omdøb et.",
+    "cycles": "Cirkulære afhængigheder",
+    "cyclesHint": "Hvert begreb kræver det næste, og det sidste kræver det første, så intet kan læres først.",
+    "showOnMap": "Vis på kortet"
+  },
+  "exportMap": "Eksportér kort",
+  "exportCanvas": "Eksportér kortet til Canvas",
+  "exportSvg": "Eksportér kortet som SVG",
+  "exportPath": "Fil",
+  "exportPathDesc": "Sti i boksen. Manglende mapper oprettes.",
+  "exportPathInvalid": "Angiv en filsti i boksen",
+  "exportExists": "{path} findes allerede",
+  "exportReplace": "Erstat",
+  "exportSave": "Gem",
+  "exportKeepBoth": "Behold begge",
+  "exportProgress": "Vis mine fremskridt",
+  "exportProgressDesc": "Farv mestrede og igangværende begreber og målet. Slå fra for at dele kortet uden dine fremskridt.",
+  "exportSaved": "Gemt: {path}",
+  "exportNotReady": "Kortet er stadig ved at blive lagt ud. Prøv igen om et øjeblik.",
+  "canvasSoftLabel": "anbefalet"
 }

@@ -252,5 +252,44 @@
     "one": "Tähän on piilotettu {count} reitin vaihe",
     "other": "Tähän on piilotettu {count} reitin vaihetta"
   },
-  "hiddenOnMap": "Piilotettu kartalta"
+  "hiddenOnMap": "Piilotettu kartalta",
+  "audit": {
+    "command": "Tarkista kartta",
+    "title": "Kartan tarkistus",
+    "summary": {
+      "one": "{count} kohta tarkistettavana",
+      "other": "{count} kohtaa tarkistettavana"
+    },
+    "clean": "Ei korjattavaa: jokaisella käsitteellä on materiaaleja, jokaisella linkillä on muistiinpano, eikä mikään vaadi itseään.",
+    "noMaterials": "Käsitteet ilman materiaaleja",
+    "noMaterialsHint": "Mikään ei vielä opeta niitä. Lisää jokaiselle materiaali tai liitä jo olemassa oleva.",
+    "orphans": "Ei yhteyksiä",
+    "orphansHint": "Ei linkkejä kartan muihin muistiinpanoihin eikä niistä.",
+    "ghosts": "Linkit puuttuviin muistiinpanoihin",
+    "ghostsHint": "Muut muistiinpanot linkittävät näihin käsitteisiin, mutta muistiinpanoja ei vielä ole.",
+    "linkedFrom": {
+      "one": "Linkitetty {count} muistiinpanosta",
+      "other": "Linkitetty {count} muistiinpanosta"
+    },
+    "duplicates": "Mahdolliset kaksoiskappaleet",
+    "duplicatesHint": "Nimet eroavat vain kirjainkoon tai tarkkeiden osalta. Yhdistä ne tai nimeä yksi uudelleen.",
+    "cycles": "Kehäriippuvuudet",
+    "cyclesHint": "Jokainen käsite vaatii seuraavan ja viimeinen ensimmäisen, joten mitään ei voi oppia ensin.",
+    "showOnMap": "Näytä kartalla"
+  },
+  "exportMap": "Vie kartta",
+  "exportCanvas": "Vie kartta Canvasiin",
+  "exportSvg": "Vie kartta SVG-muodossa",
+  "exportPath": "Tiedosto",
+  "exportPathDesc": "Polku holvissa. Puuttuvat kansiot luodaan.",
+  "exportPathInvalid": "Anna tiedostopolku holvin sisällä",
+  "exportExists": "{path} on jo olemassa",
+  "exportReplace": "Korvaa",
+  "exportSave": "Tallenna",
+  "exportKeepBoth": "Säilytä molemmat",
+  "exportProgress": "Näytä edistymiseni",
+  "exportProgressDesc": "Väritä hallitut ja opiskeltavat käsitteet sekä tavoite. Poista käytöstä, jos haluat jakaa kartan ilman edistymistäsi.",
+  "exportSaved": "Tallennettu: {path}",
+  "exportNotReady": "Karttaa asetellaan vielä. Yritä hetken päästä uudelleen.",
+  "canvasSoftLabel": "suositeltu"
 }

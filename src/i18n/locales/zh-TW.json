@@ -239,5 +239,42 @@
   "foldedRoute": {
     "other": "這裡隱藏了路線中的 {count} 步"
   },
-  "hiddenOnMap": "在地圖上已隱藏"
+  "hiddenOnMap": "在地圖上已隱藏",
+  "audit": {
+    "command": "檢查導圖",
+    "title": "導圖檢查",
+    "summary": {
+      "other": "有 {count} 處需要查看"
+    },
+    "clean": "沒有需要修正的問題：每個概念都有資料，每個連結都有筆記，也沒有自己依賴自己的情況。",
+    "noMaterials": "沒有資料的概念",
+    "noMaterialsHint": "目前還沒有資料講授它們。為每個概念新增資料，或連結已有的資料。",
+    "orphans": "未連接",
+    "orphansHint": "與導圖上的其他筆記之間沒有任何連結。",
+    "ghosts": "指向不存在筆記的連結",
+    "ghostsHint": "其他筆記連結到這些概念，但這些筆記還不存在。",
+    "linkedFrom": {
+      "other": "被 {count} 則筆記連結"
+    },
+    "duplicates": "可能重複",
+    "duplicatesHint": "名稱只在大小寫或重音符號上不同。合併它們，或重新命名其中一個。",
+    "cycles": "循環依賴",
+    "cyclesHint": "每個概念依賴下一個，最後一個又依賴第一個，所以哪個都無法先學。",
+    "showOnMap": "在導圖上顯示"
+  },
+  "exportMap": "匯出地圖",
+  "exportCanvas": "將地圖匯出為 Canvas",
+  "exportSvg": "將地圖匯出為 SVG",
+  "exportPath": "檔案",
+  "exportPathDesc": "儲存庫中的路徑。缺少的資料夾會自動建立。",
+  "exportPathInvalid": "請輸入儲存庫內的檔案路徑",
+  "exportExists": "{path} 已存在",
+  "exportReplace": "取代",
+  "exportSave": "儲存",
+  "exportKeepBoth": "兩個都保留",
+  "exportProgress": "顯示我的進度",
+  "exportProgressDesc": "為已掌握、學習中的概念和目標著色。關閉後可分享不含個人進度的地圖。",
+  "exportSaved": "已儲存：{path}",
+  "exportNotReady": "地圖仍在排列中，請稍後再試。",
+  "canvasSoftLabel": "推薦"
 }

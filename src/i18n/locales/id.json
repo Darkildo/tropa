@@ -239,5 +239,42 @@
   "foldedRoute": {
     "other": "{count} langkah rute tersembunyi di sini"
   },
-  "hiddenOnMap": "Tersembunyi di peta"
+  "hiddenOnMap": "Tersembunyi di peta",
+  "audit": {
+    "command": "Periksa peta",
+    "title": "Pemeriksaan peta",
+    "summary": {
+      "other": "{count} hal untuk diperiksa"
+    },
+    "clean": "Tidak ada yang perlu diperbaiki: setiap konsep punya materi, setiap tautan punya catatan, dan tidak ada yang mensyaratkan dirinya sendiri.",
+    "noMaterials": "Konsep tanpa materi",
+    "noMaterialsHint": "Belum ada yang mengajarkannya. Tambahkan materi untuk masing-masing, atau tautkan yang sudah ada.",
+    "orphans": "Tidak terhubung",
+    "orphansHint": "Tidak ada tautan ke atau dari catatan lain di peta.",
+    "ghosts": "Tautan ke catatan yang belum ada",
+    "ghostsHint": "Catatan lain menautkan konsep ini, tetapi catatannya belum ada.",
+    "linkedFrom": {
+      "other": "Ditautkan dari {count} catatan"
+    },
+    "duplicates": "Kemungkinan duplikat",
+    "duplicatesHint": "Nama yang hanya berbeda huruf besar-kecil atau aksen. Gabungkan, atau ganti nama salah satunya.",
+    "cycles": "Ketergantungan melingkar",
+    "cyclesHint": "Setiap konsep mensyaratkan konsep berikutnya dan yang terakhir mensyaratkan yang pertama, jadi tidak ada yang bisa dipelajari lebih dulu.",
+    "showOnMap": "Tampilkan di peta"
+  },
+  "exportMap": "Ekspor peta",
+  "exportCanvas": "Ekspor peta ke Canvas",
+  "exportSvg": "Ekspor peta sebagai SVG",
+  "exportPath": "Berkas",
+  "exportPathDesc": "Jalur di dalam brankas. Folder yang belum ada akan dibuat.",
+  "exportPathInvalid": "Masukkan jalur berkas di dalam brankas",
+  "exportExists": "{path} sudah ada",
+  "exportReplace": "Ganti",
+  "exportSave": "Simpan",
+  "exportKeepBoth": "Simpan keduanya",
+  "exportProgress": "Tampilkan kemajuan saya",
+  "exportProgressDesc": "Beri warna pada konsep yang dikuasai, yang sedang dipelajari, dan tujuan. Matikan untuk membagikan peta tanpa kemajuan Anda.",
+  "exportSaved": "Disimpan: {path}",
+  "exportNotReady": "Peta masih disusun. Coba lagi sebentar lagi.",
+  "canvasSoftLabel": "disarankan"
 }

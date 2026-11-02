@@ -265,5 +265,46 @@
     "one": "Aquí hi ha {count} pas de la ruta amagat",
     "other": "Aquí hi ha {count} passos de la ruta amagats"
   },
-  "hiddenOnMap": "Amagat al mapa"
+  "hiddenOnMap": "Amagat al mapa",
+  "audit": {
+    "command": "Revisa el mapa",
+    "title": "Revisió del mapa",
+    "summary": {
+      "one": "{count} punt per revisar",
+      "many": "{count} punts per revisar",
+      "other": "{count} punts per revisar"
+    },
+    "clean": "Res a corregir: cada concepte té materials, cada enllaç té la seva nota i res no es requereix a si mateix.",
+    "noMaterials": "Conceptes sense materials",
+    "noMaterialsHint": "Encara res no els ensenya. Afegeix un material a cadascun o enllaça’n un que ja tinguis.",
+    "orphans": "Sense connexions",
+    "orphansHint": "Cap enllaç cap a altres notes del mapa ni des d’elles.",
+    "ghosts": "Enllaços a notes que no existeixen",
+    "ghostsHint": "Altres notes enllacen aquests conceptes, però les notes encara no existeixen.",
+    "linkedFrom": {
+      "one": "Enllaçat des de {count} nota",
+      "many": "Enllaçat des de {count} notes",
+      "other": "Enllaçat des de {count} notes"
+    },
+    "duplicates": "Possibles duplicats",
+    "duplicatesHint": "Noms que només canvien en majúscules o accents. Fusiona’ls o canvia el nom d’un.",
+    "cycles": "Dependències circulars",
+    "cyclesHint": "Cada concepte requereix el següent i l’últim requereix el primer, de manera que cap no es pot aprendre primer.",
+    "showOnMap": "Mostra al mapa"
+  },
+  "exportMap": "Exporta el mapa",
+  "exportCanvas": "Exporta el mapa a Canvas",
+  "exportSvg": "Exporta el mapa com a SVG",
+  "exportPath": "Fitxer",
+  "exportPathDesc": "Camí a la caixa forta. Es crearan les carpetes que faltin.",
+  "exportPathInvalid": "Escriu un camí de fitxer dins de la caixa forta",
+  "exportExists": "{path} ja existeix",
+  "exportReplace": "Substitueix",
+  "exportSave": "Desa",
+  "exportKeepBoth": "Conserva tots dos",
+  "exportProgress": "Mostra el meu progrés",
+  "exportProgressDesc": "Acoloreix els conceptes dominats i en estudi i l’objectiu. Desactiva-ho per compartir el mapa sense el teu progrés.",
+  "exportSaved": "Desat: {path}",
+  "exportNotReady": "El mapa encara s’està organitzant. Torna-ho a provar d’aquí a un moment.",
+  "canvasSoftLabel": "recomanat"
 }

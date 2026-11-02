@@ -243,6 +243,7 @@ export class WorkspaceLeaf {
     const factory = app.workspace.factories.get(state.type)!;
     this.view = factory(this);
     this.containerEl.empty();
+    if (this.side === "note") this.containerEl.dataset.open = "true";
     this.containerEl.appendChild(this.view.containerEl);
     await this.view.onOpen();
   }
@@ -270,7 +271,7 @@ class Workspace extends Events {
   setActive(file: TFile | null) { this.active = file; this.trigger("file-open", file); }
   getLeavesOfType(type: string) {
     if (type === "markdown") return this.note?.file ? [this.note] : [];
-    return [this.center, this.right].filter((leaf) => leaf?.view?.getViewType() === type);
+    return [this.center, this.right, this.note].filter((leaf) => leaf?.view?.getViewType() === type);
   }
   getLeaf() { return this.note; }
   getRightLeaf() { return this.right; }

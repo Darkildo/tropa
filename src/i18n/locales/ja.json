@@ -239,5 +239,42 @@
   "foldedRoute": {
     "other": "ここにルートの{count}ステップが隠れています"
   },
-  "hiddenOnMap": "マップ上で非表示"
+  "hiddenOnMap": "マップ上で非表示",
+  "audit": {
+    "command": "マップを点検",
+    "title": "マップの点検",
+    "summary": {
+      "other": "確認が必要な項目: {count}"
+    },
+    "clean": "修正すべき点はありません。どの概念にも教材があり、どのリンクにもノートがあり、自分自身を前提とするものもありません。",
+    "noMaterials": "教材のない概念",
+    "noMaterialsHint": "まだ何もこれらを教えていません。それぞれに教材を追加するか、手持ちの教材をリンクしてください。",
+    "orphans": "つながりのないノート",
+    "orphansHint": "マップ上のほかのノートとのリンクがありません。",
+    "ghosts": "存在しないノートへのリンク",
+    "ghostsHint": "ほかのノートがこれらの概念にリンクしていますが、ノートはまだありません。",
+    "linkedFrom": {
+      "other": "{count} 件のノートからリンク"
+    },
+    "duplicates": "重複の可能性",
+    "duplicatesHint": "大文字・小文字やアクセントだけが違う名前です。まとめるか、どれかの名前を変えてください。",
+    "cycles": "循環する依存関係",
+    "cyclesHint": "各概念が次の概念を前提とし、最後が最初を前提としているため、どれも最初に学べません。",
+    "showOnMap": "マップで表示"
+  },
+  "exportMap": "マップを書き出す",
+  "exportCanvas": "マップをCanvasに書き出す",
+  "exportSvg": "マップをSVGで書き出す",
+  "exportPath": "ファイル",
+  "exportPathDesc": "保管庫内のパス。存在しないフォルダは作成されます。",
+  "exportPathInvalid": "保管庫内のファイルパスを入力してください",
+  "exportExists": "{path} はすでに存在します",
+  "exportReplace": "置き換える",
+  "exportSave": "保存",
+  "exportKeepBoth": "両方残す",
+  "exportProgress": "自分の進捗を表示",
+  "exportProgressDesc": "習得済み・学習中の概念と目標に色を付けます。進捗なしでマップを共有するにはオフにします。",
+  "exportSaved": "保存しました: {path}",
+  "exportNotReady": "マップはまだ配置中です。少し待ってからもう一度お試しください。",
+  "canvasSoftLabel": "推奨"
 }

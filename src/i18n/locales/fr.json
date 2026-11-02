@@ -265,5 +265,46 @@
     "one": "{count} étape de la route est masquée ici",
     "other": "{count} étapes de la route sont masquées ici"
   },
-  "hiddenOnMap": "Masqué sur la carte"
+  "hiddenOnMap": "Masqué sur la carte",
+  "audit": {
+    "command": "Vérifier la carte",
+    "title": "Vérification de la carte",
+    "summary": {
+      "one": "{count} point à examiner",
+      "many": "{count} points à examiner",
+      "other": "{count} points à examiner"
+    },
+    "clean": "Rien à corriger : chaque concept a des ressources, chaque lien a sa note, et rien ne dépend de lui-même.",
+    "noMaterials": "Concepts sans ressources",
+    "noMaterialsHint": "Rien ne les enseigne encore. Ajoutez une ressource à chacun, ou liez-en une existante.",
+    "orphans": "Non reliés",
+    "orphansHint": "Aucun lien vers ou depuis d’autres notes de la carte.",
+    "ghosts": "Liens vers des notes manquantes",
+    "ghostsHint": "D’autres notes renvoient vers ces concepts, mais les notes n’existent pas encore.",
+    "linkedFrom": {
+      "one": "Lié depuis {count} note",
+      "many": "Lié depuis {count} notes",
+      "other": "Lié depuis {count} notes"
+    },
+    "duplicates": "Doublons possibles",
+    "duplicatesHint": "Des noms qui ne diffèrent que par la casse ou les accents. Fusionnez-les ou renommez-en un.",
+    "cycles": "Dépendances circulaires",
+    "cyclesHint": "Chaque concept exige le suivant et le dernier exige le premier : aucun ne peut être appris en premier.",
+    "showOnMap": "Afficher sur la carte"
+  },
+  "exportMap": "Exporter la carte",
+  "exportCanvas": "Exporter la carte vers Canvas",
+  "exportSvg": "Exporter la carte en SVG",
+  "exportPath": "Fichier",
+  "exportPathDesc": "Chemin dans le coffre. Les dossiers manquants seront créés.",
+  "exportPathInvalid": "Saisissez un chemin de fichier dans le coffre",
+  "exportExists": "{path} existe déjà",
+  "exportReplace": "Remplacer",
+  "exportSave": "Enregistrer",
+  "exportKeepBoth": "Garder les deux",
+  "exportProgress": "Afficher ma progression",
+  "exportProgressDesc": "Colorer les concepts maîtrisés et en cours ainsi que l’objectif. Désactivez pour partager la carte sans votre progression.",
+  "exportSaved": "Enregistré : {path}",
+  "exportNotReady": "La carte est encore en cours de disposition. Réessayez dans un instant.",
+  "canvasSoftLabel": "recommandé"
 }

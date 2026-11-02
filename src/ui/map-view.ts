@@ -3,7 +3,8 @@ import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
 import layoutWorker from "tropa:layout-worker";
-import { isPassed, knownCandidates, sourceState } from "../core/graph";
+import { auditCount, auditGraph, type Audit } from "../core/audit";
+import { isPassed, knownCandidates, sourceState, type LearningGraph } from "../core/graph";
 import { MAX_FOCUS_DEPTH, fold, foldersOf, neighborhood } from "../core/neighborhood";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
@@ -11,6 +12,10 @@ import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
 import { openKnownModal, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
+import { ExportModal } from "./export";
+import { fileName } from "../core/export-path";
+import { buildCanvas, canvasText, CANVAS_COLOR, type ExportNode } from "../core/canvas";
+import { buildSvg, wrapText, type SvgBox, type SvgIcon, type SvgPath, type SvgText } from "../core/svg";
 
 export const MAP_VIEW = "tropa-map";
 
@@ -65,6 +70,10 @@ export class MapView extends ItemView implements DetailHost {
   private readonly layouts = new LayoutRunner(layoutWorker);
   /** The worker is still laying out the graph for `layoutKey`; the map shows the previous layout. */
   private layoutPending = false;
+  /** The audit of the current graph, kept until the graph changes. */
+  private audited: { graph: LearningGraph; audit: Audit } | null = null;
+  /** Callers of `layoutReady` waiting for the layout in the worker. */
+  private readonly layoutWaiters: (() => void)[] = [];
   private selected: string | null = null;
   private x = 40;
   private y = 40;
@@ -197,37 +206,63 @@ export class MapView extends ItemView implements DetailHost {
     if (id) this.reveal(id);
   }
 
-  /** A concept picked from the route list or a command may sit in a folded branch or outside the focus. */
+  /**
+   * A note picked from the route list, the audit or a command may sit in a folded branch or outside
+   * the focus. A material stands with the concepts it teaches, so those decide for it.
+   */
   private bringIntoView(id: string) {
     const { graph } = this.store;
-    if (this.focus && graph.nodes.get(id)?.kind === "concept" && !this.inScope.has(id)) {
+    const node = graph.nodes.get(id);
+    const concepts = node?.kind === "source" ? node.teaches : [id];
+    if (!concepts.length) return;
+    if (this.focus && !concepts.some((concept) => this.inScope.has(concept))) {
       this.focus = null;
       this.beforeFocus = null;
       this.needsFit = false;
       this.saveViewState();
       this.render();
     }
-    if (this.hidden.has(id)) {
-      foldersOf(graph, this.folded, id).forEach((folder) => this.folded.delete(folder));
+    if (concepts.every((concept) => this.hidden.has(concept))) {
+      foldersOf(graph, this.folded, concepts[0]).forEach((folder) => this.folded.delete(folder));
       this.saveViewState();
       this.render();
     }
+  }
+
+  /** Resolves once the map shows the layout it asked for last; at once when none is on its way. */
+  layoutReady(): Promise<void> {
+    if (!this.layoutPending) return Promise.resolve();
+    return new Promise((resolve) => this.layoutWaiters.push(resolve));
   }
 
   openNote(id: string, newTab = false) {
     this.plugin.openNote(id, newTab);
   }
 
-  /** Centres a concept for commands such as "find on the map". */
-  focusNode(id: string) {
-    if (this.effectiveMode() === "route" && !this.store.route?.closure.has(id)) {
-      this.plugin.settings.mapMode = "all";
+  /**
+   * Centres a note for commands such as "find on the map" or the audit. Whatever hides it gives way
+   * first: the route, materials being off, a fold or the focus. A large map may then be laid out
+   * in the worker, so the note is centred once that layout is on screen.
+   */
+  async focusNode(id: string) {
+    const { settings } = this.plugin;
+    const { graph, route } = this.store;
+    const node = graph.nodes.get(id);
+    if (!node) return;
+    const onRoute = node.kind === "source" ? node.teaches.length === 0 || node.teaches.some((concept) => route?.closure.has(concept)) : route?.closure.has(id);
+    const mode = this.effectiveMode() === "route" && !onRoute;
+    const sources = node.kind === "source" && !settings.showSources;
+    if (mode) settings.mapMode = "all";
+    if (sources) settings.showSources = true;
+    if (mode || sources) {
       attempt(this.plugin.saveSettings(), "save settings");
       this.render();
     }
+    this.bringIntoView(id);
+    await this.layoutReady();
     this.select(id);
-    const node = this.layout?.nodes.get(id);
-    if (node) this.centerOn(node);
+    const placed = this.layout?.nodes.get(id);
+    if (placed) this.centerOn(placed);
     this.nodeEls.get(id)?.focus({ preventScroll: true });
   }
 
@@ -347,6 +382,7 @@ export class MapView extends ItemView implements DetailHost {
 
   private setPending(pending: boolean) {
     this.layoutPending = pending;
+    if (!pending) this.layoutWaiters.splice(0).forEach((resolve) => resolve());
     this.canvas.toggleClass("is-laying-out", pending);
     this.canvas.setAttribute("aria-busy", String(pending));
   }
@@ -574,7 +610,31 @@ export class MapView extends ItemView implements DetailHost {
     });
   }
 
+  /** The audit button: how many findings, in warning colours when there is a cycle. */
+  private renderAuditButton() {
+    const button = this.bar.querySelector<HTMLElement>(".tropa-audit-button")!;
+    const { graph } = this.store;
+    if (this.audited?.graph !== graph) this.audited = { graph, audit: auditGraph(graph) };
+    const { audit } = this.audited;
+    const count = auditCount(audit);
+    const cycles = audit.cycles.length > 0;
+    button.toggleClass("is-hidden", count === 0);
+    button.toggleClass("has-cycles", cycles);
+    if (!count) return;
+    const icon = button.querySelector<HTMLElement>(".tropa-audit-button-icon")!;
+    if (icon.dataset.icon !== String(cycles)) {
+      icon.empty();
+      setIcon(icon, cycles ? "alert-triangle" : "list-checks");
+      icon.dataset.icon = String(cycles);
+    }
+    button.querySelector<HTMLElement>(".tropa-audit-button-count")!.textContent = new Intl.NumberFormat(locale()).format(count);
+    const label = `${t.audit.title}: ${t.audit.summary({ count })}`;
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
+  }
+
   private renderBar() {
+    this.renderAuditButton();
     const goalButton = this.bar.querySelector<HTMLElement>(".tropa-goal")!;
     const label = goalButton.querySelector<HTMLElement>(".tropa-goal-label")!;
     const { route, graph } = this.store;
@@ -779,6 +839,21 @@ export class MapView extends ItemView implements DetailHost {
     setIcon(exit, "x");
     exit.addEventListener("click", () => this.exitFocus());
 
+    // Shown only when the audit finds something; it reads the graph, not the layout.
+    const audit = this.bar.createEl("button", { cls: "tropa-audit-button is-hidden" });
+    audit.createSpan({ cls: "tropa-audit-button-icon" });
+    audit.createSpan({ cls: "tropa-audit-button-count" });
+    audit.addEventListener("click", () => attempt(this.plugin.showAudit(), "open the map audit"));
+
+    const share = this.bar.createEl("button", { cls: "tropa-export clickable-icon", attr: { "aria-label": t.exportMap, title: t.exportMap } });
+    setIcon(share, "download");
+    share.addEventListener("click", (event) => {
+      const menu = new Menu();
+      menu.addItem((item) => item.setTitle(t.exportCanvas).setIcon("layout-dashboard").onClick(() => this.exportCanvas()));
+      menu.addItem((item) => item.setTitle(t.exportSvg).setIcon("image").onClick(() => this.exportSvg()));
+      menu.showAtMouseEvent(event);
+    });
+
     const add = this.bar.createEl("button", { cls: "tropa-add-concept clickable-icon", attr: { "aria-label": t.newConcept } });
     setIcon(add, "plus");
     add.addEventListener("click", () => this.plugin.promptNewConcept());
@@ -801,6 +876,172 @@ export class MapView extends ItemView implements DetailHost {
       const item = legend.createDiv({ cls: "tropa-legend-item" });
       setGlyph(item.createSpan({ cls: `tropa-glyph is-small state-${state}` }), STATE_ICON[state]);
       item.createSpan({ text: t.state[state] });
+    }
+  }
+
+  // Export: the map as it is drawn now, with its mode, materials, focus and folds
+
+  exportCanvas() {
+    const layout = this.readyLayout();
+    if (!layout) return;
+    new ExportModal(this.app, {
+      title: t.exportCanvas,
+      path: this.exportPath("canvas"),
+      extension: "canvas",
+      offerProgress: true,
+      exists: (path) => this.app.vault.getAbstractFileByPath(path) !== null,
+      save: async (path, withProgress, replace) => {
+        const nodes = [...layout.nodes.values()].map((placed) => this.exportNode(placed, withProgress));
+        const file = await this.store.writeExport(path, canvasText(buildCanvas(nodes, layout.edges, t.canvasSoftLabel)), replace);
+        new Notice(t.exportSaved({ path }));
+        await this.app.workspace.getLeaf("tab").openFile(file);
+      },
+    }).open();
+  }
+
+  exportSvg() {
+    const layout = this.readyLayout();
+    if (!layout) return;
+    new ExportModal(this.app, {
+      title: t.exportSvg,
+      path: this.exportPath("svg"),
+      extension: "svg",
+      offerProgress: false,
+      exists: (path) => this.app.vault.getAbstractFileByPath(path) !== null,
+      save: async (path, _withProgress, replace) => {
+        await this.store.writeExport(path, buildSvg(this.drawing(layout)), replace);
+        new Notice(t.exportSaved({ path }));
+      },
+    }).open();
+  }
+
+  private readyLayout() {
+    if (this.store.isEmpty) return null;
+    if (!this.layout || this.layoutPending) {
+      new Notice(t.exportNotReady);
+      return null;
+    }
+    return this.layout;
+  }
+
+  /** Next to the progress file, named after the goal of the route or the map, and dated. */
+  private exportPath(extension: string) {
+    const { route, graph } = this.store;
+    const goal = this.effectiveMode() === "route" && route ? graph.nodes.get(route.goal)?.title : null;
+    const folder = this.plugin.settings.progressPath.split("/").slice(0, -1).join("/");
+    const name = `${fileName(`${goal ?? t.mapTitle} ${today()}`)}.${extension}`;
+    return folder ? `${folder}/${name}` : name;
+  }
+
+  private exportNode(placed: LaidOutNode, withProgress: boolean): ExportNode {
+    const { store } = this;
+    const node = store.graph.nodes.get(placed.id)!;
+    const out: ExportNode = { id: node.id, x: placed.x, y: placed.y, width: placed.width, height: placed.height };
+    if (node.ghost) out.text = node.title;
+    else if (node.inline && node.file) out.file = node.file;
+    else if (node.inline && node.url) out.url = node.url;
+    else if (node.inline) out.text = node.title;
+    else out.file = node.id;
+    if (!withProgress) return out;
+    if (node.kind === "source") {
+      if (store.progress.done.has(node.id)) out.color = CANVAS_COLOR.mastered;
+    } else if (store.route?.goal === node.id && !store.progress.mastered.has(node.id)) {
+      out.color = CANVAS_COLOR.goal;
+    } else {
+      const state = store.states.get(node.id);
+      if (state === "mastered") out.color = CANVAS_COLOR.mastered;
+      if (state === "learning") out.color = CANVAS_COLOR.learning;
+    }
+    return out;
+  }
+
+  /**
+   * The map as drawn in the current theme, measured from the page: colors, borders, fonts and icons
+   * come from the styles in use, so the file looks like the view. Zoom-dependent simplifications
+   * (hidden details, plain lines on dense maps, hover highlight) are switched off while measuring.
+   */
+  private drawing(layout: Layout) {
+    const transient = ["is-far", "is-dense", "has-focus", "is-drawing", "is-moving"].filter((cls) => this.world.classList.contains(cls));
+    transient.forEach((cls) => this.world.removeClass(cls));
+    try {
+      const color = colorReader();
+      const boxes: SvgBox[] = [];
+      const icons: SvgIcon[] = [];
+      const texts: SvgText[] = [];
+      const measure = textMeasure();
+      const place = (el: HTMLElement, node: LaidOutNode) => ({ x: node.x + el.offsetLeft, y: node.y + el.offsetTop, width: el.offsetWidth, height: el.offsetHeight });
+
+      for (const placed of layout.nodes.values()) {
+        const el = this.nodeEls.get(placed.id);
+        if (!el) continue;
+        boxes.push(boxOf(getComputedStyle(el), { x: placed.x, y: placed.y, width: placed.width, height: placed.height }, color));
+        for (const pseudo of ["::before", "::after"] as const) {
+          const badge = badgeOf(el, pseudo, placed, color, measure);
+          if (badge) {
+            boxes.push(badge.box);
+            texts.push(badge.text);
+          }
+        }
+        const glyph = el.querySelector<HTMLElement>(".tropa-glyph");
+        if (glyph) {
+          const box = place(glyph, placed);
+          const style = getComputedStyle(glyph);
+          boxes.push(boxOf(style, box, color));
+          const svg = glyph.querySelector("svg");
+          if (svg) {
+            const size = parseFloat(getComputedStyle(svg).width) || 16;
+            icons.push({
+              x: box.x + (box.width - size) / 2,
+              y: box.y + (box.height - size) / 2,
+              size,
+              color: color(style.color),
+              viewBox: svg.getAttribute("viewBox") ?? "0 0 24 24",
+              markup: [...svg.children].map((child) => new XMLSerializer().serializeToString(child)).join(""),
+            });
+          }
+        }
+        for (const [selector, lines] of [[".tropa-node-title", 2], [".tropa-node-meta", 1]] as const) {
+          const textEl = el.querySelector<HTMLElement>(selector);
+          if (!textEl?.textContent || textEl.offsetWidth === 0) continue;
+          texts.push(...textLines(textEl, place(textEl, placed), lines, color, measure));
+        }
+        const fold = el.querySelector<HTMLElement>(".tropa-fold");
+        if (fold?.textContent && getComputedStyle(fold).display !== "none" && getComputedStyle(fold).opacity === "1") {
+          const box = place(fold, placed);
+          const style = getComputedStyle(fold);
+          boxes.push(boxOf(style, box, color));
+          texts.push(...textLines(fold, { ...box, x: box.x + parseFloat(style.paddingLeft), width: box.width - parseFloat(style.paddingLeft) * 2 }, 1, color, measure));
+        }
+      }
+
+      const edges: SvgPath[] = [];
+      this.svg.querySelectorAll<SVGPathElement>("path[data-kind]").forEach((path) => {
+        const style = getComputedStyle(path);
+        const dash = style.strokeDasharray;
+        edges.push({
+          d: path.getAttribute("d") ?? "",
+          stroke: color(style.stroke),
+          strokeWidth: parseFloat(style.strokeWidth) || 1,
+          opacity: (parseFloat(style.opacity) || 1) * (parseFloat(style.strokeOpacity) || 1),
+          dash: dash && dash !== "none" ? dash.replace(/px/g, "").replace(/,/g, " ") : undefined,
+        });
+      });
+
+      const { route, graph } = this.store;
+      const goal = route ? graph.nodes.get(route.goal)?.title : null;
+      return {
+        title: goal ? `${t.mapTitle}: ${goal}` : t.mapTitle,
+        width: layout.width,
+        height: layout.height,
+        margin: 40,
+        background: backgroundOf(this.canvas, color),
+        edges,
+        boxes,
+        icons,
+        texts,
+      };
+    } finally {
+      transient.forEach((cls) => this.world.addClass(cls));
     }
   }
 
@@ -1173,6 +1414,109 @@ export class MapView extends ItemView implements DetailHost {
     this.toastEl = el;
     this.toastTimer = window.setTimeout(() => el.remove(), 6000);
   }
+}
+
+// Measuring the drawing for the SVG export
+
+/** Any CSS color, including color-mix() and color(), as a color every SVG viewer reads. */
+function colorReader() {
+  const context = createEl("canvas", { attr: { width: "1", height: "1" } }).getContext("2d", { willReadFrequently: true })!;
+  const known = new Map<string, string>();
+  return (css: string) => {
+    let out = known.get(css);
+    if (out !== undefined) return out;
+    context.clearRect(0, 0, 1, 1);
+    context.fillStyle = "#000";
+    context.fillStyle = css;
+    context.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+    const hex = `#${[r, g, b].map((value) => value.toString(16).padStart(2, "0")).join("")}`;
+    out = a === 0 ? "none" : a === 255 ? hex : `rgba(${r}, ${g}, ${b}, ${Math.round((a / 255) * 100) / 100})`;
+    known.set(css, out);
+    return out;
+  };
+}
+
+function textMeasure() {
+  const context = createEl("canvas").getContext("2d")!;
+  return (text: string, style: CSSStyleDeclaration) => {
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    return context.measureText(text).width;
+  };
+}
+
+type Measure = ReturnType<typeof textMeasure>;
+type Box = { x: number; y: number; width: number; height: number };
+
+/** A CSS box as a rectangle; the border is drawn inside, as in CSS. */
+function boxOf(style: CSSStyleDeclaration, box: Box, color: (css: string) => string): SvgBox {
+  const width = style.borderTopStyle === "none" ? 0 : parseFloat(style.borderTopWidth) || 0;
+  return {
+    x: box.x + width / 2,
+    y: box.y + width / 2,
+    width: box.width - width,
+    height: box.height - width,
+    radius: Math.min(parseFloat(style.borderTopLeftRadius) || 0, box.height / 2),
+    fill: color(style.backgroundColor),
+    stroke: color(style.borderTopColor),
+    strokeWidth: width,
+    dash: style.borderTopStyle === "dashed" ? `${width * 3} ${width * 2}` : undefined,
+  };
+}
+
+/** "Next step" and "Goal" are drawn in CSS as pseudo-elements; their box is worked out from their style. */
+function badgeOf(el: HTMLElement, pseudo: "::before" | "::after", node: LaidOutNode, color: (css: string) => string, measure: Measure) {
+  const style = getComputedStyle(el, pseudo);
+  if (style.content === "none" || style.content === "normal" || style.position !== "absolute") return null;
+  let text = style.content;
+  try {
+    text = JSON.parse(text) as string;
+  } catch {
+    // An unquoted content value is used as it is.
+  }
+  const border = parseFloat(style.borderTopWidth) || 0;
+  const padX = parseFloat(style.paddingLeft) || 0;
+  const padY = parseFloat(style.paddingTop) || 0;
+  const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.4;
+  const width = measure(text, style) + padX * 2 + border * 2;
+  const height = lineHeight + padY * 2 + border * 2;
+  const x = style.left !== "auto" ? parseFloat(style.left) : node.width - parseFloat(style.right) - width;
+  const box = { x: node.x + x, y: node.y + parseFloat(style.top), width, height };
+  return {
+    box: boxOf(style, box, color),
+    text: { x: box.x + border + padX, y: box.y + height / 2, text, fill: color(style.color), fontSize: parseFloat(style.fontSize), fontWeight: style.fontWeight, fontFamily: style.fontFamily, rtl: false },
+  };
+}
+
+/** The lines of a text as the map wraps it. Text in a right-to-left script starts at the right end. */
+function textLines(el: HTMLElement, box: Box, maxLines: number, color: (css: string) => string, measure: Measure): SvgText[] {
+  const style = getComputedStyle(el);
+  const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.25;
+  const rtl = /^[^A-Za-z\u00C0-\u024F\u0370-\u03FF\u0400-\u04FF]*[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(el.textContent ?? "");
+  const lines = wrapText(el.textContent ?? "", box.width + 0.5, (line) => measure(line, style), maxLines);
+  return lines.map((line, i) => ({
+    x: rtl ? box.x + box.width : box.x,
+    y: box.y + lineHeight * (i + 0.5),
+    text: line,
+    fill: color(style.color),
+    fontSize: parseFloat(style.fontSize),
+    fontWeight: style.fontWeight,
+    fontFamily: style.fontFamily,
+    rtl,
+  }));
+}
+
+function today() {
+  const date = new Date();
+  return [date.getFullYear(), date.getMonth() + 1, date.getDate()].map((part) => String(part).padStart(2, "0")).join("-");
+}
+
+function backgroundOf(canvas: HTMLElement, color: (css: string) => string) {
+  for (let el: HTMLElement | null = canvas; el; el = el.parentElement) {
+    const fill = color(getComputedStyle(el).backgroundColor);
+    if (fill !== "none") return fill;
+  }
+  return "#ffffff";
 }
 
 /** Painting runs for every node on each change; untouched nodes keep their styles. */

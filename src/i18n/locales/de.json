@@ -252,5 +252,44 @@
     "one": "Hier ist {count} Schritt der Route ausgeblendet",
     "other": "Hier sind {count} Schritte der Route ausgeblendet"
   },
-  "hiddenOnMap": "Auf der Karte ausgeblendet"
+  "hiddenOnMap": "Auf der Karte ausgeblendet",
+  "audit": {
+    "command": "Karte prüfen",
+    "title": "Kartenprüfung",
+    "summary": {
+      "one": "{count} Stelle zum Ansehen",
+      "other": "{count} Stellen zum Ansehen"
+    },
+    "clean": "Nichts zu tun: Jedes Konzept hat Materialien, jeder Link hat eine Notiz, und nichts setzt sich selbst voraus.",
+    "noMaterials": "Konzepte ohne Materialien",
+    "noMaterialsHint": "Noch lehrt sie nichts. Füge jedem ein Material hinzu oder verknüpfe ein vorhandenes.",
+    "orphans": "Nicht verbunden",
+    "orphansHint": "Keine Links zu oder von anderen Notizen auf der Karte.",
+    "ghosts": "Links zu fehlenden Notizen",
+    "ghostsHint": "Andere Notizen verlinken diese Konzepte, aber die Notizen gibt es noch nicht.",
+    "linkedFrom": {
+      "one": "Von {count} Notiz verlinkt",
+      "other": "Von {count} Notizen verlinkt"
+    },
+    "duplicates": "Mögliche Duplikate",
+    "duplicatesHint": "Namen, die sich nur in Groß-/Kleinschreibung oder Akzenten unterscheiden. Führe sie zusammen oder benenne eine um.",
+    "cycles": "Zirkuläre Abhängigkeiten",
+    "cyclesHint": "Jedes Konzept setzt das nächste voraus und das letzte das erste, daher kann keines zuerst gelernt werden.",
+    "showOnMap": "Auf der Karte zeigen"
+  },
+  "exportMap": "Karte exportieren",
+  "exportCanvas": "Karte als Canvas exportieren",
+  "exportSvg": "Karte als SVG exportieren",
+  "exportPath": "Datei",
+  "exportPathDesc": "Pfad im Tresor. Fehlende Ordner werden angelegt.",
+  "exportPathInvalid": "Gib einen Dateipfad im Tresor ein",
+  "exportExists": "{path} existiert bereits",
+  "exportReplace": "Ersetzen",
+  "exportSave": "Speichern",
+  "exportKeepBoth": "Beide behalten",
+  "exportProgress": "Meinen Fortschritt zeigen",
+  "exportProgressDesc": "Beherrschte und begonnene Konzepte und das Ziel einfärben. Ausschalten, um die Karte ohne deinen Fortschritt zu teilen.",
+  "exportSaved": "Gespeichert: {path}",
+  "exportNotReady": "Die Karte wird noch angeordnet. Versuch es gleich noch einmal.",
+  "canvasSoftLabel": "empfohlen"
 }

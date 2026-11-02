@@ -265,5 +265,46 @@
     "one": "Aici e ascuns {count} pas din traseu",
     "other": "Aici sunt ascunși {count} de pași din traseu"
   },
-  "hiddenOnMap": "Ascuns pe hartă"
+  "hiddenOnMap": "Ascuns pe hartă",
+  "audit": {
+    "command": "Verifică harta",
+    "title": "Verificarea hărții",
+    "summary": {
+      "one": "{count} lucru de verificat",
+      "few": "{count} lucruri de verificat",
+      "other": "{count} de lucruri de verificat"
+    },
+    "clean": "Nimic de corectat: fiecare concept are materiale, fiecare link are o notă și nimic nu depinde de el însuși.",
+    "noMaterials": "Concepte fără materiale",
+    "noMaterialsHint": "Încă nimic nu le predă. Adaugă câte un material sau leagă unul pe care îl ai.",
+    "orphans": "Neconectate",
+    "orphansHint": "Niciun link către sau dinspre alte note de pe hartă.",
+    "ghosts": "Linkuri către note care lipsesc",
+    "ghostsHint": "Alte note trimit la aceste concepte, dar notele nu există încă.",
+    "linkedFrom": {
+      "one": "Legat din {count} notă",
+      "few": "Legat din {count} note",
+      "other": "Legat din {count} de note"
+    },
+    "duplicates": "Posibile duplicate",
+    "duplicatesHint": "Nume care diferă doar prin majuscule sau diacritice. Unește-le sau redenumește unul.",
+    "cycles": "Dependențe circulare",
+    "cyclesHint": "Fiecare concept îl cere pe următorul, iar ultimul pe primul, așa că niciunul nu poate fi învățat primul.",
+    "showOnMap": "Arată pe hartă"
+  },
+  "exportMap": "Exportă harta",
+  "exportCanvas": "Exportă harta în Canvas",
+  "exportSvg": "Exportă harta ca SVG",
+  "exportPath": "Fișier",
+  "exportPathDesc": "Calea în seif. Folderele lipsă vor fi create.",
+  "exportPathInvalid": "Introdu o cale de fișier în seif",
+  "exportExists": "{path} există deja",
+  "exportReplace": "Înlocuiește",
+  "exportSave": "Salvează",
+  "exportKeepBoth": "Păstrează-le pe amândouă",
+  "exportProgress": "Arată progresul meu",
+  "exportProgressDesc": "Colorează conceptele stăpânite și cele în studiu, precum și obiectivul. Dezactivează pentru a partaja harta fără progresul tău.",
+  "exportSaved": "Salvat: {path}",
+  "exportNotReady": "Harta încă se aranjează. Încearcă din nou peste o clipă.",
+  "canvasSoftLabel": "recomandat"
 }

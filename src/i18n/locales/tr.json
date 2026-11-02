@@ -252,5 +252,44 @@
     "one": "Burada rotanın {count} adımı gizli",
     "other": "Burada rotanın {count} adımı gizli"
   },
-  "hiddenOnMap": "Haritada gizli"
+  "hiddenOnMap": "Haritada gizli",
+  "audit": {
+    "command": "Haritayı denetle",
+    "title": "Harita denetimi",
+    "summary": {
+      "one": "Bakılacak {count} şey",
+      "other": "Bakılacak {count} şey"
+    },
+    "clean": "Düzeltilecek bir şey yok: her kavramın materyali, her bağlantının notu var ve hiçbir şey kendini gerektirmiyor.",
+    "noMaterials": "Materyali olmayan kavramlar",
+    "noMaterialsHint": "Henüz hiçbir şey bunları öğretmiyor. Her birine bir materyal ekleyin veya elinizdekini bağlayın.",
+    "orphans": "Bağlantısız",
+    "orphansHint": "Haritadaki diğer notlarla hiçbir bağlantısı yok.",
+    "ghosts": "Olmayan notlara bağlantılar",
+    "ghostsHint": "Başka notlar bu kavramlara bağlantı veriyor, ancak notlar henüz yok.",
+    "linkedFrom": {
+      "one": "{count} nottan bağlantı var",
+      "other": "{count} nottan bağlantı var"
+    },
+    "duplicates": "Olası kopyalar",
+    "duplicatesHint": "Yalnızca büyük/küçük harf veya aksanla ayrılan adlar. Birleştirin ya da birini yeniden adlandırın.",
+    "cycles": "Döngüsel bağımlılıklar",
+    "cyclesHint": "Her kavram bir sonrakini, sonuncusu da ilkini gerektiriyor; bu yüzden hiçbiri önce öğrenilemez.",
+    "showOnMap": "Haritada göster"
+  },
+  "exportMap": "Haritayı dışa aktar",
+  "exportCanvas": "Haritayı Canvas'a aktar",
+  "exportSvg": "Haritayı SVG olarak aktar",
+  "exportPath": "Dosya",
+  "exportPathDesc": "Kasa içindeki yol. Eksik klasörler oluşturulur.",
+  "exportPathInvalid": "Kasa içinde bir dosya yolu gir",
+  "exportExists": "{path} zaten var",
+  "exportReplace": "Değiştir",
+  "exportSave": "Kaydet",
+  "exportKeepBoth": "İkisini de tut",
+  "exportProgress": "İlerlememi göster",
+  "exportProgressDesc": "Öğrenilen ve çalışılan kavramları ve hedefi renklendir. Haritayı ilerlemen olmadan paylaşmak için kapat.",
+  "exportSaved": "Kaydedildi: {path}",
+  "exportNotReady": "Harita hâlâ yerleştiriliyor. Birazdan yeniden dene.",
+  "canvasSoftLabel": "önerilen"
 }

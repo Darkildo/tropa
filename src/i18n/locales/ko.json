@@ -239,5 +239,42 @@
   "foldedRoute": {
     "other": "여기에 경로 {count}단계가 숨겨져 있음"
   },
-  "hiddenOnMap": "지도에서 숨김"
+  "hiddenOnMap": "지도에서 숨김",
+  "audit": {
+    "command": "지도 점검",
+    "title": "지도 점검",
+    "summary": {
+      "other": "살펴볼 항목 {count}개"
+    },
+    "clean": "고칠 것이 없습니다. 모든 개념에 자료가 있고, 모든 링크에 노트가 있으며, 자기 자신을 요구하는 것도 없습니다.",
+    "noMaterials": "자료가 없는 개념",
+    "noMaterialsHint": "아직 아무것도 이 개념을 가르치지 않습니다. 각각에 자료를 추가하거나 가진 자료를 연결하세요.",
+    "orphans": "연결 없음",
+    "orphansHint": "지도의 다른 노트와 주고받는 링크가 없습니다.",
+    "ghosts": "없는 노트로 가는 링크",
+    "ghostsHint": "다른 노트가 이 개념들에 링크하지만 노트는 아직 없습니다.",
+    "linkedFrom": {
+      "other": "노트 {count}개에서 링크됨"
+    },
+    "duplicates": "중복 가능성",
+    "duplicatesHint": "대소문자나 악센트만 다른 이름입니다. 합치거나 하나의 이름을 바꾸세요.",
+    "cycles": "순환 의존",
+    "cyclesHint": "각 개념이 다음 개념을 요구하고 마지막이 처음을 요구하므로 어느 것도 먼저 배울 수 없습니다.",
+    "showOnMap": "지도에서 보기"
+  },
+  "exportMap": "지도 내보내기",
+  "exportCanvas": "지도를 Canvas로 내보내기",
+  "exportSvg": "지도를 SVG로 내보내기",
+  "exportPath": "파일",
+  "exportPathDesc": "보관소 안의 경로입니다. 없는 폴더는 새로 만듭니다.",
+  "exportPathInvalid": "보관소 안의 파일 경로를 입력하세요",
+  "exportExists": "{path}이(가) 이미 있습니다",
+  "exportReplace": "바꾸기",
+  "exportSave": "저장",
+  "exportKeepBoth": "둘 다 유지",
+  "exportProgress": "내 진행 상황 표시",
+  "exportProgressDesc": "익힌 개념, 학습 중인 개념, 목표에 색을 입힙니다. 진행 상황 없이 지도를 공유하려면 끄세요.",
+  "exportSaved": "저장됨: {path}",
+  "exportNotReady": "지도를 아직 배치하는 중입니다. 잠시 후 다시 시도하세요.",
+  "canvasSoftLabel": "추천"
 }

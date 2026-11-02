@@ -265,5 +265,46 @@
     "one": "Aquí hay {count} paso de la ruta oculto",
     "other": "Aquí hay {count} pasos de la ruta ocultos"
   },
-  "hiddenOnMap": "Oculto en el mapa"
+  "hiddenOnMap": "Oculto en el mapa",
+  "audit": {
+    "command": "Revisar el mapa",
+    "title": "Revisión del mapa",
+    "summary": {
+      "one": "{count} cosa que revisar",
+      "many": "{count} cosas que revisar",
+      "other": "{count} cosas que revisar"
+    },
+    "clean": "Nada que corregir: cada concepto tiene materiales, cada enlace tiene su nota y nada se requiere a sí mismo.",
+    "noMaterials": "Conceptos sin materiales",
+    "noMaterialsHint": "Todavía nada los enseña. Añade un material a cada uno o enlaza uno que ya tengas.",
+    "orphans": "Sin conexiones",
+    "orphansHint": "Ningún enlace hacia ni desde otras notas del mapa.",
+    "ghosts": "Enlaces a notas que no existen",
+    "ghostsHint": "Otras notas enlazan estos conceptos, pero las notas aún no existen.",
+    "linkedFrom": {
+      "one": "Enlazado desde {count} nota",
+      "many": "Enlazado desde {count} notas",
+      "other": "Enlazado desde {count} notas"
+    },
+    "duplicates": "Posibles duplicados",
+    "duplicatesHint": "Nombres que solo cambian en mayúsculas o acentos. Fusiónalos o cambia el nombre de uno.",
+    "cycles": "Dependencias circulares",
+    "cyclesHint": "Cada concepto requiere el siguiente y el último requiere el primero, así que ninguno se puede aprender primero.",
+    "showOnMap": "Mostrar en el mapa"
+  },
+  "exportMap": "Exportar mapa",
+  "exportCanvas": "Exportar el mapa a Canvas",
+  "exportSvg": "Exportar el mapa como SVG",
+  "exportPath": "Archivo",
+  "exportPathDesc": "Ruta en la bóveda. Las carpetas que falten se crearán.",
+  "exportPathInvalid": "Escribe una ruta de archivo dentro de la bóveda",
+  "exportExists": "{path} ya existe",
+  "exportReplace": "Reemplazar",
+  "exportSave": "Guardar",
+  "exportKeepBoth": "Conservar ambos",
+  "exportProgress": "Mostrar mi progreso",
+  "exportProgressDesc": "Colorear los conceptos dominados y en estudio y el objetivo. Desactívalo para compartir el mapa sin tu progreso.",
+  "exportSaved": "Guardado: {path}",
+  "exportNotReady": "El mapa todavía se está organizando. Inténtalo de nuevo en un momento.",
+  "canvasSoftLabel": "recomendado"
 }
