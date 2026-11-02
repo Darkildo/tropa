@@ -9,6 +9,8 @@
   "markSource": "Bu notu kaynak yap",
   "setGoal": "Bu notu hedef yap",
   "toggleMastered": "Bu notu öğrenildi olarak işaretle ya da öğrenmeye geri al",
+  "toggleSkipped": "Bu notu atla ya da rotaya geri al",
+  "markKnownCommand": "Bu notu ve gerektirdiği her şeyi biliniyor olarak işaretle",
   "nextConceptPrompt": "Bundan sonra hangi kavram geliyor?",
   "conceptName": "Kavram adı",
   "createConcept": "“{name}” kavramını oluştur",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} sa {minutes} dk",
   "state": {
     "mastered": "Öğrenildi",
+    "skipped": "Atlandı",
     "learning": "Öğreniliyor",
     "available": "Başlanabilir",
     "locked": "Kilitli",
@@ -103,6 +106,26 @@
   "createNote": "Not oluştur",
   "startLearning": "Öğrenmeye başla",
   "alreadyKnow": "Zaten biliyorum",
+  "knowWithPrerequisites": "Bunu ve öncesini biliyorum",
+  "skip": "Atla",
+  "unskip": "Rotaya geri al",
+  "skippedCallout": "Bu kavramı atladın. Ona bağlı olanları açar ama öğrenilmiş sayılmaz.",
+  "skippedToast": "Atlandı: {title}",
+  "goalNotSkipped": "Hedef atlanamaz. Önce hedefi kaldır.",
+  "markedKnown": {
+    "one": "{count} kavram biliniyor olarak işaretlendi",
+    "other": "{count} kavram biliniyor olarak işaretlendi"
+  },
+  "knownTitle": "Biliniyor olarak işaretle",
+  "knownText": "Bu kavramlar öğrenildi olarak işaretlenecek. Emin olmadıklarının işaretini kaldır.",
+  "knownFilter": "Kavramları süz",
+  "knownConfirm": {
+    "one": "{count} kavramı işaretle",
+    "other": "{count} kavramı işaretle"
+  },
+  "cancel": "İptal",
+  "confidence": "Güven",
+  "confidenceLevel": "Güven: 5 üzerinden {level}",
   "markMastered": "Öğrenildi olarak işaretle",
   "unmark": "İşareti kaldır",
   "removeGoal": "Hedefi kaldır",
@@ -159,6 +182,10 @@
   },
   "from": "en az {duration}",
   "progressOf": "{done}/{total}",
+  "skippedCount": {
+    "one": "{count} atlandı",
+    "other": "{count} atlandı"
+  },
   "expandPanel": "Paneli genişlet",
   "collapsePanel": "Paneli daralt",
   "emptyTitle": "İlk haritanı oluştur",

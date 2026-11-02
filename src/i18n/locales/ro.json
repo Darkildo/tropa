@@ -9,6 +9,8 @@
   "markSource": "Transformă nota în material",
   "setGoal": "Transformă nota în obiectiv",
   "toggleMastered": "Marchează nota ca stăpânită sau readu-o la studiu",
+  "toggleSkipped": "Sari peste notă sau readu-o în traseu",
+  "markKnownCommand": "Marchează nota și tot ce îi trebuie ca știute",
   "nextConceptPrompt": "Ce concept urmează după acesta?",
   "conceptName": "Numele conceptului",
   "createConcept": "Creează conceptul „{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} h {minutes} min",
   "state": {
     "mastered": "Stăpânit",
+    "skipped": "Sărit",
     "learning": "În studiu",
     "available": "Gata de început",
     "locked": "Blocat",
@@ -103,6 +106,28 @@
   "createNote": "Creează nota",
   "startLearning": "Începe studiul",
   "alreadyKnow": "Știu deja",
+  "knowWithPrerequisites": "Știu asta și ce îi trebuie",
+  "skip": "Sari peste",
+  "unskip": "Readu în traseu",
+  "skippedCallout": "Ai sărit peste acest concept. Deblochează ce depinde de el, dar nu contează ca stăpânit.",
+  "skippedToast": "Sărit: {title}",
+  "goalNotSkipped": "Obiectivul nu poate fi sărit. Elimină mai întâi obiectivul.",
+  "markedKnown": {
+    "one": "{count} concept marcat ca știut",
+    "few": "{count} concepte marcate ca știute",
+    "other": "{count} de concepte marcate ca știute"
+  },
+  "knownTitle": "Marchează ca știut",
+  "knownText": "Aceste concepte vor fi marcate ca stăpânite. Debifează-le pe cele de care nu ești sigur.",
+  "knownFilter": "Filtrează conceptele",
+  "knownConfirm": {
+    "one": "Marchează {count} concept",
+    "few": "Marchează {count} concepte",
+    "other": "Marchează {count} de concepte"
+  },
+  "cancel": "Anulează",
+  "confidence": "Siguranță",
+  "confidenceLevel": "Siguranță {level} din 5",
   "markMastered": "Marchează ca stăpânit",
   "unmark": "Șterge marcajul",
   "removeGoal": "Elimină obiectivul",
@@ -164,6 +189,11 @@
   },
   "from": "de la {duration}",
   "progressOf": "{done} din {total}",
+  "skippedCount": {
+    "one": "{count} sărit",
+    "few": "{count} sărite",
+    "other": "{count} de sărite"
+  },
   "expandPanel": "Extinde panoul",
   "collapsePanel": "Restrânge panoul",
   "emptyTitle": "Construiește-ți prima hartă",

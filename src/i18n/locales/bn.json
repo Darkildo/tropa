@@ -9,6 +9,8 @@
   "markSource": "এই নোটটিকে উপকরণ করুন",
   "setGoal": "এই নোটটিকে লক্ষ্য করুন",
   "toggleMastered": "নোটটিকে আয়ত্ত হিসেবে চিহ্নিত করুন বা আবার শেখার তালিকায় ফেরান",
+  "toggleSkipped": "নোটটি বাদ দিন বা আবার পথে ফেরান",
+  "markKnownCommand": "নোটটি ও এর জন্য যা দরকার সব জানা হিসেবে চিহ্নিত করুন",
   "nextConceptPrompt": "এর পরে কোন ধারণা আসে?",
   "conceptName": "ধারণার নাম",
   "createConcept": "“{name}” ধারণা তৈরি করুন",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} ঘ. {minutes} মি.",
   "state": {
     "mastered": "আয়ত্ত",
+    "skipped": "বাদ দেওয়া",
     "learning": "শিখছি",
     "available": "শুরু করা যায়",
     "locked": "বন্ধ",
@@ -103,6 +106,26 @@
   "createNote": "নোট তৈরি করুন",
   "startLearning": "শেখা শুরু করুন",
   "alreadyKnow": "আগেই জানি",
+  "knowWithPrerequisites": "এটি ও এর আগের সব জানি",
+  "skip": "বাদ দিন",
+  "unskip": "পথে ফেরান",
+  "skippedCallout": "আপনি এই ধারণাটি বাদ দিয়েছেন। এর ওপর যা নির্ভর করে তা খুলে যায়, কিন্তু এটি আয়ত্ত হিসেবে গোনা হয় না।",
+  "skippedToast": "বাদ দেওয়া হয়েছে: {title}",
+  "goalNotSkipped": "লক্ষ্য বাদ দেওয়া যায় না। আগে লক্ষ্যটি সরান।",
+  "markedKnown": {
+    "one": "{count}টি ধারণা জানা হিসেবে চিহ্নিত",
+    "other": "{count}টি ধারণা জানা হিসেবে চিহ্নিত"
+  },
+  "knownTitle": "জানা হিসেবে চিহ্নিত করুন",
+  "knownText": "এই ধারণাগুলো আয়ত্ত হিসেবে চিহ্নিত হবে। যেগুলোতে নিশ্চিত নন, সেগুলোর টিক তুলে দিন।",
+  "knownFilter": "ধারণা ছাঁকুন",
+  "knownConfirm": {
+    "one": "{count}টি ধারণা চিহ্নিত করুন",
+    "other": "{count}টি ধারণা চিহ্নিত করুন"
+  },
+  "cancel": "বাতিল",
+  "confidence": "আত্মবিশ্বাস",
+  "confidenceLevel": "আত্মবিশ্বাস ৫-এর মধ্যে {level}",
   "markMastered": "আয়ত্ত হিসেবে চিহ্নিত করুন",
   "unmark": "চিহ্ন সরান",
   "removeGoal": "লক্ষ্য সরান",
@@ -159,6 +182,10 @@
   },
   "from": "{duration} থেকে",
   "progressOf": "{total}টির মধ্যে {done}টি",
+  "skippedCount": {
+    "one": "{count}টি বাদ",
+    "other": "{count}টি বাদ"
+  },
   "expandPanel": "প্যানেল বড় করুন",
   "collapsePanel": "প্যানেল ছোট করুন",
   "emptyTitle": "প্রথম মানচিত্রটি তৈরি করুন",

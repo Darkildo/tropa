@@ -9,6 +9,8 @@
   "markSource": "A jegyzet legyen tananyag",
   "setGoal": "A jegyzet legyen a cél",
   "toggleMastered": "Jegyzet megjelölése elsajátítottként, vagy vissza a tanuláshoz",
+  "toggleSkipped": "Jegyzet kihagyása vagy visszahelyezése az útvonalba",
+  "markKnownCommand": "Jegyzet és minden előfeltétele megjelölése ismertként",
   "nextConceptPrompt": "Melyik fogalom jön ezután?",
   "conceptName": "A fogalom neve",
   "createConcept": "„{name}” fogalom létrehozása",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} óra {minutes} perc",
   "state": {
     "mastered": "Elsajátítva",
+    "skipped": "Kihagyva",
     "learning": "Tanulom",
     "available": "Elkezdhető",
     "locked": "Zárolva",
@@ -103,6 +106,26 @@
   "createNote": "Jegyzet létrehozása",
   "startLearning": "Tanulás indítása",
   "alreadyKnow": "Már tudom",
+  "knowWithPrerequisites": "Tudom ezt és az előfeltételeit",
+  "skip": "Kihagyás",
+  "unskip": "Vissza az útvonalba",
+  "skippedCallout": "Kihagytad ezt a fogalmat. Megnyitja, ami ráépül, de nem számít elsajátítottnak.",
+  "skippedToast": "Kihagyva: {title}",
+  "goalNotSkipped": "A célt nem lehet kihagyni. Előbb töröld a célt.",
+  "markedKnown": {
+    "one": "{count} fogalom ismertként megjelölve",
+    "other": "{count} fogalom ismertként megjelölve"
+  },
+  "knownTitle": "Megjelölés ismertként",
+  "knownText": "Ezek a fogalmak elsajátítottként lesznek megjelölve. Vedd ki a pipát, amelyikben nem vagy biztos.",
+  "knownFilter": "Fogalmak szűrése",
+  "knownConfirm": {
+    "one": "{count} fogalom megjelölése",
+    "other": "{count} fogalom megjelölése"
+  },
+  "cancel": "Mégse",
+  "confidence": "Magabiztosság",
+  "confidenceLevel": "Magabiztosság: {level}/5",
   "markMastered": "Megjelölés elsajátítottként",
   "unmark": "Jelölés törlése",
   "removeGoal": "Cél törlése",
@@ -159,6 +182,10 @@
   },
   "from": "min. {duration}",
   "progressOf": "{done}/{total}",
+  "skippedCount": {
+    "one": "{count} kihagyva",
+    "other": "{count} kihagyva"
+  },
   "expandPanel": "Panel kinyitása",
   "collapsePanel": "Panel összecsukása",
   "emptyTitle": "Készítsd el az első térképed",

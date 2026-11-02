@@ -9,6 +9,8 @@
   "markSource": "Gør noten til et materiale",
   "setGoal": "Gør noten til målet",
   "toggleMastered": "Markér noten som mestret eller sæt den tilbage til læring",
+  "toggleSkipped": "Spring noten over eller sæt den tilbage på ruten",
+  "markKnownCommand": "Markér noten og alt, den kræver, som kendt",
   "nextConceptPrompt": "Hvilket begreb kommer efter dette?",
   "conceptName": "Begrebets navn",
   "createConcept": "Opret begrebet »{name}«",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} t. {minutes} min.",
   "state": {
     "mastered": "Mestret",
+    "skipped": "Sprunget over",
     "learning": "I gang",
     "available": "Klar til start",
     "locked": "Låst",
@@ -103,6 +106,26 @@
   "createNote": "Opret note",
   "startLearning": "Begynd at lære",
   "alreadyKnow": "Kan det allerede",
+  "knowWithPrerequisites": "Kan det og alt, der kræves før",
+  "skip": "Spring over",
+  "unskip": "Tilbage på ruten",
+  "skippedCallout": "Du har sprunget dette begreb over. Det åbner det, der bygger på det, men tæller ikke som mestret.",
+  "skippedToast": "Sprunget over: {title}",
+  "goalNotSkipped": "Målet kan ikke springes over. Fjern målet først.",
+  "markedKnown": {
+    "one": "{count} begreb markeret som kendt",
+    "other": "{count} begreber markeret som kendte"
+  },
+  "knownTitle": "Markér som kendt",
+  "knownText": "Disse begreber bliver markeret som mestret. Fjern fluebenet ved dem, du er usikker på.",
+  "knownFilter": "Filtrér begreber",
+  "knownConfirm": {
+    "one": "Markér {count} begreb",
+    "other": "Markér {count} begreber"
+  },
+  "cancel": "Annuller",
+  "confidence": "Sikkerhed",
+  "confidenceLevel": "Sikkerhed {level} af 5",
   "markMastered": "Markér som mestret",
   "unmark": "Fjern markeringen",
   "removeGoal": "Fjern målet",
@@ -159,6 +182,10 @@
   },
   "from": "fra {duration}",
   "progressOf": "{done} af {total}",
+  "skippedCount": {
+    "one": "{count} sprunget over",
+    "other": "{count} sprunget over"
+  },
   "expandPanel": "Fold panelet ud",
   "collapsePanel": "Fold panelet sammen",
   "emptyTitle": "Byg dit første kort",

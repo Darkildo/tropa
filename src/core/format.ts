@@ -10,6 +10,7 @@ export function formatMinutes(minutes: number) {
 
 export const STATE_ICON: Record<ConceptState, string> = {
   mastered: "check",
+  skipped: "skip-forward",
   learning: "book-open",
   available: "circle-dot",
   locked: "lock",

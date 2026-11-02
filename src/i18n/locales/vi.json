@@ -9,6 +9,8 @@
   "markSource": "Biến ghi chú này thành tài liệu",
   "setGoal": "Đặt ghi chú này làm mục tiêu",
   "toggleMastered": "Đánh dấu ghi chú này đã nắm vững hoặc đưa về đang học",
+  "toggleSkipped": "Bỏ qua ghi chú này hoặc đưa nó về lộ trình",
+  "markKnownCommand": "Đánh dấu ghi chú này và mọi thứ nó cần là đã biết",
   "nextConceptPrompt": "Khái niệm nào đến sau khái niệm này?",
   "conceptName": "Tên khái niệm",
   "createConcept": "Tạo khái niệm “{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} giờ {minutes} phút",
   "state": {
     "mastered": "Đã nắm vững",
+    "skipped": "Đã bỏ qua",
     "learning": "Đang học",
     "available": "Có thể bắt đầu",
     "locked": "Đang khóa",
@@ -103,6 +106,24 @@
   "createNote": "Tạo ghi chú",
   "startLearning": "Bắt đầu học",
   "alreadyKnow": "Đã biết rồi",
+  "knowWithPrerequisites": "Đã biết cái này và phần trước nó",
+  "skip": "Bỏ qua",
+  "unskip": "Đưa về lộ trình",
+  "skippedCallout": "Bạn đã bỏ qua khái niệm này. Nó mở những gì phụ thuộc vào nó nhưng không được tính là đã nắm vững.",
+  "skippedToast": "Đã bỏ qua: {title}",
+  "goalNotSkipped": "Không thể bỏ qua mục tiêu. Hãy bỏ mục tiêu trước.",
+  "markedKnown": {
+    "other": "Đã đánh dấu {count} khái niệm là đã biết"
+  },
+  "knownTitle": "Đánh dấu là đã biết",
+  "knownText": "Các khái niệm này sẽ được đánh dấu đã nắm vững. Bỏ chọn những cái bạn chưa chắc.",
+  "knownFilter": "Lọc khái niệm",
+  "knownConfirm": {
+    "other": "Đánh dấu {count} khái niệm"
+  },
+  "cancel": "Hủy",
+  "confidence": "Độ tự tin",
+  "confidenceLevel": "Độ tự tin {level}/5",
   "markMastered": "Đánh dấu đã nắm vững",
   "unmark": "Bỏ đánh dấu",
   "removeGoal": "Bỏ mục tiêu",
@@ -154,6 +175,9 @@
   },
   "from": "từ {duration}",
   "progressOf": "{done}/{total}",
+  "skippedCount": {
+    "other": "{count} đã bỏ qua"
+  },
   "expandPanel": "Mở rộng bảng",
   "collapsePanel": "Thu gọn bảng",
   "emptyTitle": "Tạo bản đồ đầu tiên",

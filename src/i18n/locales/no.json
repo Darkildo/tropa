@@ -9,6 +9,8 @@
   "markSource": "Gjør notatet til et læremiddel",
   "setGoal": "Gjør notatet til målet",
   "toggleMastered": "Merk notatet som mestret eller sett det tilbake til læring",
+  "toggleSkipped": "Hopp over notatet eller sett det tilbake i ruten",
+  "markKnownCommand": "Merk notatet og alt det krever som kjent",
   "nextConceptPrompt": "Hvilket begrep kommer etter dette?",
   "conceptName": "Navn på begrepet",
   "createConcept": "Opprett begrepet «{name}»",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} t {minutes} min",
   "state": {
     "mastered": "Mestret",
+    "skipped": "Hoppet over",
     "learning": "Pågår",
     "available": "Klar til start",
     "locked": "Låst",
@@ -103,6 +106,26 @@
   "createNote": "Opprett notat",
   "startLearning": "Begynn å lære",
   "alreadyKnow": "Kan det allerede",
+  "knowWithPrerequisites": "Kan dette og alt som kreves før",
+  "skip": "Hopp over",
+  "unskip": "Tilbake i ruten",
+  "skippedCallout": "Du har hoppet over dette begrepet. Det åpner det som bygger på det, men teller ikke som mestret.",
+  "skippedToast": "Hoppet over: {title}",
+  "goalNotSkipped": "Målet kan ikke hoppes over. Fjern målet først.",
+  "markedKnown": {
+    "one": "{count} begrep merket som kjent",
+    "other": "{count} begreper merket som kjent"
+  },
+  "knownTitle": "Merk som kjent",
+  "knownText": "Disse begrepene blir merket som mestret. Fjern haken ved dem du er usikker på.",
+  "knownFilter": "Filtrer begreper",
+  "knownConfirm": {
+    "one": "Merk {count} begrep",
+    "other": "Merk {count} begreper"
+  },
+  "cancel": "Avbryt",
+  "confidence": "Sikkerhet",
+  "confidenceLevel": "Sikkerhet {level} av 5",
   "markMastered": "Merk som mestret",
   "unmark": "Fjern merkingen",
   "removeGoal": "Fjern målet",
@@ -159,6 +182,10 @@
   },
   "from": "fra {duration}",
   "progressOf": "{done} av {total}",
+  "skippedCount": {
+    "one": "{count} hoppet over",
+    "other": "{count} hoppet over"
+  },
   "expandPanel": "Vis panelet",
   "collapsePanel": "Skjul panelet",
   "emptyTitle": "Lag ditt første kart",

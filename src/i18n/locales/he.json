@@ -9,6 +9,8 @@
   "markSource": "הפיכת הפתק לחומר לימוד",
   "setGoal": "הגדרת הפתק כיעד",
   "toggleMastered": "סימון הפתק כנלמד או החזרה ללמידה",
+  "toggleSkipped": "דילוג על הפתק או החזרתו למסלול",
+  "markKnownCommand": "סימון הפתק וכל מה שהוא דורש כידוע",
   "nextConceptPrompt": "איזה מושג בא אחרי זה?",
   "conceptName": "שם המושג",
   "createConcept": "יצירת המושג „{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} שע׳ {minutes} דק׳",
   "state": {
     "mastered": "נלמד",
+    "skipped": "דולג",
     "learning": "בלמידה",
     "available": "אפשר להתחיל",
     "locked": "נעול",
@@ -103,6 +106,28 @@
   "createNote": "יצירת פתק",
   "startLearning": "התחלת למידה",
   "alreadyKnow": "כבר יודע/ת",
+  "knowWithPrerequisites": "יודע/ת את זה ואת מה שלפניו",
+  "skip": "דילוג",
+  "unskip": "החזרה למסלול",
+  "skippedCallout": "דילגת על המושג הזה. הוא פותח את מה שתלוי בו, אבל לא נחשב כנלמד.",
+  "skippedToast": "דולג: {title}",
+  "goalNotSkipped": "אי אפשר לדלג על היעד. קודם צריך להסיר את היעד.",
+  "markedKnown": {
+    "one": "מושג אחד סומן כידוע",
+    "two": "שני מושגים סומנו כידועים",
+    "other": "{count} מושגים סומנו כידועים"
+  },
+  "knownTitle": "סימון כידוע",
+  "knownText": "המושגים האלה יסומנו כנלמדים. אפשר להסיר את הסימון ממה שלא בטוח.",
+  "knownFilter": "סינון מושגים",
+  "knownConfirm": {
+    "one": "סימון מושג אחד",
+    "two": "סימון שני מושגים",
+    "other": "סימון {count} מושגים"
+  },
+  "cancel": "ביטול",
+  "confidence": "ביטחון",
+  "confidenceLevel": "ביטחון {level} מתוך 5",
   "markMastered": "סימון כנלמד",
   "unmark": "הסרת הסימון",
   "removeGoal": "הסרת היעד",
@@ -164,6 +189,11 @@
   },
   "from": "מ־{duration}",
   "progressOf": "{done} מתוך {total}",
+  "skippedCount": {
+    "one": "אחד דולג",
+    "two": "שניים דולגו",
+    "other": "{count} דולגו"
+  },
   "expandPanel": "הרחבת החלונית",
   "collapsePanel": "כיווץ החלונית",
   "emptyTitle": "בונים את המפה הראשונה",

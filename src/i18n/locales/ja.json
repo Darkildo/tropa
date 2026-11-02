@@ -9,6 +9,8 @@
   "markSource": "このノートを教材にする",
   "setGoal": "このノートを目標にする",
   "toggleMastered": "このノートを習得済みにする／学習中に戻す",
+  "toggleSkipped": "このノートをスキップ／ルートに戻す",
+  "markKnownCommand": "このノートと必要な前提をすべて既知にする",
   "nextConceptPrompt": "この次に来る概念は？",
   "conceptName": "概念の名前",
   "createConcept": "概念「{name}」を作成",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours}時間{minutes}分",
   "state": {
     "mastered": "習得済み",
+    "skipped": "スキップ",
     "learning": "学習中",
     "available": "開始できます",
     "locked": "ロック中",
@@ -103,6 +106,24 @@
   "createNote": "ノートを作成",
   "startLearning": "学習を始める",
   "alreadyKnow": "もう知っている",
+  "knowWithPrerequisites": "これと前提をすべて知っている",
+  "skip": "スキップ",
+  "unskip": "ルートに戻す",
+  "skippedCallout": "この概念はスキップしました。依存する概念は開きますが、習得済みには数えません。",
+  "skippedToast": "スキップ：{title}",
+  "goalNotSkipped": "目標はスキップできません。先に目標を外してください。",
+  "markedKnown": {
+    "other": "{count}個の概念を既知にしました"
+  },
+  "knownTitle": "既知にする",
+  "knownText": "これらの概念を習得済みにします。自信のないものはチェックを外してください。",
+  "knownFilter": "概念を絞り込む",
+  "knownConfirm": {
+    "other": "{count}個を既知にする"
+  },
+  "cancel": "キャンセル",
+  "confidence": "自信",
+  "confidenceLevel": "自信 {level}/5",
   "markMastered": "習得済みにする",
   "unmark": "マークを外す",
   "removeGoal": "目標を外す",
@@ -154,6 +175,9 @@
   },
   "from": "{duration}〜",
   "progressOf": "{done}／{total}",
+  "skippedCount": {
+    "other": "{count}個スキップ"
+  },
   "expandPanel": "パネルを開く",
   "collapsePanel": "パネルを閉じる",
   "emptyTitle": "最初のマップを作りましょう",

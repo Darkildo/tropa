@@ -9,6 +9,8 @@
   "markSource": "Tee muistiinpanosta materiaali",
   "setGoal": "Tee muistiinpanosta tavoite",
   "toggleMastered": "Merkitse muistiinpano hallituksi tai palauta se opiskeltavaksi",
+  "toggleSkipped": "Ohita muistiinpano tai palauta se reitille",
+  "markKnownCommand": "Merkitse muistiinpano ja kaikki sen vaatima osatuksi",
   "nextConceptPrompt": "Mikä käsite tulee tämän jälkeen?",
   "conceptName": "Käsitteen nimi",
   "createConcept": "Luo käsite ”{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} t {minutes} min",
   "state": {
     "mastered": "Hallussa",
+    "skipped": "Ohitettu",
     "learning": "Opiskelussa",
     "available": "Valmis aloitettavaksi",
     "locked": "Lukittu",
@@ -103,6 +106,26 @@
   "createNote": "Luo muistiinpano",
   "startLearning": "Aloita opiskelu",
   "alreadyKnow": "Osaan jo",
+  "knowWithPrerequisites": "Osaan tämän ja sen edellytykset",
+  "skip": "Ohita",
+  "unskip": "Palauta reitille",
+  "skippedCallout": "Ohitit tämän käsitteen. Se avaa siitä riippuvat käsitteet, mutta sitä ei lasketa hallituksi.",
+  "skippedToast": "Ohitettu: {title}",
+  "goalNotSkipped": "Tavoitetta ei voi ohittaa. Poista tavoite ensin.",
+  "markedKnown": {
+    "one": "{count} käsite merkitty osatuksi",
+    "other": "{count} käsitettä merkitty osatuiksi"
+  },
+  "knownTitle": "Merkitse osatuksi",
+  "knownText": "Nämä käsitteet merkitään hallituiksi. Poista valinta niistä, joista et ole varma.",
+  "knownFilter": "Suodata käsitteitä",
+  "knownConfirm": {
+    "one": "Merkitse {count} käsite",
+    "other": "Merkitse {count} käsitettä"
+  },
+  "cancel": "Peruuta",
+  "confidence": "Varmuus",
+  "confidenceLevel": "Varmuus {level}/5",
   "markMastered": "Merkitse hallituksi",
   "unmark": "Poista merkintä",
   "removeGoal": "Poista tavoite",
@@ -159,6 +182,10 @@
   },
   "from": "alkaen {duration}",
   "progressOf": "{done}/{total}",
+  "skippedCount": {
+    "one": "{count} ohitettu",
+    "other": "{count} ohitettu"
+  },
   "expandPanel": "Laajenna paneeli",
   "collapsePanel": "Pienennä paneeli",
   "emptyTitle": "Rakenna ensimmäinen karttasi",

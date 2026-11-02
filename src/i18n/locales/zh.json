@@ -9,6 +9,8 @@
   "markSource": "将此笔记设为资料",
   "setGoal": "将此笔记设为目标",
   "toggleMastered": "将此笔记标记为已掌握，或退回学习中",
+  "toggleSkipped": "跳过此笔记，或将其放回路线",
+  "markKnownCommand": "将此笔记及其全部前置标记为已会",
   "nextConceptPrompt": "下一个概念是什么？",
   "conceptName": "概念名称",
   "createConcept": "创建概念“{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} 小时 {minutes} 分钟",
   "state": {
     "mastered": "已掌握",
+    "skipped": "已跳过",
     "learning": "学习中",
     "available": "可以开始",
     "locked": "未解锁",
@@ -103,6 +106,24 @@
   "createNote": "创建笔记",
   "startLearning": "开始学习",
   "alreadyKnow": "已经会了",
+  "knowWithPrerequisites": "这个和它的前置我都会",
+  "skip": "跳过",
+  "unskip": "放回路线",
+  "skippedCallout": "你跳过了这个概念。依赖它的内容会解锁，但它不计为已掌握。",
+  "skippedToast": "已跳过：{title}",
+  "goalNotSkipped": "目标不能跳过。请先取消目标。",
+  "markedKnown": {
+    "other": "已将 {count} 个概念标记为已会"
+  },
+  "knownTitle": "标记为已会",
+  "knownText": "这些概念将被标记为已掌握。取消勾选你没有把握的。",
+  "knownFilter": "筛选概念",
+  "knownConfirm": {
+    "other": "标记 {count} 个概念"
+  },
+  "cancel": "取消",
+  "confidence": "把握程度",
+  "confidenceLevel": "把握程度 {level}/5",
   "markMastered": "标记为已掌握",
   "unmark": "取消标记",
   "removeGoal": "取消目标",
@@ -154,6 +175,9 @@
   },
   "from": "{duration} 起",
   "progressOf": "{done} / {total}",
+  "skippedCount": {
+    "other": "已跳过 {count} 个"
+  },
   "expandPanel": "展开面板",
   "collapsePanel": "收起面板",
   "emptyTitle": "创建你的第一张地图",

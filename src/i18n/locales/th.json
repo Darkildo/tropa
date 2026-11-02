@@ -9,6 +9,8 @@
   "markSource": "ทำให้โน้ตนี้เป็นสื่อการเรียน",
   "setGoal": "ตั้งโน้ตนี้เป็นเป้าหมาย",
   "toggleMastered": "ทำเครื่องหมายว่าเข้าใจแล้ว หรือย้ายกลับไปกำลังเรียน",
+  "toggleSkipped": "ข้ามโน้ตนี้ หรือนำกลับเข้าเส้นทาง",
+  "markKnownCommand": "ทำเครื่องหมายว่ารู้แล้วสำหรับโน้ตนี้และทุกอย่างที่ต้องรู้ก่อน",
   "nextConceptPrompt": "แนวคิดใดมาต่อจากนี้",
   "conceptName": "ชื่อแนวคิด",
   "createConcept": "สร้างแนวคิด “{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} ชม. {minutes} นาที",
   "state": {
     "mastered": "เข้าใจแล้ว",
+    "skipped": "ข้ามแล้ว",
     "learning": "กำลังเรียน",
     "available": "เริ่มได้",
     "locked": "ล็อกอยู่",
@@ -103,6 +106,24 @@
   "createNote": "สร้างโน้ต",
   "startLearning": "เริ่มเรียน",
   "alreadyKnow": "รู้อยู่แล้ว",
+  "knowWithPrerequisites": "รู้เรื่องนี้และพื้นฐานทั้งหมดแล้ว",
+  "skip": "ข้าม",
+  "unskip": "กลับเข้าเส้นทาง",
+  "skippedCallout": "คุณข้ามแนวคิดนี้แล้ว สิ่งที่ขึ้นอยู่กับมันจะเปิดได้ แต่จะไม่นับว่าเข้าใจแล้ว",
+  "skippedToast": "ข้ามแล้ว: {title}",
+  "goalNotSkipped": "ข้ามเป้าหมายไม่ได้ ให้เอาเป้าหมายออกก่อน",
+  "markedKnown": {
+    "other": "ทำเครื่องหมายว่ารู้แล้ว {count} แนวคิด"
+  },
+  "knownTitle": "ทำเครื่องหมายว่ารู้แล้ว",
+  "knownText": "แนวคิดเหล่านี้จะถูกทำเครื่องหมายว่าเข้าใจแล้ว เอาเครื่องหมายออกจากข้อที่ไม่แน่ใจ",
+  "knownFilter": "กรองแนวคิด",
+  "knownConfirm": {
+    "other": "ทำเครื่องหมาย {count} แนวคิด"
+  },
+  "cancel": "ยกเลิก",
+  "confidence": "ความมั่นใจ",
+  "confidenceLevel": "ความมั่นใจ {level} จาก 5",
   "markMastered": "ทำเครื่องหมายว่าเข้าใจแล้ว",
   "unmark": "ลบเครื่องหมาย",
   "removeGoal": "ลบเป้าหมาย",
@@ -154,6 +175,9 @@
   },
   "from": "ตั้งแต่ {duration}",
   "progressOf": "{done} จาก {total}",
+  "skippedCount": {
+    "other": "ข้าม {count} แนวคิด"
+  },
   "expandPanel": "ขยายแผง",
   "collapsePanel": "ยุบแผง",
   "emptyTitle": "สร้างแผนที่แรกของคุณ",
