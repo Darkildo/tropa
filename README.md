@@ -144,11 +144,13 @@ npm run demo         # demo vaults in dist/Tropa Demo and dist/Tropa Demo RU
 npm run preview      # browser build on a mocked API in dist/preview
 npm run e2e          # UI checks in Chromium (Playwright)
 npm run screenshots  # README images in docs/screenshots
+npm run bench        # layout time and drawing quality against the 0.1 layout (dagre)
+npm run bench:chromium  # the same in Chromium, plus how long the interface freezes
 ```
 
 `npm run e2e` and `npm run screenshots` need a Chromium for Playwright: `npx playwright install chromium`, or set `CHROMIUM_PATH` to an installed one.
 
-- `src/core`: logic with no dependency on Obsidian.
+- `src/core`: logic with no dependency on Obsidian. The map layout is `sugiyama.ts`, behind the engine interface in `layout-engine.ts`; `layout-runner.ts` runs it in a worker for large maps.
 - `src/i18n`: strings. English in `en.ts`, other languages in `locales/`.
 - `src/store.ts`: reads the vault, keeps progress, writes links.
 - `src/ui`: map, sidebar panel, modals.
@@ -160,7 +162,7 @@ To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md),
 
 - Node positions are computed automatically and cannot be dragged.
 - A material listed in a concept cannot require anything. When a material needs its own prerequisites, make it a note.
-- Layout blocks the interface when the shape of the graph changes: about 0.4 s for 100 concepts, 1 s for 200 and 3.5 s for 400 with dense links.
+- Large maps take a while to lay out, though the interface stays responsive meanwhile: in Chromium on a desktop, about 60 ms for 400 concepts, 0.5 s for 400 concepts with their materials and 1.5 s for 1000 with materials (dense synthetic maps, `npm run bench:chromium`). Expect several times more on a phone.
 
 ## License
 

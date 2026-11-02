@@ -1,6 +1,8 @@
 import { ItemView, Menu, Notice, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
-import { layoutGraph, type Layout, type LaidOutNode } from "../core/layout";
+import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
+import { LayoutRunner } from "../core/layout-runner";
+import layoutWorker from "tropa:layout-worker";
 import { isPassed, knownCandidates, sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
@@ -15,6 +17,12 @@ const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.6;
 const READABLE_ZOOM = 0.6;
 const CLOSE_ZOOM = 0.8;
+/**
+ * A zoomed-out map with more edges than this draws them without dashes. Dashed paths are slow to
+ * rasterise: on a 1700-node map (3400 edges) the browser froze for over 30 s. Maps of 400 concepts
+ * (about 970 edges) or of 200 concepts with their materials (about 740) keep their dashes.
+ */
+const DASHED_EDGES_MAX = 1000;
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 interface Press {
@@ -40,6 +48,9 @@ export class MapView extends ItemView implements DetailHost {
   private readonly nodeEls = new Map<string, HTMLElement>();
   private layout: Layout | null = null;
   private layoutKey = "";
+  private readonly layouts = new LayoutRunner(layoutWorker);
+  /** The worker is still laying out the graph for `layoutKey`; the map shows the previous layout. */
+  private layoutPending = false;
   private selected: string | null = null;
   private x = 40;
   private y = 40;
@@ -102,6 +113,7 @@ export class MapView extends ItemView implements DetailHost {
     });
     observer.observe(this.root);
     this.register(() => observer.disconnect());
+    this.register(() => this.layouts.dispose());
 
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(this.store.on("mastered", (id, unlocked, undo) => this.celebrate(id, unlocked, undo)));
@@ -176,6 +188,12 @@ export class MapView extends ItemView implements DetailHost {
     }
     this.canvas.querySelector(".tropa-empty")?.remove();
     this.computeLayout();
+    if (this.layoutPending) {
+      // Nodes that left the graph stay drawn until the new layout arrives; painting skips them.
+      this.paintNodes();
+      this.renderSide();
+      return;
+    }
     this.syncNodes();
     this.paintNodes();
     this.drawEdges();
@@ -195,11 +213,35 @@ export class MapView extends ItemView implements DetailHost {
     const mode = this.effectiveMode();
     const only = mode === "route" ? store.route!.closure : undefined;
     const key = [store.topologyKey, mode, showSources, only ? [...only].sort().join("|") : ""].join("#");
-    if (key === this.layoutKey && this.layout) return;
-    const hadLayout = this.layout !== null;
+    if (key === this.layoutKey) return;
     this.layoutKey = key;
-    this.layout = layoutGraph(store.graph, { showSources, only });
-    if (hadLayout) this.needsFit = true;
+    const prepared = prepareLayout(store.graph, { showSources, only });
+    const laidOut = this.layouts.run(prepared.input);
+    if (!(laidOut instanceof Promise)) {
+      this.setLayout(finishLayout(prepared, laidOut));
+      return;
+    }
+    this.setPending(true);
+    attempt(
+      laidOut.then((result) => {
+        if (!result || key !== this.layoutKey) return;
+        this.setLayout(finishLayout(prepared, result));
+        this.render();
+      }),
+      "lay out the map",
+    );
+  }
+
+  private setLayout(layout: Layout) {
+    if (this.layout) this.needsFit = true;
+    this.layout = layout;
+    this.setPending(false);
+  }
+
+  private setPending(pending: boolean) {
+    this.layoutPending = pending;
+    this.canvas.toggleClass("is-laying-out", pending);
+    this.canvas.setAttribute("aria-busy", String(pending));
   }
 
   private syncNodes() {
@@ -312,6 +354,7 @@ export class MapView extends ItemView implements DetailHost {
   private drawEdges() {
     const layout = this.layout!;
     this.svg.empty();
+    this.world.toggleClass("is-dense", layout.edges.length > DASHED_EDGES_MAX);
     const pad = 200;
     this.svg.setAttribute("width", String(layout.width + pad * 2));
     this.svg.setAttribute("height", String(layout.height + pad * 2));
