@@ -166,6 +166,28 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 
 .tropa-canvas.is-panning { cursor: grabbing; }
 
+/* A large map is laid out in a worker: a bar runs along the top meanwhile. It waits a moment, so a
+   quick layout does not flash. The map itself is not dimmed: fading a large map makes the browser
+   redraw all of it, which costs the very pause the worker saves. */
+
+.tropa-canvas.is-laying-out::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 28%;
+  height: 2px;
+  background: var(--interactive-accent);
+  opacity: 0;
+  animation: tropa-laying-out 1.1s ease-in-out 150ms infinite;
+}
+
+@keyframes tropa-laying-out {
+  from { opacity: 1; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(360%); }
+}
+
 .tropa-world {
   position: absolute;
   top: 0;
@@ -194,6 +216,11 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 .tropa-edge.is-walked { stroke: var(--tropa-walked); stroke-width: 3; }
 .tropa-edge.is-loop { stroke: var(--tropa-danger); stroke-width: 2.5; }
 .tropa-edge.is-wire { stroke: var(--tropa-route); stroke-width: 2.5; stroke-dasharray: 6 5; }
+
+/* Zoomed out, dashes are too fine to read and slow to draw on a large map: soft links fade instead. */
+.tropa-world.is-far .tropa-edge.is-teaches,
+.tropa-world.is-far .tropa-edge.is-recommends { stroke-dasharray: none; }
+.tropa-world.is-far .tropa-edge.is-recommends { stroke-opacity: 0.45; }
 
 .tropa-world.has-focus .tropa-edge:not(.is-related) { opacity: 0.3; }
 .tropa-world.has-focus .tropa-node:not(.is-related) { opacity: 0.55; }
@@ -799,4 +826,5 @@ a.tropa-icon-button { opacity: 1; }
   .tropa-meter-fill,
   .tropa-toast { transition: none; animation: none; }
   .tropa-node.just-unlocked { animation: none; }
+  .tropa-canvas.is-laying-out::before { width: 100%; opacity: 1; animation: none; }
 }

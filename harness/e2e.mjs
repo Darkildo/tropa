@@ -285,12 +285,72 @@ for (const [lang, wholeMap] of [["de", "Ganze Karte"], ["ja", "マップ全体"]
 }
 
 // --- large graph performance
+const view = "tropa.app.workspace.center.view";
+const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });
 {
-  const { page } = await open({ query: "?scenario=large&n=400" });
-  const ms = await page.evaluate("(()=>{const t=performance.now(); const v=tropa.app.workspace.center.view; v.layoutKey=''; v.render(); return performance.now()-t})()");
-  console.log("400 nodes render ms", Math.round(ms));
-  await page.screenshot({ path: SHOTS + "50-large.png" });
+  const { page, errors } = await open({ query: "?scenario=large&n=400" });
+  await layoutDone(page);
   ok("large graph renders", (await page.locator(".tropa-node").count()) === 400);
+  ok("large graph laid out in the worker", (await page.evaluate(`${view}.layouts.stats.inWorker`)) >= 1);
+  const ms = await page.evaluate(`(()=>{const t=performance.now(); const v=${view}; v.layoutKey=''; v.render(); return performance.now()-t})()`);
+  console.log("400 nodes, cached layout, render ms", Math.round(ms));
+  ok("same shape comes from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) >= 1);
+  await page.screenshot({ path: SHOTS + "50-large.png" });
+  ok("large graph: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // 1000 concepts; materials on make it 1700 nodes, which take the engine a second or more.
+  const { page, errors } = await open({ query: "?scenario=large&n=1000&materials" });
+  await layoutDone(page);
+  ok("1000 concepts render", (await page.locator(".tropa-node").count()) === 1000);
+  // Let the browser finish drawing the first map before timing anything.
+  await wait(page, 1500);
+  await page.evaluate(() => {
+    // Longest gap between timer ticks while the worker lays out: how long the interface would freeze.
+    const watch = (window.freeze = { longest: 0, pending: 0, last: performance.now(), was: false, on: true });
+    const tick = () => {
+      const now = performance.now();
+      const busy = Boolean(document.querySelector(".tropa-canvas.is-laying-out"));
+      if (busy && watch.was) {
+        watch.longest = Math.max(watch.longest, now - watch.last);
+        watch.pending += now - watch.last;
+      }
+      watch.was = busy;
+      watch.last = now;
+      if (watch.on) setTimeout(tick, 4);
+    };
+    tick();
+  });
+  await page.click(".tropa-toggle-sources");
+  ok("layout runs in the background", (await page.locator(".tropa-canvas.is-laying-out[aria-busy=true]").count()) === 1);
+  // Timers alone first: a click or a screenshot makes the page draw, which is not the layout's doing.
+  await wait(page, 700);
+  const freeze = await page.evaluate(() => ({ ...window.freeze }));
+  const zoom = () => page.evaluate(() => document.querySelector(".tropa-world").style.transform);
+  const before = await zoom();
+  const t = Date.now();
+  await page.click(".tropa-zoom button >> nth=0");
+  const clickMs = Date.now() - t;
+  const stillLaying = (await page.locator(".tropa-canvas.is-laying-out").count()) === 1;
+  ok("a click is handled while the layout runs", (await zoom()) !== before && stillLaying, `${clickMs} ms`);
+  await page.screenshot({ path: SHOTS + "51-laying-out.png" });
+  await layoutDone(page);
+  const total = await page.evaluate(() => ((window.freeze.on = false), window.freeze.pending));
+  console.log(`1700 nodes in the worker: ${Math.round(total)} ms; first ${Math.round(freeze.pending)} ms: longest pause ${Math.round(freeze.longest)} ms; click ${clickMs} ms`);
+  ok("interface stays responsive during layout", freeze.pending > 500 && freeze.longest < 150, JSON.stringify(freeze));
+  ok("materials laid out", (await page.locator(".tropa-node").count()) === 1700);
+  await page.click(".tropa-toggle-sources"); await layoutDone(page);
+  await page.click(".tropa-toggle-sources");
+  ok("switching back uses the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await page.locator(".tropa-node").count()) === 1700);
+  ok("1000 concepts: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=large&n=400&noworker" });
+  await layoutDone(page);
+  ok("without workers the map still lays out", (await page.locator(".tropa-node").count()) === 400 && (await page.evaluate(`${view}.layouts.stats.inWorker`)) === 0);
+  ok("without workers: no page errors", !errors.some((e) => !e.includes("layout worker unavailable")), errors.join("; "));
   await page.close();
 }
 

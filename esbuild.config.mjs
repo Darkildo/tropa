@@ -1,4 +1,5 @@
 import esbuild from "esbuild";
+import { layoutWorker } from "./layout-worker.esbuild.mjs";
 import { localesAsText } from "./locales.esbuild.mjs";
 
 const production = process.argv[2] === "production";
@@ -16,7 +17,7 @@ const context = await esbuild.context({
   outfile: "main.js",
   // Keeps non-Latin strings as UTF-8 instead of \u escapes, which would triple their size.
   charset: "utf8",
-  plugins: [localesAsText],
+  plugins: [localesAsText, layoutWorker],
 });
 
 if (production) {
