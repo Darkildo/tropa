@@ -217,5 +217,40 @@
   "zoomOut": "Alejar",
   "fitAll": "Mostrar todo el mapa",
   "openNote": "Abrir nota",
-  "clearMastered": "Quitar la marca de dominado"
+  "clearMastered": "Quitar la marca de dominado",
+  "focus": "Enfoque",
+  "focusTitle": "Mostrar solo lo que está cerca de este concepto (F)",
+  "focusHint": "Elige un concepto para ver solo lo que tiene cerca",
+  "focusHere": "Mostrar lo cercano",
+  "focusOn": "Enfoque: {title}",
+  "focusDepth": "Pasos alrededor",
+  "focusSteps": {
+    "many": "{count} pasos alrededor",
+    "one": "{count} paso alrededor",
+    "other": "{count} pasos alrededor"
+  },
+  "exitFocus": "Salir del enfoque",
+  "fold": "Ocultar lo que desbloquea",
+  "unfold": {
+    "many": "Mostrar {count} conceptos ocultos",
+    "one": "Mostrar {count} concepto oculto",
+    "other": "Mostrar {count} conceptos ocultos"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} conceptos ocultos",
+    "one": "{count} concepto oculto",
+    "other": "{count} conceptos ocultos"
+  },
+  "unfolded": {
+    "many": "{count} conceptos visibles de nuevo",
+    "one": "{count} concepto visible de nuevo",
+    "other": "{count} conceptos visibles de nuevo"
+  },
+  "foldedRoute": {
+    "many": "Aquí hay {count} pasos de la ruta ocultos",
+    "one": "Aquí hay {count} paso de la ruta oculto",
+    "other": "Aquí hay {count} pasos de la ruta ocultos"
+  },
+  "hiddenOnMap": "Oculto en el mapa"
 }

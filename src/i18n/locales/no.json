@@ -209,5 +209,35 @@
   "zoomOut": "Zoom ut",
   "fitAll": "Vis hele kartet",
   "openNote": "Åpne notatet",
-  "clearMastered": "Fjern merkingen mestret"
+  "clearMastered": "Fjern merkingen mestret",
+  "focus": "Fokus",
+  "focusTitle": "Vis bare det som ligger nær dette begrepet (F)",
+  "focusHint": "Velg et begrep for å se bare det som ligger nær det",
+  "focusHere": "Vis det nærmeste",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Steg rundt",
+  "focusSteps": {
+    "one": "{count} steg rundt",
+    "other": "{count} steg rundt"
+  },
+  "exitFocus": "Avslutt fokus",
+  "fold": "Skjul det det åpner",
+  "unfold": {
+    "one": "Vis {count} skjult begrep",
+    "other": "Vis {count} skjulte begreper"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} begrep skjult",
+    "other": "{count} begreper skjult"
+  },
+  "unfolded": {
+    "one": "{count} begrep vises igjen",
+    "other": "{count} begreper vises igjen"
+  },
+  "foldedRoute": {
+    "one": "Her er {count} steg på ruten skjult",
+    "other": "Her er {count} steg på ruten skjult"
+  },
+  "hiddenOnMap": "Skjult på kartet"
 }

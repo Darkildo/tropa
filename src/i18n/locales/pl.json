@@ -225,5 +225,45 @@
   "zoomOut": "Pomniejsz",
   "fitAll": "Pokaż całą mapę",
   "openNote": "Otwórz notatkę",
-  "clearMastered": "Usuń oznaczenie opanowania"
+  "clearMastered": "Usuń oznaczenie opanowania",
+  "focus": "Fokus",
+  "focusTitle": "Pokaż tylko to, co jest blisko tego pojęcia (F)",
+  "focusHint": "Wybierz pojęcie, aby zobaczyć to, co jest blisko niego",
+  "focusHere": "Pokaż to, co jest blisko",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Kroki wokół",
+  "focusSteps": {
+    "few": "{count} kroki wokół",
+    "many": "{count} kroków wokół",
+    "one": "{count} krok wokół",
+    "other": "{count} kroku wokół"
+  },
+  "exitFocus": "Wyjdź z fokusu",
+  "fold": "Ukryj to, co otwiera",
+  "unfold": {
+    "few": "Pokaż {count} ukryte pojęcia",
+    "many": "Pokaż {count} ukrytych pojęć",
+    "one": "Pokaż {count} ukryte pojęcie",
+    "other": "Pokaż {count} ukrytego pojęcia"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "few": "Ukryto {count} pojęcia",
+    "many": "Ukryto {count} pojęć",
+    "one": "Ukryto {count} pojęcie",
+    "other": "Ukryto {count} pojęcia"
+  },
+  "unfolded": {
+    "few": "Znów widać {count} pojęcia",
+    "many": "Znów widać {count} pojęć",
+    "one": "Znów widać {count} pojęcie",
+    "other": "Znów widać {count} pojęcia"
+  },
+  "foldedRoute": {
+    "few": "Tu ukryto {count} kroki trasy",
+    "many": "Tu ukryto {count} kroków trasy",
+    "one": "Tu ukryto {count} krok trasy",
+    "other": "Tu ukryto {count} kroku trasy"
+  },
+  "hiddenOnMap": "Ukryte na mapie"
 }

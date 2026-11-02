@@ -217,5 +217,40 @@
   "zoomOut": "Riduci",
   "fitAll": "Mostra tutta la mappa",
   "openNote": "Apri la nota",
-  "clearMastered": "Togli il segno di padroneggiato"
+  "clearMastered": "Togli il segno di padroneggiato",
+  "focus": "Focus",
+  "focusTitle": "Mostra solo ciò che è vicino a questo concetto (F)",
+  "focusHint": "Scegli un concetto per vedere solo ciò che gli è vicino",
+  "focusHere": "Mostra ciò che è vicino",
+  "focusOn": "Focus: {title}",
+  "focusDepth": "Passi intorno",
+  "focusSteps": {
+    "many": "{count} passi intorno",
+    "one": "{count} passo intorno",
+    "other": "{count} passi intorno"
+  },
+  "exitFocus": "Esci dal focus",
+  "fold": "Nascondi ciò che sblocca",
+  "unfold": {
+    "many": "Mostra {count} concetti nascosti",
+    "one": "Mostra {count} concetto nascosto",
+    "other": "Mostra {count} concetti nascosti"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} concetti nascosti",
+    "one": "{count} concetto nascosto",
+    "other": "{count} concetti nascosti"
+  },
+  "unfolded": {
+    "many": "{count} concetti di nuovo visibili",
+    "one": "{count} concetto di nuovo visibile",
+    "other": "{count} concetti di nuovo visibili"
+  },
+  "foldedRoute": {
+    "many": "Qui sono nascosti {count} passi del percorso",
+    "one": "Qui è nascosto {count} passo del percorso",
+    "other": "Qui sono nascosti {count} passi del percorso"
+  },
+  "hiddenOnMap": "Nascosto sulla mappa"
 }

@@ -554,6 +554,86 @@ const dashes = (page, kind) => page.evaluate((k) => getComputedStyle(document.qu
   await page.close();
 }
 
+// --- focus on what is near, fold branches
+const mapView = "tropa.app.workspace.center.view";
+const nodeCount = (page) => page.locator(".tropa-node").count();
+const worldTransform = (page) => page.evaluate(() => document.querySelector(".tropa-world").style.transform);
+const fold = (page, title) => node(page, title).locator(".tropa-fold");
+{
+  const { page, errors } = await open();
+  const all = await nodeCount(page);
+  ok("focus needs a selection", await page.locator(".tropa-focus-toggle").isDisabled());
+  await node(page, "Gradient").click(); await wait(page, 300);
+  const view = await worldTransform(page);
+  await node(page, "Gradient").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  ok("F focuses on what is near", (await nodeCount(page)) === 4 && (await node(page, "Derivatives").count()) === 1 && (await node(page, "Gradient descent").count()) === 1 && (await node(page, "Transformer").count()) === 0, String(await nodeCount(page)));
+  ok("focus bar shows the focus", (await page.locator(".tropa-focus.is-active .tropa-focus-toggle[aria-pressed=true]").count()) === 1 && (await page.locator(".tropa-toast").innerText()).includes("Focus: Gradient"));
+  await page.keyboard.press("2"); await wait(page, 500);
+  ok("two steps around", (await nodeCount(page)) === 8 && (await page.locator('.tropa-focus-depth button[data-depth="2"][aria-pressed=true]').count()) === 1, String(await nodeCount(page)));
+  await page.click(".tropa-toggle-sources"); await wait(page, 500);
+  const sources = await page.locator(".tropa-node.is-source").count();
+  ok("materials of what is in focus", sources > 0 && (await page.locator(".tropa-node.is-concept").count()) === 8, String(sources));
+  await page.click(".tropa-toggle-sources"); await wait(page, 400);
+  ok("focus kept with the view", (await page.evaluate(`${mapView}.getState().focus?.depth`)) === 2 && (await page.evaluate("tropa.app.workspace.layoutSaves")) > 0);
+  await page.screenshot({ path: SHOTS + "90-focus.png" });
+  await page.keyboard.press("Escape"); await wait(page, 600);
+  ok("Esc leaves focus where the map was", (await nodeCount(page)) === all && (await worldTransform(page)) === view && (await page.locator(".tropa-focus.is-active").count()) === 0, `${await worldTransform(page)} vs ${view}`);
+  ok("leaving focus keeps the selection", (await page.locator(".tropa-side .tropa-title").innerText()) === "Gradient");
+  await page.keyboard.press("Escape"); await wait(page, 200);
+
+  // Fold Backpropagation on the route: what needs it goes, the route list says so.
+  await node(page, "Backpropagation").hover();
+  await fold(page, "Backpropagation").click(); await wait(page, 500);
+  ok("fold hides what needs it", (await node(page, "Transformer").count()) === 0 && (await node(page, "Embeddings").count()) === 0 && (await node(page, "Chain rule").count()) === 1);
+  const badge = await fold(page, "Backpropagation").innerText();
+  ok("fold badge counts what it hides", badge === "+4", badge);
+  ok("folded node is collapsed", (await node(page, "Backpropagation").getAttribute("aria-expanded")) === "false" && (await fold(page, "Backpropagation").getAttribute("class")).includes("has-route"));
+  ok("fold is announced", (await page.locator(".tropa-toast[role=status]").innerText()).includes("4 concepts hidden"));
+  ok("route list marks hidden steps", (await page.locator(".tropa-side .tropa-step.is-hidden-on-map").count()) === 4);
+  await page.screenshot({ path: SHOTS + "91-folded.png" });
+  await page.locator('.tropa-side .tropa-step:has-text("Transformer")').click(); await wait(page, 500);
+  ok("picking a hidden step unfolds it", (await node(page, "Transformer").count()) === 1 && (await node(page, "Backpropagation").getAttribute("aria-expanded")) === "true");
+  await page.keyboard.press("Escape"); await wait(page, 200);
+  await node(page, "Backpropagation").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  ok("C folds the focused concept", (await node(page, "Transformer").count()) === 0);
+  await page.click(".tropa-toast button"); await wait(page, 500);
+  ok("undo unfolds", (await node(page, "Transformer").count()) === 1);
+  ok("a concept that opens nothing has no fold", (await fold(page, "Transformer").getAttribute("class")).includes("is-hidden") && (await node(page, "Transformer").getAttribute("aria-expanded")) === null);
+  await node(page, "Gradient").click({ button: "right" }); await wait(page, 100);
+  ok("context menu offers focus and fold", (await page.locator('.menu-item:text-is("Show what is near")').count()) === 1 && (await page.locator('.menu-item:text-is("Hide what it opens")').count()) === 1);
+  await page.click('.menu-item:text-is("Hide what it opens")'); await wait(page, 500);
+  ok("context menu folds", (await node(page, "Gradient descent").count()) === 0);
+  ok("focus and fold: no errors", errors.length === 0 && (await page.evaluate("tropa.missingIcons.size")) === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ru" });
+  await node(page, "Градиент").click(); await wait(page, 200);
+  await node(page, "Градиент").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  ok("ru: focus", (await nodeCount(page)) === 4 && (await page.locator(".tropa-focus-toggle").innerText()).includes("Фокус"));
+  await page.keyboard.press("Escape"); await page.keyboard.press("Escape"); await wait(page, 300);
+  await node(page, "Обратное распространение").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  const label = await fold(page, "Обратное распространение").getAttribute("aria-label");
+  ok("ru: fold in plural forms", label.startsWith("Показать 4 скрытых концепта") && (await page.locator(".tropa-toast").innerText()).includes("Скрыто 4 концепта"), label);
+  ok("ru: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar" });
+  await node(page, "Backpropagation").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  const box = await node(page, "Backpropagation").boundingBox();
+  const badge = await fold(page, "Backpropagation").boundingBox();
+  ok("ar: fold badge on the inline end, inside the node", badge.x < box.x + box.width / 2 && badge.x >= box.x, JSON.stringify({ box, badge }));
+  await node(page, "Gradient").click(); await wait(page, 200);
+  await page.click(".tropa-focus-toggle"); await wait(page, 500);
+  ok("ar: focus from the bar", (await nodeCount(page)) === 4 && (await page.locator(".tropa-focus.is-active").count()) === 1);
+  await page.screenshot({ path: SHOTS + "92-focus-ar.png" });
+  await page.click(".tropa-focus-exit"); await wait(page, 500);
+  ok("ar: exit button leaves focus", (await page.locator(".tropa-focus.is-active").count()) === 0);
+  ok("ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 // --- large graph performance
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });
@@ -621,6 +701,55 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   ok("large map draws without a long freeze", drawMs < 5000, `${drawMs} ms`);
   ok("switching back uses the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await page.locator(".tropa-node").count()) === 1700);
   ok("1000 concepts: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // Folding a branch of a big map: the fold itself is cheap, the worker lays out the rest without a freeze,
+  // unfolding comes back from the cache.
+  const { page, errors } = await open({ query: "?scenario=large&n=1000" });
+  await layoutDone(page);
+  await wait(page, 1500);
+  const timing = await page.evaluate(async () => {
+    const view = tropa.app.workspace.center.view;
+    let foldMs = 0;
+    const shown = view.shownConcepts.bind(view);
+    view.shownConcepts = (...args) => {
+      const t = performance.now();
+      const result = shown(...args);
+      foldMs += performance.now() - t;
+      return result;
+    };
+    // Longest gap between timer ticks while the worker lays out, as in the check above.
+    const watch = { longest: 0, last: performance.now(), was: false, on: true };
+    const tick = () => {
+      const now = performance.now();
+      const busy = Boolean(document.querySelector(".tropa-canvas.is-laying-out"));
+      if (busy && watch.was) watch.longest = Math.max(watch.longest, now - watch.last);
+      watch.was = busy;
+      watch.last = now;
+      if (watch.on) setTimeout(tick, 4);
+    };
+    tick();
+    const t = performance.now();
+    document.querySelector('.tropa-node[data-id="Node 100.md"] .tropa-fold').click();
+    const clickMs = performance.now() - t;
+    await new Promise((resolve) => {
+      const done = () => (document.querySelector(".tropa-canvas.is-laying-out") ? setTimeout(done, 5) : resolve());
+      done();
+    });
+    watch.on = false;
+    view.shownConcepts = shown;
+    return { foldMs, clickMs, longest: watch.longest, total: performance.now() - t };
+  });
+  await wait(page, 300);
+  const left = await nodeCount(page);
+  const hidden = await page.evaluate(() => Number(document.querySelector('.tropa-node[data-id="Node 100.md"] .tropa-fold').textContent.replace(/\D/g, "")));
+  console.log(`fold on 1000 concepts: ${hidden} hidden; fold ${Math.round(timing.foldMs)} ms, click handler ${Math.round(timing.clickMs)} ms, longest pause during layout ${Math.round(timing.longest)} ms, all ${Math.round(timing.total)} ms`);
+  ok("fold on a big map hides its branch", left < 1000 && left + hidden === 1000, `${left} + ${hidden}`);
+  ok("fold on a big map is cheap and the layout does not freeze", timing.foldMs < 50 && timing.longest < 150, JSON.stringify(timing));
+  await page.evaluate(() => document.querySelector('.tropa-node[data-id="Node 100.md"] .tropa-fold').click());
+  ok("unfold comes from the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await nodeCount(page)) === 1000);
+  ok("big fold: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 {

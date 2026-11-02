@@ -209,5 +209,35 @@
   "zoomOut": "Verkleinern",
   "fitAll": "Ganze Karte zeigen",
   "openNote": "Notiz öffnen",
-  "clearMastered": "Markierung „beherrscht“ entfernen"
+  "clearMastered": "Markierung „beherrscht“ entfernen",
+  "focus": "Fokus",
+  "focusTitle": "Nur zeigen, was in der Nähe dieses Konzepts liegt (F)",
+  "focusHint": "Wähle ein Konzept, um nur seine Umgebung zu sehen",
+  "focusHere": "Umgebung zeigen",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Schritte im Umkreis",
+  "focusSteps": {
+    "one": "{count} Schritt im Umkreis",
+    "other": "{count} Schritte im Umkreis"
+  },
+  "exitFocus": "Fokus beenden",
+  "fold": "Ausblenden, was es freischaltet",
+  "unfold": {
+    "one": "{count} ausgeblendetes Konzept zeigen",
+    "other": "{count} ausgeblendete Konzepte zeigen"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} Konzept ausgeblendet",
+    "other": "{count} Konzepte ausgeblendet"
+  },
+  "unfolded": {
+    "one": "{count} Konzept wieder sichtbar",
+    "other": "{count} Konzepte wieder sichtbar"
+  },
+  "foldedRoute": {
+    "one": "Hier ist {count} Schritt der Route ausgeblendet",
+    "other": "Hier sind {count} Schritte der Route ausgeblendet"
+  },
+  "hiddenOnMap": "Auf der Karte ausgeblendet"
 }

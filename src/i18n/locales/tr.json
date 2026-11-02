@@ -209,5 +209,35 @@
   "zoomOut": "Uzaklaştır",
   "fitAll": "Tüm haritayı göster",
   "openNote": "Notu aç",
-  "clearMastered": "Öğrenildi işaretini kaldır"
+  "clearMastered": "Öğrenildi işaretini kaldır",
+  "focus": "Odak",
+  "focusTitle": "Yalnızca bu kavramın yakınındakileri göster (F)",
+  "focusHint": "Yakınındakileri görmek için bir kavram seç",
+  "focusHere": "Yakınındakileri göster",
+  "focusOn": "Odak: {title}",
+  "focusDepth": "Çevredeki adım",
+  "focusSteps": {
+    "one": "Çevrede {count} adım",
+    "other": "Çevrede {count} adım"
+  },
+  "exitFocus": "Odaktan çık",
+  "fold": "Açtıklarını gizle",
+  "unfold": {
+    "one": "{count} gizli kavramı göster",
+    "other": "{count} gizli kavramı göster"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} kavram gizlendi",
+    "other": "{count} kavram gizlendi"
+  },
+  "unfolded": {
+    "one": "{count} kavram yeniden görünüyor",
+    "other": "{count} kavram yeniden görünüyor"
+  },
+  "foldedRoute": {
+    "one": "Burada rotanın {count} adımı gizli",
+    "other": "Burada rotanın {count} adımı gizli"
+  },
+  "hiddenOnMap": "Haritada gizli"
 }

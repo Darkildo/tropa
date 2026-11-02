@@ -259,6 +259,11 @@ class Workspace extends Events {
   getLeaf() { return this.note; }
   getRightLeaf() { return this.right; }
   async revealLeaf() {}
+  /** Counts saves, so checks can see that view state changes ask for one. */
+  layoutSaves = 0;
+  requestSaveLayout = () => {
+    this.layoutSaves++;
+  };
 }
 
 export class App {

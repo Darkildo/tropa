@@ -209,5 +209,35 @@
   "zoomOut": "Loitonna",
   "fitAll": "Näytä koko kartta",
   "openNote": "Avaa muistiinpano",
-  "clearMastered": "Poista hallittu-merkintä"
+  "clearMastered": "Poista hallittu-merkintä",
+  "focus": "Fokus",
+  "focusTitle": "Näytä vain se, mikä on lähellä tätä käsitettä (F)",
+  "focusHint": "Valitse käsite, niin näet vain sen lähiympäristön",
+  "focusHere": "Näytä lähiympäristö",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Vaiheita ympärillä",
+  "focusSteps": {
+    "one": "{count} vaihe ympärillä",
+    "other": "{count} vaihetta ympärillä"
+  },
+  "exitFocus": "Poistu fokuksesta",
+  "fold": "Piilota se, minkä tämä avaa",
+  "unfold": {
+    "one": "Näytä {count} piilotettu käsite",
+    "other": "Näytä {count} piilotettua käsitettä"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} käsite piilotettu",
+    "other": "{count} käsitettä piilotettu"
+  },
+  "unfolded": {
+    "one": "{count} käsite näkyy taas",
+    "other": "{count} käsitettä näkyy taas"
+  },
+  "foldedRoute": {
+    "one": "Tähän on piilotettu {count} reitin vaihe",
+    "other": "Tähän on piilotettu {count} reitin vaihetta"
+  },
+  "hiddenOnMap": "Piilotettu kartalta"
 }

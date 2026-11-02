@@ -225,5 +225,45 @@
   "zoomOut": "Oddálit",
   "fitAll": "Zobrazit celou mapu",
   "openNote": "Otevřít poznámku",
-  "clearMastered": "Zrušit označení zvládnuto"
+  "clearMastered": "Zrušit označení zvládnuto",
+  "focus": "Fokus",
+  "focusTitle": "Zobrazit jen to, co je blízko tohoto pojmu (F)",
+  "focusHint": "Vyberte pojem a uvidíte jen to, co je blízko něj",
+  "focusHere": "Zobrazit, co je blízko",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Kroky kolem",
+  "focusSteps": {
+    "few": "{count} kroky kolem",
+    "many": "{count} kroku kolem",
+    "one": "{count} krok kolem",
+    "other": "{count} kroků kolem"
+  },
+  "exitFocus": "Ukončit fokus",
+  "fold": "Skrýt, co otevírá",
+  "unfold": {
+    "few": "Zobrazit {count} skryté pojmy",
+    "many": "Zobrazit {count} skrytého pojmu",
+    "one": "Zobrazit {count} skrytý pojem",
+    "other": "Zobrazit {count} skrytých pojmů"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "few": "Skryté pojmy: {count}",
+    "many": "Skryté pojmy: {count}",
+    "one": "Skryté pojmy: {count}",
+    "other": "Skryté pojmy: {count}"
+  },
+  "unfolded": {
+    "few": "Znovu zobrazené pojmy: {count}",
+    "many": "Znovu zobrazené pojmy: {count}",
+    "one": "Znovu zobrazené pojmy: {count}",
+    "other": "Znovu zobrazené pojmy: {count}"
+  },
+  "foldedRoute": {
+    "few": "Skryté kroky trasy: {count}",
+    "many": "Skryté kroky trasy: {count}",
+    "one": "Skryté kroky trasy: {count}",
+    "other": "Skryté kroky trasy: {count}"
+  },
+  "hiddenOnMap": "Skryto na mapě"
 }

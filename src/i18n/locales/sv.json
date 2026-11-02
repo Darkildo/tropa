@@ -209,5 +209,35 @@
   "zoomOut": "Zooma ut",
   "fitAll": "Visa hela kartan",
   "openNote": "Öppna anteckningen",
-  "clearMastered": "Ta bort markeringen behärskat"
+  "clearMastered": "Ta bort markeringen behärskat",
+  "focus": "Fokus",
+  "focusTitle": "Visa bara det som ligger nära det här begreppet (F)",
+  "focusHint": "Välj ett begrepp för att bara se det som ligger nära",
+  "focusHere": "Visa det närmaste",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Steg runt",
+  "focusSteps": {
+    "one": "{count} steg runt",
+    "other": "{count} steg runt"
+  },
+  "exitFocus": "Avsluta fokus",
+  "fold": "Dölj det som det öppnar",
+  "unfold": {
+    "one": "Visa {count} dolt begrepp",
+    "other": "Visa {count} dolda begrepp"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} begrepp dolt",
+    "other": "{count} begrepp dolda"
+  },
+  "unfolded": {
+    "one": "{count} begrepp syns igen",
+    "other": "{count} begrepp syns igen"
+  },
+  "foldedRoute": {
+    "one": "Här är {count} steg på rutten dolt",
+    "other": "Här är {count} steg på rutten dolda"
+  },
+  "hiddenOnMap": "Dolt på kartan"
 }
