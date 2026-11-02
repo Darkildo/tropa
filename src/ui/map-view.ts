@@ -3,7 +3,8 @@ import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
 import layoutWorker from "tropa:layout-worker";
-import { isPassed, knownCandidates, sourceState } from "../core/graph";
+import { auditCount, auditGraph, type Audit } from "../core/audit";
+import { isPassed, knownCandidates, sourceState, type LearningGraph } from "../core/graph";
 import { MAX_FOCUS_DEPTH, fold, foldersOf, neighborhood } from "../core/neighborhood";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
@@ -69,6 +70,10 @@ export class MapView extends ItemView implements DetailHost {
   private readonly layouts = new LayoutRunner(layoutWorker);
   /** The worker is still laying out the graph for `layoutKey`; the map shows the previous layout. */
   private layoutPending = false;
+  /** The audit of the current graph, kept until the graph changes. */
+  private audited: { graph: LearningGraph; audit: Audit } | null = null;
+  /** Callers of `layoutReady` waiting for the layout in the worker. */
+  private readonly layoutWaiters: (() => void)[] = [];
   private selected: string | null = null;
   private x = 40;
   private y = 40;
@@ -201,37 +206,63 @@ export class MapView extends ItemView implements DetailHost {
     if (id) this.reveal(id);
   }
 
-  /** A concept picked from the route list or a command may sit in a folded branch or outside the focus. */
+  /**
+   * A note picked from the route list, the audit or a command may sit in a folded branch or outside
+   * the focus. A material stands with the concepts it teaches, so those decide for it.
+   */
   private bringIntoView(id: string) {
     const { graph } = this.store;
-    if (this.focus && graph.nodes.get(id)?.kind === "concept" && !this.inScope.has(id)) {
+    const node = graph.nodes.get(id);
+    const concepts = node?.kind === "source" ? node.teaches : [id];
+    if (!concepts.length) return;
+    if (this.focus && !concepts.some((concept) => this.inScope.has(concept))) {
       this.focus = null;
       this.beforeFocus = null;
       this.needsFit = false;
       this.saveViewState();
       this.render();
     }
-    if (this.hidden.has(id)) {
-      foldersOf(graph, this.folded, id).forEach((folder) => this.folded.delete(folder));
+    if (concepts.every((concept) => this.hidden.has(concept))) {
+      foldersOf(graph, this.folded, concepts[0]).forEach((folder) => this.folded.delete(folder));
       this.saveViewState();
       this.render();
     }
+  }
+
+  /** Resolves once the map shows the layout it asked for last; at once when none is on its way. */
+  layoutReady(): Promise<void> {
+    if (!this.layoutPending) return Promise.resolve();
+    return new Promise((resolve) => this.layoutWaiters.push(resolve));
   }
 
   openNote(id: string, newTab = false) {
     this.plugin.openNote(id, newTab);
   }
 
-  /** Centres a concept for commands such as "find on the map". */
-  focusNode(id: string) {
-    if (this.effectiveMode() === "route" && !this.store.route?.closure.has(id)) {
-      this.plugin.settings.mapMode = "all";
+  /**
+   * Centres a note for commands such as "find on the map" or the audit. Whatever hides it gives way
+   * first: the route, materials being off, a fold or the focus. A large map may then be laid out
+   * in the worker, so the note is centred once that layout is on screen.
+   */
+  async focusNode(id: string) {
+    const { settings } = this.plugin;
+    const { graph, route } = this.store;
+    const node = graph.nodes.get(id);
+    if (!node) return;
+    const onRoute = node.kind === "source" ? node.teaches.length === 0 || node.teaches.some((concept) => route?.closure.has(concept)) : route?.closure.has(id);
+    const mode = this.effectiveMode() === "route" && !onRoute;
+    const sources = node.kind === "source" && !settings.showSources;
+    if (mode) settings.mapMode = "all";
+    if (sources) settings.showSources = true;
+    if (mode || sources) {
       attempt(this.plugin.saveSettings(), "save settings");
       this.render();
     }
+    this.bringIntoView(id);
+    await this.layoutReady();
     this.select(id);
-    const node = this.layout?.nodes.get(id);
-    if (node) this.centerOn(node);
+    const placed = this.layout?.nodes.get(id);
+    if (placed) this.centerOn(placed);
     this.nodeEls.get(id)?.focus({ preventScroll: true });
   }
 
@@ -350,6 +381,7 @@ export class MapView extends ItemView implements DetailHost {
 
   private setPending(pending: boolean) {
     this.layoutPending = pending;
+    if (!pending) this.layoutWaiters.splice(0).forEach((resolve) => resolve());
     this.canvas.toggleClass("is-laying-out", pending);
     this.canvas.setAttribute("aria-busy", String(pending));
   }
@@ -577,7 +609,31 @@ export class MapView extends ItemView implements DetailHost {
     });
   }
 
+  /** The audit button: how many findings, in warning colours when there is a cycle. */
+  private renderAuditButton() {
+    const button = this.bar.querySelector<HTMLElement>(".tropa-audit-button")!;
+    const { graph } = this.store;
+    if (this.audited?.graph !== graph) this.audited = { graph, audit: auditGraph(graph) };
+    const { audit } = this.audited;
+    const count = auditCount(audit);
+    const cycles = audit.cycles.length > 0;
+    button.toggleClass("is-hidden", count === 0);
+    button.toggleClass("has-cycles", cycles);
+    if (!count) return;
+    const icon = button.querySelector<HTMLElement>(".tropa-audit-button-icon")!;
+    if (icon.dataset.icon !== String(cycles)) {
+      icon.empty();
+      setIcon(icon, cycles ? "alert-triangle" : "list-checks");
+      icon.dataset.icon = String(cycles);
+    }
+    button.querySelector<HTMLElement>(".tropa-audit-button-count")!.textContent = new Intl.NumberFormat(locale()).format(count);
+    const label = `${t.audit.title}: ${t.audit.summary({ count })}`;
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
+  }
+
   private renderBar() {
+    this.renderAuditButton();
     const goalButton = this.bar.querySelector<HTMLElement>(".tropa-goal")!;
     const label = goalButton.querySelector<HTMLElement>(".tropa-goal-label")!;
     const { route, graph } = this.store;
@@ -768,6 +824,12 @@ export class MapView extends ItemView implements DetailHost {
     const exit = focus.createEl("button", { cls: "tropa-focus-exit clickable-icon", attr: { "aria-label": t.exitFocus, title: t.exitFocus } });
     setIcon(exit, "x");
     exit.addEventListener("click", () => this.exitFocus());
+
+    // Shown only when the audit finds something; it reads the graph, not the layout.
+    const audit = this.bar.createEl("button", { cls: "tropa-audit-button is-hidden" });
+    audit.createSpan({ cls: "tropa-audit-button-icon" });
+    audit.createSpan({ cls: "tropa-audit-button-count" });
+    audit.addEventListener("click", () => attempt(this.plugin.showAudit(), "open the map audit"));
 
     const share = this.bar.createEl("button", { cls: "tropa-export clickable-icon", attr: { "aria-label": t.exportMap, title: t.exportMap } });
     setIcon(share, "download");

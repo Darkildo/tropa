@@ -42,7 +42,20 @@
     "teachesKey": "Vad ett material lär ut",
     "teachesKeyDesc": "Begrepp som materialet tar upp.",
     "materialsKey": "Material i begreppet",
-    "materialsKeyDesc": "Länkar och bilagor som står direkt i begreppet, utan en separat anteckning."
+    "materialsKeyDesc": "Länkar och bilagor som står direkt i begreppet, utan en separat anteckning.",
+    "scope": "Kartans omfång",
+    "excludeFolders": "Uteslutna mappar",
+    "excludeFoldersDesc": "En mapp per rad. Anteckningar i dessa mappar och undermappar hamnar inte på kartan, och länkar till dem ignoreras. Framstegsfilen läses alltid. Lägg inte till mapparna för begrepp och material: Det du skapar från kartan hamnar där.",
+    "excludeFoldersPlaceholder": "Arkiv\nMallar",
+    "excludeTags": "Uteslutna taggar",
+    "excludeTagsDesc": "En tagg per rad. Anteckningar med dessa taggar hamnar inte på kartan, nästlade taggar inräknade: #utkast gäller även #utkast/gammalt.",
+    "excludeTagsPlaceholder": "#utkast\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Anteckningen hålls utanför kartan av inställningarna för mappar eller taggar.",
+    "goalExcluded": "Målet {title} hålls utanför kartan av inställningarna för mappar eller taggar.",
+    "ownFolderExcluded": "{folder} är utesluten, men nya begrepp eller material skapas där: De syns inte på kartan.",
+    "goalExcludedHint": "Målet är uteslutet av inställningarna för mappar eller taggar, så det är okänt vad som behövs först. Välj ett annat mål eller ändra inställningarna."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} tim",
@@ -240,6 +253,30 @@
     "other": "Här är {count} steg på rutten dolda"
   },
   "hiddenOnMap": "Dolt på kartan",
+  "audit": {
+    "command": "Granska kartan",
+    "title": "Granskning av kartan",
+    "summary": {
+      "one": "{count} sak att titta på",
+      "other": "{count} saker att titta på"
+    },
+    "clean": "Inget att åtgärda: varje begrepp har material, varje länk har en anteckning och inget kräver sig självt.",
+    "noMaterials": "Begrepp utan material",
+    "noMaterialsHint": "Inget lär ut dem ännu. Lägg till ett material för varje, eller länka ett du redan har.",
+    "orphans": "Inte kopplade",
+    "orphansHint": "Inga länkar till eller från andra anteckningar på kartan.",
+    "ghosts": "Länkar till saknade anteckningar",
+    "ghostsHint": "Andra anteckningar länkar till de här begreppen, men anteckningarna finns inte än.",
+    "linkedFrom": {
+      "one": "Länkad från {count} anteckning",
+      "other": "Länkad från {count} anteckningar"
+    },
+    "duplicates": "Möjliga dubbletter",
+    "duplicatesHint": "Namn som bara skiljer sig i versaler eller accenter. Slå ihop dem eller byt namn på ett.",
+    "cycles": "Cirkulära beroenden",
+    "cyclesHint": "Varje begrepp kräver nästa och det sista kräver det första, så inget kan läras först.",
+    "showOnMap": "Visa på kartan"
+  },
   "exportMap": "Exportera karta",
   "exportCanvas": "Exportera kartan till Canvas",
   "exportSvg": "Exportera kartan som SVG",

@@ -42,7 +42,20 @@
     "teachesKey": "Was ein Material vermittelt",
     "teachesKeyDesc": "Konzepte, die das Material behandelt.",
     "materialsKey": "Materialien im Konzept",
-    "materialsKeyDesc": "Links und Anhänge, die direkt im Konzept stehen, ohne eigene Notiz."
+    "materialsKeyDesc": "Links und Anhänge, die direkt im Konzept stehen, ohne eigene Notiz.",
+    "scope": "Umfang der Karte",
+    "excludeFolders": "Ausgeschlossene Ordner",
+    "excludeFoldersDesc": "Ein Ordner pro Zeile. Notizen in diesen Ordnern und darunter erscheinen nicht auf der Karte, Links darauf werden ignoriert. Die Fortschrittsdatei wird immer gelesen. Lass die Ordner für Konzepte und Materialien weg: Was du auf der Karte anlegst, landet dort.",
+    "excludeFoldersPlaceholder": "Archiv\nVorlagen",
+    "excludeTags": "Ausgeschlossene Tags",
+    "excludeTagsDesc": "Ein Tag pro Zeile. Notizen mit diesen Tags erscheinen nicht auf der Karte, verschachtelte Tags eingeschlossen: #entwurf gilt auch für #entwurf/alt.",
+    "excludeTagsPlaceholder": "#entwurf\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Diese Notiz bleibt wegen der Ordner- oder Tag-Einstellungen außerhalb der Karte.",
+    "goalExcluded": "Das Ziel {title} bleibt wegen der Ordner- oder Tag-Einstellungen außerhalb der Karte.",
+    "ownFolderExcluded": "{folder} ist ausgeschlossen, aber neue Konzepte oder Materialien werden dort angelegt: Sie erscheinen nicht auf der Karte.",
+    "goalExcludedHint": "Das Ziel ist durch die Ordner- oder Tag-Einstellungen ausgeschlossen, daher sind seine Voraussetzungen unbekannt. Wähle ein anderes Ziel oder ändere die Einstellungen."
   },
   "minutes": "{minutes} Min.",
   "hours": "{hours} Std.",
@@ -240,6 +253,30 @@
     "other": "Hier sind {count} Schritte der Route ausgeblendet"
   },
   "hiddenOnMap": "Auf der Karte ausgeblendet",
+  "audit": {
+    "command": "Karte prüfen",
+    "title": "Kartenprüfung",
+    "summary": {
+      "one": "{count} Stelle zum Ansehen",
+      "other": "{count} Stellen zum Ansehen"
+    },
+    "clean": "Nichts zu tun: Jedes Konzept hat Materialien, jeder Link hat eine Notiz, und nichts setzt sich selbst voraus.",
+    "noMaterials": "Konzepte ohne Materialien",
+    "noMaterialsHint": "Noch lehrt sie nichts. Füge jedem ein Material hinzu oder verknüpfe ein vorhandenes.",
+    "orphans": "Nicht verbunden",
+    "orphansHint": "Keine Links zu oder von anderen Notizen auf der Karte.",
+    "ghosts": "Links zu fehlenden Notizen",
+    "ghostsHint": "Andere Notizen verlinken diese Konzepte, aber die Notizen gibt es noch nicht.",
+    "linkedFrom": {
+      "one": "Von {count} Notiz verlinkt",
+      "other": "Von {count} Notizen verlinkt"
+    },
+    "duplicates": "Mögliche Duplikate",
+    "duplicatesHint": "Namen, die sich nur in Groß-/Kleinschreibung oder Akzenten unterscheiden. Führe sie zusammen oder benenne eine um.",
+    "cycles": "Zirkuläre Abhängigkeiten",
+    "cyclesHint": "Jedes Konzept setzt das nächste voraus und das letzte das erste, daher kann keines zuerst gelernt werden.",
+    "showOnMap": "Auf der Karte zeigen"
+  },
   "exportMap": "Karte exportieren",
   "exportCanvas": "Karte als Canvas exportieren",
   "exportSvg": "Karte als SVG exportieren",

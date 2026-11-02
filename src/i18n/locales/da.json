@@ -42,7 +42,20 @@
     "teachesKey": "Hvad et materiale lærer",
     "teachesKeyDesc": "Begreber, som materialet dækker.",
     "materialsKey": "Materialer i begrebet",
-    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note."
+    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note.",
+    "scope": "Kortets omfang",
+    "excludeFolders": "Udelukkede mapper",
+    "excludeFoldersDesc": "Én mappe pr. linje. Noter i disse mapper og undermapper kommer ikke på kortet, og links til dem ignoreres. Fremskridtsfilen læses altid. Lad mapperne til begreber og materialer være ude af listen: Det, du opretter fra kortet, havner der.",
+    "excludeFoldersPlaceholder": "Arkiv\nSkabeloner",
+    "excludeTags": "Udelukkede tags",
+    "excludeTagsDesc": "Ét tag pr. linje. Noter med disse tags kommer ikke på kortet, indlejrede tags medregnet: #kladde dækker også #kladde/gammel.",
+    "excludeTagsPlaceholder": "#kladde\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Noten holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "goalExcluded": "Målet {title} holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "ownFolderExcluded": "{folder} er udelukket, men nye begreber eller materialer oprettes der: De vises ikke på kortet.",
+    "goalExcludedHint": "Målet er udelukket af indstillingerne for mapper eller tags, så det er ukendt, hvad der skal læres først. Vælg et andet mål, eller ret indstillingerne."
   },
   "minutes": "{minutes} min.",
   "hours": "{hours} t.",
@@ -240,6 +253,30 @@
     "other": "Her er {count} trin på ruten skjult"
   },
   "hiddenOnMap": "Skjult på kortet",
+  "audit": {
+    "command": "Gennemgå kortet",
+    "title": "Gennemgang af kortet",
+    "summary": {
+      "one": "{count} ting at se på",
+      "other": "{count} ting at se på"
+    },
+    "clean": "Intet at rette: hvert begreb har materialer, hvert link har en note, og intet kræver sig selv.",
+    "noMaterials": "Begreber uden materialer",
+    "noMaterialsHint": "Intet underviser i dem endnu. Tilføj et materiale til hvert, eller knyt et, du allerede har.",
+    "orphans": "Ikke forbundet",
+    "orphansHint": "Ingen links til eller fra andre noter på kortet.",
+    "ghosts": "Links til manglende noter",
+    "ghostsHint": "Andre noter linker til disse begreber, men noterne findes ikke endnu.",
+    "linkedFrom": {
+      "one": "Linket fra {count} note",
+      "other": "Linket fra {count} noter"
+    },
+    "duplicates": "Mulige dubletter",
+    "duplicatesHint": "Navne, der kun adskiller sig ved store/små bogstaver eller accenter. Flet dem, eller omdøb et.",
+    "cycles": "Cirkulære afhængigheder",
+    "cyclesHint": "Hvert begreb kræver det næste, og det sidste kræver det første, så intet kan læres først.",
+    "showOnMap": "Vis på kortet"
+  },
   "exportMap": "Eksportér kort",
   "exportCanvas": "Eksportér kortet til Canvas",
   "exportSvg": "Eksportér kortet som SVG",

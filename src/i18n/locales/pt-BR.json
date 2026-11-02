@@ -42,7 +42,20 @@
     "teachesKey": "O que um material ensina",
     "teachesKeyDesc": "Conceitos que o material aborda.",
     "materialsKey": "Materiais no conceito",
-    "materialsKeyDesc": "Links e anexos listados no próprio conceito, sem uma nota separada."
+    "materialsKeyDesc": "Links e anexos listados no próprio conceito, sem uma nota separada.",
+    "scope": "Escopo do mapa",
+    "excludeFolders": "Pastas excluídas",
+    "excludeFoldersDesc": "Uma pasta por linha. As notas nessas pastas e nas subpastas ficam fora do mapa, e os links para elas são ignorados. O arquivo de progresso é sempre lido. Não inclua as pastas de conceitos e materiais: o que você cria pelo mapa vai para lá.",
+    "excludeFoldersPlaceholder": "Arquivo\nModelos",
+    "excludeTags": "Tags excluídas",
+    "excludeTagsDesc": "Uma tag por linha. As notas com essas tags ficam fora do mapa, incluindo as aninhadas: #rascunho também cobre #rascunho/antigo.",
+    "excludeTagsPlaceholder": "#rascunho\n#privado"
+  },
+  "scope": {
+    "excludedNote": "Esta nota fica fora do mapa pelas configurações de pastas ou tags.",
+    "goalExcluded": "O objetivo {title} fica fora do mapa pelas configurações de pastas ou tags.",
+    "ownFolderExcluded": "{folder} está excluída, mas é lá que os novos conceitos ou materiais são criados: eles não vão aparecer no mapa.",
+    "goalExcludedHint": "O objetivo foi excluído pelas configurações de pastas ou tags, então os pré-requisitos dele são desconhecidos. Escolha outro objetivo ou mude as configurações."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -253,6 +266,32 @@
     "other": "Aqui estão ocultos {count} passos da rota"
   },
   "hiddenOnMap": "Oculto no mapa",
+  "audit": {
+    "command": "Verificar o mapa",
+    "title": "Verificação do mapa",
+    "summary": {
+      "one": "{count} ponto para revisar",
+      "many": "{count} pontos para revisar",
+      "other": "{count} pontos para revisar"
+    },
+    "clean": "Nada para corrigir: todo conceito tem materiais, todo link tem sua nota e nada depende de si mesmo.",
+    "noMaterials": "Conceitos sem materiais",
+    "noMaterialsHint": "Ainda nada os ensina. Adicione um material a cada um ou vincule um que você já tem.",
+    "orphans": "Sem conexões",
+    "orphansHint": "Nenhum link de ou para outras notas do mapa.",
+    "ghosts": "Links para notas que não existem",
+    "ghostsHint": "Outras notas apontam para esses conceitos, mas as notas ainda não existem.",
+    "linkedFrom": {
+      "one": "Vinculado por {count} nota",
+      "many": "Vinculado por {count} notas",
+      "other": "Vinculado por {count} notas"
+    },
+    "duplicates": "Possíveis duplicatas",
+    "duplicatesHint": "Nomes que só mudam em maiúsculas ou acentos. Junte-os ou renomeie um.",
+    "cycles": "Dependências circulares",
+    "cyclesHint": "Cada conceito exige o próximo e o último exige o primeiro, então nenhum pode ser aprendido primeiro.",
+    "showOnMap": "Mostrar no mapa"
+  },
   "exportMap": "Exportar mapa",
   "exportCanvas": "Exportar o mapa para Canvas",
   "exportSvg": "Exportar o mapa como SVG",

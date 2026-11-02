@@ -42,7 +42,20 @@
     "teachesKey": "教材教的內容",
     "teachesKeyDesc": "教材涵蓋的概念。",
     "materialsKey": "概念中的教材",
-    "materialsKeyDesc": "直接列在概念中的連結和附件，不另外建立筆記。"
+    "materialsKeyDesc": "直接列在概念中的連結和附件，不另外建立筆記。",
+    "scope": "地圖範圍",
+    "excludeFolders": "排除的資料夾",
+    "excludeFoldersDesc": "每行一個資料夾。這些資料夾及其子資料夾中的筆記不會出現在地圖上，指向它們的連結會被忽略。進度檔案一律會讀取。不要把概念和資料的資料夾放進來：從地圖建立的內容會存到那裡。",
+    "excludeFoldersPlaceholder": "封存\n範本",
+    "excludeTags": "排除的標籤",
+    "excludeTagsDesc": "每行一個標籤。帶有這些標籤的筆記不會出現在地圖上，巢狀標籤也一樣：#草稿 也會排除 #草稿/舊。",
+    "excludeTagsPlaceholder": "#草稿\n#私人"
+  },
+  "scope": {
+    "excludedNote": "這則筆記因資料夾或標籤設定被排除在地圖之外。",
+    "goalExcluded": "目標 {title} 因資料夾或標籤設定被排除在地圖之外。",
+    "ownFolderExcluded": "{folder} 已被排除，但新的概念或資料會建立在那裡：它們不會出現在地圖上。",
+    "goalExcludedHint": "目標被資料夾或標籤設定排除，因此無法得知需要先學什麼。請選擇其他目標或變更設定。"
   },
   "minutes": "{minutes} 分鐘",
   "hours": "{hours} 小時",
@@ -227,6 +240,28 @@
     "other": "這裡隱藏了路線中的 {count} 步"
   },
   "hiddenOnMap": "在地圖上已隱藏",
+  "audit": {
+    "command": "檢查導圖",
+    "title": "導圖檢查",
+    "summary": {
+      "other": "有 {count} 處需要查看"
+    },
+    "clean": "沒有需要修正的問題：每個概念都有資料，每個連結都有筆記，也沒有自己依賴自己的情況。",
+    "noMaterials": "沒有資料的概念",
+    "noMaterialsHint": "目前還沒有資料講授它們。為每個概念新增資料，或連結已有的資料。",
+    "orphans": "未連接",
+    "orphansHint": "與導圖上的其他筆記之間沒有任何連結。",
+    "ghosts": "指向不存在筆記的連結",
+    "ghostsHint": "其他筆記連結到這些概念，但這些筆記還不存在。",
+    "linkedFrom": {
+      "other": "被 {count} 則筆記連結"
+    },
+    "duplicates": "可能重複",
+    "duplicatesHint": "名稱只在大小寫或重音符號上不同。合併它們，或重新命名其中一個。",
+    "cycles": "循環依賴",
+    "cyclesHint": "每個概念依賴下一個，最後一個又依賴第一個，所以哪個都無法先學。",
+    "showOnMap": "在導圖上顯示"
+  },
   "exportMap": "匯出地圖",
   "exportCanvas": "將地圖匯出為 Canvas",
   "exportSvg": "將地圖匯出為 SVG",

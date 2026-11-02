@@ -42,7 +42,20 @@
     "teachesKey": "Ce predă un material",
     "teachesKeyDesc": "Conceptele pe care le acoperă materialul.",
     "materialsKey": "Materiale în concept",
-    "materialsKeyDesc": "Linkuri și atașamente enumerate direct în concept, fără o notă separată."
+    "materialsKeyDesc": "Linkuri și atașamente enumerate direct în concept, fără o notă separată.",
+    "scope": "Domeniul hărții",
+    "excludeFolders": "Dosare excluse",
+    "excludeFoldersDesc": "Câte un dosar pe rând. Notele din aceste dosare și din subdosarele lor rămân în afara hărții, iar legăturile către ele sunt ignorate. Fișierul de progres este citit întotdeauna. Nu adăuga aici dosarele de concepte și materiale: acolo ajunge ce creezi din hartă.",
+    "excludeFoldersPlaceholder": "Arhivă\nȘabloane",
+    "excludeTags": "Etichete excluse",
+    "excludeTagsDesc": "Câte o etichetă pe rând. Notele cu aceste etichete rămân în afara hărții, inclusiv cele imbricate: #ciornă acoperă și #ciornă/veche.",
+    "excludeTagsPlaceholder": "#ciornă\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Această notă rămâne în afara hărții din cauza setărilor de dosare sau etichete.",
+    "goalExcluded": "Obiectivul {title} rămâne în afara hărții din cauza setărilor de dosare sau etichete.",
+    "ownFolderExcluded": "{folder} este exclus, dar acolo se creează conceptele sau materialele noi: nu vor apărea pe hartă.",
+    "goalExcludedHint": "Obiectivul este exclus de setările de dosare sau etichete, deci nu i se cunosc cerințele. Alege alt obiectiv sau schimbă setările."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -253,6 +266,32 @@
     "other": "Aici sunt ascunși {count} de pași din traseu"
   },
   "hiddenOnMap": "Ascuns pe hartă",
+  "audit": {
+    "command": "Verifică harta",
+    "title": "Verificarea hărții",
+    "summary": {
+      "one": "{count} lucru de verificat",
+      "few": "{count} lucruri de verificat",
+      "other": "{count} de lucruri de verificat"
+    },
+    "clean": "Nimic de corectat: fiecare concept are materiale, fiecare link are o notă și nimic nu depinde de el însuși.",
+    "noMaterials": "Concepte fără materiale",
+    "noMaterialsHint": "Încă nimic nu le predă. Adaugă câte un material sau leagă unul pe care îl ai.",
+    "orphans": "Neconectate",
+    "orphansHint": "Niciun link către sau dinspre alte note de pe hartă.",
+    "ghosts": "Linkuri către note care lipsesc",
+    "ghostsHint": "Alte note trimit la aceste concepte, dar notele nu există încă.",
+    "linkedFrom": {
+      "one": "Legat din {count} notă",
+      "few": "Legat din {count} note",
+      "other": "Legat din {count} de note"
+    },
+    "duplicates": "Posibile duplicate",
+    "duplicatesHint": "Nume care diferă doar prin majuscule sau diacritice. Unește-le sau redenumește unul.",
+    "cycles": "Dependențe circulare",
+    "cyclesHint": "Fiecare concept îl cere pe următorul, iar ultimul pe primul, așa că niciunul nu poate fi învățat primul.",
+    "showOnMap": "Arată pe hartă"
+  },
   "exportMap": "Exportă harta",
   "exportCanvas": "Exportă harta în Canvas",
   "exportSvg": "Exportă harta ca SVG",

@@ -42,7 +42,20 @@
     "teachesKey": "Ce qu’enseigne une ressource",
     "teachesKeyDesc": "Les concepts que couvre la ressource.",
     "materialsKey": "Ressources dans le concept",
-    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée."
+    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée.",
+    "scope": "Portée de la carte",
+    "excludeFolders": "Dossiers exclus",
+    "excludeFoldersDesc": "Un dossier par ligne. Les notes de ces dossiers et de leurs sous-dossiers restent hors de la carte, et les liens vers elles sont ignorés. Le fichier de progression est toujours lu. N’y mettez pas les dossiers des concepts et des ressources : ce que vous créez depuis la carte y est rangé.",
+    "excludeFoldersPlaceholder": "Archives\nModèles",
+    "excludeTags": "Tags exclus",
+    "excludeTagsDesc": "Un tag par ligne. Les notes portant ces tags restent hors de la carte, tags imbriqués compris : #brouillon couvre aussi #brouillon/ancien.",
+    "excludeTagsPlaceholder": "#brouillon\n#privé"
+  },
+  "scope": {
+    "excludedNote": "Cette note est exclue de la carte par les réglages de dossiers ou de tags.",
+    "goalExcluded": "L’objectif {title} est exclu de la carte par les réglages de dossiers ou de tags.",
+    "ownFolderExcluded": "{folder} est exclu, mais les nouveaux concepts ou ressources y sont créés : ils n’apparaîtront pas sur la carte.",
+    "goalExcludedHint": "L’objectif est exclu par les réglages de dossiers ou de tags, ses prérequis sont donc inconnus. Choisissez un autre objectif ou modifiez les réglages."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -253,6 +266,32 @@
     "other": "{count} étapes de la route sont masquées ici"
   },
   "hiddenOnMap": "Masqué sur la carte",
+  "audit": {
+    "command": "Vérifier la carte",
+    "title": "Vérification de la carte",
+    "summary": {
+      "one": "{count} point à examiner",
+      "many": "{count} points à examiner",
+      "other": "{count} points à examiner"
+    },
+    "clean": "Rien à corriger : chaque concept a des ressources, chaque lien a sa note, et rien ne dépend de lui-même.",
+    "noMaterials": "Concepts sans ressources",
+    "noMaterialsHint": "Rien ne les enseigne encore. Ajoutez une ressource à chacun, ou liez-en une existante.",
+    "orphans": "Non reliés",
+    "orphansHint": "Aucun lien vers ou depuis d’autres notes de la carte.",
+    "ghosts": "Liens vers des notes manquantes",
+    "ghostsHint": "D’autres notes renvoient vers ces concepts, mais les notes n’existent pas encore.",
+    "linkedFrom": {
+      "one": "Lié depuis {count} note",
+      "many": "Lié depuis {count} notes",
+      "other": "Lié depuis {count} notes"
+    },
+    "duplicates": "Doublons possibles",
+    "duplicatesHint": "Des noms qui ne diffèrent que par la casse ou les accents. Fusionnez-les ou renommez-en un.",
+    "cycles": "Dépendances circulaires",
+    "cyclesHint": "Chaque concept exige le suivant et le dernier exige le premier : aucun ne peut être appris en premier.",
+    "showOnMap": "Afficher sur la carte"
+  },
   "exportMap": "Exporter la carte",
   "exportCanvas": "Exporter la carte vers Canvas",
   "exportSvg": "Exporter la carte en SVG",

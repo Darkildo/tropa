@@ -42,7 +42,20 @@
     "teachesKey": "Tài liệu dạy gì",
     "teachesKeyDesc": "Các khái niệm mà tài liệu đề cập.",
     "materialsKey": "Tài liệu trong khái niệm",
-    "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng."
+    "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng.",
+    "scope": "Phạm vi bản đồ",
+    "excludeFolders": "Thư mục bị loại trừ",
+    "excludeFoldersDesc": "Mỗi dòng một thư mục. Ghi chú trong các thư mục này và thư mục con không lên bản đồ, liên kết tới chúng bị bỏ qua. Tệp tiến độ luôn được đọc. Đừng thêm thư mục khái niệm và tài liệu vào đây: những gì bạn tạo từ bản đồ được lưu ở đó.",
+    "excludeFoldersPlaceholder": "Lưu trữ\nMẫu",
+    "excludeTags": "Thẻ bị loại trừ",
+    "excludeTagsDesc": "Mỗi dòng một thẻ. Ghi chú có các thẻ này không lên bản đồ, kể cả thẻ lồng nhau: #nháp cũng áp dụng cho #nháp/cũ.",
+    "excludeTagsPlaceholder": "#nháp\n#riêng"
+  },
+  "scope": {
+    "excludedNote": "Ghi chú này nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
+    "goalExcluded": "Mục tiêu {title} nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
+    "ownFolderExcluded": "{folder} đang bị loại trừ, nhưng khái niệm hoặc tài liệu mới được tạo ở đó: chúng sẽ không hiện trên bản đồ.",
+    "goalExcludedHint": "Mục tiêu bị loại trừ bởi cài đặt thư mục hoặc thẻ nên chưa biết cần học gì trước. Hãy chọn mục tiêu khác hoặc đổi cài đặt."
   },
   "minutes": "{minutes} phút",
   "hours": "{hours} giờ",
@@ -227,6 +240,28 @@
     "other": "Có {count} bước của lộ trình bị ẩn ở đây"
   },
   "hiddenOnMap": "Bị ẩn trên bản đồ",
+  "audit": {
+    "command": "Kiểm tra bản đồ",
+    "title": "Kiểm tra bản đồ",
+    "summary": {
+      "other": "{count} điểm cần xem"
+    },
+    "clean": "Không có gì cần sửa: khái niệm nào cũng có tài liệu, liên kết nào cũng có ghi chú, và không có gì tự yêu cầu chính nó.",
+    "noMaterials": "Khái niệm chưa có tài liệu",
+    "noMaterialsHint": "Chưa có gì dạy các khái niệm này. Thêm tài liệu cho từng cái hoặc liên kết tài liệu bạn đã có.",
+    "orphans": "Không có liên kết",
+    "orphansHint": "Không có liên kết nào tới hoặc từ ghi chú khác trên bản đồ.",
+    "ghosts": "Liên kết tới ghi chú chưa có",
+    "ghostsHint": "Các ghi chú khác liên kết tới những khái niệm này, nhưng ghi chú của chúng chưa tồn tại.",
+    "linkedFrom": {
+      "other": "Được liên kết từ {count} ghi chú"
+    },
+    "duplicates": "Có thể trùng lặp",
+    "duplicatesHint": "Tên chỉ khác nhau ở chữ hoa, chữ thường hoặc dấu. Gộp chúng lại hoặc đổi tên một cái.",
+    "cycles": "Phụ thuộc vòng tròn",
+    "cyclesHint": "Mỗi khái niệm yêu cầu khái niệm tiếp theo và khái niệm cuối yêu cầu khái niệm đầu, nên không cái nào học trước được.",
+    "showOnMap": "Hiện trên bản đồ"
+  },
   "exportMap": "Xuất bản đồ",
   "exportCanvas": "Xuất bản đồ sang Canvas",
   "exportSvg": "Xuất bản đồ dạng SVG",

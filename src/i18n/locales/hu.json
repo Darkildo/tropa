@@ -42,7 +42,20 @@
     "teachesKey": "Mit tanít a tananyag",
     "teachesKeyDesc": "A fogalmak, amelyeket a tananyag feldolgoz.",
     "materialsKey": "Tananyagok a fogalomban",
-    "materialsKeyDesc": "Közvetlenül a fogalomban felsorolt hivatkozások és mellékletek, külön jegyzet nélkül."
+    "materialsKeyDesc": "Közvetlenül a fogalomban felsorolt hivatkozások és mellékletek, külön jegyzet nélkül.",
+    "scope": "A térkép hatóköre",
+    "excludeFolders": "Kizárt mappák",
+    "excludeFoldersDesc": "Soronként egy mappa. Az ezekben és az alattuk lévő mappákban levő jegyzetek nem kerülnek a térképre, a rájuk mutató hivatkozásokat figyelmen kívül hagyja. A haladási fájlt mindig beolvassa. A fogalmak és anyagok mappáját ne vedd fel ide: a térképről létrehozott elemek oda kerülnek.",
+    "excludeFoldersPlaceholder": "Archívum\nSablonok",
+    "excludeTags": "Kizárt címkék",
+    "excludeTagsDesc": "Soronként egy címke. Az ilyen címkéjű jegyzetek nem kerülnek a térképre, a beágyazott címkékkel együtt: a #vázlat a #vázlat/régi címkét is lefedi.",
+    "excludeTagsPlaceholder": "#vázlat\n#privát"
+  },
+  "scope": {
+    "excludedNote": "Ez a jegyzet a mappa- vagy címkebeállítások miatt kimarad a térképről.",
+    "goalExcluded": "A(z) {title} cél a mappa- vagy címkebeállítások miatt kimarad a térképről.",
+    "ownFolderExcluded": "A(z) {folder} ki van zárva, de ott jönnek létre az új fogalmak vagy anyagok: nem jelennek meg a térképen.",
+    "goalExcludedHint": "A célt a mappa- vagy címkebeállítások kizárják, ezért nem tudni, mi kell hozzá előbb. Válassz másik célt, vagy módosítsd a beállításokat."
   },
   "minutes": "{minutes} perc",
   "hours": "{hours} óra",
@@ -240,6 +253,30 @@
     "other": "Itt {count} útvonallépés rejtve van"
   },
   "hiddenOnMap": "Rejtve a térképen",
+  "audit": {
+    "command": "Térkép ellenőrzése",
+    "title": "Térkép ellenőrzése",
+    "summary": {
+      "one": "{count} dolog, amit érdemes megnézni",
+      "other": "{count} dolog, amit érdemes megnézni"
+    },
+    "clean": "Nincs mit javítani: minden fogalomnak van anyaga, minden hivatkozásnak van jegyzete, és semmi sem igényli önmagát.",
+    "noMaterials": "Anyag nélküli fogalmak",
+    "noMaterialsHint": "Még semmi sem tanítja őket. Adj mindegyikhez anyagot, vagy kapcsolj hozzá egy meglévőt.",
+    "orphans": "Kapcsolat nélkül",
+    "orphansHint": "Nincs hivatkozás a térkép más jegyzeteire vagy azokból.",
+    "ghosts": "Hiányzó jegyzetekre mutató hivatkozások",
+    "ghostsHint": "Más jegyzetek hivatkoznak ezekre a fogalmakra, de a jegyzetek még nem léteznek.",
+    "linkedFrom": {
+      "one": "{count} jegyzet hivatkozik rá",
+      "other": "{count} jegyzet hivatkozik rá"
+    },
+    "duplicates": "Lehetséges ismétlődések",
+    "duplicatesHint": "Csak kis- és nagybetűben vagy ékezetben eltérő nevek. Vond össze őket, vagy nevezz át egyet.",
+    "cycles": "Körkörös függőségek",
+    "cyclesHint": "Minden fogalom a következőt igényli, az utolsó pedig az elsőt, így egyiket sem lehet elsőként megtanulni.",
+    "showOnMap": "Megjelenítés a térképen"
+  },
   "exportMap": "Térkép exportálása",
   "exportCanvas": "Térkép exportálása Canvasba",
   "exportSvg": "Térkép exportálása SVG-ként",

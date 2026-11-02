@@ -42,7 +42,20 @@
     "teachesKey": "Hva et læremiddel lærer bort",
     "teachesKeyDesc": "Begreper som læremiddelet dekker.",
     "materialsKey": "Læremidler i begrepet",
-    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat."
+    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat.",
+    "scope": "Kartets omfang",
+    "excludeFolders": "Utelatte mapper",
+    "excludeFoldersDesc": "Én mappe per linje. Notater i disse mappene og undermappene kommer ikke på kartet, og lenker til dem ignoreres. Fremdriftsfilen leses alltid. Ikke ta med mappene for begreper og materialer: Det du lager fra kartet, havner der.",
+    "excludeFoldersPlaceholder": "Arkiv\nMaler",
+    "excludeTags": "Utelatte tagger",
+    "excludeTagsDesc": "Én tagg per linje. Notater med disse taggene kommer ikke på kartet, nestede tagger inkludert: #utkast dekker også #utkast/gammelt.",
+    "excludeTagsPlaceholder": "#utkast\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Notatet holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "goalExcluded": "Målet {title} holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "ownFolderExcluded": "{folder} er utelatt, men nye begreper eller materialer opprettes der: De vises ikke på kartet.",
+    "goalExcludedHint": "Målet er utelatt av innstillingene for mapper eller tagger, så det er ukjent hva som må læres først. Velg et annet mål eller endre innstillingene."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
@@ -240,6 +253,30 @@
     "other": "Her er {count} steg på ruten skjult"
   },
   "hiddenOnMap": "Skjult på kartet",
+  "audit": {
+    "command": "Gå gjennom kartet",
+    "title": "Gjennomgang av kartet",
+    "summary": {
+      "one": "{count} ting å se på",
+      "other": "{count} ting å se på"
+    },
+    "clean": "Ingenting å rette: hvert begrep har materialer, hver lenke har et notat, og ingenting krever seg selv.",
+    "noMaterials": "Begreper uten materialer",
+    "noMaterialsHint": "Ingenting lærer dem bort ennå. Legg til et materiale for hvert, eller koble til et du har.",
+    "orphans": "Ikke koblet",
+    "orphansHint": "Ingen lenker til eller fra andre notater på kartet.",
+    "ghosts": "Lenker til manglende notater",
+    "ghostsHint": "Andre notater lenker til disse begrepene, men notatene finnes ikke ennå.",
+    "linkedFrom": {
+      "one": "Lenket fra {count} notat",
+      "other": "Lenket fra {count} notater"
+    },
+    "duplicates": "Mulige duplikater",
+    "duplicatesHint": "Navn som bare skiller seg i store/små bokstaver eller aksenter. Slå dem sammen, eller gi ett nytt navn.",
+    "cycles": "Sirkulære avhengigheter",
+    "cyclesHint": "Hvert begrep krever det neste, og det siste krever det første, så ingen kan læres først.",
+    "showOnMap": "Vis på kartet"
+  },
   "exportMap": "Eksporter kart",
   "exportCanvas": "Eksporter kartet til Canvas",
   "exportSvg": "Eksporter kartet som SVG",

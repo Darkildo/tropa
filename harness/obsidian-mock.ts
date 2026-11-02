@@ -174,11 +174,27 @@ class Vault extends Events {
   }
 }
 
+type Cache = { frontmatter?: any; tags?: { tag: string }[] };
+
+// Inline tags of the body, as Obsidian lists them in the cache: `#` included, nested parts kept.
+const INLINE_TAG = /(?:^|\s)(#[\p{L}\p{N}_/-]+)/gu;
+
+/** Frontmatter `tags` (list or string, `#` optional) and inline tags, each with `#`, as in Obsidian. */
+export function getAllTags(cache: Cache): string[] | null {
+  const raw = cache.frontmatter?.tags ?? cache.frontmatter?.tag;
+  const own = (Array.isArray(raw) ? raw : typeof raw === "string" ? raw.split(/[\s,]+/) : []).map(String).filter(Boolean);
+  const tags = [...own.map((tag) => (tag.startsWith("#") ? tag : `#${tag}`)), ...(cache.tags ?? []).map((entry) => entry.tag)];
+  return tags.length ? tags : null;
+}
+
 class MetadataCache extends Events {
-  private cache = new Map<string, { frontmatter?: any }>();
+  private cache = new Map<string, Cache>();
   index(file: TFile) {
-    const match = FRONTMATTER.exec(app.vault.contents.get(file.path) ?? "");
-    this.cache.set(file.path, match ? { frontmatter: parse(match[1]) ?? {} } : {});
+    const content = app.vault.contents.get(file.path) ?? "";
+    const match = FRONTMATTER.exec(content);
+    const body = match ? content.slice(match[0].length) : content;
+    const tags = [...body.matchAll(INLINE_TAG)].map((found) => ({ tag: found[1] }));
+    this.cache.set(file.path, { ...(match ? { frontmatter: parse(match[1]) ?? {} } : {}), ...(tags.length ? { tags } : {}) });
   }
   reindex(file: TFile) {
     // Real indexing is asynchronous, so this is too.
@@ -227,6 +243,7 @@ export class WorkspaceLeaf {
     const factory = app.workspace.factories.get(state.type)!;
     this.view = factory(this);
     this.containerEl.empty();
+    if (this.side === "note") this.containerEl.dataset.open = "true";
     this.containerEl.appendChild(this.view.containerEl);
     await this.view.onOpen();
   }
@@ -254,7 +271,7 @@ class Workspace extends Events {
   setActive(file: TFile | null) { this.active = file; this.trigger("file-open", file); }
   getLeavesOfType(type: string) {
     if (type === "markdown") return this.note?.file ? [this.note] : [];
-    return [this.center, this.right].filter((leaf) => leaf?.view?.getViewType() === type);
+    return [this.center, this.right, this.note].filter((leaf) => leaf?.view?.getViewType() === type);
   }
   getLeaf() { return this.note; }
   getRightLeaf() { return this.right; }
@@ -312,7 +329,7 @@ export class PluginSettingTab {
     await this.plugin.saveData(this.plugin.settings);
   }
 
-  // Renders what Tropa uses of the declarative API (1.13): groups, rows and text controls.
+  // Renders what Tropa uses of the declarative API (1.13): groups, rows, text and textarea controls.
   display() {
     const root = this.containerEl as any;
     root.empty();
@@ -322,8 +339,13 @@ export class PluginSettingTab {
       info.createDiv({ cls: "setting-item-name", text: def.name });
       if (def.desc) info.createDiv({ cls: "setting-item-description", text: def.desc });
       const control = def.control;
-      if (control?.type !== "text") return;
-      const input = item.createDiv({ cls: "setting-item-control" }).createEl("input", { type: "text", attr: { placeholder: control.placeholder ?? "" } });
+      if (control?.type !== "text" && control?.type !== "textarea") return;
+      const host = item.createDiv({ cls: "setting-item-control" });
+      const input = (
+        control.type === "textarea"
+          ? host.createEl("textarea", { attr: { placeholder: control.placeholder ?? "", rows: String(control.rows ?? 3) } })
+          : host.createEl("input", { type: "text", attr: { placeholder: control.placeholder ?? "" } })
+      ) as HTMLInputElement | HTMLTextAreaElement;
       input.dataset.key = control.key;
       input.value = String(this.getControlValue(control.key) ?? control.defaultValue ?? "");
       input.addEventListener("change", () => void this.setControlValue(control.key, input.value));

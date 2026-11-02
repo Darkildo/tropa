@@ -42,7 +42,20 @@
     "teachesKey": "O que um material ensina",
     "teachesKeyDesc": "Conceitos que o material aborda.",
     "materialsKey": "Materiais no conceito",
-    "materialsKeyDesc": "Ligações e anexos listados no próprio conceito, sem nota à parte."
+    "materialsKeyDesc": "Ligações e anexos listados no próprio conceito, sem nota à parte.",
+    "scope": "Âmbito do mapa",
+    "excludeFolders": "Pastas excluídas",
+    "excludeFoldersDesc": "Uma pasta por linha. As notas nestas pastas e nas subpastas ficam fora do mapa, e as ligações para elas são ignoradas. O ficheiro de progresso é sempre lido. Não inclua as pastas de conceitos e materiais: o que cria a partir do mapa vai para lá.",
+    "excludeFoldersPlaceholder": "Arquivo\nModelos",
+    "excludeTags": "Etiquetas excluídas",
+    "excludeTagsDesc": "Uma etiqueta por linha. As notas com estas etiquetas ficam fora do mapa, incluindo as aninhadas: #rascunho também abrange #rascunho/antigo.",
+    "excludeTagsPlaceholder": "#rascunho\n#privado"
+  },
+  "scope": {
+    "excludedNote": "Esta nota fica fora do mapa pelas definições de pastas ou etiquetas.",
+    "goalExcluded": "O objetivo {title} fica fora do mapa pelas definições de pastas ou etiquetas.",
+    "ownFolderExcluded": "{folder} está excluída, mas é lá que são criados os novos conceitos ou materiais: não vão aparecer no mapa.",
+    "goalExcludedHint": "O objetivo está excluído pelas definições de pastas ou etiquetas, por isso os seus pré-requisitos são desconhecidos. Escolha outro objetivo ou altere as definições."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -253,6 +266,32 @@
     "other": "Aqui estão ocultos {count} passos do percurso"
   },
   "hiddenOnMap": "Oculto no mapa",
+  "audit": {
+    "command": "Verificar o mapa",
+    "title": "Verificação do mapa",
+    "summary": {
+      "one": "{count} ponto a rever",
+      "many": "{count} pontos a rever",
+      "other": "{count} pontos a rever"
+    },
+    "clean": "Nada a corrigir: cada conceito tem materiais, cada ligação tem a sua nota e nada depende de si próprio.",
+    "noMaterials": "Conceitos sem materiais",
+    "noMaterialsHint": "Ainda nada os ensina. Adicione um material a cada um ou ligue um que já tenha.",
+    "orphans": "Sem ligações",
+    "orphansHint": "Nenhuma ligação de ou para outras notas do mapa.",
+    "ghosts": "Ligações para notas em falta",
+    "ghostsHint": "Outras notas ligam para estes conceitos, mas as notas ainda não existem.",
+    "linkedFrom": {
+      "one": "Ligado a partir de {count} nota",
+      "many": "Ligado a partir de {count} notas",
+      "other": "Ligado a partir de {count} notas"
+    },
+    "duplicates": "Possíveis duplicados",
+    "duplicatesHint": "Nomes que só diferem em maiúsculas ou acentos. Junte-os ou mude o nome de um.",
+    "cycles": "Dependências circulares",
+    "cyclesHint": "Cada conceito requer o seguinte e o último requer o primeiro, por isso nenhum pode ser aprendido primeiro.",
+    "showOnMap": "Mostrar no mapa"
+  },
   "exportMap": "Exportar mapa",
   "exportCanvas": "Exportar o mapa para Canvas",
   "exportSvg": "Exportar o mapa como SVG",

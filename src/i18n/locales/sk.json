@@ -42,7 +42,20 @@
     "teachesKey": "Čo materiál učí",
     "teachesKeyDesc": "Pojmy, ktoré materiál preberá.",
     "materialsKey": "Materiály v pojme",
-    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky."
+    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky.",
+    "scope": "Rozsah mapy",
+    "excludeFolders": "Vylúčené priečinky",
+    "excludeFoldersDesc": "Jeden priečinok na riadok. Poznámky v týchto priečinkoch a pod nimi sa na mapu nedostanú a odkazy na ne sa ignorujú. Súbor s pokrokom sa číta vždy. Nepridávajte sem priečinky pojmov a materiálov: ukladá sa do nich, čo vytvoríte z mapy.",
+    "excludeFoldersPlaceholder": "Archív\nŠablóny",
+    "excludeTags": "Vylúčené štítky",
+    "excludeTagsDesc": "Jeden štítok na riadok. Poznámky s týmito štítkami sa na mapu nedostanú, vrátane vnorených: #koncept pokrýva aj #koncept/starý.",
+    "excludeTagsPlaceholder": "#koncept\n#súkromné"
+  },
+  "scope": {
+    "excludedNote": "Táto poznámka je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "goalExcluded": "Cieľ {title} je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "ownFolderExcluded": "Priečinok {folder} je vylúčený, ale vytvárajú sa v ňom nové pojmy alebo materiály: na mape sa neobjavia.",
+    "goalExcludedHint": "Cieľ je vylúčený nastaveniami priečinkov alebo štítkov, takže nie je známe, čo treba vedieť vopred. Vyberte iný cieľ alebo zmeňte nastavenia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -266,6 +279,34 @@
     "other": "Skryté kroky trasy: {count}"
   },
   "hiddenOnMap": "Skryté na mape",
+  "audit": {
+    "command": "Skontrolovať mapu",
+    "title": "Kontrola mapy",
+    "summary": {
+      "one": "{count} vec na kontrolu",
+      "few": "{count} veci na kontrolu",
+      "many": "{count} veci na kontrolu",
+      "other": "{count} vecí na kontrolu"
+    },
+    "clean": "Nie je čo opravovať: každý pojem má materiály, každý odkaz má poznámku a nič nevyžaduje samo seba.",
+    "noMaterials": "Pojmy bez materiálov",
+    "noMaterialsHint": "Zatiaľ ich nič neučí. Pridajte ku každému materiál alebo pripojte niektorý, ktorý už máte.",
+    "orphans": "Bez prepojení",
+    "orphansHint": "Žiadne odkazy na iné poznámky na mape ani z nich.",
+    "ghosts": "Odkazy na chýbajúce poznámky",
+    "ghostsHint": "Iné poznámky odkazujú na tieto pojmy, no samotné poznámky ešte neexistujú.",
+    "linkedFrom": {
+      "one": "Odkazuje {count} poznámka",
+      "few": "Odkazujú {count} poznámky",
+      "many": "Odkazuje {count} poznámky",
+      "other": "Odkazuje {count} poznámok"
+    },
+    "duplicates": "Možné duplikáty",
+    "duplicatesHint": "Názvy, ktoré sa líšia len veľkosťou písmen alebo diakritikou. Zlúčte ich alebo jeden premenujte.",
+    "cycles": "Cyklické závislosti",
+    "cyclesHint": "Každý pojem vyžaduje ďalší a posledný vyžaduje prvý, takže žiadny sa nedá naučiť ako prvý.",
+    "showOnMap": "Ukázať na mape"
+  },
   "exportMap": "Export mapy",
   "exportCanvas": "Exportovať mapu do Canvasu",
   "exportSvg": "Exportovať mapu ako SVG",

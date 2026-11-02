@@ -1,4 +1,4 @@
-import { Events, Notice, TFile, normalizePath, type App, type EventRef } from "obsidian";
+import { Events, Notice, TFile, getAllTags, normalizePath, type App, type EventRef } from "obsidian";
 import { formatMinutes, parseFormat, safeFileName } from "./core/format";
 import {
   cloneProgress,
@@ -12,6 +12,7 @@ import {
   unlockedBy,
 } from "./core/graph";
 import { readProgress, writeProgress } from "./core/progress";
+import { isExcluded, type Scope } from "./core/scope";
 import { basename, linkTargets, parseLinkTarget, toList } from "./core/links";
 import {
   entryFormat,
@@ -46,6 +47,9 @@ export class Store extends Events {
   topologyKey = "";
 
   private signature = "";
+  private scope: Scope = { folders: [], tags: [] };
+  /** The excluded goal already announced, so the notice comes once per change. */
+  private announcedGoal: string | null = null;
   private pendingWrites = 0;
   private writes: Promise<void> = Promise.resolve();
 
@@ -71,14 +75,19 @@ export class Store extends Events {
     const inputs: NoteInput[] = [];
     const settings = this.settings();
     const progressPath = normalizePath(settings.progressPath);
+    this.scope = { folders: settings.excludeFolders ?? [], tags: settings.excludeTags ?? [] };
 
     for (const file of this.app.vault.getMarkdownFiles()) {
-      if (file.path === progressPath) continue;
+      if (file.path === progressPath || this.isExcluded(file)) continue;
       const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
       if (!frontmatter) continue;
       const kind = this.classify(frontmatter);
       if (!kind) continue;
-      const refs = (key: string) => linkTargets(frontmatter[key]).map((target) => this.resolve(target, file.path));
+      // A link to an excluded note is dropped: no node, no step, nothing to wait for.
+      const refs = (key: string) =>
+        linkTargets(frontmatter[key])
+          .map((target) => this.resolve(target, file.path))
+          .filter((ref) => !this.excludedNote(ref.id));
       const minutes = Number(frontmatter.minutes);
       inputs.push({
         id: file.path,
@@ -109,6 +118,38 @@ export class Store extends Events {
       .join("\n");
     this.readProgress();
     this.derive();
+    this.announceExcludedGoal();
+  }
+
+  /**
+   * Out of the map by the folder and tag settings. The progress file is read by its path and never
+   * becomes a node, so excluding its folder cannot lose progress.
+   */
+  isExcluded(file: TFile) {
+    const { folders, tags } = this.scope;
+    if (!folders.length && !tags.length) return false;
+    if (file.path === normalizePath(this.settings().progressPath)) return false;
+    const cache = tags.length ? this.app.metadataCache.getFileCache(file) : null;
+    return isExcluded(file.path, (cache && getAllTags(cache)) ?? [], this.scope);
+  }
+
+  /** Title of the goal when the scope settings leave its note out. Nothing links to it then, so it is not in the graph. */
+  get excludedGoal(): string | null {
+    const { goal } = this.progress;
+    return goal ? this.excludedNote(goal)?.basename ?? null : null;
+  }
+
+  /** The note behind an id when the scope settings leave it out. Progress keeps such ids untouched. */
+  private excludedNote(id: string) {
+    if (isGhostId(id)) return null;
+    const file = this.fileOf(id);
+    return file?.extension === "md" && this.isExcluded(file) ? file : null;
+  }
+
+  private announceExcludedGoal() {
+    const title = this.excludedGoal;
+    if (title && this.progress.goal !== this.announcedGoal) new Notice(t.scope.goalExcluded({ title }));
+    this.announcedGoal = title ? this.progress.goal : null;
   }
 
   private classify(frontmatter: Record<string, unknown>): "concept" | "source" | null {

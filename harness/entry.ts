@@ -39,7 +39,9 @@ if (scenario === "large") {
     const reqs = [i - 1 - (i % 7), i - 3 - (i % 11), Math.floor(i / 2)].filter((n) => n >= 0 && n < i);
     // `materials` adds soft links and about 0.7 materials per concept, like the benchmark's "+m" graphs.
     const soft = params.has("materials") && i % 2 ? `recommends: ${links([(i * 37) % count].filter((n) => n !== i))}\n` : "";
-    vault.seed(`Node ${i}.md`, `---\ntype: concept\nrequires: ${links(reqs)}\n${soft}---\n`);
+    // `archive` puts every tenth note in a folder, for the map scope checks.
+    const folder = params.has("archive") && i % 10 === 5 ? "Archive/" : "";
+    vault.seed(`${folder}Node ${i}.md`, `---\ntype: concept\nrequires: ${links(reqs)}\n${soft}---\n`);
   }
   if (params.has("materials")) {
     for (let i = 0; i < Math.round(count * 0.7); i++) {
@@ -47,6 +49,24 @@ if (scenario === "large") {
       vault.seed(`Material ${i}.md`, `---\ntype: source\nformat: article\nminutes: ${10 + (i % 50)}\nteaches: ${links([(i * 7) % count])}\n${needs}---\n`);
     }
   }
+  // A material that teaches nothing yet, for the audit to point at.
+  if (params.has("lone")) vault.seed("Lone material.md", "---\ntype: source\nformat: video\n---\n");
+}
+if (scenario === "audit") {
+  // One of each finding: a concept without materials, a lone note, a missing note, duplicate names, a loop.
+  const note = (title: string, front: string) => vault.seed(`${title}.md`, `---\n${front}---\n`);
+  note("Algebra", "type: concept\n");
+  note("Algebra course", 'type: source\nformat: course\nteaches: ["[[Algebra]]"]\n');
+  note("Calculus", 'type: concept\nrequires: ["[[Algebra]]", "[[Missing note]]"]\n');
+  note("Lonely", "type: concept\n");
+  note("Café", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("cafe", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("Loop A", 'type: concept\nrequires: ["[[Loop B]]"]\n');
+  note("Loop B", 'type: concept\nrequires: ["[[Loop C]]"]\n');
+  note("Loop C", 'type: concept\nrequires: ["[[Loop A]]"]\n');
+  // Left out of the map by the scope: neither a lone note nor a missing one in the audit.
+  vault.seed("Archive/Old idea.md", "---\ntype: concept\n---\n");
+  note("Uses the archive", 'type: concept\nrequires: ["[[Old idea]]", "[[Algebra]]"]\n');
 }
 // The plugin must still work where workers are not available, or WebAssembly is not.
 if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
@@ -60,6 +80,18 @@ if (params.has("nowasm")) {
   };
 }
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
+// Folder and tag exclusions: the progress file and an attachment sit in excluded folders but must keep working.
+if (scenario === "scope") {
+  vault.seed("Goal.md", `---\ntype: concept\ntags: [course]\nrequires: ["[[Base]]", "[[Archived]]", "[[Private note]]", "[[Inline tagged]]", "[[Kept]]"]\n---\n`);
+  vault.seed("Base.md", `---\ntype: concept\nmaterials: ["[[scan.pdf]]"]\n---\n`);
+  vault.seed("Archive/Archived.md", `---\ntype: concept\n---\n`);
+  vault.seed("Archive 2/Kept.md", `---\ntype: concept\nrequires: ["[[Base]]"]\n---\n`);
+  vault.seed("Private note.md", `---\ntype: concept\ntags: [private/old]\n---\n`);
+  vault.seed("Inline tagged.md", `---\ntype: concept\n---\nSome text #private\n`);
+  vault.seed("Next.md", `---\ntype: concept\nrequires: ["[[Private note]]"]\n---\n`);
+  vault.seed("Attachments/scan.pdf", "");
+  vault.seed(defaultSettings(sampleLanguage).progressPath, `---\ntype: learning-progress\ngoal: "[[Goal]]"\nmastered: ["[[Archived]]"]\n---\n`);
+}
 vault.getMarkdownFiles().forEach((file: any) => (app as any).metadataCache.index(file));
 
 const workspace = (app as any).workspace;
@@ -68,6 +100,8 @@ workspace.right = new WorkspaceLeaf(document.getElementById("right")!, "right");
 workspace.note = new WorkspaceLeaf(document.getElementById("note")!, "note");
 
 const plugin = new (TropaPlugin as any)(app, {});
+if (scenario === "audit") plugin.data = { excludeFolders: ["Archive"] };
+if (scenario === "scope") plugin.data = { excludeFolders: ["Archive", "Attachments", "Tropa"], excludeTags: ["private"] };
 await plugin.onload();
 await new Promise((resolve) => setTimeout(resolve, 20));
 await workspace.center.setViewState({ type: "tropa-map" });
