@@ -9,7 +9,11 @@
   --tropa-danger: var(--color-red);
   --tropa-line: var(--background-modifier-border);
   --tropa-line-strong: color-mix(in srgb, var(--text-muted) 55%, transparent);
-  padding: 0 !important;
+}
+
+/* More specific than Obsidian's own view padding, so the map can reach the edges. */
+.workspace-leaf-content .view-content.tropa-host {
+  padding: 0;
   overflow: hidden;
 }
 

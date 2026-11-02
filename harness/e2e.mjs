@@ -23,6 +23,8 @@ const { open, stop } = await start();
   const { page, errors } = await open();
   await page.screenshot({ path: SHOTS + "10-start-light.png" });
   await node(page, "Gradient").click(); await wait(page, 150);
+  const padding = await page.evaluate("getComputedStyle(document.querySelector('#center .view-content.tropa-host')).padding");
+  ok("map view has no padding", padding === "0px", padding);
   ok("inspector opens", (await page.locator(".tropa-side .tropa-title").innerText()) === "Gradient");
   await page.screenshot({ path: SHOTS + "11-detail.png" });
   await page.click('.tropa-side button:text-is("Start learning")'); await wait(page, 200);
