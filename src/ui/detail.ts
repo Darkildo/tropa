@@ -3,7 +3,7 @@ import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { isGhostId, recommendMaterial, sourceState } from "../core/graph";
 import type { GraphNode } from "../core/types";
 import { attempt } from "../attempt";
-import { lang, t } from "../i18n";
+import { locale, t } from "../i18n";
 import type { Store } from "../store";
 import { PickModal, SourceModal, type PickItem } from "./pick";
 
@@ -54,7 +54,7 @@ function stateGlyph(parent: HTMLElement, host: DetailHost, id: string) {
 function conceptItems(host: DetailHost, except: Set<string>): PickItem[] {
   return host.store.graph.concepts
     .filter((node) => !except.has(node.id))
-    .sort((a, b) => a.title.localeCompare(b.title, lang()))
+    .sort((a, b) => a.title.localeCompare(b.title, locale()))
     .map((node) => ({ id: node.id, title: node.title, icon: STATE_ICON[host.store.states.get(node.id) ?? "locked"] }));
 }
 
@@ -65,18 +65,18 @@ async function linkedConcept(host: DetailHost, item: PickItem) {
 export function pickPrerequisite(host: DetailHost, node: GraphNode) {
   const { store, app } = host;
   const items = conceptItems(host, new Set([node.id, ...node.requires, ...store.graph.descendants(node.id)]));
-  new PickModal(app, items, t.knowBeforePrompt(node.title), async (item) => {
+  new PickModal(app, items, t.knowBeforePrompt({ title: node.title }), async (item) => {
     await store.addLink(node.id, "requiresKey", await linkedConcept(host, item));
-  }, t.createConcept).open();
+  }, (name) => t.createConcept({ name })).open();
 }
 
 function pickUnlock(host: DetailHost, node: GraphNode) {
   const { store, app } = host;
   const items = conceptItems(host, new Set([node.id, ...node.requiredBy, ...store.graph.ancestors(node.id)]));
-  new PickModal(app, items, t.unlocksPrompt(node.title), async (item) => {
+  new PickModal(app, items, t.unlocksPrompt({ title: node.title }), async (item) => {
     if (item.create) await store.createConcept(item.title, [node.id]);
     else await store.addLink(item.id, "requiresKey", node.id);
-  }, t.createConcept).open();
+  }, (name) => t.createConcept({ name })).open();
 }
 
 function pickMaterial(host: DetailHost, node: GraphNode) {
@@ -96,7 +96,7 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
       .filter((file) => !known.has(file.path) && !attached.has(file.path) && !store.graph.nodes.has(file.path))
       .map((file) => ({ id: file.path, title: file.basename, icon: "file", hint: t.note })),
   ];
-  new PickModal(app, items, t.materialForPrompt(node.title), (item) => {
+  new PickModal(app, items, t.materialForPrompt({ title: node.title }), (item) => {
     if (!item.create) {
       attempt(store.attachSource(item.id, node.id), `attach ${item.title}`);
       return;
@@ -105,7 +105,7 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
       const target = (await store.materialize(node.id)).path;
       await store.createSource({ ...draft, teaches: [target] });
     }).open();
-  }, t.newMaterialNamed).open();
+  }, (name) => t.newMaterialNamed({ name })).open();
 }
 
 function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?: () => void) {
@@ -115,12 +115,12 @@ function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?
   el.tabIndex = 0;
   el.setAttr("role", "button");
   stateGlyph(el, host, id);
-  el.createSpan({ cls: "tropa-row-title", text: node.title });
+  el.createSpan({ cls: "tropa-row-title", text: node.title, attr: { dir: "auto" } });
   el.addEventListener("click", () => host.select(id));
   el.addEventListener("keydown", (event) => {
     if (event.key === "Enter") host.select(id);
   });
-  if (onRemove) iconButton(el, "x", t.unlink(node.title), onRemove);
+  if (onRemove) iconButton(el, "x", t.unlink({ title: node.title }), onRemove);
 }
 
 function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept: GraphNode | null, recommended: boolean) {
@@ -132,11 +132,11 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
 
   const check = el.createEl("input", { type: "checkbox", cls: "task-list-item-checkbox" });
   check.checked = state === "done";
-  check.setAttr("aria-label", t.materialDone(source.title));
+  check.setAttr("aria-label", t.materialDone({ title: source.title }));
   check.addEventListener("change", () => store.setDone(id, check.checked));
 
   const body = el.createDiv({ cls: "tropa-material-body" });
-  const title = body.createEl("a", { cls: "tropa-row-title", text: source.title, href: "#" });
+  const title = body.createEl("a", { cls: "tropa-row-title", text: source.title, href: "#", attr: { dir: "auto" } });
   title.addEventListener("click", (event) => {
     event.preventDefault();
     host.openNote(id, event.ctrlKey || event.metaKey);
@@ -146,14 +146,14 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
   setIcon(meta.createSpan(), FORMAT_ICON[source.format ?? "other"]);
   const parts = [t.format[source.format ?? "other"]];
   if (source.minutes) parts.push(formatMinutes(source.minutes));
-  meta.createSpan({ text: parts.join(", ") });
+  meta.createSpan({ text: parts.join(t.listSeparator) });
 
   if (state === "locked") {
     const missing = source.requires
       .filter((req) => (store.graph.nodes.get(req)?.kind === "source" ? !store.progress.done.has(req) : !store.progress.mastered.has(req)))
       .map((req) => store.graph.nodes.get(req)?.title)
-      .join(", ");
-    body.createDiv({ cls: "tropa-material-note", text: t.first(missing) });
+      .join(t.listSeparator);
+    body.createDiv({ cls: "tropa-material-note", text: t.first({ titles: missing }) });
   } else if (recommended) {
     body.createDiv({ cls: "tropa-material-note is-accent", text: t.startHere });
   }
@@ -166,7 +166,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
     });
     setIcon(link, "external-link");
   }
-  if (concept) iconButton(el, "x", t.detachMaterial(source.title), () => attempt(store.removeLink(id, "teachesKey", concept.id), "remove a link"));
+  if (concept) iconButton(el, "x", t.detachMaterial({ title: source.title }), () => attempt(store.removeLink(id, "teachesKey", concept.id), "remove a link"));
 }
 
 function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
@@ -176,7 +176,7 @@ function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
     back.createSpan({ text: host.store.route ? t.backToRoute : t.backToList });
     back.addEventListener("click", () => host.select(null));
   }
-  const title = parent.createEl("h3", { cls: "tropa-title" });
+  const title = parent.createEl("h3", { cls: "tropa-title", attr: { dir: "auto" } });
   if (node.ghost) title.setText(node.title);
   else {
     const link = title.createEl("a", { text: node.title, href: "#" });
@@ -204,7 +204,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     goal.createSpan({ text: t.yourGoal });
   }
 
-  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary });
+  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
   if (state === "cycle") {
     parent.createEl("p", {
@@ -240,7 +240,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
 
   const blockers = node.requires.filter((id) => !store.progress.mastered.has(id));
   if (state === "locked" && blockers.length) {
-    parent.createEl("p", { cls: "tropa-hint", text: t.leftToUnlock(blockers.length) });
+    parent.createEl("p", { cls: "tropa-hint", text: t.leftToUnlock({ count: blockers.length }) });
   }
 
   const recommended = recommendMaterial(store.graph, store.progress, node.id);
@@ -283,9 +283,9 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   setIcon(status.createSpan(), FORMAT_ICON[node.format ?? "other"]);
   const parts = [t.format[node.format ?? "other"]];
   if (node.minutes) parts.push(formatMinutes(node.minutes));
-  status.createSpan({ text: parts.join(", ") });
+  status.createSpan({ text: parts.join(t.listSeparator) });
 
-  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary });
+  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
   const actions = parent.createDiv({ cls: "tropa-actions" });
   const done = actions.createEl("button", {
@@ -301,9 +301,9 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   for (const id of node.teaches) conceptRow(teaches, host, id, () => attempt(store.removeLink(node.id, "teachesKey", id), "remove a link"));
   addButton(teaches, t.addConcept, () => {
     const items = conceptItems(host, new Set(node.teaches));
-    new PickModal(host.app, items, t.teachesPrompt(node.title), async (item) => {
+    new PickModal(host.app, items, t.teachesPrompt({ title: node.title }), async (item) => {
       await store.addLink(node.id, "teachesKey", await linkedConcept(host, item));
-    }, t.createConcept).open();
+    }, (name) => t.createConcept({ name })).open();
   });
 
   if (node.requires.length) {
@@ -347,18 +347,18 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
   const goal = graph.nodes.get(route.goal)!;
   if (route.steps.length === 0) {
     parent.createEl("h3", { cls: "tropa-title", text: t.goalReached });
-    parent.createEl("p", { cls: "tropa-hint", text: t.goalReachedText(goal.title) });
+    parent.createEl("p", { cls: "tropa-hint", text: t.goalReachedText({ title: goal.title }) });
     const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: t.chooseGoal });
     button.addEventListener("click", pickGoal);
     return;
   }
 
   const left = route.steps.length;
-  parent.createEl("h3", { cls: "tropa-title", text: t.stepsToGoal(left) });
-  parent.createEl("p", { cls: "tropa-hint", text: t.remainingLine(store.describeRemaining(), goal.title) });
+  parent.createEl("h3", { cls: "tropa-title", text: t.stepsToGoal({ count: left }) });
+  parent.createEl("p", { cls: "tropa-hint", text: t.remainingLine({ remaining: store.describeRemaining(), goal: goal.title }) });
 
   if (route.gaps.length) {
-    parent.createEl("p", { cls: "tropa-hint is-warning", text: t.gaps(route.gaps.length) });
+    parent.createEl("p", { cls: "tropa-hint is-warning", text: t.gaps({ count: route.gaps.length }) });
   }
 
   const list = parent.createEl("ol", { cls: "tropa-steps" });
@@ -372,11 +372,15 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     item.addEventListener("keydown", (event) => {
       if (event.key === "Enter") host.select(step.id);
     });
-    item.createDiv({ cls: "tropa-step-title", text: node.title });
+    item.createDiv({ cls: "tropa-step-title", text: node.title, attr: { dir: "auto" } });
     const material = step.material ? graph.nodes.get(step.material) : null;
     if (material && (isNext || step.state === "learning")) {
-      const time = material.minutes ? `, ${formatMinutes(material.minutes)}` : "";
-      item.createDiv({ cls: "tropa-step-meta", text: `${material.title}${time}` });
+      const meta = item.createDiv({ cls: "tropa-step-meta" });
+      meta.createEl("bdi", { text: material.title });
+      if (material.minutes) {
+        meta.createSpan({ text: t.listSeparator });
+        meta.createSpan({ cls: "tropa-nowrap", text: formatMinutes(material.minutes) });
+      }
     } else if (!material && node.taughtBy.length === 0) {
       item.createDiv({ cls: "tropa-step-meta", text: t.noMaterials });
     }

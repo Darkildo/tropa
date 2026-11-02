@@ -1,5 +1,7 @@
-const s = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
-
+/**
+ * English strings: the fallback for every language and the source of the types.
+ * `{name}` is a placeholder. An object with CLDR plural forms (`one`, `other`, …) is chosen by `{count}`.
+ */
 export const en = {
   mapTitle: "Learning map",
   openPanel: "Open sidebar panel",
@@ -13,13 +15,14 @@ export const en = {
   toggleMastered: "Mark this note mastered or move it back to learning",
   nextConceptPrompt: "Which concept comes after this one?",
   conceptName: "Concept name",
-  createConcept: (name: string) => `Create concept “${name}”`,
+  createConcept: "Create concept “{name}”",
   cycleRefused: "This link would create a cycle, so it was not added",
   linkExists: "This link already exists",
-  sampleExists: (folder: string) => `The example is already added: folder ${folder}`,
-  unlocked: (names: string) => `Unlocked: ${names}`,
-  mastered: (title: string) => `Mastered: ${title}`,
-  andMore: (count: number) => ` and ${count} more`,
+  sampleExists: "The example is already added: folder {folder}",
+  unlocked: "Unlocked: {names}",
+  mastered: "Mastered: {title}",
+  andMore: " and {count} more",
+  listSeparator: ", ",
   undo: "Undo",
 
   settings: {
@@ -43,8 +46,9 @@ export const en = {
     teachesKeyDesc: "Concepts the material covers.",
   },
 
-  minutes: (minutes: number) => `${minutes} min`,
-  hours: (hours: number, minutes: number) => (minutes ? `${hours} h ${minutes} min` : `${hours} h`),
+  minutes: "{minutes} min",
+  hours: "{hours} h",
+  hoursMinutes: "{hours} h {minutes} min",
 
   state: {
     mastered: "Mastered",
@@ -64,15 +68,15 @@ export const en = {
     other: "Other",
   },
 
-  actionFailed: (reason: string) => `Something went wrong: ${reason}`,
-  progressNotSaved: (reason: string) => `Progress was not saved: ${reason}`,
-  noteNotFound: (id: string) => `Note not found: ${id}`,
+  actionFailed: "Something went wrong: {reason}",
+  progressNotSaved: "Progress was not saved: {reason}",
+  noteNotFound: "Note not found: {id}",
   untitled: "Untitled",
   progressFileText: "This file is maintained by the Tropa plugin: it stores your goal and what you have mastered.",
   goalReached: "Goal reached",
   noEstimate: "No time estimate yet",
-  about: (duration: string) => `About ${duration}`,
-  atLeast: (duration: string) => `At least ${duration}`,
+  about: "About {duration}",
+  atLeast: "At least {duration}",
 
   notOnMap: "This note is not on the map",
   concept: "Concept",
@@ -92,17 +96,17 @@ export const en = {
   addMaterial: "Add material",
   materialNameRequired: "Enter the material name",
 
-  knowBeforePrompt: (title: string) => `What should you know before “${title}”?`,
-  unlocksPrompt: (title: string) => `What does “${title}” unlock?`,
+  knowBeforePrompt: "What should you know before “{title}”?",
+  unlocksPrompt: "What does “{title}” unlock?",
   note: "Note",
-  materialForPrompt: (title: string) => `Material for “${title}”`,
-  newMaterialNamed: (name: string) => `New material “${name}”`,
-  unlink: (title: string) => `Remove link to “${title}”`,
-  materialDone: (title: string) => `Material “${title}” done`,
-  first: (titles: string) => `First: ${titles}`,
+  materialForPrompt: "Material for “{title}”",
+  newMaterialNamed: "New material “{name}”",
+  unlink: "Remove link to “{title}”",
+  materialDone: "Material “{title}” done",
+  first: "First: {titles}",
   startHere: "Start with this",
   openSource: "Open source",
-  detachMaterial: (title: string) => `Detach material “${title}”`,
+  detachMaterial: "Detach material “{title}”",
   backToRoute: "Back to route",
   backToList: "Back to list",
   yourGoal: "Your goal",
@@ -115,7 +119,7 @@ export const en = {
   unmark: "Clear mark",
   removeGoal: "Remove goal",
   makeGoal: "Set as goal",
-  leftToUnlock: (count: number) => `${s(count, "concept", "concepts")} left to unlock.`,
+  leftToUnlock: { one: "{count} concept left to unlock.", other: "{count} concepts left to unlock." },
   materials: "Materials",
   nothingToLearnFrom: "Nothing to learn from yet. Add an article, video, book or your own note.",
   knowBefore: "Know before this",
@@ -127,7 +131,7 @@ export const en = {
   markDone: "Mark as done",
   teaches: "Teaches",
   addConcept: "Add concept",
-  teachesPrompt: (title: string) => `What does “${title}” teach?`,
+  teachesPrompt: "What does “{title}” teach?",
   neededBefore: "Needed before starting",
 
   cycleTitle: "Dependency cycle",
@@ -136,24 +140,27 @@ export const en = {
   whereToHint: "Choose a goal, and Tropa will build a route from only what you do not know yet.",
   chooseGoal: "Choose a goal",
   startNow: "You can start right now",
-  goalReachedText: (title: string) => `You have mastered everything needed for “${title}”. Choose your next goal.`,
-  stepsToGoal: (count: number) => `${s(count, "step", "steps")} to the goal`,
-  remainingLine: (remaining: string, goal: string) => `${remaining}. Goal: ${goal}.`,
-  gaps: (count: number) => `${count === 1 ? "1 step has" : `${count} steps have`} no materials yet, so it may take longer.`,
+  goalReachedText: "You have mastered everything needed for “{title}”. Choose your next goal.",
+  stepsToGoal: { one: "{count} step to the goal", other: "{count} steps to the goal" },
+  remainingLine: "{remaining}. Goal: {goal}.",
+  gaps: {
+    one: "{count} step has no materials yet, so it may take longer.",
+    other: "{count} steps have no materials yet, so it may take longer.",
+  },
   noMaterials: "No materials",
 
   goalPrompt: "What do you want to learn?",
   portTitle: "Drag to the concept that comes after this one",
-  materialLabel: (title: string) => `Material: ${title}`,
+  materialLabel: "Material: {title}",
   goalSuffix: ". Goal",
   nextSuffix: ". Next step",
   nextBadge: "Next step",
   goalBadge: "Goal",
   noNoteYet: "No note yet",
-  conceptsFirst: (count: number) => `${s(count, "concept", "concepts")} first`,
-  materialCount: (count: number) => s(count, "material", "materials"),
-  from: (duration: string) => `from ${duration}`,
-  progressOf: (done: number, total: number) => `${done} of ${total}`,
+  conceptsFirst: { one: "{count} concept first", other: "{count} concepts first" },
+  materialCount: { one: "{count} material", other: "{count} materials" },
+  from: "from {duration}",
+  progressOf: "{done} of {total}",
   expandPanel: "Expand panel",
   collapsePanel: "Collapse panel",
   emptyTitle: "Build your first map",
@@ -171,6 +178,4 @@ export const en = {
   fitAll: "Show whole map",
   openNote: "Open note",
   clearMastered: "Clear mastered mark",
-};
-
-export type Strings = typeof en;
+} as const;

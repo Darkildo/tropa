@@ -15,8 +15,8 @@ export default defineConfig([
     },
   },
   {
-    // The demo vault script runs in Node and writes a vault from outside, so it uses Node APIs and the default config folder.
-    files: ["scripts/**"],
+    // Tests and the demo vault script run in Node, outside Obsidian, so they use Node APIs and the default config folder.
+    files: ["scripts/**", "test/**"],
     languageOptions: { globals: globals.node },
     rules: {
       "obsidianmd/no-nodejs-modules": "off",

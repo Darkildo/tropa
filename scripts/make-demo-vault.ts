@@ -1,10 +1,12 @@
-import { copyFileSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { en } from "../src/i18n/en";
-import { ru } from "../src/i18n/ru";
 import type { Lang } from "../src/i18n";
 import { sample } from "../src/sample";
 import { defaultSettings } from "../src/defaults";
+
+type DemoText = Record<"mapTitle" | "openPanel" | "progressFileText", string>;
+const ru = JSON.parse(readFileSync("src/i18n/locales/ru.json", "utf8")) as DemoText;
 
 const START: Record<Lang, { name: string; text: string }> = {
   en: {

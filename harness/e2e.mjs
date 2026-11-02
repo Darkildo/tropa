@@ -193,6 +193,82 @@ const { open, stop } = await start();
   await page.close();
 }
 
+// --- other languages: translated, no raw placeholders, no errors
+const KEYS = /\b(mapTitle|stepsToGoal|leftToUnlock|materialCount|conceptsFirst|progressOf)\b|[{}]/;
+for (const [lang, wholeMap] of [["de", "Ganze Karte"], ["ja", "マップ全体"], ["ar", "الخريطة كاملة"], ["zh-TW", "整張地圖"], ["pt-PT", "Mapa completo"]]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  await node(page, "Tokenization").click(); await wait(page, 200);
+  const text = await page.locator("body").innerText();
+  ok(`${lang}: translated`, (await page.locator(`button:text-is("${wholeMap}")`).count()) === 1);
+  ok(`${lang}: no raw keys`, !KEYS.test(text), text.match(KEYS)?.[0]);
+  ok(`${lang}: example stays English`, (await page.locator(".tropa-goal-label").innerText()) === "Transformer");
+  ok(`${lang}: direction`, (await page.locator(".tropa-map").getAttribute("dir")) === (lang === "ar" ? "rtl" : "ltr"));
+  if (lang === "ar") {
+    // Text from notes keeps its own direction inside the right-to-left interface.
+    // The step title is renamed in place to a title that ends with punctuation, the visible case of the defect.
+    const bidi = await page.evaluate(() => {
+      const first = (el) => el.querySelector("[dir=auto]") ?? el;
+      const side = document.querySelector(".tropa-side");
+      const step = document.querySelector(".tropa-panel .tropa-step-title");
+      step.textContent = "What is AI?";
+      // x of the first and the last character as drawn: in left-to-right text the last one is further right.
+      const ends = (el) => {
+        const text = el.firstChild, range = document.createRange();
+        range.setStart(text, 0); range.setEnd(text, 1); const head = range.getBoundingClientRect().left;
+        range.setStart(text, text.length - 1); range.setEnd(text, text.length); const tail = range.getBoundingClientRect().left;
+        return tail > head;
+      };
+      const dir = (el) => getComputedStyle(el).direction;
+      const meta = document.querySelector(".tropa-panel .tropa-step-meta");
+      const summary = side.querySelector(".tropa-summary");
+      const box = summary.getBoundingClientRect(), range = document.createRange();
+      range.selectNodeContents(summary);
+      return {
+        summary: dir(summary) === "ltr" && ends(summary) && summary.textContent.endsWith("."),
+        summaryAligned: Math.abs(box.right - range.getBoundingClientRect().right) < 2,
+        title: dir(first(side.querySelector(".tropa-title"))) === "ltr",
+        step: dir(step) === "ltr" && ends(step),
+        rows: [...side.querySelectorAll(".tropa-row-title")].every((el) => dir(el) === "ltr" && ends(el)),
+        nodes: [...document.querySelectorAll(".tropa-node-title")].every((el) => dir(el) === "ltr"),
+        goal: dir(document.querySelector(".tropa-goal-label")) === "ltr",
+        // A mixed line stays right to left; the material name inside it is isolated and comes first.
+        meta: (() => {
+          const [name, separator, time] = [...meta.children].map((el) => el.getBoundingClientRect());
+          return dir(meta) === "rtl" && dir(meta.children[0]) === "ltr" && name.left >= separator.right - 1
+            && (time.top > separator.top + 1 || time.right <= separator.left + 1);
+        })(),
+        hint: [...document.querySelectorAll(".tropa-panel .tropa-hint")].some((el) => el.textContent.includes("\u2068Transformer\u2069")),
+      };
+    });
+    for (const [name, pass] of Object.entries(bidi)) ok(`ar: note text direction (${name})`, pass);
+    await page.click('.tropa-goal'); await wait(page, 150);
+    ok("ar: picker items take their own direction", await page.evaluate(() =>
+      [...document.querySelectorAll(".modal .tropa-pick-text > div[dir=auto]")].length > 0
+      && [...document.querySelectorAll(".modal .tropa-pick-text > div[dir=auto]")].every((el) => getComputedStyle(el).direction === "ltr")));
+    await page.keyboard.press("Escape"); await wait(page, 100);
+    await page.evaluate(() => { document.querySelector(".tropa-panel .tropa-step-title").textContent = "Chain rule"; });
+  }
+  if (lang === "ar" || lang === "ja") {
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((dark) => document.body.classList.replace(dark ? "theme-light" : "theme-dark", dark ? "theme-dark" : "theme-light"), theme === "dark");
+      await page.screenshot({ path: `${SHOTS}60-${lang}-${theme}.png` });
+    }
+    await page.click('.tropa-side button:has-text("' + (lang === "ar" ? "إضافة مادة" : "教材を追加") + '")'); await wait(page, 150);
+    ok(`${lang}: modal direction`, (await page.locator(".modal").getAttribute("dir")) === (lang === "ar" ? "rtl" : null));
+    await page.screenshot({ path: `${SHOTS}61-${lang}-modal.png` });
+    if (lang === "ar") {
+      const input = page.locator(".modal input").first();
+      ok("ar: empty search keeps the interface direction", (await input.evaluate((el) => getComputedStyle(el).direction)) === "rtl");
+      await input.fill("What is AI?");
+      ok("ar: typed Latin text runs left to right", (await input.evaluate((el) => getComputedStyle(el).direction)) === "ltr");
+      await input.fill("");
+      ok("ar: cleared search returns to right to left", (await input.evaluate((el) => getComputedStyle(el).direction)) === "rtl");
+    }
+  }
+  ok(`no console errors (${lang})`, errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
 // --- dark, narrow, phone
 {
   const { page } = await open({ query: "?theme=dark", scale: 2 });

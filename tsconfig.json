@@ -9,6 +9,7 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "isolatedModules": true,
+    "resolveJsonModule": false,
     "noEmit": true
   },
   "include": ["src", "test", "scripts"]

@@ -4,7 +4,7 @@ import { layoutGraph, type Layout, type LaidOutNode } from "../core/layout";
 import { sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
-import { t } from "../i18n";
+import { isRtl, t } from "../i18n";
 import type TropaPlugin from "../main";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
@@ -78,7 +78,7 @@ export class MapView extends ItemView implements DetailHost {
   }
 
   async onOpen() {
-    this.root = this.contentEl.createDiv({ cls: "tropa-map" });
+    this.root = this.contentEl.createDiv({ cls: "tropa-map", attr: { dir: isRtl() ? "rtl" : "ltr" } });
     // Badges are drawn in CSS, so their text comes in through custom properties.
     this.root.style.setProperty("--tropa-next-label", JSON.stringify(t.nextBadge));
     this.root.style.setProperty("--tropa-goal-label", JSON.stringify(t.goalBadge));
@@ -232,7 +232,7 @@ export class MapView extends ItemView implements DetailHost {
     el.setAttribute("role", "button");
     el.createSpan({ cls: "tropa-glyph" });
     const text = el.createSpan({ cls: "tropa-node-text" });
-    text.createSpan({ cls: "tropa-node-title" });
+    text.createSpan({ cls: "tropa-node-title", attr: { dir: "auto" } });
     text.createSpan({ cls: "tropa-node-meta" });
     if (node.kind === "concept") {
       el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: t.portTitle } });
@@ -265,7 +265,7 @@ export class MapView extends ItemView implements DetailHost {
         el.className = `tropa-node is-source state-${state}${isSelected ? " is-selected" : ""}`;
         setGlyph(glyph, state === "done" ? "check" : FORMAT_ICON[node.format ?? "other"]);
         meta.textContent = node.minutes ? formatMinutes(node.minutes) : "";
-        el.setAttribute("aria-label", t.materialLabel(node.title));
+        el.setAttribute("aria-label", t.materialLabel({ title: node.title }));
         continue;
       }
 
@@ -293,7 +293,7 @@ export class MapView extends ItemView implements DetailHost {
     if (node.ghost) return t.noNoteYet;
     if (state === "locked") {
       const left = node.requires.filter((id) => !store.progress.mastered.has(id)).length;
-      return t.conceptsFirst(left);
+      return t.conceptsFirst({ count: left });
     }
     const count = node.taughtBy.length;
     if (count === 0) return t.noMaterials;
@@ -301,9 +301,9 @@ export class MapView extends ItemView implements DetailHost {
       .filter((id) => !store.progress.done.has(id))
       .map((id) => store.graph.nodes.get(id)?.minutes)
       .filter((minutes): minutes is number => minutes !== undefined);
-    if (open.length === 0) return t.materialCount(count);
+    if (open.length === 0) return t.materialCount({ count });
     const shortest = formatMinutes(Math.min(...open));
-    return open.length > 1 ? t.from(shortest) : shortest;
+    return open.length > 1 ? t.from({ duration: shortest }) : shortest;
   }
 
   private drawEdges() {
@@ -388,7 +388,7 @@ export class MapView extends ItemView implements DetailHost {
       const percent = route.total ? (route.masteredCount / route.total) * 100 : 0;
       meter.querySelector<HTMLElement>(".tropa-meter-fill")!.style.width = `${percent}%`;
       meter.querySelector<HTMLElement>(".tropa-meter")!.setAttribute("aria-valuenow", String(Math.round(percent)));
-      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = t.progressOf(route.masteredCount, route.total);
+      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = t.progressOf({ done: route.masteredCount, total: route.total });
       meter.querySelector<HTMLElement>(".tropa-progress-time")!.textContent = this.store.describeRemaining();
     }
 
@@ -451,7 +451,7 @@ export class MapView extends ItemView implements DetailHost {
   private buildControls() {
     const goal = this.bar.createEl("button", { cls: "tropa-goal", attr: { "aria-label": t.goalButton } });
     setIcon(goal.createSpan({ cls: "tropa-goal-icon" }), "flag");
-    goal.createSpan({ cls: "tropa-goal-label" });
+    goal.createSpan({ cls: "tropa-goal-label", attr: { dir: "auto" } });
     goal.addEventListener("click", this.pickGoal);
 
     const progress = this.bar.createDiv({ cls: "tropa-progress" });
@@ -808,9 +808,9 @@ export class MapView extends ItemView implements DetailHost {
     const { store } = this;
     const title = store.graph.nodes.get(id)?.title ?? "";
     const names = unlocked.map((unlockedId) => store.graph.nodes.get(unlockedId)?.title).filter(Boolean);
-    let text = t.mastered(title);
+    let text = t.mastered({ title });
     if (store.route && store.route.steps.length === 0) text = t.goalReached;
-    else if (names.length) text = t.unlocked(`${names.slice(0, 3).join(", ")}${names.length > 3 ? t.andMore(names.length - 3) : ""}`);
+    else if (names.length) text = t.unlocked({ names: `${names.slice(0, 3).join(t.listSeparator)}${names.length > 3 ? t.andMore({ count: names.length - 3 }) : ""}` });
 
     this.toast(text, t.undo, () => store.restore(undo));
     for (const unlockedId of unlocked) {

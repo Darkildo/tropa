@@ -16,7 +16,7 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, Esc returns to the route.
-- **English and Russian.** The interface follows Obsidian's language.
+- **33 languages.** The interface follows Obsidian's language, right-to-left included. See [Languages](#languages).
 
 ## Screenshots
 
@@ -82,6 +82,22 @@ Your goal and marks are stored in `Tropa/Progress.md`. A link to a note that doe
 
 Each release has ready-made vaults with the example map and the plugin already installed: [`tropa-demo-vault.zip`](https://github.com/Darkildo/tropa/releases/latest/download/tropa-demo-vault.zip) (English) and [`tropa-demo-vault-ru.zip`](https://github.com/Darkildo/tropa/releases/latest/download/tropa-demo-vault-ru.zip) (Russian). Unzip one, choose **Open folder as vault** in Obsidian, then **Trust author and enable plugins**. You do not need them to use Tropa.
 
+## Languages
+
+Tropa uses the language set in Obsidian: the exact code, then the base language (`pt-PT` → `pt`), then English. Anything missing in a translation falls back to English.
+
+Arabic (`ar`), Bengali (`bn`), Catalan (`ca`), Chinese Simplified (`zh`), Chinese Traditional (`zh-TW`), Czech (`cs`), Danish (`da`), Dutch (`nl`), English (`en`), Finnish (`fi`), French (`fr`), German (`de`), Greek (`el`), Hebrew (`he`), Hungarian (`hu`), Indonesian (`id`), Italian (`it`), Japanese (`ja`), Korean (`ko`), Norwegian (`no`), Persian (`fa`), Polish (`pl`), Portuguese (`pt`), Portuguese, Brazil (`pt-BR`), Romanian (`ro`), Russian (`ru`), Slovak (`sk`), Spanish (`es`), Swedish (`sv`), Thai (`th`), Turkish (`tr`), Ukrainian (`uk`), Vietnamese (`vi`).
+
+These are the languages that have a finished Obsidian app translation and a website or help translation in [obsidian-translations](https://github.com/obsidianmd/obsidian-translations#existing-languages). The example map and default folder names are in English for every language except Russian.
+
+### Fix or add a translation
+
+- English, the source of every key, is `src/i18n/en.ts`. Other languages are `src/i18n/locales/<code>.json`, where the code is what Obsidian's `getLanguage()` returns.
+- Keep placeholders such as `{title}` or `{count}` as they are.
+- Plural messages are objects with [CLDR plural forms](https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html) of the language: `one`, `few`, `many`, `other` and so on. A form may spell the number out, as in “two steps”, but `other` must keep `{count}`.
+- A new language also needs a line in `src/i18n/locales/index.ts`.
+- `npm test` checks every file: same keys as English, the same placeholders, every plural form the language needs. `npm run e2e` opens the interface in several languages, right-to-left included.
+
 ## Development
 
 ```bash
@@ -99,7 +115,7 @@ npm run screenshots  # README images in docs/screenshots
 `npm run e2e` and `npm run screenshots` need a Chromium for Playwright: `npx playwright install chromium`, or set `CHROMIUM_PATH` to an installed one.
 
 - `src/core`: logic with no dependency on Obsidian.
-- `src/i18n`: English and Russian strings.
+- `src/i18n`: strings. English in `en.ts`, other languages in `locales/`.
 - `src/store.ts`: reads the vault, keeps progress, writes links.
 - `src/ui`: map, sidebar panel, modals.
 - `harness`: a mock of the Obsidian API that runs the real plugin code in a browser.

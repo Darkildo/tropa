@@ -1,7 +1,7 @@
 import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath } from "obsidian";
 import { STATE_ICON } from "./core/format";
 import { attempt } from "./attempt";
-import { setLang, t, type Lang } from "./i18n";
+import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -14,11 +14,9 @@ export default class TropaPlugin extends Plugin {
   settings!: TropaSettings;
   defaults!: TropaSettings;
   store!: Store;
-  lang: Lang = "en";
 
   async onload() {
-    this.lang = detectLang();
-    setLang(this.lang);
+    setLocale(getLanguage());
     await this.loadSettings();
     this.store = new Store(this.app, () => this.settings);
 
@@ -45,8 +43,8 @@ export default class TropaPlugin extends Plugin {
       this.store.on("mastered", (id, unlocked) => {
         if (this.app.workspace.getLeavesOfType(MAP_VIEW).length > 0) return;
         const title = this.store.graph.nodes.get(id)?.title ?? "";
-        const names = unlocked.map((u) => this.store.graph.nodes.get(u)?.title).join(", ");
-        new Notice(names ? t.unlocked(names) : t.mastered(title));
+        const names = unlocked.map((u) => this.store.graph.nodes.get(u)?.title).join(t.listSeparator);
+        new Notice(names ? t.unlocked({ names }) : t.mastered({ title }));
       }),
     );
 
@@ -57,7 +55,7 @@ export default class TropaPlugin extends Plugin {
   private async loadSettings() {
     const saved = (await this.loadData()) as Partial<TropaSettings> | null;
     const legacy = !saved && (await this.app.vault.adapter.exists(LEGACY_PROGRESS));
-    this.defaults = defaultSettings(legacy ? "ru" : this.lang);
+    this.defaults = defaultSettings(legacy ? "ru" : exampleLang());
     this.settings = { ...this.defaults, ...saved };
     if (!saved) await this.saveSettings();
   }
@@ -162,14 +160,14 @@ export default class TropaPlugin extends Plugin {
       } else if (requires.length) {
         new Notice(t.cycleRefused);
       }
-    }, t.createConcept).open();
+    }, (name) => t.createConcept({ name })).open();
   }
 
   async installSample() {
     const { vault } = this.app;
-    const example = sample(this.lang);
+    const example = sample(exampleLang());
     if (vault.getAbstractFileByPath(normalizePath(example.folder))) {
-      new Notice(t.sampleExists(example.folder));
+      new Notice(t.sampleExists({ folder: example.folder }));
       await this.showMap();
       return;
     }
@@ -194,9 +192,4 @@ export default class TropaPlugin extends Plugin {
       await new Promise((resolve) => window.setTimeout(resolve, 100));
     }
   }
-}
-
-/** Obsidian's interface language: Russian for ru*, English otherwise. */
-function detectLang(): Lang {
-  return getLanguage().toLowerCase().startsWith("ru") ? "ru" : "en";
 }

@@ -159,7 +159,7 @@ export class Store extends Events {
       .then(() => this.writeProgress())
       .catch((error) => {
         console.error("Tropa: failed to save progress", error);
-        new Notice(t.progressNotSaved(error instanceof Error ? error.message : String(error)));
+        new Notice(t.progressNotSaved({ reason: error instanceof Error ? error.message : String(error) }));
       })
       .finally(() => {
         this.pendingWrites--;
@@ -252,7 +252,7 @@ export class Store extends Events {
   async materialize(id: string): Promise<TFile> {
     if (!isGhostId(id)) {
       const file = this.fileOf(id);
-      if (!file) throw new Error(t.noteNotFound(id));
+      if (!file) throw new Error(t.noteNotFound({ id }));
       return file;
     }
     return this.createConcept(this.graph.nodes.get(id)?.title ?? id.slice("ghost:".length));
@@ -306,7 +306,8 @@ export class Store extends Events {
     const { remainingMinutes, unestimated, steps } = this.route;
     if (steps.length === 0) return t.goalReached;
     if (remainingMinutes === 0) return t.noEstimate;
-    return (unestimated ? t.atLeast : t.about)(formatMinutes(remainingMinutes));
+    const duration = formatMinutes(remainingMinutes);
+    return unestimated ? t.atLeast({ duration }) : t.about({ duration });
   }
 
   private linkTo(id: string, from: string) {

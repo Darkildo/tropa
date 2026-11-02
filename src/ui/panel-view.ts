@@ -1,7 +1,7 @@
 import { ItemView, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
 import type TropaPlugin from "../main";
 import { attempt } from "../attempt";
-import { t } from "../i18n";
+import { isRtl, t } from "../i18n";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 
 export const PANEL_VIEW = "tropa-panel";
@@ -37,7 +37,7 @@ export class PanelView extends ItemView implements DetailHost {
 
   async onOpen() {
     this.contentEl.addClass("tropa-host");
-    this.body = this.contentEl.createDiv({ cls: "tropa-panel" });
+    this.body = this.contentEl.createDiv({ cls: "tropa-panel", attr: { dir: isRtl() ? "rtl" : "ltr" } });
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(
       this.app.workspace.on("file-open", () => {
