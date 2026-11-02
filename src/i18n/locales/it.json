@@ -265,5 +265,31 @@
     "one": "Qui è nascosto {count} passo del percorso",
     "other": "Qui sono nascosti {count} passi del percorso"
   },
-  "hiddenOnMap": "Nascosto sulla mappa"
+  "hiddenOnMap": "Nascosto sulla mappa",
+  "audit": {
+    "command": "Controlla la mappa",
+    "title": "Controllo della mappa",
+    "summary": {
+      "one": "{count} punto da guardare",
+      "many": "{count} punti da guardare",
+      "other": "{count} punti da guardare"
+    },
+    "clean": "Niente da correggere: ogni concetto ha dei materiali, ogni link ha la sua nota e niente richiede sé stesso.",
+    "noMaterials": "Concetti senza materiali",
+    "noMaterialsHint": "Ancora niente li insegna. Aggiungi un materiale a ciascuno o collegane uno che hai già.",
+    "orphans": "Non collegati",
+    "orphansHint": "Nessun link verso o da altre note della mappa.",
+    "ghosts": "Link a note mancanti",
+    "ghostsHint": "Altre note collegano questi concetti, ma le note non esistono ancora.",
+    "linkedFrom": {
+      "one": "Collegato da {count} nota",
+      "many": "Collegato da {count} note",
+      "other": "Collegato da {count} note"
+    },
+    "duplicates": "Possibili duplicati",
+    "duplicatesHint": "Nomi che differiscono solo per maiuscole o accenti. Uniscili o rinominane uno.",
+    "cycles": "Dipendenze circolari",
+    "cyclesHint": "Ogni concetto richiede il successivo e l’ultimo richiede il primo, quindi nessuno si può imparare per primo.",
+    "showOnMap": "Mostra sulla mappa"
+  }
 }

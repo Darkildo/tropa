@@ -31,5 +31,16 @@ for (const theme of ["light", "dark"]) {
   });
 }
 
+// The audit beside the map, opened from its button in the bar (light theme only).
+{
+  const { page, errors } = await open({ width: 1600, scale: 2, query: "?scenario=audit" });
+  await page.click("#center .tropa-audit-button");
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: `${OUT}audit-light.png` });
+  if (errors.length) throw new Error(`audit: ${errors.join("; ")}`);
+  await page.close();
+}
+
 await stop();
 console.log(`Screenshots: ${OUT}`);

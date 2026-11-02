@@ -239,5 +239,27 @@
   "foldedRoute": {
     "other": "这里隐藏了路线中的 {count} 步"
   },
-  "hiddenOnMap": "在地图上已隐藏"
+  "hiddenOnMap": "在地图上已隐藏",
+  "audit": {
+    "command": "检查导图",
+    "title": "导图检查",
+    "summary": {
+      "other": "有 {count} 处需要查看"
+    },
+    "clean": "没有需要修复的问题：每个概念都有资料，每个链接都有笔记，也没有自己依赖自己的情况。",
+    "noMaterials": "没有资料的概念",
+    "noMaterialsHint": "目前还没有资料讲授它们。为每个概念添加资料，或关联已有的资料。",
+    "orphans": "未连接",
+    "orphansHint": "与导图上的其他笔记之间没有任何链接。",
+    "ghosts": "指向不存在笔记的链接",
+    "ghostsHint": "其他笔记链接到了这些概念，但这些笔记还不存在。",
+    "linkedFrom": {
+      "other": "被 {count} 篇笔记链接"
+    },
+    "duplicates": "可能重复",
+    "duplicatesHint": "名称仅在大小写或重音符号上不同。合并它们，或重命名其中一个。",
+    "cycles": "循环依赖",
+    "cyclesHint": "每个概念依赖下一个，最后一个又依赖第一个，所以哪个都无法先学。",
+    "showOnMap": "在导图上显示"
+  }
 }

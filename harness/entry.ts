@@ -49,6 +49,24 @@ if (scenario === "large") {
       vault.seed(`Material ${i}.md`, `---\ntype: source\nformat: article\nminutes: ${10 + (i % 50)}\nteaches: ${links([(i * 7) % count])}\n${needs}---\n`);
     }
   }
+  // A material that teaches nothing yet, for the audit to point at.
+  if (params.has("lone")) vault.seed("Lone material.md", "---\ntype: source\nformat: video\n---\n");
+}
+if (scenario === "audit") {
+  // One of each finding: a concept without materials, a lone note, a missing note, duplicate names, a loop.
+  const note = (title: string, front: string) => vault.seed(`${title}.md`, `---\n${front}---\n`);
+  note("Algebra", "type: concept\n");
+  note("Algebra course", 'type: source\nformat: course\nteaches: ["[[Algebra]]"]\n');
+  note("Calculus", 'type: concept\nrequires: ["[[Algebra]]", "[[Missing note]]"]\n');
+  note("Lonely", "type: concept\n");
+  note("Café", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("cafe", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("Loop A", 'type: concept\nrequires: ["[[Loop B]]"]\n');
+  note("Loop B", 'type: concept\nrequires: ["[[Loop C]]"]\n');
+  note("Loop C", 'type: concept\nrequires: ["[[Loop A]]"]\n');
+  // Left out of the map by the scope: neither a lone note nor a missing one in the audit.
+  vault.seed("Archive/Old idea.md", "---\ntype: concept\n---\n");
+  note("Uses the archive", 'type: concept\nrequires: ["[[Old idea]]", "[[Algebra]]"]\n');
 }
 // The plugin must still work where workers are not available, or WebAssembly is not.
 if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
@@ -82,6 +100,7 @@ workspace.right = new WorkspaceLeaf(document.getElementById("right")!, "right");
 workspace.note = new WorkspaceLeaf(document.getElementById("note")!, "note");
 
 const plugin = new (TropaPlugin as any)(app, {});
+if (scenario === "audit") plugin.data = { excludeFolders: ["Archive"] };
 if (scenario === "scope") plugin.data = { excludeFolders: ["Archive", "Attachments", "Tropa"], excludeTags: ["private"] };
 await plugin.onload();
 await new Promise((resolve) => setTimeout(resolve, 20));

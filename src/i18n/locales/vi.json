@@ -239,5 +239,27 @@
   "foldedRoute": {
     "other": "Có {count} bước của lộ trình bị ẩn ở đây"
   },
-  "hiddenOnMap": "Bị ẩn trên bản đồ"
+  "hiddenOnMap": "Bị ẩn trên bản đồ",
+  "audit": {
+    "command": "Kiểm tra bản đồ",
+    "title": "Kiểm tra bản đồ",
+    "summary": {
+      "other": "{count} điểm cần xem"
+    },
+    "clean": "Không có gì cần sửa: khái niệm nào cũng có tài liệu, liên kết nào cũng có ghi chú, và không có gì tự yêu cầu chính nó.",
+    "noMaterials": "Khái niệm chưa có tài liệu",
+    "noMaterialsHint": "Chưa có gì dạy các khái niệm này. Thêm tài liệu cho từng cái hoặc liên kết tài liệu bạn đã có.",
+    "orphans": "Không có liên kết",
+    "orphansHint": "Không có liên kết nào tới hoặc từ ghi chú khác trên bản đồ.",
+    "ghosts": "Liên kết tới ghi chú chưa có",
+    "ghostsHint": "Các ghi chú khác liên kết tới những khái niệm này, nhưng ghi chú của chúng chưa tồn tại.",
+    "linkedFrom": {
+      "other": "Được liên kết từ {count} ghi chú"
+    },
+    "duplicates": "Có thể trùng lặp",
+    "duplicatesHint": "Tên chỉ khác nhau ở chữ hoa, chữ thường hoặc dấu. Gộp chúng lại hoặc đổi tên một cái.",
+    "cycles": "Phụ thuộc vòng tròn",
+    "cyclesHint": "Mỗi khái niệm yêu cầu khái niệm tiếp theo và khái niệm cuối yêu cầu khái niệm đầu, nên không cái nào học trước được.",
+    "showOnMap": "Hiện trên bản đồ"
+  }
 }
