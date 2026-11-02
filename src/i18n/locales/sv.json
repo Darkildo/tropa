@@ -40,7 +40,9 @@
     "recommendsKey": "Rekommenderad länk",
     "recommendsKeyDesc": "Bra att ha, men låser inget.",
     "teachesKey": "Vad ett material lär ut",
-    "teachesKeyDesc": "Begrepp som materialet tar upp."
+    "teachesKeyDesc": "Begrepp som materialet tar upp.",
+    "materialsKey": "Material i begreppet",
+    "materialsKeyDesc": "Länkar och bilagor som står direkt i begreppet, utan en separat anteckning."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} tim",
@@ -87,6 +89,11 @@
   "durationDesc": "I minuter. Ruttens uppskattning är summan av dessa.",
   "addMaterial": "Lägg till material",
   "materialNameRequired": "Ange materialets namn",
+  "inlineMaterial": "Behåll i begreppet",
+  "inlineMaterialDesc": "Lägg till länken i begreppets egen lista i stället för att skapa en anteckning för materialet.",
+  "inlineLinkRequired": "Ange en länk som https://… eller [[fil.pdf]]",
+  "inlineMaterialHint": "Står i själva begreppet, det finns ingen separat anteckning.",
+  "attachment": "Bilaga",
   "knowBeforePrompt": "Vad behöver man kunna före ”{title}”?",
   "unlocksPrompt": "Vad låser ”{title}” upp?",
   "note": "Anteckning",

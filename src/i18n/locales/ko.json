@@ -40,7 +40,9 @@
     "recommendsKey": "권장 연결",
     "recommendsKeyDesc": "도움이 되지만 잠그지는 않습니다.",
     "teachesKey": "자료가 가르치는 것",
-    "teachesKeyDesc": "자료가 다루는 개념."
+    "teachesKeyDesc": "자료가 다루는 개념.",
+    "materialsKey": "개념 안의 자료",
+    "materialsKeyDesc": "별도 노트 없이 개념에 직접 적힌 링크와 첨부 파일."
   },
   "minutes": "{minutes}분",
   "hours": "{hours}시간",
@@ -87,6 +89,11 @@
   "durationDesc": "분 단위입니다. 경로 예상 시간은 이 값의 합입니다.",
   "addMaterial": "자료 추가",
   "materialNameRequired": "자료 이름을 입력하세요",
+  "inlineMaterial": "개념 안에 두기",
+  "inlineMaterialDesc": "자료용 노트를 만드는 대신 링크를 개념 자체의 목록에 추가합니다.",
+  "inlineLinkRequired": "https://… 또는 [[파일.pdf]] 같은 링크를 입력하세요",
+  "inlineMaterialHint": "개념에 직접 적혀 있으며 별도 노트는 없습니다.",
+  "attachment": "첨부 파일",
   "knowBeforePrompt": "‘{title}’ 전에 알아야 할 것은?",
   "unlocksPrompt": "‘{title}’(으)로 무엇이 열리나요?",
   "note": "노트",

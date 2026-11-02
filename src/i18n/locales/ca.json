@@ -40,7 +40,9 @@
     "recommendsKey": "Enllaç recomanat",
     "recommendsKeyDesc": "Útil, però no bloqueja l’accés.",
     "teachesKey": "Què ensenya un material",
-    "teachesKeyDesc": "Conceptes que tracta el material."
+    "teachesKeyDesc": "Conceptes que tracta el material.",
+    "materialsKey": "Materials al concepte",
+    "materialsKeyDesc": "Enllaços i adjunts llistats al mateix concepte, sense una nota a part."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "En minuts. L’estimació de la ruta n’és la suma.",
   "addMaterial": "Afegeix material",
   "materialNameRequired": "Escriu el nom del material",
+  "inlineMaterial": "Mantén-ho al concepte",
+  "inlineMaterialDesc": "Afegeix l'enllaç a la llista del concepte en lloc de crear una nota per al material.",
+  "inlineLinkRequired": "Escriu un enllaç com https://… o [[fitxer.pdf]]",
+  "inlineMaterialHint": "És al mateix concepte, no hi ha cap nota a part.",
+  "attachment": "Adjunt",
   "knowBeforePrompt": "Què cal saber abans de «{title}»?",
   "unlocksPrompt": "Què desbloqueja «{title}»?",
   "note": "Nota",

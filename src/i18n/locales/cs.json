@@ -40,7 +40,9 @@
     "recommendsKey": "Doporučené propojení",
     "recommendsKeyDesc": "Užitečné, ale nic neblokuje.",
     "teachesKey": "Co materiál učí",
-    "teachesKeyDesc": "Pojmy, které materiál probírá."
+    "teachesKeyDesc": "Pojmy, které materiál probírá.",
+    "materialsKey": "Materiály v pojmu",
+    "materialsKeyDesc": "Odkazy a přílohy uvedené přímo v pojmu, bez samostatné poznámky."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "V minutách. Odhad trasy je jejich součet.",
   "addMaterial": "Přidat materiál",
   "materialNameRequired": "Zadejte název materiálu",
+  "inlineMaterial": "Ponechat v pojmu",
+  "inlineMaterialDesc": "Přidat odkaz do seznamu samotného pojmu místo vytvoření poznámky pro materiál.",
+  "inlineLinkRequired": "Zadejte odkaz jako https://… nebo [[soubor.pdf]]",
+  "inlineMaterialHint": "Je uveden přímo v pojmu, samostatná poznámka neexistuje.",
+  "attachment": "Příloha",
   "knowBeforePrompt": "Co je třeba znát před „{title}“?",
   "unlocksPrompt": "Co odemyká „{title}“?",
   "note": "Poznámka",

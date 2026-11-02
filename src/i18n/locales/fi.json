@@ -40,7 +40,9 @@
     "recommendsKey": "Suositeltu linkki",
     "recommendsKeyDesc": "Hyödyllinen, mutta ei estä etenemistä.",
     "teachesKey": "Mitä materiaali opettaa",
-    "teachesKeyDesc": "Käsitteet, joita materiaali käsittelee."
+    "teachesKeyDesc": "Käsitteet, joita materiaali käsittelee.",
+    "materialsKey": "Materiaalit käsitteessä",
+    "materialsKeyDesc": "Linkit ja liitteet, jotka on lueteltu suoraan käsitteessä ilman erillistä muistiinpanoa."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
@@ -87,6 +89,11 @@
   "durationDesc": "Minuutteina. Reitin arvio on näiden summa.",
   "addMaterial": "Lisää materiaali",
   "materialNameRequired": "Anna materiaalille nimi",
+  "inlineMaterial": "Pidä käsitteessä",
+  "inlineMaterialDesc": "Lisää linkki käsitteen omaan luetteloon sen sijaan, että materiaalille luotaisiin muistiinpano.",
+  "inlineLinkRequired": "Anna linkki, kuten https://… tai [[tiedosto.pdf]]",
+  "inlineMaterialHint": "Lueteltu suoraan käsitteessä, erillistä muistiinpanoa ei ole.",
+  "attachment": "Liite",
   "knowBeforePrompt": "Mitä pitää osata ennen kohdetta ”{title}”?",
   "unlocksPrompt": "Mitä ”{title}” avaa?",
   "note": "Muistiinpano",

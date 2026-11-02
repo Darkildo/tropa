@@ -40,7 +40,9 @@
     "recommendsKey": "প্রস্তাবিত লিংক",
     "recommendsKeyDesc": "কাজে লাগে, তবে কিছু আটকায় না।",
     "teachesKey": "উপকরণ যা শেখায়",
-    "teachesKeyDesc": "উপকরণে যেসব ধারণা আলোচনা করা হয়েছে।"
+    "teachesKeyDesc": "উপকরণে যেসব ধারণা আলোচনা করা হয়েছে।",
+    "materialsKey": "ধারণার ভেতরের উপকরণ",
+    "materialsKeyDesc": "আলাদা নোট ছাড়া সরাসরি ধারণায় লেখা লিংক ও সংযুক্তি।"
   },
   "minutes": "{minutes} মি.",
   "hours": "{hours} ঘ.",
@@ -87,6 +89,11 @@
   "durationDesc": "মিনিটে। পথের সময়ের হিসাব এগুলোর যোগফল।",
   "addMaterial": "উপকরণ যোগ করুন",
   "materialNameRequired": "উপকরণের নাম লিখুন",
+  "inlineMaterial": "ধারণায় রাখুন",
+  "inlineMaterialDesc": "উপকরণের জন্য নোট না বানিয়ে লিংকটি ধারণার নিজের তালিকায় যোগ করুন।",
+  "inlineLinkRequired": "https://… বা [[ফাইল.pdf]] এর মতো একটি লিংক দিন",
+  "inlineMaterialHint": "সরাসরি ধারণায় লেখা আছে, আলাদা নোট নেই।",
+  "attachment": "সংযুক্তি",
   "knowBeforePrompt": "“{title}”-এর আগে কী জানা দরকার?",
   "unlocksPrompt": "“{title}” কী খুলে দেয়?",
   "note": "নোট",

@@ -40,7 +40,9 @@
     "recommendsKey": "קישור מומלץ",
     "recommendsKeyDesc": "שימושי, אבל לא חוסם גישה.",
     "teachesKey": "מה חומר הלימוד מלמד",
-    "teachesKeyDesc": "המושגים שחומר הלימוד עוסק בהם."
+    "teachesKeyDesc": "המושגים שחומר הלימוד עוסק בהם.",
+    "materialsKey": "חומרי לימוד בתוך המושג",
+    "materialsKeyDesc": "קישורים וקבצים מצורפים שרשומים במושג עצמו, בלי פתק נפרד."
   },
   "minutes": "{minutes} דק׳",
   "hours": "{hours} שע׳",
@@ -87,6 +89,11 @@
   "durationDesc": "בדקות. הערכת המסלול היא הסכום שלהם.",
   "addMaterial": "הוספת חומר לימוד",
   "materialNameRequired": "יש להזין את שם חומר הלימוד",
+  "inlineMaterial": "להשאיר במושג",
+  "inlineMaterialDesc": "להוסיף את הקישור לרשימה של המושג עצמו במקום ליצור פתק לחומר הלימוד.",
+  "inlineLinkRequired": "יש להזין קישור כמו https://… או [[קובץ.pdf]]",
+  "inlineMaterialHint": "רשום במושג עצמו, אין פתק נפרד.",
+  "attachment": "קובץ מצורף",
   "knowBeforePrompt": "מה צריך לדעת לפני „{title}”?",
   "unlocksPrompt": "מה „{title}” פותח?",
   "note": "פתק",

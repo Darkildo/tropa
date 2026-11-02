@@ -3,7 +3,7 @@ import { t } from "./i18n";
 import type TropaPlugin from "./main";
 
 const FILES = ["progressPath", "conceptsFolder", "sourcesFolder"] as const;
-const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey"] as const;
+const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey", "materialsKey"] as const;
 type TextSetting = (typeof FILES)[number] | (typeof PROPERTIES)[number];
 
 const TEXT_SETTINGS: readonly string[] = [...FILES, ...PROPERTIES];

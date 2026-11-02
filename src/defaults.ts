@@ -7,6 +7,7 @@ export interface TropaSettings {
   requiresKey: string;
   recommendsKey: string;
   teachesKey: string;
+  materialsKey: string;
   progressPath: string;
   conceptsFolder: string;
   sourcesFolder: string;
@@ -26,6 +27,7 @@ export function defaultSettings(language: Lang): TropaSettings {
     requiresKey: "requires",
     recommendsKey: "recommends",
     teachesKey: "teaches",
+    materialsKey: "materials",
     ...FOLDERS[language],
     mapMode: "route",
     showSources: false,

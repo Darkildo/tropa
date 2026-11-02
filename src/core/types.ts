@@ -12,6 +12,18 @@ export interface NoteRef {
   title: string;
 }
 
+/** A material listed inside a concept, with its link already resolved by the host. */
+export interface InlineMaterial {
+  /** `material:` and the normalized URL or the vault path of the attachment. */
+  id: string;
+  title: string;
+  url?: string;
+  /** Vault path of an attachment, when the link resolves to a file. */
+  file?: string;
+  format: SourceFormat;
+  minutes?: number;
+}
+
 /** What the graph needs to know about one note. Free of any Obsidian type. */
 export interface NoteInput {
   id: string;
@@ -24,6 +36,8 @@ export interface NoteInput {
   minutes?: number;
   url?: string;
   summary?: string;
+  /** Concept: materials listed in the concept itself instead of separate notes. */
+  materials?: InlineMaterial[];
 }
 
 export interface GraphNode {
@@ -45,6 +59,10 @@ export interface GraphNode {
   minutes?: number;
   url?: string;
   summary?: string;
+  /** A material that lives in a concept's `materials` list and has no note of its own. */
+  inline?: boolean;
+  /** Inline material: vault path of the attachment it points to. */
+  file?: string;
 }
 
 export interface Progress {

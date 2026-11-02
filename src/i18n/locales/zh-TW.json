@@ -40,7 +40,9 @@
     "recommendsKey": "建議連結",
     "recommendsKeyDesc": "有幫助，但不會鎖住。",
     "teachesKey": "教材教的內容",
-    "teachesKeyDesc": "教材涵蓋的概念。"
+    "teachesKeyDesc": "教材涵蓋的概念。",
+    "materialsKey": "概念中的教材",
+    "materialsKeyDesc": "直接列在概念中的連結和附件，不另外建立筆記。"
   },
   "minutes": "{minutes} 分鐘",
   "hours": "{hours} 小時",
@@ -87,6 +89,11 @@
   "durationDesc": "以分鐘計。路線的估計時間就是它們的總和。",
   "addMaterial": "加入教材",
   "materialNameRequired": "請輸入教材名稱",
+  "inlineMaterial": "保留在概念中",
+  "inlineMaterialDesc": "把連結加到概念本身的清單，而不是為教材建立筆記。",
+  "inlineLinkRequired": "請輸入連結，例如 https://… 或 [[檔案.pdf]]",
+  "inlineMaterialHint": "直接列在概念中，沒有另外的筆記。",
+  "attachment": "附件",
   "knowBeforePrompt": "學「{title}」之前需要知道什麼？",
   "unlocksPrompt": "「{title}」會解鎖什麼？",
   "note": "筆記",

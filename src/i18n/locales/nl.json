@@ -40,7 +40,9 @@
     "recommendsKey": "Aanbevolen koppeling",
     "recommendsKeyDesc": "Nuttig, maar blokkeert niets.",
     "teachesKey": "Wat een leermiddel leert",
-    "teachesKeyDesc": "Concepten die het leermiddel behandelt."
+    "teachesKeyDesc": "Concepten die het leermiddel behandelt.",
+    "materialsKey": "Leermiddelen in het concept",
+    "materialsKeyDesc": "Links en bijlagen die direct in het concept staan, zonder aparte notitie."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} u",
@@ -87,6 +89,11 @@
   "durationDesc": "In minuten. De schatting van de route is de som hiervan.",
   "addMaterial": "Leermiddel toevoegen",
   "materialNameRequired": "Vul een naam in voor het leermiddel",
+  "inlineMaterial": "In het concept houden",
+  "inlineMaterialDesc": "De link aan de lijst van het concept toevoegen in plaats van een notitie voor het leermiddel te maken.",
+  "inlineLinkRequired": "Voer een link in zoals https://… of [[bestand.pdf]]",
+  "inlineMaterialHint": "Staat in het concept zelf, er is geen aparte notitie.",
+  "attachment": "Bijlage",
   "knowBeforePrompt": "Wat moet je weten vóór ‘{title}’?",
   "unlocksPrompt": "Wat ontgrendelt ‘{title}’?",
   "note": "Notitie",
