@@ -155,8 +155,14 @@ export default class TropaPlugin extends Plugin {
     await workspace.revealLeaf(leaf);
   }
 
+  /** Opens the note behind a node. A material listed in a concept opens its attachment or its link. */
   openNote(id: string, newTab = false) {
-    const file = this.store.fileOf(id);
+    const node = this.store.graph.nodes.get(id);
+    if (node?.inline && !node.file) {
+      if (node.url) window.open(node.url, "_blank", "noopener");
+      return;
+    }
+    const file = this.store.fileOf(node?.inline ? node.file! : id);
     if (!file) return;
     const { workspace } = this.app;
     const noteLeaf = workspace.getLeavesOfType("markdown")[0];

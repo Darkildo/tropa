@@ -723,6 +723,7 @@ export class MapView extends ItemView implements DetailHost {
     if (!node) return;
     const menu = new Menu();
     if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => attempt(store.materialize(id), `create ${node.title}`)));
+    else if (node.inline) menu.addItem((item) => item.setTitle(t.openSource).setIcon("external-link").onClick(() => this.openNote(id)));
     else menu.addItem((item) => item.setTitle(t.openNote).setIcon("file-text").onClick(() => this.openNote(id)));
 
     if (node.kind === "concept") {

@@ -1,6 +1,7 @@
 import { setIcon, type App } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { isGhostId, isPassed, knownCandidates, recommendMaterial, sourceState } from "../core/graph";
+import { ATTACHMENT_EXTENSIONS, fileFormat, materialId } from "../core/materials";
 import { CONFIDENCE_LEVELS } from "../core/progress";
 import type { GraphNode } from "../core/types";
 import { attempt } from "../attempt";
@@ -97,14 +98,30 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
       .filter((file) => !known.has(file.path) && !attached.has(file.path) && !store.graph.nodes.has(file.path))
       .map((file) => ({ id: file.path, title: file.basename, icon: "file", hint: t.note })),
   ];
+  // Attachments go into the concept's own list: a PDF or a video needs no note to be a material.
+  const attachments = new Map(
+    app.vault
+      .getFiles()
+      .filter((file) => ATTACHMENT_EXTENSIONS.has(file.extension.toLowerCase()) && !attached.has(materialId(file.path)))
+      .map((file) => [file.path, file] as const),
+  );
+  for (const file of attachments.values()) {
+    items.push({ id: file.path, title: file.name, icon: FORMAT_ICON[fileFormat(file.path)], hint: t.attachment });
+  }
   new PickModal(app, items, t.materialForPrompt({ title: node.title }), (item) => {
+    const attachment = item.create ? undefined : attachments.get(item.id);
+    if (attachment) {
+      const link = `[[${app.metadataCache.fileToLinktext(attachment, node.id, false)}]]`;
+      attempt(store.addInlineMaterial(node.id, { title: "", url: link, format: fileFormat(attachment.path) }), `attach ${item.title}`);
+      return;
+    }
     if (!item.create) {
       attempt(store.attachSource(item.id, node.id), `attach ${item.title}`);
       return;
     }
-    new SourceModal(app, item.title, async (draft) => {
-      const target = (await store.materialize(node.id)).path;
-      await store.createSource({ ...draft, teaches: [target] });
+    new SourceModal(app, item.title, async (draft, inline) => {
+      if (inline) await store.addInlineMaterial(node.id, draft);
+      else await store.createSource({ ...draft, teaches: [(await store.materialize(node.id)).path] });
     }).open();
   }, (name) => t.newMaterialNamed({ name })).open();
 }
@@ -191,7 +208,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
     });
     setIcon(link, "external-link");
   }
-  if (concept) iconButton(el, "x", t.detachMaterial({ title: source.title }), () => attempt(store.removeLink(id, "teachesKey", concept.id), "remove a link"));
+  if (concept) iconButton(el, "x", t.detachMaterial({ title: source.title }), () => attempt(store.detachMaterial(id, concept.id), "detach a material"));
 }
 
 function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
@@ -322,6 +339,7 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   status.createSpan({ text: parts.join(t.listSeparator) });
 
   if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
+  if (node.inline) parent.createEl("p", { cls: "tropa-hint", text: t.inlineMaterialHint });
 
   const actions = parent.createDiv({ cls: "tropa-actions" });
   const done = actions.createEl("button", {
@@ -334,11 +352,13 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   }
 
   const teaches = section(parent, t.teaches, node.teaches.length);
-  for (const id of node.teaches) conceptRow(teaches, host, id, () => attempt(store.removeLink(node.id, "teachesKey", id), "remove a link"));
+  for (const id of node.teaches) conceptRow(teaches, host, id, () => attempt(store.detachMaterial(node.id, id), "detach a material"));
   addButton(teaches, t.addConcept, () => {
     const items = conceptItems(host, new Set(node.teaches));
     new PickModal(host.app, items, t.teachesPrompt({ title: node.title }), async (item) => {
-      await store.addLink(node.id, "teachesKey", await linkedConcept(host, item));
+      const concept = await linkedConcept(host, item);
+      if (node.inline) await store.copyInlineMaterial(node.id, concept);
+      else await store.addLink(node.id, "teachesKey", concept);
     }, (name) => t.createConcept({ name })).open();
   });
 
