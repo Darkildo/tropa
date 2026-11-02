@@ -252,5 +252,29 @@
     "one": "Hier is {count} stap van de route verborgen",
     "other": "Hier zijn {count} stappen van de route verborgen"
   },
-  "hiddenOnMap": "Verborgen op de kaart"
+  "hiddenOnMap": "Verborgen op de kaart",
+  "audit": {
+    "command": "Kaart controleren",
+    "title": "Kaartcontrole",
+    "summary": {
+      "one": "{count} punt om te bekijken",
+      "other": "{count} punten om te bekijken"
+    },
+    "clean": "Niets te verhelpen: elk concept heeft materiaal, elke link heeft een notitie en niets vereist zichzelf.",
+    "noMaterials": "Concepten zonder materiaal",
+    "noMaterialsHint": "Nog niets leert ze. Voeg aan elk een materiaal toe of koppel er een die je al hebt.",
+    "orphans": "Niet verbonden",
+    "orphansHint": "Geen links van of naar andere notities op de kaart.",
+    "ghosts": "Links naar ontbrekende notities",
+    "ghostsHint": "Andere notities linken naar deze concepten, maar de notities bestaan nog niet.",
+    "linkedFrom": {
+      "one": "Gelinkt vanuit {count} notitie",
+      "other": "Gelinkt vanuit {count} notities"
+    },
+    "duplicates": "Mogelijke dubbele",
+    "duplicatesHint": "Namen die alleen in hoofdletters of accenten verschillen. Voeg ze samen of hernoem er een.",
+    "cycles": "Circulaire afhankelijkheden",
+    "cyclesHint": "Elk concept vereist het volgende en het laatste vereist het eerste, dus geen enkel kan als eerste geleerd worden.",
+    "showOnMap": "Tonen op de kaart"
+  }
 }

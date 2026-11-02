@@ -640,6 +640,73 @@ const dashes = (page, kind) => page.evaluate((k) => getComputedStyle(document.qu
   await page.close();
 }
 
+// --- map audit
+{
+  const { page } = await open();
+  ok("no audit button on a clean map", (await page.locator("#center .tropa-audit-button.is-hidden").count()) === 1 && !(await page.locator("#center .tropa-audit-button").isVisible()));
+  await page.close();
+}
+const runCommand = (page, id) => page.evaluate((cid) => tropa.plugin.commands.find((c) => c.id === cid).callback(), id);
+const auditCount = (page, kind) => page.evaluate((k) => document.querySelector(`.tropa-audit-section.is-${k} .tropa-audit-count`)?.textContent ?? "0", kind);
+{
+  const { page, errors } = await open({ query: "?scenario=audit" });
+  const button = page.locator("#center .tropa-audit-button");
+  ok("audit button shows the count", (await button.isVisible()) && (await button.innerText()).trim() === "11" && (await button.getAttribute("aria-label")) === "Map audit: 11 things to look at", await button.getAttribute("aria-label"));
+  ok("audit button warns about the cycle", (await button.getAttribute("class")).includes("has-cycles"));
+  await button.click(); await wait(page, 200);
+  ok("audit button opens the audit", (await page.locator("#note .tropa-audit h2").count()) === 1);
+  await page.screenshot({ path: SHOTS + "62-audit-button.png", clip: { x: 0, y: 0, width: 1120, height: 60 } });
+  ok("audit command is registered", await page.evaluate(() => tropa.plugin.commands.some((c) => c.id === "audit-map" && c.name === "Audit the map")));
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  ok("audit opens", (await page.locator(".tropa-audit h2").innerText()) === "Map audit");
+  ok("audit summary counts findings", (await page.locator(".tropa-audit-summary").innerText()) === "11 things to look at", await page.locator(".tropa-audit-summary").innerText());
+  const counts = {};
+  for (const kind of ["cycles", "ghosts", "duplicates", "no-materials", "orphans"]) counts[kind] = await auditCount(page, kind);
+  ok("audit groups", JSON.stringify(counts) === JSON.stringify({ cycles: "1", ghosts: "1", duplicates: "1", "no-materials": "7", orphans: "1" }), JSON.stringify(counts));
+  const chain = await page.locator(".tropa-audit-chip").allInnerTexts();
+  ok("cycle shown as a chain back to its start", chain.length === 4 && chain[0] === chain[3] && new Set(chain).size === 3, chain.join(" → "));
+  ok("ghost shows who links to it", (await page.locator(".is-ghosts .tropa-audit-meta").innerText()) === "Linked from 1 note");
+  ok("notes out of the map's scope are not in the audit", (await page.locator('.tropa-audit [data-id="Archive/Old idea.md"], .tropa-audit-name:text-is("Old idea")').count()) === 0);
+  ok("duplicates listed together", (await page.locator(".is-duplicates .tropa-audit-name").allInnerTexts()).sort().join() === "Café,cafe");
+  await page.screenshot({ path: SHOTS + "60-audit.png" });
+  // Show on the map: the lone note gets selected on the map.
+  await page.locator('.is-orphans .tropa-audit-row[data-id="Lonely.md"] .tropa-audit-map').click(); await wait(page, 300);
+  ok("show on map selects the note", (await page.locator("#center .tropa-side .tropa-title").innerText()) === "Lonely");
+  // Create the missing note: the audit follows the vault.
+  await page.locator(".is-ghosts .tropa-audit-create").click(); await wait(page, 500);
+  ok("missing note created", await page.evaluate(() => [...tropa.app.vault.contents.keys()].some((path) => path.endsWith("/Missing note.md"))));
+  ok("audit updates after a fix", (await page.locator(".tropa-audit-section.is-ghosts").count()) === 0 && (await auditCount(page, "no-materials")) === "8");
+  // A row opens its note.
+  await page.locator('.is-no-materials .tropa-audit-row[data-id="Calculus.md"] .tropa-audit-main').click(); await wait(page, 200);
+  ok("row opens its note", (await page.locator("#note .note-title").innerText()) === "Calculus");
+  ok("audit: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page } = await open({ query: "?scenario=audit&lang=ru" });
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  ok("ru: audit in Russian", (await page.locator(".tropa-audit h2").innerText()) === "Проверка карты" && (await page.locator(".tropa-audit-summary").innerText()) === "11 мест требуют внимания", await page.locator(".tropa-audit-summary").innerText());
+  ok("ru: audit button label", (await page.locator("#center .tropa-audit-button").getAttribute("aria-label")) === "Проверка карты: 11 мест требуют внимания");
+  ok("ru: command name", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "audit-map").name === "Проверить карту"));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=audit&lang=ar&theme=dark" });
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  const arButton = await page.evaluate(() => {
+    const button = document.querySelector("#center .tropa-audit-button");
+    const add = document.querySelector("#center .tropa-add-concept");
+    const eleven = new Intl.NumberFormat("ar").format(11);
+    return { label: button.getAttribute("aria-label"), expected: `فحص الخريطة: ${eleven} أمرًا للمراجعة`, rtl: getComputedStyle(button).direction === "rtl", order: button.getBoundingClientRect().left > add.getBoundingClientRect().left, count: button.textContent.trim(), eleven };
+  });
+  ok("ar: audit button right to left, with a plural label", arButton.rtl && arButton.order && arButton.label === arButton.expected && arButton.count === arButton.eleven, JSON.stringify(arButton));
+  ok("ar: audit right to left", (await page.locator(".tropa-audit[dir=rtl]").count()) === 1 && (await page.locator(".tropa-audit h2").innerText()) === "فحص الخريطة");
+  ok("ar: Latin names keep their own direction", await page.evaluate(() => getComputedStyle(document.querySelector(".tropa-audit-name")).direction === "ltr"));
+  ok("ar: arrows point along the chain", await page.evaluate(() => getComputedStyle(document.querySelector(".tropa-audit-arrow svg")).transform !== "none"));
+  await page.screenshot({ path: SHOTS + "61-audit-ar.png" });
+  ok("ar audit: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
 // --- focus on what is near, fold branches
 const mapView = "tropa.app.workspace.center.view";
 const nodeCount = (page) => page.locator(".tropa-node").count();
@@ -718,6 +785,52 @@ const fold = (page, title) => node(page, title).locator(".tropa-fold");
   await page.click(".tropa-focus-exit"); await wait(page, 500);
   ok("ar: exit button leaves focus", (await page.locator(".tropa-focus.is-active").count()) === 0);
   ok("ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- showing a note from the audit when the map has to change first
+{
+  // 1000 concepts with materials off: showing a material turns them on, and the new layout of
+  // 1700 nodes takes the worker a moment. The material is centred once it is on screen.
+  const { page, errors } = await open({ query: "?scenario=large&n=1000&materials&lone" });
+  await page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });
+  ok("large map starts without materials", (await page.locator(".tropa-node.is-source").count()) === 0);
+  await runCommand(page, "audit-map"); await wait(page, 300);
+  await page.locator('.is-orphans .tropa-audit-row[data-id="Lone material.md"] .tropa-audit-map').click();
+  await page.waitForFunction(() => document.querySelector("#center .tropa-side .tropa-title")?.textContent === "Lone material", null, { timeout: 60_000 });
+  // The map glides to the note and the nodes to their new places: wait until it settles inside the view.
+  const inside = () => {
+    const canvas = document.querySelector("#center .tropa-canvas").getBoundingClientRect();
+    const node = document.querySelector('#center .tropa-node.is-selected[data-id="Lone material.md"]')?.getBoundingClientRect();
+    return node && node.left >= canvas.left && node.right <= canvas.right && node.top >= canvas.top && node.bottom <= canvas.bottom;
+  };
+  await page.waitForFunction(inside, null, { timeout: 5000 }).catch(() => {});
+  const placed = await page.evaluate(() => {
+    const canvas = document.querySelector("#center .tropa-canvas").getBoundingClientRect();
+    const node = document.querySelector('#center .tropa-node.is-selected[data-id="Lone material.md"]')?.getBoundingClientRect();
+    return node && { inside: node.left >= canvas.left && node.right <= canvas.right && node.top >= canvas.top && node.bottom <= canvas.bottom, sources: document.querySelectorAll(".tropa-node.is-source").length };
+  });
+  ok("audit shows a material on a large map once it is laid out", placed?.inside && placed.sources === 701, JSON.stringify(placed));
+  ok("large audit: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // On the example: a folded branch and a focus give way to the note asked for.
+  const { page, errors } = await open();
+  const show = (path) => page.evaluate((p) => tropa.app.workspace.center.view.focusNode(p), path);
+  await node(page, "Backpropagation").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  ok("fold hides Transformer", (await node(page, "Transformer").count()) === 0);
+  await show("Tropa/Example/Concepts/Transformer.md"); await wait(page, 300);
+  ok("showing a folded concept unfolds its branch", (await page.locator('.tropa-node.is-selected:has(.tropa-node-title:text-is("Transformer"))').count()) === 1);
+  await node(page, "Backpropagation").focus(); await page.keyboard.press("c"); await wait(page, 500);
+  await show("Tropa/Example/Materials/The Illustrated Transformer.md"); await wait(page, 500);
+  ok("showing a material of a folded concept turns materials on and unfolds", (await page.locator('.tropa-node.is-source.is-selected:has(.tropa-node-title:text-is("The Illustrated Transformer"))').count()) === 1);
+  await page.evaluate(() => tropa.app.workspace.center.view.select("Tropa/Example/Concepts/Gradient.md"));
+  await node(page, "Gradient").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  ok("focus is on", (await page.locator(".tropa-focus.is-active").count()) === 1 && (await node(page, "Tokenization").count()) === 0);
+  await show("Tropa/Example/Concepts/Tokenization.md"); await wait(page, 500);
+  ok("showing a concept outside the focus leaves the focus", (await page.locator(".tropa-focus.is-active").count()) === 0 && (await page.locator('.tropa-node.is-selected:has(.tropa-node-title:text-is("Tokenization"))').count()) === 1);
+  ok("show on map: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

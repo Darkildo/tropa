@@ -232,4 +232,23 @@ export const en = {
   hiddenOnMap: "Hidden on the map",
   openNote: "Open note",
   clearMastered: "Clear mastered mark",
+
+  audit: {
+    command: "Audit the map",
+    title: "Map audit",
+    summary: { one: "{count} thing to look at", other: "{count} things to look at" },
+    clean: "Nothing to fix: every concept has materials, every link has a note, and nothing requires itself.",
+    noMaterials: "Concepts without materials",
+    noMaterialsHint: "Nothing teaches these yet. Add a material to each, or link one you have.",
+    orphans: "Not connected",
+    orphansHint: "No links to or from anything on the map.",
+    ghosts: "Links to missing notes",
+    ghostsHint: "Other notes link to these concepts, but the notes do not exist yet.",
+    linkedFrom: { one: "Linked from {count} note", other: "Linked from {count} notes" },
+    duplicates: "Possible duplicates",
+    duplicatesHint: "Names that differ only in case or accents. Merge them, or rename one.",
+    cycles: "Dependency cycles",
+    cyclesHint: "Each concept requires the next and the last requires the first, so none of them can be learned first.",
+    showOnMap: "Show on the map",
+  },
 } as const;

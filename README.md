@@ -17,6 +17,14 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
+- **Map audit.** The command **Tropa: Audit the map** opens one list of what needs a look:
+  - dependency cycles, shown as a chain back to where they start;
+  - links to missing notes, with how many notes point to each and a button to create it;
+  - possible duplicates, names that differ only in case or accents;
+  - concepts without materials;
+  - notes with no links at all.
+
+  Each row opens its note or shows it on the map, and the list updates as you fix things. When there is something to look at, a button in the map's bar shows how many, in red if there is a cycle, and opens the audit.
 - **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, F focuses on the concept or leaves the focus, 1–3 set the steps around, C folds or unfolds what the concept opens, Esc leaves the focus and then returns to the route.
 - **33 languages.** The interface follows Obsidian's language, right-to-left included. See [Languages](#languages).
 
@@ -27,6 +35,10 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 | Route | ![Route, light](docs/screenshots/route-light.png) | ![Route, dark](docs/screenshots/route-dark.png) |
 | Concept details | ![Concept, light](docs/screenshots/concept-light.png) | ![Concept, dark](docs/screenshots/concept-dark.png) |
 | Whole map with materials | ![Map, light](docs/screenshots/map-light.png) | ![Map, dark](docs/screenshots/map-dark.png) |
+
+The map audit, opened from its button in the map's bar: a cycle, a link to a missing note, a duplicate name, concepts without materials and a lone note.
+
+![Map audit, light](docs/screenshots/audit-light.png)
 
 ## Installation
 
@@ -55,7 +67,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 6. On a big map, select a concept and press **Focus** to see only what is near it, or fold the branches you do not need with the badge under a concept.
 
-Other commands: open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: audit the map, open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
