@@ -14,6 +14,8 @@ export interface DetailHost {
   store: Store;
   select(id: string | null): void;
   openNote(id: string, newTab?: boolean): void;
+  /** True when the map does not show this concept right now: folded away or outside the focus. */
+  isHidden?(id: string): boolean;
   /** Called when the person leaves the details of a selected item. */
   canGoBack: boolean;
 }
@@ -384,6 +386,8 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     for (const id of cycle) conceptRow(callout, host, id);
   }
 
+  if (store.excludedGoal) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
+
   if (!route) {
     const available = graph.concepts.filter((node) => store.states.get(node.id) === "available");
     parent.createEl("h3", { cls: "tropa-title", text: t.whereTo });
@@ -422,7 +426,8 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
   route.steps.forEach((step) => {
     const node = graph.nodes.get(step.id)!;
     const isNext = step.id === route.next;
-    const item = list.createEl("li", { cls: `tropa-step state-${step.state}${isNext ? " is-next" : ""}` });
+    const hidden = host.isHidden?.(step.id) ?? false;
+    const item = list.createEl("li", { cls: `tropa-step state-${step.state}${isNext ? " is-next" : ""}${hidden ? " is-hidden-on-map" : ""}` });
     item.tabIndex = 0;
     item.setAttr("role", "button");
     item.addEventListener("click", () => host.select(step.id));
@@ -430,6 +435,11 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
       if (event.key === "Enter") host.select(step.id);
     });
     item.createDiv({ cls: "tropa-step-title", text: node.title, attr: { dir: "auto" } });
+    if (hidden) {
+      const mark = item.createSpan({ cls: "tropa-step-hidden", attr: { title: t.hiddenOnMap } });
+      setIcon(mark, "eye-off");
+      item.setAttr("aria-description", t.hiddenOnMap);
+    }
     const material = step.material ? graph.nodes.get(step.material) : null;
     if (material && (isNext || step.state === "learning")) {
       const meta = item.createDiv({ cls: "tropa-step-meta" });

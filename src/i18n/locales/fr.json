@@ -42,7 +42,20 @@
     "teachesKey": "Ce qu’enseigne une ressource",
     "teachesKeyDesc": "Les concepts que couvre la ressource.",
     "materialsKey": "Ressources dans le concept",
-    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée."
+    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée.",
+    "scope": "Portée de la carte",
+    "excludeFolders": "Dossiers exclus",
+    "excludeFoldersDesc": "Un dossier par ligne. Les notes de ces dossiers et de leurs sous-dossiers restent hors de la carte, et les liens vers elles sont ignorés. Le fichier de progression est toujours lu. N’y mettez pas les dossiers des concepts et des ressources : ce que vous créez depuis la carte y est rangé.",
+    "excludeFoldersPlaceholder": "Archives\nModèles",
+    "excludeTags": "Tags exclus",
+    "excludeTagsDesc": "Un tag par ligne. Les notes portant ces tags restent hors de la carte, tags imbriqués compris : #brouillon couvre aussi #brouillon/ancien.",
+    "excludeTagsPlaceholder": "#brouillon\n#privé"
+  },
+  "scope": {
+    "excludedNote": "Cette note est exclue de la carte par les réglages de dossiers ou de tags.",
+    "goalExcluded": "L’objectif {title} est exclu de la carte par les réglages de dossiers ou de tags.",
+    "ownFolderExcluded": "{folder} est exclu, mais les nouveaux concepts ou ressources y sont créés : ils n’apparaîtront pas sur la carte.",
+    "goalExcludedHint": "L’objectif est exclu par les réglages de dossiers ou de tags, ses prérequis sont donc inconnus. Choisissez un autre objectif ou modifiez les réglages."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -218,6 +231,41 @@
   "fitAll": "Afficher toute la carte",
   "openNote": "Ouvrir la note",
   "clearMastered": "Retirer la marque « maîtrisé »",
+  "focus": "Focus",
+  "focusTitle": "N’afficher que ce qui est proche de ce concept (F)",
+  "focusHint": "Choisissez un concept pour n’afficher que ce qui l’entoure",
+  "focusHere": "Afficher ce qui est proche",
+  "focusOn": "Focus : {title}",
+  "focusDepth": "Étapes autour",
+  "focusSteps": {
+    "many": "{count} étapes autour",
+    "one": "{count} étape autour",
+    "other": "{count} étapes autour"
+  },
+  "exitFocus": "Quitter le focus",
+  "fold": "Masquer ce qu’il débloque",
+  "unfold": {
+    "many": "Afficher {count} concepts masqués",
+    "one": "Afficher {count} concept masqué",
+    "other": "Afficher {count} concepts masqués"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} concepts masqués",
+    "one": "{count} concept masqué",
+    "other": "{count} concepts masqués"
+  },
+  "unfolded": {
+    "many": "{count} concepts de nouveau visibles",
+    "one": "{count} concept de nouveau visible",
+    "other": "{count} concepts de nouveau visibles"
+  },
+  "foldedRoute": {
+    "many": "{count} étapes de la route sont masquées ici",
+    "one": "{count} étape de la route est masquée ici",
+    "other": "{count} étapes de la route sont masquées ici"
+  },
+  "hiddenOnMap": "Masqué sur la carte",
   "audit": {
     "command": "Vérifier la carte",
     "title": "Vérification de la carte",

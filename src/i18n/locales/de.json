@@ -42,7 +42,20 @@
     "teachesKey": "Was ein Material vermittelt",
     "teachesKeyDesc": "Konzepte, die das Material behandelt.",
     "materialsKey": "Materialien im Konzept",
-    "materialsKeyDesc": "Links und Anhänge, die direkt im Konzept stehen, ohne eigene Notiz."
+    "materialsKeyDesc": "Links und Anhänge, die direkt im Konzept stehen, ohne eigene Notiz.",
+    "scope": "Umfang der Karte",
+    "excludeFolders": "Ausgeschlossene Ordner",
+    "excludeFoldersDesc": "Ein Ordner pro Zeile. Notizen in diesen Ordnern und darunter erscheinen nicht auf der Karte, Links darauf werden ignoriert. Die Fortschrittsdatei wird immer gelesen. Lass die Ordner für Konzepte und Materialien weg: Was du auf der Karte anlegst, landet dort.",
+    "excludeFoldersPlaceholder": "Archiv\nVorlagen",
+    "excludeTags": "Ausgeschlossene Tags",
+    "excludeTagsDesc": "Ein Tag pro Zeile. Notizen mit diesen Tags erscheinen nicht auf der Karte, verschachtelte Tags eingeschlossen: #entwurf gilt auch für #entwurf/alt.",
+    "excludeTagsPlaceholder": "#entwurf\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Diese Notiz bleibt wegen der Ordner- oder Tag-Einstellungen außerhalb der Karte.",
+    "goalExcluded": "Das Ziel {title} bleibt wegen der Ordner- oder Tag-Einstellungen außerhalb der Karte.",
+    "ownFolderExcluded": "{folder} ist ausgeschlossen, aber neue Konzepte oder Materialien werden dort angelegt: Sie erscheinen nicht auf der Karte.",
+    "goalExcludedHint": "Das Ziel ist durch die Ordner- oder Tag-Einstellungen ausgeschlossen, daher sind seine Voraussetzungen unbekannt. Wähle ein anderes Ziel oder ändere die Einstellungen."
   },
   "minutes": "{minutes} Min.",
   "hours": "{hours} Std.",
@@ -210,6 +223,36 @@
   "fitAll": "Ganze Karte zeigen",
   "openNote": "Notiz öffnen",
   "clearMastered": "Markierung „beherrscht“ entfernen",
+  "focus": "Fokus",
+  "focusTitle": "Nur zeigen, was in der Nähe dieses Konzepts liegt (F)",
+  "focusHint": "Wähle ein Konzept, um nur seine Umgebung zu sehen",
+  "focusHere": "Umgebung zeigen",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Schritte im Umkreis",
+  "focusSteps": {
+    "one": "{count} Schritt im Umkreis",
+    "other": "{count} Schritte im Umkreis"
+  },
+  "exitFocus": "Fokus beenden",
+  "fold": "Ausblenden, was es freischaltet",
+  "unfold": {
+    "one": "{count} ausgeblendetes Konzept zeigen",
+    "other": "{count} ausgeblendete Konzepte zeigen"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} Konzept ausgeblendet",
+    "other": "{count} Konzepte ausgeblendet"
+  },
+  "unfolded": {
+    "one": "{count} Konzept wieder sichtbar",
+    "other": "{count} Konzepte wieder sichtbar"
+  },
+  "foldedRoute": {
+    "one": "Hier ist {count} Schritt der Route ausgeblendet",
+    "other": "Hier sind {count} Schritte der Route ausgeblendet"
+  },
+  "hiddenOnMap": "Auf der Karte ausgeblendet",
   "audit": {
     "command": "Karte prüfen",
     "title": "Kartenprüfung",

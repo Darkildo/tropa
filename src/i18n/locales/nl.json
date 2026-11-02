@@ -42,7 +42,20 @@
     "teachesKey": "Wat een leermiddel leert",
     "teachesKeyDesc": "Concepten die het leermiddel behandelt.",
     "materialsKey": "Leermiddelen in het concept",
-    "materialsKeyDesc": "Links en bijlagen die direct in het concept staan, zonder aparte notitie."
+    "materialsKeyDesc": "Links en bijlagen die direct in het concept staan, zonder aparte notitie.",
+    "scope": "Bereik van de kaart",
+    "excludeFolders": "Uitgesloten mappen",
+    "excludeFoldersDesc": "Eén map per regel. Notities in deze mappen en eronder komen niet op de kaart, en links ernaar worden genegeerd. Het voortgangsbestand wordt altijd gelezen. Zet de mappen voor concepten en materialen hier niet in: wat je vanaf de kaart maakt, komt daar terecht.",
+    "excludeFoldersPlaceholder": "Archief\nSjablonen",
+    "excludeTags": "Uitgesloten tags",
+    "excludeTagsDesc": "Eén tag per regel. Notities met deze tags komen niet op de kaart, geneste tags inbegrepen: #concept geldt ook voor #concept/oud.",
+    "excludeTagsPlaceholder": "#concept\n#privé"
+  },
+  "scope": {
+    "excludedNote": "Deze notitie blijft buiten de kaart door de instellingen voor mappen of tags.",
+    "goalExcluded": "Het doel {title} blijft buiten de kaart door de instellingen voor mappen of tags.",
+    "ownFolderExcluded": "{folder} is uitgesloten, maar nieuwe concepten of materialen worden daar gemaakt: ze verschijnen niet op de kaart.",
+    "goalExcludedHint": "Het doel is uitgesloten door de instellingen voor mappen of tags, dus wat je eerst moet weten is onbekend. Kies een ander doel of pas de instellingen aan."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} u",
@@ -210,6 +223,36 @@
   "fitAll": "Hele kaart tonen",
   "openNote": "Notitie openen",
   "clearMastered": "Markering ‘beheerst’ weghalen",
+  "focus": "Focus",
+  "focusTitle": "Alleen tonen wat dicht bij dit concept ligt (F)",
+  "focusHint": "Kies een concept om alleen de omgeving ervan te zien",
+  "focusHere": "Omgeving tonen",
+  "focusOn": "Focus: {title}",
+  "focusDepth": "Stappen rondom",
+  "focusSteps": {
+    "one": "{count} stap rondom",
+    "other": "{count} stappen rondom"
+  },
+  "exitFocus": "Focus verlaten",
+  "fold": "Verbergen wat het ontgrendelt",
+  "unfold": {
+    "one": "{count} verborgen concept tonen",
+    "other": "{count} verborgen concepten tonen"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} concept verborgen",
+    "other": "{count} concepten verborgen"
+  },
+  "unfolded": {
+    "one": "{count} concept weer zichtbaar",
+    "other": "{count} concepten weer zichtbaar"
+  },
+  "foldedRoute": {
+    "one": "Hier is {count} stap van de route verborgen",
+    "other": "Hier zijn {count} stappen van de route verborgen"
+  },
+  "hiddenOnMap": "Verborgen op de kaart",
   "audit": {
     "command": "Kaart controleren",
     "title": "Kaartcontrole",

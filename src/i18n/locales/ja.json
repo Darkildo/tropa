@@ -42,7 +42,20 @@
     "teachesKey": "教材が教えること",
     "teachesKeyDesc": "教材が扱う概念。",
     "materialsKey": "概念内の教材",
-    "materialsKeyDesc": "別のノートを作らず、概念に直接書かれたリンクや添付ファイル。"
+    "materialsKeyDesc": "別のノートを作らず、概念に直接書かれたリンクや添付ファイル。",
+    "scope": "マップの範囲",
+    "excludeFolders": "除外するフォルダー",
+    "excludeFoldersDesc": "1行に1フォルダー。これらのフォルダーとその下にあるノートはマップに載らず、そこへのリンクは無視されます。進捗ファイルは常に読み込まれます。概念と教材のフォルダーは入れないでください。マップから作成したものはそこに保存されます。",
+    "excludeFoldersPlaceholder": "アーカイブ\nテンプレート",
+    "excludeTags": "除外するタグ",
+    "excludeTagsDesc": "1行に1タグ。これらのタグが付いたノートはマップに載りません。入れ子のタグも含みます：#下書き は #下書き/古い も対象です。",
+    "excludeTagsPlaceholder": "#下書き\n#非公開"
+  },
+  "scope": {
+    "excludedNote": "このノートはフォルダーまたはタグの設定によりマップから除外されています。",
+    "goalExcluded": "目標 {title} はフォルダーまたはタグの設定によりマップから除外されています。",
+    "ownFolderExcluded": "{folder} は除外されていますが、新しい概念や教材はそこに作成されるため、マップに表示されません。",
+    "goalExcludedHint": "目標がフォルダーまたはタグの設定で除外されているため、前提となる概念がわかりません。別の目標を選ぶか、設定を変更してください。"
   },
   "minutes": "{minutes}分",
   "hours": "{hours}時間",
@@ -202,6 +215,31 @@
   "fitAll": "マップ全体を表示",
   "openNote": "ノートを開く",
   "clearMastered": "習得済みのマークを外す",
+  "focus": "フォーカス",
+  "focusTitle": "この概念の周辺だけを表示 (F)",
+  "focusHint": "概念を選ぶと、その周辺だけを表示できます",
+  "focusHere": "周辺だけを表示",
+  "focusOn": "フォーカス: {title}",
+  "focusDepth": "周辺のステップ数",
+  "focusSteps": {
+    "other": "周辺{count}ステップ"
+  },
+  "exitFocus": "フォーカスを終了",
+  "fold": "この先を隠す",
+  "unfold": {
+    "other": "隠れた{count}個の概念を表示"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "{count}個の概念を隠しました"
+  },
+  "unfolded": {
+    "other": "{count}個の概念を再表示しました"
+  },
+  "foldedRoute": {
+    "other": "ここにルートの{count}ステップが隠れています"
+  },
+  "hiddenOnMap": "マップ上で非表示",
   "audit": {
     "command": "マップを点検",
     "title": "マップの点検",

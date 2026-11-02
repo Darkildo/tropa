@@ -42,7 +42,20 @@
     "teachesKey": "Tài liệu dạy gì",
     "teachesKeyDesc": "Các khái niệm mà tài liệu đề cập.",
     "materialsKey": "Tài liệu trong khái niệm",
-    "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng."
+    "materialsKeyDesc": "Liên kết và tệp đính kèm ghi ngay trong khái niệm, không có ghi chú riêng.",
+    "scope": "Phạm vi bản đồ",
+    "excludeFolders": "Thư mục bị loại trừ",
+    "excludeFoldersDesc": "Mỗi dòng một thư mục. Ghi chú trong các thư mục này và thư mục con không lên bản đồ, liên kết tới chúng bị bỏ qua. Tệp tiến độ luôn được đọc. Đừng thêm thư mục khái niệm và tài liệu vào đây: những gì bạn tạo từ bản đồ được lưu ở đó.",
+    "excludeFoldersPlaceholder": "Lưu trữ\nMẫu",
+    "excludeTags": "Thẻ bị loại trừ",
+    "excludeTagsDesc": "Mỗi dòng một thẻ. Ghi chú có các thẻ này không lên bản đồ, kể cả thẻ lồng nhau: #nháp cũng áp dụng cho #nháp/cũ.",
+    "excludeTagsPlaceholder": "#nháp\n#riêng"
+  },
+  "scope": {
+    "excludedNote": "Ghi chú này nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
+    "goalExcluded": "Mục tiêu {title} nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
+    "ownFolderExcluded": "{folder} đang bị loại trừ, nhưng khái niệm hoặc tài liệu mới được tạo ở đó: chúng sẽ không hiện trên bản đồ.",
+    "goalExcludedHint": "Mục tiêu bị loại trừ bởi cài đặt thư mục hoặc thẻ nên chưa biết cần học gì trước. Hãy chọn mục tiêu khác hoặc đổi cài đặt."
   },
   "minutes": "{minutes} phút",
   "hours": "{hours} giờ",
@@ -202,6 +215,31 @@
   "fitAll": "Xem toàn bộ bản đồ",
   "openNote": "Mở ghi chú",
   "clearMastered": "Bỏ đánh dấu đã nắm vững",
+  "focus": "Tập trung",
+  "focusTitle": "Chỉ hiện những gì ở gần khái niệm này (F)",
+  "focusHint": "Chọn một khái niệm để chỉ xem những gì ở gần nó",
+  "focusHere": "Hiện những gì ở gần",
+  "focusOn": "Tập trung: {title}",
+  "focusDepth": "Số bước xung quanh",
+  "focusSteps": {
+    "other": "{count} bước xung quanh"
+  },
+  "exitFocus": "Thoát chế độ tập trung",
+  "fold": "Ẩn những gì nó mở khóa",
+  "unfold": {
+    "other": "Hiện {count} khái niệm bị ẩn"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "Đã ẩn {count} khái niệm"
+  },
+  "unfolded": {
+    "other": "{count} khái niệm hiện lại"
+  },
+  "foldedRoute": {
+    "other": "Có {count} bước của lộ trình bị ẩn ở đây"
+  },
+  "hiddenOnMap": "Bị ẩn trên bản đồ",
   "audit": {
     "command": "Kiểm tra bản đồ",
     "title": "Kiểm tra bản đồ",

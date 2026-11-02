@@ -125,6 +125,28 @@ button.tropa-toggle-sources.is-active {
 
 button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 
+/* Focus: only what is near one concept */
+
+.tropa-focus { display: inline-flex; flex: none; align-items: center; gap: 6px; }
+
+button.tropa-focus-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  font-size: var(--font-ui-small);
+}
+
+.tropa-focus-icon { display: inline-flex; }
+.tropa-focus-icon svg { width: 15px; height: 15px; }
+.tropa-focus.is-active button.tropa-focus-toggle { background: var(--background-modifier-active-hover); color: var(--text-accent); }
+.tropa-focus:not(.is-active) .tropa-focus-depth,
+.tropa-focus:not(.is-active) .tropa-focus-exit { display: none; }
+.tropa-focus-depth button { min-width: 28px; padding: 0 8px; font-variant-numeric: tabular-nums; }
+button.tropa-focus-exit { flex: none; width: 32px; height: 32px; padding: 0; }
+button.tropa-focus-toggle:disabled { opacity: 0.5; cursor: default; }
+
 /* Stage */
 
 .tropa-body { position: relative; display: flex; flex: 1; min-height: 0; }
@@ -442,6 +464,40 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 .tropa-node:hover .tropa-port,
 .tropa-port:hover { opacity: 1; transform: scale(1); }
 .is-connecting .tropa-port { display: none; }
+
+/* Fold: hide what a concept opens. Shown on hover, kept as "+K" once folded. */
+.tropa-fold {
+  position: absolute;
+  bottom: -11px;
+  inset-inline-end: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1.5px solid var(--tropa-line-strong);
+  border-radius: 10px;
+  background: var(--background-primary);
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.tropa-fold svg { width: 12px; height: 12px; }
+.tropa-fold.is-hidden { display: none; }
+.tropa-node:hover .tropa-fold,
+.tropa-node:focus-visible .tropa-fold,
+.tropa-node.is-folded .tropa-fold { opacity: 1; }
+.tropa-node.is-folded .tropa-fold { border-color: var(--tropa-route); color: var(--text-accent); }
+.tropa-node.is-folded .tropa-fold.has-route { background: var(--tropa-route); color: var(--text-on-accent); }
+.is-connecting .tropa-fold { display: none; }
 .is-connecting .tropa-canvas { cursor: crosshair; }
 
 .tropa-node.is-source {
@@ -855,6 +911,18 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .tropa-step.is-next .tropa-step-title { font-weight: var(--font-semibold); }
 .tropa-step.state-locked .tropa-step-title { color: var(--text-muted); }
 .tropa-step-meta { margin-top: 2px; color: var(--text-muted); font-size: 12px; line-height: 1.35; }
+.tropa-step.is-hidden-on-map { padding-inline-end: 30px; }
+.tropa-step.is-hidden-on-map .tropa-step-title { color: var(--text-muted); }
+
+.tropa-step-hidden {
+  position: absolute;
+  top: 9px;
+  inset-inline-end: 8px;
+  display: inline-flex;
+  color: var(--text-faint);
+}
+
+.tropa-step-hidden svg { width: 14px; height: 14px; }
 
 .tropa-offmap { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--tropa-line); }
 
@@ -876,6 +944,7 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .tropa-map.is-narrow .tropa-segment { flex: 1; order: 2; }
 .tropa-map.is-narrow .tropa-segment button { flex: 1; }
 .tropa-map.is-narrow button.tropa-toggle-sources { order: 2; }
+.tropa-map.is-narrow .tropa-focus { order: 2; }
 .tropa-map.is-narrow button.tropa-add-concept { order: 1; }
 .tropa-map.is-narrow .tropa-legend { display: none; }
 
@@ -906,6 +975,7 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .is-mobile button.tropa-icon-button,
 a.tropa-icon-button { opacity: 1; }
 .is-mobile .tropa-port { opacity: 1; transform: scale(1); }
+.is-mobile .tropa-fold { opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   .tropa-node,
