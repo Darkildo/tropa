@@ -1,7 +1,8 @@
 // Layout benchmark in Node: time and drawing quality of the 0.1 layout (dagre) and the current one.
 // npm run bench [-- --full]   --full adds dagre on the 1000-concept graphs (minutes, ~4 GB of heap)
-import { appendFileSync } from "node:fs";
-import { ENGINES, time, type Timing } from "./core";
+import { appendFileSync, existsSync, readFileSync } from "node:fs";
+import { ENGINES, time, withEngine, type Timing } from "./core";
+import { wasmEngine } from "../src/core/layout-wasm";
 import { benchCases } from "./gen";
 import { quality, rankAgreement, type Quality } from "./metrics";
 import type { Layout } from "../src/core/layout";
@@ -19,10 +20,14 @@ interface Row {
   sameRanks?: number;
 }
 
+// The WebAssembly engine draws the same as "tropa" (test/layout-wasm.test.ts); here it is only timed.
+const WASM = "dist/wasm/tropa_layout.wasm";
+const engines = existsSync(WASM) ? [...ENGINES, withEngine("wasm", "own Sugiyama, WebAssembly", wasmEngine(new Uint8Array(readFileSync(WASM))))] : ENGINES;
+
 const rows = new Map<string, Row>();
 for (const bench of benchCases()) {
   let reference: Layout | undefined;
-  for (const engine of ENGINES) {
+  for (const engine of engines) {
     if (engine.id === "dagre" && !full && bench.graph.nodes.size >= 1000) continue;
     const { timing, layout } = time(engine, bench);
     const row: Row = { timing, quality: quality(layout) };
@@ -41,8 +46,8 @@ const cell = (engine: string, name: string, pick: (row: Row) => string) => {
 };
 
 const lines = [
-  "| graph | nodes | dagre | own | crossings dagre / own | through nodes dagre / own | width × height dagre | width × height own | same rank |",
-  "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+  "| graph | nodes | dagre | own | own, WebAssembly | crossings dagre / own | through nodes dagre / own | width × height dagre | width × height own | same rank |",
+  "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
 ];
 for (const name of cases) {
   const own = rows.get(`tropa|${name}`)!;
@@ -52,6 +57,7 @@ for (const name of cases) {
       String(own.timing.nodes),
       cell("dagre", name, (row) => ms(row.timing.median)),
       ms(own.timing.median),
+      cell("wasm", name, (row) => ms(row.timing.median)),
       `${cell("dagre", name, (row) => String(row.quality.crossings))} / ${own.quality.crossings}`,
       `${cell("dagre", name, (row) => String(row.quality.throughNodes))} / ${own.quality.throughNodes}`,
       cell("dagre", name, (row) => `${row.quality.width} × ${row.quality.height}`),

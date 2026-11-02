@@ -606,10 +606,13 @@ const auditCount = (page, kind) => page.evaluate((k) => document.querySelector(`
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });
 {
-  const { page, errors } = await open({ query: "?scenario=large&n=400" });
+  const { page, errors, logs } = await open({ query: "?scenario=large&n=400" });
   await layoutDone(page);
   ok("large graph renders", (await page.locator(".tropa-node").count()) === 400);
   ok("large graph laid out in the worker", (await page.evaluate(`${view}.layouts.stats.inWorker`)) >= 1);
+  const engine = await page.evaluate(`${view}.layouts.stats.engine`);
+  ok("WebAssembly engine runs in the worker", engine === "wasm in a worker", engine);
+  ok("engine choice is logged once", logs.filter((line) => line.startsWith("Tropa: map layout by")).join() === "Tropa: map layout by wasm in a worker", logs.join(" | "));
   const ms = await page.evaluate(`(()=>{const t=performance.now(); const v=${view}; v.layoutKey=''; v.render(); return performance.now()-t})()`);
   console.log("400 nodes, cached layout, render ms", Math.round(ms));
   ok("same shape comes from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) >= 1);
@@ -618,7 +621,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   await page.close();
 }
 {
-  // 1000 concepts; materials on make it 1700 nodes, which take the engine a second or more.
+  // 1000 concepts; materials on make it 1700 nodes: about 0.7 s for the WebAssembly engine, 1.5 s for TypeScript.
   const { page, errors } = await open({ query: "?scenario=large&n=1000&materials" });
   await layoutDone(page);
   ok("1000 concepts render", (await page.locator(".tropa-node").count()) === 1000);
@@ -643,7 +646,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   await page.click(".tropa-toggle-sources");
   ok("layout runs in the background", (await page.locator(".tropa-canvas.is-laying-out[aria-busy=true]").count()) === 1);
   // Timers alone first: a click or a screenshot makes the page draw, which is not the layout's doing.
-  await wait(page, 700);
+  await wait(page, 250);
   const freeze = await page.evaluate(() => ({ ...window.freeze }));
   const zoom = () => page.evaluate(() => document.querySelector(".tropa-world").style.transform);
   const before = await zoom();
@@ -656,7 +659,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   await layoutDone(page);
   const total = await page.evaluate(() => ((window.freeze.on = false), window.freeze.pending));
   console.log(`1700 nodes in the worker: ${Math.round(total)} ms; first ${Math.round(freeze.pending)} ms: longest pause ${Math.round(freeze.longest)} ms; click ${clickMs} ms`);
-  ok("interface stays responsive during layout", freeze.pending > 500 && freeze.longest < 150, JSON.stringify(freeze));
+  ok("interface stays responsive during layout", freeze.pending > 200 && freeze.longest < 150, JSON.stringify(freeze));
   ok("materials laid out", (await page.locator(".tropa-node").count()) === 1700);
   const teaches = await dashes(page, "teaches");
   ok("large map zoomed out drops dashes", (await page.locator(".tropa-world.is-far.is-dense").count()) === 1 && teaches === "none", teaches);
@@ -675,7 +678,17 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   const { page, errors } = await open({ query: "?scenario=large&n=400&noworker" });
   await layoutDone(page);
   ok("without workers the map still lays out", (await page.locator(".tropa-node").count()) === 400 && (await page.evaluate(`${view}.layouts.stats.inWorker`)) === 0);
+  ok("without workers TypeScript runs on the main thread", (await page.evaluate(`${view}.layouts.stats.engine`)) === "ts on the main thread");
   ok("without workers: no page errors", !errors.some((e) => !e.includes("layout worker unavailable")), errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors, logs } = await open({ query: "?scenario=large&n=400&nowasm" });
+  await layoutDone(page);
+  const engine = await page.evaluate(`${view}.layouts.stats.engine`);
+  ok("without WebAssembly the map lays out with TypeScript in the worker", (await page.locator(".tropa-node").count()) === 400 && engine === "ts in a worker", engine);
+  ok("without WebAssembly the choice is logged", logs.some((line) => line === "Tropa: map layout by ts in a worker"), logs.join(" | "));
+  ok("without WebAssembly: no page errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

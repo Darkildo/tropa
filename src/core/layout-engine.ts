@@ -41,9 +41,14 @@ export interface LayoutEngine {
   layout(input: EngineInput): EngineOutput;
 }
 
-/** Engines by id; the worker runs the one a request names. */
+/**
+ * Engines that run anywhere, by id. The worker adds `wasm`, the Rust port of the same engine
+ * (layout-wasm.ts), and falls back to `ts` when it cannot load; the main thread has `ts` only, so
+ * the module is not carried twice in main.js.
+ */
 export const ENGINES: Record<string, LayoutEngine> = {
   ts: { id: "ts", layout: sugiyama },
 };
 
-export const DEFAULT_ENGINE = "ts";
+/** What the map asks for. The worker runs WebAssembly when it can, TypeScript otherwise. */
+export const DEFAULT_ENGINE = "wasm";

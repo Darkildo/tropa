@@ -135,6 +135,7 @@ These are the languages that have a finished Obsidian app translation and a webs
 
 ```bash
 npm install
+npm run build:wasm   # the layout engine's WebAssembly, needed by build, e2e and the benchmark (see Building)
 npm run lint         # ESLint with the Obsidian plugin rules
 npm test             # core: graph, states, cycles, route, layout, example map, i18n
 npm run build        # main.js
@@ -150,6 +151,7 @@ npm run bench:chromium  # the same in Chromium, plus how long the interface free
 `npm run e2e` and `npm run screenshots` need a Chromium for Playwright: `npx playwright install chromium`, or set `CHROMIUM_PATH` to an installed one.
 
 - `src/core`: logic with no dependency on Obsidian. The map layout is `sugiyama.ts`, behind the engine interface in `layout-engine.ts`; `layout-runner.ts` runs it in a worker for large maps.
+- `crates/tropa-layout`: the same layout engine in Rust, compiled to WebAssembly. Large maps are laid out with it, in the worker.
 - `src/i18n`: strings. English in `en.ts`, other languages in `locales/`.
 - `src/store.ts`: reads the vault, keeps progress, writes links.
 - `src/ui`: map, sidebar panel, modals.
@@ -157,11 +159,32 @@ npm run bench:chromium  # the same in Chromium, plus how long the interface free
 
 To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md), run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults; the changelog section becomes the release notes, and the build fails if it is missing.
 
+## Building
+
+`main.js` carries the layout engine twice: in TypeScript (`src/core/sugiyama.ts`) and as WebAssembly compiled from its Rust port (`crates/tropa-layout`), which makes the whole layout 2–3 times faster. The worker uses the WebAssembly one. Where WebAssembly or workers are unavailable, the TypeScript one runs instead. Both draw the same map to the last bit: `npm test` compares them on every benchmark graph.
+
+The WebAssembly is built from source and is not kept in git:
+
+1. Install Rust with [rustup](https://rustup.rs). `crates/tropa-layout/rust-toolchain.toml` pins the compiler (1.99.1) and the `wasm32-unknown-unknown` target; rustup installs both on first use.
+2. Run `npm run build:wasm`. It compiles the crate (`opt-level=3`, LTO, one codegen unit, `panic=abort`), optimizes the result with `wasm-opt -O3` from the `binaryen` npm package (pinned), and writes `dist/wasm/tropa_layout.wasm` with its size and sha256.
+3. `npm run build` then inlines it into `main.js` as base64.
+
+`npm run build:wasm -- --verify` builds it a second time from scratch and fails unless both builds match byte for byte. CI runs that check on every pull request.
+
+### For reviewers of the community catalog
+
+The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. The release workflow builds it from `crates/tropa-layout` (no dependencies), prints its sha256 in the log and adds it to the release notes.
+
+To check a release:
+1. Check out its tag and run `npm ci && npm run build:wasm`.
+2. Compare the printed sha256 with the one in the release notes.
+3. Optionally, decode the base64 string in `main.js` (`tropa:layout-wasm`) and compare that too.
+
 ## Limitations
 
 - Node positions are computed automatically and cannot be dragged.
 - A material listed in a concept cannot require anything. When a material needs its own prerequisites, make it a note.
-- Large maps take a while to lay out, though the interface stays responsive meanwhile: in Chromium on a desktop, about 60 ms for 400 concepts, 0.5 s for 400 concepts with their materials and 1.5 s for 1000 with materials (dense synthetic maps, `npm run bench:chromium`). Expect several times more on a phone.
+- Large maps take a while to lay out, though the interface stays responsive meanwhile: in Chromium on a desktop, about 25 ms for 400 concepts, 0.2 s for 400 concepts with their materials and 0.9 s for 1000 with materials (dense synthetic maps, `npm run bench:chromium`). Without WebAssembly it takes 2–3 times longer, and on a phone several times more.
 
 ## License
 

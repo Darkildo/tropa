@@ -48,8 +48,6 @@ if (scenario === "large") {
     }
   }
 }
-// The plugin must still work where workers are not available.
-if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
 if (scenario === "audit") {
   // One of each finding: a concept without materials, a lone note, a missing note, duplicate names, a loop.
   const note = (title: string, front: string) => vault.seed(`${title}.md`, `---\n${front}---\n`);
@@ -62,6 +60,17 @@ if (scenario === "audit") {
   note("Loop A", 'type: concept\nrequires: ["[[Loop B]]"]\n');
   note("Loop B", 'type: concept\nrequires: ["[[Loop C]]"]\n');
   note("Loop C", 'type: concept\nrequires: ["[[Loop A]]"]\n');
+}
+// The plugin must still work where workers are not available, or WebAssembly is not.
+if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
+if (params.has("nowasm")) {
+  const Native = window.Worker;
+  window.Worker = class extends Native {
+    constructor(url: string | URL, options?: WorkerOptions) {
+      const script = `self.WebAssembly = undefined; importScripts(${JSON.stringify(String(url))});`;
+      super(URL.createObjectURL(new Blob([script], { type: "text/javascript" })), options);
+    }
+  };
 }
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
 vault.getMarkdownFiles().forEach((file: any) => (app as any).metadataCache.index(file));

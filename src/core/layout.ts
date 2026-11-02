@@ -1,5 +1,5 @@
 import type { LearningGraph } from "./graph";
-import { DEFAULT_ENGINE, ENGINES, type EngineInput, type EngineOutput } from "./layout-engine";
+import { ENGINES, type EngineInput, type EngineOutput } from "./layout-engine";
 
 export type { EngineInput, EngineOutput } from "./layout-engine";
 
@@ -168,7 +168,7 @@ export function finishLayout(prepared: PreparedLayout, { output, paths }: Engine
 /** Lays the graph out on the calling thread. The map view goes through `LayoutRunner` instead. */
 export function layoutGraph(graph: LearningGraph, options: LayoutOptions): Layout {
   const prepared = prepareLayout(graph, options);
-  const output = ENGINES[DEFAULT_ENGINE].layout(prepared.input);
+  const output = ENGINES.ts.layout(prepared.input);
   return finishLayout(prepared, { output, paths: svgPaths(output) });
 }
 
