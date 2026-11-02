@@ -51,6 +51,8 @@ export class MapView extends ItemView implements DetailHost {
   private readonly layouts = new LayoutRunner(layoutWorker);
   /** The worker is still laying out the graph for `layoutKey`; the map shows the previous layout. */
   private layoutPending = false;
+  /** The layout the nodes and edges were last placed by: an unchanged one only needs repainting. */
+  private drawnLayout: Layout | null = null;
   private selected: string | null = null;
   private x = 40;
   private y = 40;
@@ -179,6 +181,8 @@ export class MapView extends ItemView implements DetailHost {
 
   render() {
     if (!this.root) return;
+    // Read before anything changes: reading it after the nodes are repainted would lay out the whole map.
+    const sideScroll = this.side.scrollTop;
     const empty = this.store.isEmpty;
     this.root.toggleClass("is-empty", empty);
     this.renderBar();
@@ -191,13 +195,13 @@ export class MapView extends ItemView implements DetailHost {
     if (this.layoutPending) {
       // Nodes that left the graph stay drawn until the new layout arrives; painting skips them.
       this.paintNodes();
-      this.renderSide();
+      this.renderSide(sideScroll);
       return;
     }
     this.syncNodes();
     this.paintNodes();
     this.drawEdges();
-    this.renderSide();
+    this.renderSide(sideScroll);
     if (this.needsFit && this.stage.clientWidth > 0) {
       this.needsFit = false;
       this.userMoved = false;
@@ -246,6 +250,15 @@ export class MapView extends ItemView implements DetailHost {
 
   private syncNodes() {
     const layout = this.layout!;
+    if (layout === this.drawnLayout) {
+      // Same places: only a title can have changed.
+      for (const [id, el] of this.nodeEls) {
+        const title = el.querySelector(".tropa-node-title")!;
+        const text = this.store.graph.nodes.get(id)?.title ?? "";
+        if (title.textContent !== text) title.textContent = text;
+      }
+      return;
+    }
     for (const [id, el] of this.nodeEls) {
       if (!layout.nodes.has(id) || el.dataset.kind !== this.store.graph.nodes.get(id)?.kind) {
         el.remove();
@@ -351,6 +364,9 @@ export class MapView extends ItemView implements DetailHost {
 
   private drawEdges() {
     const layout = this.layout!;
+    // Painting already updated the route on the edges; rebuilding thousands of paths is for a new layout.
+    if (layout === this.drawnLayout) return;
+    this.drawnLayout = layout;
     this.svg.empty();
     this.world.toggleClass("is-dense", layout.edges.length > DASHED_EDGES_MAX);
     const pad = 200;
@@ -360,12 +376,15 @@ export class MapView extends ItemView implements DetailHost {
     this.svg.style.left = `${-pad}px`;
     this.svg.style.top = `${-pad}px`;
 
+    const height = Math.max(1, layout.height);
     for (const edge of layout.edges) {
       const path = document.createElementNS(SVG_NS, "path");
       path.setAttribute("d", edge.path);
       path.dataset.from = edge.from;
       path.dataset.to = edge.to;
       path.dataset.kind = edge.kind;
+      const startY = layout.nodes.get(edge.from)?.y ?? 0;
+      path.style.setProperty("--tropa-delay", `${Math.round((startY / height) * 520)}ms`);
       this.svg.appendChild(path);
     }
     this.paintEdgeRoute();
@@ -374,7 +393,6 @@ export class MapView extends ItemView implements DetailHost {
   private paintEdgeRoute() {
     const { store } = this;
     const route = store.route;
-    const height = Math.max(1, this.layout?.height ?? 1);
     this.svg.querySelectorAll<SVGPathElement>("path").forEach((path) => {
       const { from, to, kind } = path.dataset as { from: string; to: string; kind: string };
       const onRoute = kind === "requires" && route?.closure.has(from) && route.closure.has(to);
@@ -384,9 +402,8 @@ export class MapView extends ItemView implements DetailHost {
         if (isPassed(store.progress, from)) classes.push(isPassed(store.progress, to) ? "is-walked" : "is-frontier");
       }
       if (kind === "requires" && store.graph.isInCycle(from) && store.graph.isInCycle(to)) classes.push("is-loop");
-      path.setAttribute("class", classes.join(" "));
-      const startY = this.layout?.nodes.get(from)?.y ?? 0;
-      path.style.setProperty("--tropa-delay", `${Math.round((startY / height) * 520)}ms`);
+      const className = classes.join(" ");
+      if (path.getAttribute("class") !== className) path.setAttribute("class", className);
     });
   }
 
@@ -450,9 +467,8 @@ export class MapView extends ItemView implements DetailHost {
     sources.setAttribute("aria-pressed", String(this.plugin.settings.showSources));
   }
 
-  private renderSide() {
+  private renderSide(scroll = this.side.scrollTop) {
     const { side, store } = this;
-    const scroll = side.scrollTop;
     const previous = side.dataset.showing;
     side.empty();
     side.toggleClass("is-collapsed", this.sideCollapsed);
@@ -476,7 +492,9 @@ export class MapView extends ItemView implements DetailHost {
 
     const showing = node?.id ?? "route";
     side.dataset.showing = showing;
-    side.scrollTop = previous === showing ? scroll : 0;
+    // Setting it lays the page out, so only when there is somewhere to scroll back to.
+    const target = previous === showing ? scroll : 0;
+    if (target > 0 || scroll > 0) side.scrollTop = target;
   }
 
   private renderEmpty() {
