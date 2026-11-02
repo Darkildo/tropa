@@ -4,7 +4,7 @@ import { layoutGraph, type Layout, type LaidOutNode } from "../core/layout";
 import { sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
-import { t } from "../i18n";
+import { isRtl, t } from "../i18n";
 import type TropaPlugin from "../main";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
@@ -78,7 +78,7 @@ export class MapView extends ItemView implements DetailHost {
   }
 
   async onOpen() {
-    this.root = this.contentEl.createDiv({ cls: "tropa-map" });
+    this.root = this.contentEl.createDiv({ cls: "tropa-map", attr: { dir: isRtl() ? "rtl" : "ltr" } });
     // Badges are drawn in CSS, so their text comes in through custom properties.
     this.root.style.setProperty("--tropa-next-label", JSON.stringify(t.nextBadge));
     this.root.style.setProperty("--tropa-goal-label", JSON.stringify(t.goalBadge));

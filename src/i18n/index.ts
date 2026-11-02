@@ -78,11 +78,13 @@ function compile(code: string): Strings {
     console.error(`Tropa: broken translation file ${code}.json`, error);
   }
   const numbers = new Intl.NumberFormat(code);
+  // Note titles are often Latin: in a right-to-left sentence they are isolated so punctuation stays in place.
+  const isolate = RTL.has(baseOf(code)) ? (text: string) => `\u2068${text}\u2069` : (text: string) => text;
   const fill = (template: string, params: Record<string, string | number>) =>
     template.replace(PLACEHOLDER, (match, name: string) => {
       const value = params[name];
       if (value === undefined) return match;
-      return typeof value === "number" ? numbers.format(value) : value;
+      return typeof value === "number" ? numbers.format(value) : isolate(value);
     });
   const rules = { own: new Intl.PluralRules(code), en: new Intl.PluralRules("en") };
 

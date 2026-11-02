@@ -1,7 +1,7 @@
 import { App, Modal, Notice, Setting, SuggestModal, setIcon } from "obsidian";
 import { guessFormat } from "../core/format";
 import type { SourceFormat } from "../core/types";
-import { t } from "../i18n";
+import { isRtl, t } from "../i18n";
 import { attempt } from "../attempt";
 import type { SourceDraft } from "../store";
 
@@ -23,6 +23,7 @@ export class PickModal extends SuggestModal<PickItem> {
     private readonly createLabel?: (query: string) => string,
   ) {
     super(app);
+    if (isRtl()) this.modalEl.dir = "rtl";
     this.setPlaceholder(placeholder);
     this.emptyStateText = t.nothingFound;
     this.setInstructions([
@@ -61,6 +62,7 @@ export class SourceModal extends Modal {
 
   constructor(app: App, title: string, private readonly onSave: (draft: SourceDraft) => void | Promise<void>) {
     super(app);
+    if (isRtl()) this.modalEl.dir = "rtl";
     this.draft = { title, url: "", format: "article" };
   }
 

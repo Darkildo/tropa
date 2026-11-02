@@ -204,7 +204,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     goal.createSpan({ text: t.yourGoal });
   }
 
-  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary });
+  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
   if (state === "cycle") {
     parent.createEl("p", {
@@ -285,7 +285,7 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
   if (node.minutes) parts.push(formatMinutes(node.minutes));
   status.createSpan({ text: parts.join(t.listSeparator) });
 
-  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary });
+  if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
   const actions = parent.createDiv({ cls: "tropa-actions" });
   const done = actions.createEl("button", {
