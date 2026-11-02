@@ -9,7 +9,7 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 ## Features
 
 - **Route to a goal.** Pick a concept you want to learn. Tropa shows only the steps that lead to it, in order, with the next one highlighted.
-- **Concepts and materials.** A concept is something you want to understand. A material is an article, video, book, paper, course or your own note that teaches it.
+- **Concepts and materials.** A concept is something you want to understand. A material is an article, video, book, paper, course or your own note that teaches it. A material can be a note of its own, or just a link or an attachment listed in the concept.
 - **Progress you can see.** Mark concepts as learning or mastered and materials as done. Mastering a concept unlocks the ones that depend on it. Every action can be undone.
 - **Start from what you know.** **I know this and what it needs** marks a concept together with its unmastered prerequisites in one step; untick anything you are unsure of. **Skip** leaves a concept out: it opens what depends on it but never counts as mastered. An optional confidence from 1 to 5 can be set on mastered and learning concepts.
 - **Time estimate.** Material durations add up to the time left on the route.
@@ -64,6 +64,11 @@ type: concept
 requires: ["[[Derivatives]]"]     # must be mastered first
 recommends: ["[[Probability]]"]   # useful, does not block access
 summary: Short description
+materials:                        # optional: materials without a note of their own
+  - https://en.wikipedia.org/wiki/Gradient
+  - "[[Deep Learning.pdf]]"
+  - "[The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)"
+  - { url: https://youtu.be/IHZwWFHWa-w, title: "Gradient descent, 3Blue1Brown", format: video, minutes: 21 }
 ---
 
 # Material
@@ -88,10 +93,15 @@ learning: ["[[Gradient]]"]
 done: ["[[3Blue1Brown, Essence of calculus]]"]   # finished materials
 skipped: ["[[Probability]]"]                      # opens what depends on it, not counted as mastered
 confidence-4: ["[[Derivatives]]"]                 # optional, confidence-1 … confidence-5
+done-materials:                                   # finished materials listed inside concepts
+  - https://en.wikipedia.org/wiki/Gradient
+  - "[[Deep Learning.pdf]]"
 ---
 ```
 
-`skipped` and the `confidence-N` lists are written only when they hold something and removed when they become empty, so a file from an earlier version reads as it is and stays unchanged until you use them. Marks are links, so renaming a note keeps them. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
+A material in a concept's `materials` list is a URL, a link to an attachment or a note, a Markdown link `[title](url)`, or an object with `url` or `file` and optional `title`, `format` and `minutes`. Without a title a link is named by its address and an attachment by its file name; without a format it is guessed from the address or the file extension. The same link in several concepts is one material that teaches all of them. A link that is already a material note, by the note itself or by its `url`, is shown as that note. Such materials count in the route time like any other, and the map shows them with the other materials. Finished ones go to `done-materials`: URLs as they are, attachments as links, so renaming the file keeps the mark.
+
+`skipped`, `done-materials` and the `confidence-N` lists are written only when they hold something and removed when they become empty, so a file from an earlier version reads as it is and stays unchanged until you use them. Marks are links, so renaming a note keeps them. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
 
 ## Demo vault (optional)
 
@@ -140,7 +150,7 @@ To release, run `npm version patch` (or `minor`, `major`) and push the tag: `git
 ## Limitations
 
 - Node positions are computed automatically and cannot be dragged.
-- A material must be a note. Link a PDF or video in your vault from a note.
+- A material listed in a concept cannot require anything. When a material needs its own prerequisites, make it a note.
 - Layout blocks the interface when the shape of the graph changes: about 0.4 s for 100 concepts, 1 s for 200 and 3.5 s for 400 with dense links.
 
 ## License
