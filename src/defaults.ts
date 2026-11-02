@@ -11,6 +11,10 @@ export interface TropaSettings {
   progressPath: string;
   conceptsFolder: string;
   sourcesFolder: string;
+  /** Folders left out of the map, with everything below them. */
+  excludeFolders: string[];
+  /** Tags left out of the map, nested tags included. Stored without `#`, in lower case. */
+  excludeTags: string[];
   mapMode: MapMode;
   showSources: boolean;
 }
@@ -29,6 +33,8 @@ export function defaultSettings(language: Lang): TropaSettings {
     teachesKey: "teaches",
     materialsKey: "materials",
     ...FOLDERS[language],
+    excludeFolders: [],
+    excludeTags: [],
     mapMode: "route",
     showSources: false,
   };

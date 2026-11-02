@@ -42,7 +42,21 @@
     "teachesKey": "Kaynağın öğrettikleri",
     "teachesKeyDesc": "Kaynağın ele aldığı kavramlar.",
     "materialsKey": "Kavramdaki kaynaklar",
-    "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler."
+    "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler.",
+    "scope": "Harita kapsamı",
+    "excludeFolders": "Hariç tutulan klasörler",
+    "excludeFoldersDesc": "Her satıra bir klasör. Bu klasörlerdeki ve alt klasörlerindeki notlar haritaya girmez, onlara verilen bağlantılar taslağa dönüşür. İlerleme dosyası her zaman okunur.",
+    "excludeFoldersPlaceholder": "Arşiv\nŞablonlar",
+    "excludeTags": "Hariç tutulan etiketler",
+    "excludeTagsDesc": "Her satıra bir etiket. Bu etiketleri taşıyan notlar haritaya girmez, iç içe etiketler de: #taslak, #taslak/eski etiketini de kapsar.",
+    "excludeTagsPlaceholder": "#taslak\n#özel"
+  },
+  "scope": {
+    "excludedCallout": "Bu not var, ancak klasör veya etiket ayarları yüzünden haritada yer almıyor.",
+    "excludedMeta": "Harita dışında",
+    "excludedNote": "Bu not, klasör veya etiket ayarları yüzünden harita dışında.",
+    "goalExcluded": "{title} hedefi, klasör veya etiket ayarları yüzünden harita dışında.",
+    "goalExcludedHint": "Hedef klasör veya etiket ayarlarıyla hariç tutulduğu için önce neyin bilinmesi gerektiği bilinmiyor. Başka bir hedef seçin ya da ayarları değiştirin."
   },
   "minutes": "{minutes} dk",
   "hours": "{hours} sa",

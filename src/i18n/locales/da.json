@@ -42,7 +42,21 @@
     "teachesKey": "Hvad et materiale lærer",
     "teachesKeyDesc": "Begreber, som materialet dækker.",
     "materialsKey": "Materialer i begrebet",
-    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note."
+    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note.",
+    "scope": "Kortets omfang",
+    "excludeFolders": "Udelukkede mapper",
+    "excludeFoldersDesc": "Én mappe pr. linje. Noter i disse mapper og undermapper kommer ikke på kortet, og links til dem bliver pladsholdere. Fremskridtsfilen læses altid.",
+    "excludeFoldersPlaceholder": "Arkiv\nSkabeloner",
+    "excludeTags": "Udelukkede tags",
+    "excludeTagsDesc": "Ét tag pr. linje. Noter med disse tags kommer ikke på kortet, indlejrede tags medregnet: #kladde dækker også #kladde/gammel.",
+    "excludeTagsPlaceholder": "#kladde\n#privat"
+  },
+  "scope": {
+    "excludedCallout": "Noten findes, men kortet udelader den på grund af indstillingerne for mapper eller tags.",
+    "excludedMeta": "Uden for kortet",
+    "excludedNote": "Noten holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "goalExcluded": "Målet {title} holdes uden for kortet af indstillingerne for mapper eller tags.",
+    "goalExcludedHint": "Målet er udelukket af indstillingerne for mapper eller tags, så det er ukendt, hvad der skal læres først. Vælg et andet mål, eller ret indstillingerne."
   },
   "minutes": "{minutes} min.",
   "hours": "{hours} t.",

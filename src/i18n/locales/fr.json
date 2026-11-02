@@ -42,7 +42,21 @@
     "teachesKey": "Ce qu’enseigne une ressource",
     "teachesKeyDesc": "Les concepts que couvre la ressource.",
     "materialsKey": "Ressources dans le concept",
-    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée."
+    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée.",
+    "scope": "Portée de la carte",
+    "excludeFolders": "Dossiers exclus",
+    "excludeFoldersDesc": "Un dossier par ligne. Les notes de ces dossiers et de leurs sous-dossiers restent hors de la carte, et les liens vers elles deviennent des ébauches. Le fichier de progression est toujours lu.",
+    "excludeFoldersPlaceholder": "Archives\nModèles",
+    "excludeTags": "Tags exclus",
+    "excludeTagsDesc": "Un tag par ligne. Les notes portant ces tags restent hors de la carte, tags imbriqués compris : #brouillon couvre aussi #brouillon/ancien.",
+    "excludeTagsPlaceholder": "#brouillon\n#privé"
+  },
+  "scope": {
+    "excludedCallout": "Cette note existe, mais la carte l’exclut à cause des réglages de dossiers ou de tags.",
+    "excludedMeta": "Hors de la carte",
+    "excludedNote": "Cette note est exclue de la carte par les réglages de dossiers ou de tags.",
+    "goalExcluded": "L’objectif {title} est exclu de la carte par les réglages de dossiers ou de tags.",
+    "goalExcludedHint": "L’objectif est exclu par les réglages de dossiers ou de tags, ses prérequis sont donc inconnus. Choisissez un autre objectif ou modifiez les réglages."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

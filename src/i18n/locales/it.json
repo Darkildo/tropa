@@ -42,7 +42,21 @@
     "teachesKey": "Cosa insegna un materiale",
     "teachesKeyDesc": "I concetti trattati dal materiale.",
     "materialsKey": "Materiali nel concetto",
-    "materialsKeyDesc": "Link e allegati elencati direttamente nel concetto, senza una nota a parte."
+    "materialsKeyDesc": "Link e allegati elencati direttamente nel concetto, senza una nota a parte.",
+    "scope": "Ambito della mappa",
+    "excludeFolders": "Cartelle escluse",
+    "excludeFoldersDesc": "Una cartella per riga. Le note in queste cartelle e nelle sottocartelle restano fuori dalla mappa, e i link verso di esse diventano segnaposto. Il file dei progressi viene sempre letto.",
+    "excludeFoldersPlaceholder": "Archivio\nModelli",
+    "excludeTags": "Tag esclusi",
+    "excludeTagsDesc": "Un tag per riga. Le note con questi tag restano fuori dalla mappa, tag annidati compresi: #bozza copre anche #bozza/vecchia.",
+    "excludeTagsPlaceholder": "#bozza\n#privato"
+  },
+  "scope": {
+    "excludedCallout": "Questa nota esiste, ma la mappa la esclude per le impostazioni di cartelle o tag.",
+    "excludedMeta": "Fuori dalla mappa",
+    "excludedNote": "Questa nota resta fuori dalla mappa per le impostazioni di cartelle o tag.",
+    "goalExcluded": "L’obiettivo {title} resta fuori dalla mappa per le impostazioni di cartelle o tag.",
+    "goalExcludedHint": "L’obiettivo è escluso dalle impostazioni di cartelle o tag, quindi i suoi prerequisiti non sono noti. Scegli un altro obiettivo o cambia le impostazioni."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

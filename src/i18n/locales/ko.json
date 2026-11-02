@@ -42,7 +42,21 @@
     "teachesKey": "자료가 가르치는 것",
     "teachesKeyDesc": "자료가 다루는 개념.",
     "materialsKey": "개념 안의 자료",
-    "materialsKeyDesc": "별도 노트 없이 개념에 직접 적힌 링크와 첨부 파일."
+    "materialsKeyDesc": "별도 노트 없이 개념에 직접 적힌 링크와 첨부 파일.",
+    "scope": "지도 범위",
+    "excludeFolders": "제외할 폴더",
+    "excludeFoldersDesc": "한 줄에 폴더 하나. 이 폴더와 하위 폴더의 노트는 지도에 나오지 않고, 그 노트로 가는 링크는 임시 노드가 됩니다. 진행 파일은 항상 읽습니다.",
+    "excludeFoldersPlaceholder": "보관함\n템플릿",
+    "excludeTags": "제외할 태그",
+    "excludeTagsDesc": "한 줄에 태그 하나. 이 태그가 있는 노트는 지도에 나오지 않으며 중첩 태그도 포함됩니다: #초안 은 #초안/옛것 도 제외합니다.",
+    "excludeTagsPlaceholder": "#초안\n#개인"
+  },
+  "scope": {
+    "excludedCallout": "이 노트는 있지만 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
+    "excludedMeta": "지도 밖",
+    "excludedNote": "이 노트는 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
+    "goalExcluded": "목표 {title}이(가) 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
+    "goalExcludedHint": "목표가 폴더 또는 태그 설정으로 제외되어 먼저 알아야 할 내용을 알 수 없습니다. 다른 목표를 고르거나 설정을 바꾸세요."
   },
   "minutes": "{minutes}분",
   "hours": "{hours}시간",

@@ -42,7 +42,21 @@
     "teachesKey": "Yang diajarkan materi",
     "teachesKeyDesc": "Konsep yang dibahas materi.",
     "materialsKey": "Materi di dalam konsep",
-    "materialsKeyDesc": "Tautan dan lampiran yang dicantumkan langsung di konsep, tanpa catatan terpisah."
+    "materialsKeyDesc": "Tautan dan lampiran yang dicantumkan langsung di konsep, tanpa catatan terpisah.",
+    "scope": "Cakupan peta",
+    "excludeFolders": "Folder yang dikecualikan",
+    "excludeFoldersDesc": "Satu folder per baris. Catatan di folder ini dan subfoldernya tidak masuk peta, dan tautan ke sana menjadi kerangka. Berkas kemajuan selalu dibaca.",
+    "excludeFoldersPlaceholder": "Arsip\nTemplat",
+    "excludeTags": "Tag yang dikecualikan",
+    "excludeTagsDesc": "Satu tag per baris. Catatan dengan tag ini tidak masuk peta, termasuk tag bersarang: #draf juga mencakup #draf/lama.",
+    "excludeTagsPlaceholder": "#draf\n#pribadi"
+  },
+  "scope": {
+    "excludedCallout": "Catatan ini ada, tetapi peta tidak memasukkannya karena pengaturan folder atau tag.",
+    "excludedMeta": "Di luar peta",
+    "excludedNote": "Catatan ini berada di luar peta karena pengaturan folder atau tag.",
+    "goalExcluded": "Tujuan {title} berada di luar peta karena pengaturan folder atau tag.",
+    "goalExcludedHint": "Tujuan dikecualikan oleh pengaturan folder atau tag, jadi prasyaratnya tidak diketahui. Pilih tujuan lain atau ubah pengaturannya."
   },
   "minutes": "{minutes} mnt",
   "hours": "{hours} jam",

@@ -42,7 +42,21 @@
     "teachesKey": "O que um material ensina",
     "teachesKeyDesc": "Conceitos que o material aborda.",
     "materialsKey": "Materiais no conceito",
-    "materialsKeyDesc": "Ligações e anexos listados no próprio conceito, sem nota à parte."
+    "materialsKeyDesc": "Ligações e anexos listados no próprio conceito, sem nota à parte.",
+    "scope": "Âmbito do mapa",
+    "excludeFolders": "Pastas excluídas",
+    "excludeFoldersDesc": "Uma pasta por linha. As notas nestas pastas e nas subpastas ficam fora do mapa, e as ligações para elas passam a rascunhos. O ficheiro de progresso é sempre lido.",
+    "excludeFoldersPlaceholder": "Arquivo\nModelos",
+    "excludeTags": "Etiquetas excluídas",
+    "excludeTagsDesc": "Uma etiqueta por linha. As notas com estas etiquetas ficam fora do mapa, incluindo as aninhadas: #rascunho também abrange #rascunho/antigo.",
+    "excludeTagsPlaceholder": "#rascunho\n#privado"
+  },
+  "scope": {
+    "excludedCallout": "Esta nota existe, mas o mapa deixa-a de fora pelas definições de pastas ou etiquetas.",
+    "excludedMeta": "Fora do mapa",
+    "excludedNote": "Esta nota fica fora do mapa pelas definições de pastas ou etiquetas.",
+    "goalExcluded": "O objetivo {title} fica fora do mapa pelas definições de pastas ou etiquetas.",
+    "goalExcludedHint": "O objetivo está excluído pelas definições de pastas ou etiquetas, por isso os seus pré-requisitos são desconhecidos. Escolha outro objetivo ou altere as definições."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

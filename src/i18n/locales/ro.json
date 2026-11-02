@@ -42,7 +42,21 @@
     "teachesKey": "Ce predă un material",
     "teachesKeyDesc": "Conceptele pe care le acoperă materialul.",
     "materialsKey": "Materiale în concept",
-    "materialsKeyDesc": "Linkuri și atașamente enumerate direct în concept, fără o notă separată."
+    "materialsKeyDesc": "Linkuri și atașamente enumerate direct în concept, fără o notă separată.",
+    "scope": "Domeniul hărții",
+    "excludeFolders": "Dosare excluse",
+    "excludeFoldersDesc": "Câte un dosar pe rând. Notele din aceste dosare și din subdosarele lor rămân în afara hărții, iar legăturile către ele devin schițe. Fișierul de progres este citit întotdeauna.",
+    "excludeFoldersPlaceholder": "Arhivă\nȘabloane",
+    "excludeTags": "Etichete excluse",
+    "excludeTagsDesc": "Câte o etichetă pe rând. Notele cu aceste etichete rămân în afara hărții, inclusiv cele imbricate: #ciornă acoperă și #ciornă/veche.",
+    "excludeTagsPlaceholder": "#ciornă\n#privat"
+  },
+  "scope": {
+    "excludedCallout": "Nota există, dar harta o lasă deoparte din cauza setărilor de dosare sau etichete.",
+    "excludedMeta": "În afara hărții",
+    "excludedNote": "Această notă rămâne în afara hărții din cauza setărilor de dosare sau etichete.",
+    "goalExcluded": "Obiectivul {title} rămâne în afara hărții din cauza setărilor de dosare sau etichete.",
+    "goalExcludedHint": "Obiectivul este exclus de setările de dosare sau etichete, deci nu i se cunosc cerințele. Alege alt obiectiv sau schimbă setările."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

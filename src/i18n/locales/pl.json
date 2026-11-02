@@ -42,7 +42,21 @@
     "teachesKey": "Czego uczy materiał",
     "teachesKeyDesc": "Pojęcia, które omawia materiał.",
     "materialsKey": "Materiały w pojęciu",
-    "materialsKeyDesc": "Linki i załączniki wymienione bezpośrednio w pojęciu, bez osobnej notatki."
+    "materialsKeyDesc": "Linki i załączniki wymienione bezpośrednio w pojęciu, bez osobnej notatki.",
+    "scope": "Zakres mapy",
+    "excludeFolders": "Wykluczone foldery",
+    "excludeFoldersDesc": "Jeden folder w wierszu. Notatki z tych folderów i ich podfolderów nie trafiają na mapę, a linki do nich stają się zalążkami. Plik postępów jest zawsze odczytywany.",
+    "excludeFoldersPlaceholder": "Archiwum\nSzablony",
+    "excludeTags": "Wykluczone tagi",
+    "excludeTagsDesc": "Jeden tag w wierszu. Notatki z tymi tagami nie trafiają na mapę, także z tagami zagnieżdżonymi: #szkic obejmuje też #szkic/stare.",
+    "excludeTagsPlaceholder": "#szkic\n#prywatne"
+  },
+  "scope": {
+    "excludedCallout": "Ta notatka istnieje, ale mapa ją pomija przez ustawienia folderów lub tagów.",
+    "excludedMeta": "Poza mapą",
+    "excludedNote": "Ta notatka jest poza mapą przez ustawienia folderów lub tagów.",
+    "goalExcluded": "Cel {title} jest poza mapą przez ustawienia folderów lub tagów.",
+    "goalExcludedHint": "Cel jest wykluczony przez ustawienia folderów lub tagów, więc nie wiadomo, co trzeba znać wcześniej. Wybierz inny cel albo zmień ustawienia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} godz.",

@@ -42,7 +42,21 @@
     "teachesKey": "Qué enseña un material",
     "teachesKeyDesc": "Conceptos que cubre el material.",
     "materialsKey": "Materiales en el concepto",
-    "materialsKeyDesc": "Enlaces y adjuntos listados en el propio concepto, sin una nota aparte."
+    "materialsKeyDesc": "Enlaces y adjuntos listados en el propio concepto, sin una nota aparte.",
+    "scope": "Alcance del mapa",
+    "excludeFolders": "Carpetas excluidas",
+    "excludeFoldersDesc": "Una carpeta por línea. Las notas de estas carpetas y sus subcarpetas quedan fuera del mapa, y los enlaces a ellas se convierten en borradores. El archivo de progreso se lee siempre.",
+    "excludeFoldersPlaceholder": "Archivo\nPlantillas",
+    "excludeTags": "Etiquetas excluidas",
+    "excludeTagsDesc": "Una etiqueta por línea. Las notas con estas etiquetas quedan fuera del mapa, incluidas las anidadas: #borrador también cubre #borrador/viejo.",
+    "excludeTagsPlaceholder": "#borrador\n#privado"
+  },
+  "scope": {
+    "excludedCallout": "Esta nota existe, pero el mapa la deja fuera por los ajustes de carpetas o etiquetas.",
+    "excludedMeta": "Fuera del mapa",
+    "excludedNote": "Esta nota queda fuera del mapa por los ajustes de carpetas o etiquetas.",
+    "goalExcluded": "El objetivo {title} queda fuera del mapa por los ajustes de carpetas o etiquetas.",
+    "goalExcludedHint": "El objetivo está excluido por los ajustes de carpetas o etiquetas, así que no se conocen sus requisitos. Elige otro objetivo o cambia los ajustes."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

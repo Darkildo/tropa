@@ -42,7 +42,21 @@
     "teachesKey": "教材が教えること",
     "teachesKeyDesc": "教材が扱う概念。",
     "materialsKey": "概念内の教材",
-    "materialsKeyDesc": "別のノートを作らず、概念に直接書かれたリンクや添付ファイル。"
+    "materialsKeyDesc": "別のノートを作らず、概念に直接書かれたリンクや添付ファイル。",
+    "scope": "マップの範囲",
+    "excludeFolders": "除外するフォルダー",
+    "excludeFoldersDesc": "1行に1フォルダー。これらのフォルダーとその下にあるノートはマップに載らず、そこへのリンクは仮のノードになります。進捗ファイルは常に読み込まれます。",
+    "excludeFoldersPlaceholder": "アーカイブ\nテンプレート",
+    "excludeTags": "除外するタグ",
+    "excludeTagsDesc": "1行に1タグ。これらのタグが付いたノートはマップに載りません。入れ子のタグも含みます：#下書き は #下書き/古い も対象です。",
+    "excludeTagsPlaceholder": "#下書き\n#非公開"
+  },
+  "scope": {
+    "excludedCallout": "このノートは存在しますが、フォルダーまたはタグの設定によりマップから除外されています。",
+    "excludedMeta": "マップ外",
+    "excludedNote": "このノートはフォルダーまたはタグの設定によりマップから除外されています。",
+    "goalExcluded": "目標 {title} はフォルダーまたはタグの設定によりマップから除外されています。",
+    "goalExcludedHint": "目標がフォルダーまたはタグの設定で除外されているため、前提となる概念がわかりません。別の目標を選ぶか、設定を変更してください。"
   },
   "minutes": "{minutes}分",
   "hours": "{hours}時間",

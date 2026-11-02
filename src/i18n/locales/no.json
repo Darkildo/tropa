@@ -42,7 +42,21 @@
     "teachesKey": "Hva et læremiddel lærer bort",
     "teachesKeyDesc": "Begreper som læremiddelet dekker.",
     "materialsKey": "Læremidler i begrepet",
-    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat."
+    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat.",
+    "scope": "Kartets omfang",
+    "excludeFolders": "Utelatte mapper",
+    "excludeFoldersDesc": "Én mappe per linje. Notater i disse mappene og undermappene kommer ikke på kartet, og lenker til dem blir plassholdere. Fremdriftsfilen leses alltid.",
+    "excludeFoldersPlaceholder": "Arkiv\nMaler",
+    "excludeTags": "Utelatte tagger",
+    "excludeTagsDesc": "Én tagg per linje. Notater med disse taggene kommer ikke på kartet, nestede tagger inkludert: #utkast dekker også #utkast/gammelt.",
+    "excludeTagsPlaceholder": "#utkast\n#privat"
+  },
+  "scope": {
+    "excludedCallout": "Notatet finnes, men kartet utelater det på grunn av innstillingene for mapper eller tagger.",
+    "excludedMeta": "Utenfor kartet",
+    "excludedNote": "Notatet holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "goalExcluded": "Målet {title} holdes utenfor kartet av innstillingene for mapper eller tagger.",
+    "goalExcludedHint": "Målet er utelatt av innstillingene for mapper eller tagger, så det er ukjent hva som må læres først. Velg et annet mål eller endre innstillingene."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
