@@ -51,6 +51,8 @@ Requires Obsidian 1.13.0 or later. The strings added in this release are machine
 
 ### Fixed
 - Maps zoomed out with thousands of dashed edges no longer freeze the browser for many seconds while it draws them.
+- When the note at the center of the focus is left out by the map scope or deleted, the focus closes and the map goes back to where it was. Before, the Focus button stayed pressed while the map already showed everything.
+- Folds follow changes of the map scope: the "+K" badge counts only what is still on the map, and a fold on a note that was left out is dropped.
 
 ## [0.2.0] - 2026-11-02
 
