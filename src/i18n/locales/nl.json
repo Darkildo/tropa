@@ -239,5 +239,20 @@
     "one": "Hier is {count} stap van de route verborgen",
     "other": "Hier zijn {count} stappen van de route verborgen"
   },
-  "hiddenOnMap": "Verborgen op de kaart"
+  "hiddenOnMap": "Verborgen op de kaart",
+  "exportMap": "Kaart exporteren",
+  "exportCanvas": "Kaart naar Canvas exporteren",
+  "exportSvg": "Kaart als SVG exporteren",
+  "exportPath": "Bestand",
+  "exportPathDesc": "Pad in de kluis. Ontbrekende mappen worden aangemaakt.",
+  "exportPathInvalid": "Geef een bestandspad in de kluis op",
+  "exportExists": "{path} bestaat al",
+  "exportReplace": "Vervangen",
+  "exportSave": "Opslaan",
+  "exportKeepBoth": "Beide houden",
+  "exportProgress": "Mijn voortgang tonen",
+  "exportProgressDesc": "Beheerste en geleerde concepten en het doel kleuren. Zet uit om de kaart zonder je voortgang te delen.",
+  "exportSaved": "Opgeslagen: {path}",
+  "exportNotReady": "De kaart wordt nog opgebouwd. Probeer het zo opnieuw.",
+  "canvasSoftLabel": "aanbevolen"
 }

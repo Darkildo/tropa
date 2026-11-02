@@ -226,5 +226,20 @@
   "foldedRoute": {
     "other": "ここにルートの{count}ステップが隠れています"
   },
-  "hiddenOnMap": "マップ上で非表示"
+  "hiddenOnMap": "マップ上で非表示",
+  "exportMap": "マップを書き出す",
+  "exportCanvas": "マップをCanvasに書き出す",
+  "exportSvg": "マップをSVGで書き出す",
+  "exportPath": "ファイル",
+  "exportPathDesc": "保管庫内のパス。存在しないフォルダは作成されます。",
+  "exportPathInvalid": "保管庫内のファイルパスを入力してください",
+  "exportExists": "{path} はすでに存在します",
+  "exportReplace": "置き換える",
+  "exportSave": "保存",
+  "exportKeepBoth": "両方残す",
+  "exportProgress": "自分の進捗を表示",
+  "exportProgressDesc": "習得済み・学習中の概念と目標に色を付けます。進捗なしでマップを共有するにはオフにします。",
+  "exportSaved": "保存しました: {path}",
+  "exportNotReady": "マップはまだ配置中です。少し待ってからもう一度お試しください。",
+  "canvasSoftLabel": "推奨"
 }

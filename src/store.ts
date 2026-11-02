@@ -458,6 +458,19 @@ export class Store extends Events {
     return file ? `[[${this.app.metadataCache.fileToLinktext(file, from, true)}]]` : `[[${node?.title ?? id}]]`;
   }
 
+  /** Writes an exported file. One that exists is replaced only when asked, never by surprise. */
+  async writeExport(path: string, content: string, replace: boolean): Promise<TFile> {
+    const existing = this.app.vault.getAbstractFileByPath(path);
+    if (existing instanceof TFile) {
+      if (!replace) throw new Error(`${path} already exists`);
+      await this.app.vault.modify(existing, content);
+      return existing;
+    }
+    if (existing) throw new Error(`${path} is a folder`);
+    await this.ensureFolder(path.split("/").slice(0, -1).join("/"));
+    return this.app.vault.create(path, content);
+  }
+
   async ensureFolder(folder: string) {
     if (!folder) return;
     const parts = normalizePath(folder).split("/");

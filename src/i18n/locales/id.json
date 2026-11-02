@@ -226,5 +226,20 @@
   "foldedRoute": {
     "other": "{count} langkah rute tersembunyi di sini"
   },
-  "hiddenOnMap": "Tersembunyi di peta"
+  "hiddenOnMap": "Tersembunyi di peta",
+  "exportMap": "Ekspor peta",
+  "exportCanvas": "Ekspor peta ke Canvas",
+  "exportSvg": "Ekspor peta sebagai SVG",
+  "exportPath": "Berkas",
+  "exportPathDesc": "Jalur di dalam brankas. Folder yang belum ada akan dibuat.",
+  "exportPathInvalid": "Masukkan jalur berkas di dalam brankas",
+  "exportExists": "{path} sudah ada",
+  "exportReplace": "Ganti",
+  "exportSave": "Simpan",
+  "exportKeepBoth": "Simpan keduanya",
+  "exportProgress": "Tampilkan kemajuan saya",
+  "exportProgressDesc": "Beri warna pada konsep yang dikuasai, yang sedang dipelajari, dan tujuan. Matikan untuk membagikan peta tanpa kemajuan Anda.",
+  "exportSaved": "Disimpan: {path}",
+  "exportNotReady": "Peta masih disusun. Coba lagi sebentar lagi.",
+  "canvasSoftLabel": "disarankan"
 }

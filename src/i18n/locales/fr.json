@@ -252,5 +252,20 @@
     "one": "{count} étape de la route est masquée ici",
     "other": "{count} étapes de la route sont masquées ici"
   },
-  "hiddenOnMap": "Masqué sur la carte"
+  "hiddenOnMap": "Masqué sur la carte",
+  "exportMap": "Exporter la carte",
+  "exportCanvas": "Exporter la carte vers Canvas",
+  "exportSvg": "Exporter la carte en SVG",
+  "exportPath": "Fichier",
+  "exportPathDesc": "Chemin dans le coffre. Les dossiers manquants seront créés.",
+  "exportPathInvalid": "Saisissez un chemin de fichier dans le coffre",
+  "exportExists": "{path} existe déjà",
+  "exportReplace": "Remplacer",
+  "exportSave": "Enregistrer",
+  "exportKeepBoth": "Garder les deux",
+  "exportProgress": "Afficher ma progression",
+  "exportProgressDesc": "Colorer les concepts maîtrisés et en cours ainsi que l’objectif. Désactivez pour partager la carte sans votre progression.",
+  "exportSaved": "Enregistré : {path}",
+  "exportNotReady": "La carte est encore en cours de disposition. Réessayez dans un instant.",
+  "canvasSoftLabel": "recommandé"
 }

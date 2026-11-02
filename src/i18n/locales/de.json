@@ -239,5 +239,20 @@
     "one": "Hier ist {count} Schritt der Route ausgeblendet",
     "other": "Hier sind {count} Schritte der Route ausgeblendet"
   },
-  "hiddenOnMap": "Auf der Karte ausgeblendet"
+  "hiddenOnMap": "Auf der Karte ausgeblendet",
+  "exportMap": "Karte exportieren",
+  "exportCanvas": "Karte als Canvas exportieren",
+  "exportSvg": "Karte als SVG exportieren",
+  "exportPath": "Datei",
+  "exportPathDesc": "Pfad im Tresor. Fehlende Ordner werden angelegt.",
+  "exportPathInvalid": "Gib einen Dateipfad im Tresor ein",
+  "exportExists": "{path} existiert bereits",
+  "exportReplace": "Ersetzen",
+  "exportSave": "Speichern",
+  "exportKeepBoth": "Beide behalten",
+  "exportProgress": "Meinen Fortschritt zeigen",
+  "exportProgressDesc": "Beherrschte und begonnene Konzepte und das Ziel einfärben. Ausschalten, um die Karte ohne deinen Fortschritt zu teilen.",
+  "exportSaved": "Gespeichert: {path}",
+  "exportNotReady": "Die Karte wird noch angeordnet. Versuch es gleich noch einmal.",
+  "canvasSoftLabel": "empfohlen"
 }

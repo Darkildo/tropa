@@ -239,5 +239,20 @@
     "one": "এখানে পথের {count}টি ধাপ লুকানো আছে",
     "other": "এখানে পথের {count}টি ধাপ লুকানো আছে"
   },
-  "hiddenOnMap": "মানচিত্রে লুকানো"
+  "hiddenOnMap": "মানচিত্রে লুকানো",
+  "exportMap": "মানচিত্র রপ্তানি",
+  "exportCanvas": "মানচিত্র Canvas-এ রপ্তানি করুন",
+  "exportSvg": "মানচিত্র SVG হিসেবে রপ্তানি করুন",
+  "exportPath": "ফাইল",
+  "exportPathDesc": "ভল্টের ভেতরের পথ। না থাকা ফোল্ডার তৈরি হবে।",
+  "exportPathInvalid": "ভল্টের ভেতরে একটি ফাইলের পথ লিখুন",
+  "exportExists": "{path} আগে থেকেই আছে",
+  "exportReplace": "প্রতিস্থাপন",
+  "exportSave": "সংরক্ষণ",
+  "exportKeepBoth": "দুটোই রাখুন",
+  "exportProgress": "আমার অগ্রগতি দেখান",
+  "exportProgressDesc": "আয়ত্ত করা ও শেখা চলছে এমন ধারণা এবং লক্ষ্য রঙ দিয়ে দেখান। অগ্রগতি ছাড়া মানচিত্র শেয়ার করতে বন্ধ করুন।",
+  "exportSaved": "সংরক্ষিত: {path}",
+  "exportNotReady": "মানচিত্র এখনও সাজানো হচ্ছে। একটু পরে আবার চেষ্টা করুন।",
+  "canvasSoftLabel": "প্রস্তাবিত"
 }

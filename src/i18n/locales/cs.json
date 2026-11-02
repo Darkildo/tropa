@@ -265,5 +265,20 @@
     "one": "Skryté kroky trasy: {count}",
     "other": "Skryté kroky trasy: {count}"
   },
-  "hiddenOnMap": "Skryto na mapě"
+  "hiddenOnMap": "Skryto na mapě",
+  "exportMap": "Export mapy",
+  "exportCanvas": "Exportovat mapu do Canvasu",
+  "exportSvg": "Exportovat mapu jako SVG",
+  "exportPath": "Soubor",
+  "exportPathDesc": "Cesta v trezoru. Chybějící složky se vytvoří.",
+  "exportPathInvalid": "Zadejte cestu k souboru uvnitř trezoru",
+  "exportExists": "{path} už existuje",
+  "exportReplace": "Nahradit",
+  "exportSave": "Uložit",
+  "exportKeepBoth": "Ponechat oba",
+  "exportProgress": "Zobrazit můj postup",
+  "exportProgressDesc": "Obarvit zvládnuté a studované pojmy a cíl. Vypněte, chcete-li sdílet mapu bez svého postupu.",
+  "exportSaved": "Uloženo: {path}",
+  "exportNotReady": "Mapa se ještě rozvrhuje. Zkuste to za chvíli.",
+  "canvasSoftLabel": "doporučeno"
 }

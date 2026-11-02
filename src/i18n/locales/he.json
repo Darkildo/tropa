@@ -252,5 +252,20 @@
     "two": "כאן מוסתרים {count} צעדים במסלול",
     "other": "כאן מוסתרים {count} צעדים במסלול"
   },
-  "hiddenOnMap": "מוסתר במפה"
+  "hiddenOnMap": "מוסתר במפה",
+  "exportMap": "ייצוא מפה",
+  "exportCanvas": "ייצוא המפה ל-Canvas",
+  "exportSvg": "ייצוא המפה כ-SVG",
+  "exportPath": "קובץ",
+  "exportPathDesc": "נתיב בכספת. תיקיות חסרות ייווצרו.",
+  "exportPathInvalid": "יש להזין נתיב קובץ בתוך הכספת",
+  "exportExists": "{path} כבר קיים",
+  "exportReplace": "החלפה",
+  "exportSave": "שמירה",
+  "exportKeepBoth": "שמירת שניהם",
+  "exportProgress": "הצגת ההתקדמות שלי",
+  "exportProgressDesc": "צביעת מושגים שנלמדו ושבלמידה, וגם את היעד. כבו כדי לשתף את המפה בלי ההתקדמות שלכם.",
+  "exportSaved": "נשמר: {path}",
+  "exportNotReady": "המפה עדיין מסודרת. נסו שוב בעוד רגע.",
+  "canvasSoftLabel": "מומלץ"
 }

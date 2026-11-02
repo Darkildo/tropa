@@ -226,5 +226,20 @@
   "foldedRoute": {
     "other": "這裡隱藏了路線中的 {count} 步"
   },
-  "hiddenOnMap": "在地圖上已隱藏"
+  "hiddenOnMap": "在地圖上已隱藏",
+  "exportMap": "匯出地圖",
+  "exportCanvas": "將地圖匯出為 Canvas",
+  "exportSvg": "將地圖匯出為 SVG",
+  "exportPath": "檔案",
+  "exportPathDesc": "儲存庫中的路徑。缺少的資料夾會自動建立。",
+  "exportPathInvalid": "請輸入儲存庫內的檔案路徑",
+  "exportExists": "{path} 已存在",
+  "exportReplace": "取代",
+  "exportSave": "儲存",
+  "exportKeepBoth": "兩個都保留",
+  "exportProgress": "顯示我的進度",
+  "exportProgressDesc": "為已掌握、學習中的概念和目標著色。關閉後可分享不含個人進度的地圖。",
+  "exportSaved": "已儲存：{path}",
+  "exportNotReady": "地圖仍在排列中，請稍後再試。",
+  "canvasSoftLabel": "推薦"
 }

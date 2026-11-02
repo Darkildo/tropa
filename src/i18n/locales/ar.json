@@ -291,5 +291,20 @@
     "zero": "لا خطوات مخفية من المسار هنا",
     "other": "{count} خطوة من المسار مخفية هنا"
   },
-  "hiddenOnMap": "مخفي على الخريطة"
+  "hiddenOnMap": "مخفي على الخريطة",
+  "exportMap": "تصدير الخريطة",
+  "exportCanvas": "تصدير الخريطة إلى Canvas",
+  "exportSvg": "تصدير الخريطة بصيغة SVG",
+  "exportPath": "الملف",
+  "exportPathDesc": "المسار داخل الخزنة. ستُنشأ المجلدات غير الموجودة.",
+  "exportPathInvalid": "أدخل مسار ملف داخل الخزنة",
+  "exportExists": "{path} موجود بالفعل",
+  "exportReplace": "استبدال",
+  "exportSave": "حفظ",
+  "exportKeepBoth": "الاحتفاظ بكليهما",
+  "exportProgress": "إظهار تقدّمي",
+  "exportProgressDesc": "تلوين المفاهيم المتقنة وقيد التعلّم والهدف. أوقفه لمشاركة الخريطة دون تقدّمك.",
+  "exportSaved": "تم الحفظ: {path}",
+  "exportNotReady": "ما زالت الخريطة قيد الترتيب. حاول مرة أخرى بعد لحظة.",
+  "canvasSoftLabel": "موصى به"
 }

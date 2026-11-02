@@ -239,5 +239,20 @@
     "one": "Tähän on piilotettu {count} reitin vaihe",
     "other": "Tähän on piilotettu {count} reitin vaihetta"
   },
-  "hiddenOnMap": "Piilotettu kartalta"
+  "hiddenOnMap": "Piilotettu kartalta",
+  "exportMap": "Vie kartta",
+  "exportCanvas": "Vie kartta Canvasiin",
+  "exportSvg": "Vie kartta SVG-muodossa",
+  "exportPath": "Tiedosto",
+  "exportPathDesc": "Polku holvissa. Puuttuvat kansiot luodaan.",
+  "exportPathInvalid": "Anna tiedostopolku holvin sisällä",
+  "exportExists": "{path} on jo olemassa",
+  "exportReplace": "Korvaa",
+  "exportSave": "Tallenna",
+  "exportKeepBoth": "Säilytä molemmat",
+  "exportProgress": "Näytä edistymiseni",
+  "exportProgressDesc": "Väritä hallitut ja opiskeltavat käsitteet sekä tavoite. Poista käytöstä, jos haluat jakaa kartan ilman edistymistäsi.",
+  "exportSaved": "Tallennettu: {path}",
+  "exportNotReady": "Karttaa asetellaan vielä. Yritä hetken päästä uudelleen.",
+  "canvasSoftLabel": "suositeltu"
 }

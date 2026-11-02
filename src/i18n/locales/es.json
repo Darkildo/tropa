@@ -252,5 +252,20 @@
     "one": "Aquí hay {count} paso de la ruta oculto",
     "other": "Aquí hay {count} pasos de la ruta ocultos"
   },
-  "hiddenOnMap": "Oculto en el mapa"
+  "hiddenOnMap": "Oculto en el mapa",
+  "exportMap": "Exportar mapa",
+  "exportCanvas": "Exportar el mapa a Canvas",
+  "exportSvg": "Exportar el mapa como SVG",
+  "exportPath": "Archivo",
+  "exportPathDesc": "Ruta en la bóveda. Las carpetas que falten se crearán.",
+  "exportPathInvalid": "Escribe una ruta de archivo dentro de la bóveda",
+  "exportExists": "{path} ya existe",
+  "exportReplace": "Reemplazar",
+  "exportSave": "Guardar",
+  "exportKeepBoth": "Conservar ambos",
+  "exportProgress": "Mostrar mi progreso",
+  "exportProgressDesc": "Colorear los conceptos dominados y en estudio y el objetivo. Desactívalo para compartir el mapa sin tu progreso.",
+  "exportSaved": "Guardado: {path}",
+  "exportNotReady": "El mapa todavía se está organizando. Inténtalo de nuevo en un momento.",
+  "canvasSoftLabel": "recomendado"
 }

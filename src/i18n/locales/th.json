@@ -226,5 +226,20 @@
   "foldedRoute": {
     "other": "มีขั้นของเส้นทางซ่อนอยู่ตรงนี้ {count} ขั้น"
   },
-  "hiddenOnMap": "ซ่อนอยู่บนแผนที่"
+  "hiddenOnMap": "ซ่อนอยู่บนแผนที่",
+  "exportMap": "ส่งออกแผนที่",
+  "exportCanvas": "ส่งออกแผนที่เป็น Canvas",
+  "exportSvg": "ส่งออกแผนที่เป็น SVG",
+  "exportPath": "ไฟล์",
+  "exportPathDesc": "พาธในคลัง โฟลเดอร์ที่ยังไม่มีจะถูกสร้างให้",
+  "exportPathInvalid": "ระบุพาธของไฟล์ภายในคลัง",
+  "exportExists": "มี {path} อยู่แล้ว",
+  "exportReplace": "แทนที่",
+  "exportSave": "บันทึก",
+  "exportKeepBoth": "เก็บไว้ทั้งสองไฟล์",
+  "exportProgress": "แสดงความคืบหน้าของฉัน",
+  "exportProgressDesc": "ระบายสีแนวคิดที่เชี่ยวชาญแล้ว ที่กำลังเรียน และเป้าหมาย ปิดไว้หากต้องการแชร์แผนที่โดยไม่มีความคืบหน้าของคุณ",
+  "exportSaved": "บันทึกแล้ว: {path}",
+  "exportNotReady": "แผนที่ยังจัดวางไม่เสร็จ ลองอีกครั้งในอีกสักครู่",
+  "canvasSoftLabel": "แนะนำ"
 }

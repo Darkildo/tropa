@@ -81,6 +81,8 @@ export default class TropaPlugin extends Plugin {
     this.addCommand({ id: "open-panel", name: t.openPanel, callback: () => attempt(this.showPanel(), "open the panel") });
     this.addCommand({ id: "new-concept", name: t.newConcept, callback: () => this.promptNewConcept() });
     this.addCommand({ id: "install-sample", name: t.installSample, callback: () => attempt(this.installSample(), "add the example map") });
+    this.addCommand({ id: "export-canvas", name: t.exportCanvas, callback: () => attempt(this.showMap((map) => map.exportCanvas()), "export the map") });
+    this.addCommand({ id: "export-svg", name: t.exportSvg, callback: () => attempt(this.showMap((map) => map.exportSvg()), "export the map") });
 
     this.addCommand({
       id: "find-concept",

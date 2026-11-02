@@ -239,5 +239,20 @@
     "one": "Her er {count} trin på ruten skjult",
     "other": "Her er {count} trin på ruten skjult"
   },
-  "hiddenOnMap": "Skjult på kortet"
+  "hiddenOnMap": "Skjult på kortet",
+  "exportMap": "Eksportér kort",
+  "exportCanvas": "Eksportér kortet til Canvas",
+  "exportSvg": "Eksportér kortet som SVG",
+  "exportPath": "Fil",
+  "exportPathDesc": "Sti i boksen. Manglende mapper oprettes.",
+  "exportPathInvalid": "Angiv en filsti i boksen",
+  "exportExists": "{path} findes allerede",
+  "exportReplace": "Erstat",
+  "exportSave": "Gem",
+  "exportKeepBoth": "Behold begge",
+  "exportProgress": "Vis mine fremskridt",
+  "exportProgressDesc": "Farv mestrede og igangværende begreber og målet. Slå fra for at dele kortet uden dine fremskridt.",
+  "exportSaved": "Gemt: {path}",
+  "exportNotReady": "Kortet er stadig ved at blive lagt ud. Prøv igen om et øjeblik.",
+  "canvasSoftLabel": "anbefalet"
 }

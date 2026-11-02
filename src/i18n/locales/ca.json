@@ -252,5 +252,20 @@
     "one": "Aquí hi ha {count} pas de la ruta amagat",
     "other": "Aquí hi ha {count} passos de la ruta amagats"
   },
-  "hiddenOnMap": "Amagat al mapa"
+  "hiddenOnMap": "Amagat al mapa",
+  "exportMap": "Exporta el mapa",
+  "exportCanvas": "Exporta el mapa a Canvas",
+  "exportSvg": "Exporta el mapa com a SVG",
+  "exportPath": "Fitxer",
+  "exportPathDesc": "Camí a la caixa forta. Es crearan les carpetes que faltin.",
+  "exportPathInvalid": "Escriu un camí de fitxer dins de la caixa forta",
+  "exportExists": "{path} ja existeix",
+  "exportReplace": "Substitueix",
+  "exportSave": "Desa",
+  "exportKeepBoth": "Conserva tots dos",
+  "exportProgress": "Mostra el meu progrés",
+  "exportProgressDesc": "Acoloreix els conceptes dominats i en estudi i l’objectiu. Desactiva-ho per compartir el mapa sense el teu progrés.",
+  "exportSaved": "Desat: {path}",
+  "exportNotReady": "El mapa encara s’està organitzant. Torna-ho a provar d’aquí a un moment.",
+  "canvasSoftLabel": "recomanat"
 }

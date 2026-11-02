@@ -265,5 +265,20 @@
     "one": "Tu ukryto {count} krok trasy",
     "other": "Tu ukryto {count} kroku trasy"
   },
-  "hiddenOnMap": "Ukryte na mapie"
+  "hiddenOnMap": "Ukryte na mapie",
+  "exportMap": "Eksport mapy",
+  "exportCanvas": "Eksportuj mapę do Canvas",
+  "exportSvg": "Eksportuj mapę jako SVG",
+  "exportPath": "Plik",
+  "exportPathDesc": "Ścieżka w sejfie. Brakujące foldery zostaną utworzone.",
+  "exportPathInvalid": "Podaj ścieżkę pliku w sejfie",
+  "exportExists": "{path} już istnieje",
+  "exportReplace": "Zastąp",
+  "exportSave": "Zapisz",
+  "exportKeepBoth": "Zachowaj oba",
+  "exportProgress": "Pokaż mój postęp",
+  "exportProgressDesc": "Oznacz kolorami opanowane i poznawane pojęcia oraz cel. Wyłącz, aby udostępnić mapę bez swojego postępu.",
+  "exportSaved": "Zapisano: {path}",
+  "exportNotReady": "Mapa jest jeszcze układana. Spróbuj za chwilę.",
+  "canvasSoftLabel": "polecane"
 }
