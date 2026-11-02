@@ -5,6 +5,14 @@ import { isRtl, t } from "../i18n";
 import { attempt } from "../attempt";
 import type { SourceDraft } from "../store";
 
+
+// Typed text takes its own direction, so "What is AI?" keeps its question mark at the end.
+// An empty field keeps the interface's direction, so a right-to-left placeholder stays in place.
+function typedDirection(input: HTMLInputElement) {
+  const update = () => (input.value ? (input.dir = "auto") : input.removeAttribute("dir"));
+  input.addEventListener("input", update);
+  update();
+}
 export interface PickItem {
   id: string;
   title: string;
@@ -24,6 +32,7 @@ export class PickModal extends SuggestModal<PickItem> {
   ) {
     super(app);
     if (isRtl()) this.modalEl.dir = "rtl";
+    typedDirection(this.inputEl);
     this.setPlaceholder(placeholder);
     this.emptyStateText = t.nothingFound;
     this.setInstructions([
@@ -47,7 +56,7 @@ export class PickModal extends SuggestModal<PickItem> {
     el.addClass("tropa-pick");
     if (item.icon) setIcon(el.createSpan({ cls: "tropa-pick-icon" }), item.icon);
     const text = el.createDiv({ cls: "tropa-pick-text" });
-    text.createDiv({ text: item.create ? item.hint : item.title });
+    text.createDiv({ text: item.create ? item.hint : item.title, attr: item.create ? {} : { dir: "auto" } });
     if (item.hint && !item.create) text.createDiv({ cls: "tropa-pick-hint", text: item.hint });
   }
 
@@ -73,6 +82,7 @@ export class SourceModal extends Modal {
 
     new Setting(contentEl).setName(t.name).addText((text) => {
       text.setValue(this.draft.title).onChange((value) => (this.draft.title = value));
+      typedDirection(text.inputEl);
       if (!this.draft.title) window.setTimeout(() => text.inputEl.focus());
     });
 

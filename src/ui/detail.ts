@@ -115,7 +115,7 @@ function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?
   el.tabIndex = 0;
   el.setAttr("role", "button");
   stateGlyph(el, host, id);
-  el.createSpan({ cls: "tropa-row-title", text: node.title });
+  el.createSpan({ cls: "tropa-row-title", text: node.title, attr: { dir: "auto" } });
   el.addEventListener("click", () => host.select(id));
   el.addEventListener("keydown", (event) => {
     if (event.key === "Enter") host.select(id);
@@ -136,7 +136,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
   check.addEventListener("change", () => store.setDone(id, check.checked));
 
   const body = el.createDiv({ cls: "tropa-material-body" });
-  const title = body.createEl("a", { cls: "tropa-row-title", text: source.title, href: "#" });
+  const title = body.createEl("a", { cls: "tropa-row-title", text: source.title, href: "#", attr: { dir: "auto" } });
   title.addEventListener("click", (event) => {
     event.preventDefault();
     host.openNote(id, event.ctrlKey || event.metaKey);
@@ -176,7 +176,7 @@ function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
     back.createSpan({ text: host.store.route ? t.backToRoute : t.backToList });
     back.addEventListener("click", () => host.select(null));
   }
-  const title = parent.createEl("h3", { cls: "tropa-title" });
+  const title = parent.createEl("h3", { cls: "tropa-title", attr: { dir: "auto" } });
   if (node.ghost) title.setText(node.title);
   else {
     const link = title.createEl("a", { text: node.title, href: "#" });
@@ -372,12 +372,15 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     item.addEventListener("keydown", (event) => {
       if (event.key === "Enter") host.select(step.id);
     });
-    item.createDiv({ cls: "tropa-step-title", text: node.title });
+    item.createDiv({ cls: "tropa-step-title", text: node.title, attr: { dir: "auto" } });
     const material = step.material ? graph.nodes.get(step.material) : null;
     if (material && (isNext || step.state === "learning")) {
       const meta = item.createDiv({ cls: "tropa-step-meta" });
       meta.createEl("bdi", { text: material.title });
-      if (material.minutes) meta.createSpan({ text: `${t.listSeparator}${formatMinutes(material.minutes)}` });
+      if (material.minutes) {
+        meta.createSpan({ text: t.listSeparator });
+        meta.createSpan({ cls: "tropa-nowrap", text: formatMinutes(material.minutes) });
+      }
     } else if (!material && node.taughtBy.length === 0) {
       item.createDiv({ cls: "tropa-step-meta", text: t.noMaterials });
     }

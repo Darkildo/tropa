@@ -142,6 +142,17 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 .tropa-map[dir="rtl"] .tropa-toast,
 .tropa-map[dir="rtl"] .tropa-empty { direction: rtl; }
 
+/*
+  Text from notes (titles, summaries, material names) takes its own direction with dir="auto",
+  so "What is AI?" keeps its question mark at the end. It stays aligned with the interface:
+  `right` rather than `match-parent`, which Chromium does not support.
+*/
+.tropa-map[dir="rtl"] [dir="auto"],
+.tropa-panel[dir="rtl"] [dir="auto"],
+.modal[dir="rtl"] .tropa-pick [dir="auto"] { text-align: right; }
+
+.tropa-nowrap { white-space: nowrap; }
+
 .tropa-canvas {
   position: absolute;
   inset: 0;

@@ -232,7 +232,7 @@ export class MapView extends ItemView implements DetailHost {
     el.setAttribute("role", "button");
     el.createSpan({ cls: "tropa-glyph" });
     const text = el.createSpan({ cls: "tropa-node-text" });
-    text.createSpan({ cls: "tropa-node-title" });
+    text.createSpan({ cls: "tropa-node-title", attr: { dir: "auto" } });
     text.createSpan({ cls: "tropa-node-meta" });
     if (node.kind === "concept") {
       el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: t.portTitle } });
@@ -451,7 +451,7 @@ export class MapView extends ItemView implements DetailHost {
   private buildControls() {
     const goal = this.bar.createEl("button", { cls: "tropa-goal", attr: { "aria-label": t.goalButton } });
     setIcon(goal.createSpan({ cls: "tropa-goal-icon" }), "flag");
-    goal.createSpan({ cls: "tropa-goal-label" });
+    goal.createSpan({ cls: "tropa-goal-label", attr: { dir: "auto" } });
     goal.addEventListener("click", this.pickGoal);
 
     const progress = this.bar.createDiv({ cls: "tropa-progress" });
