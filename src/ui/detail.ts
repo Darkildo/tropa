@@ -260,7 +260,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   if (node.ghost) {
     parent.createEl("p", {
       cls: "tropa-callout",
-      text: t.ghostCallout,
+      text: node.excluded ? t.scope.excludedCallout : t.ghostCallout,
     });
   }
 
@@ -270,7 +270,8 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     button.addEventListener("click", run);
   };
 
-  if (node.ghost) action(t.createNote, state !== "available", () => attempt(store.materialize(node.id), `create ${node.title}`));
+  if (node.excluded) action(t.openNote, false, () => host.openNote(node.id));
+  else if (node.ghost) action(t.createNote, state !== "available", () => attempt(store.materialize(node.id), `create ${node.title}`));
   if (state === "available") {
     action(t.startLearning, true, () => store.startLearning(node.id));
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
@@ -383,6 +384,8 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     callout.createEl("p", { text: t.cycleText });
     for (const id of cycle) conceptRow(callout, host, id);
   }
+
+  if (store.excludedGoal) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
 
   if (!route) {
     const available = graph.concepts.filter((node) => store.states.get(node.id) === "available");

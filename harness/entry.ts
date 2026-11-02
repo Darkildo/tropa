@@ -40,6 +40,17 @@ if (scenario === "large") {
   }
 }
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
+// Folder and tag exclusions: the progress file and an attachment sit in excluded folders but must keep working.
+if (scenario === "scope") {
+  vault.seed("Goal.md", `---\ntype: concept\ntags: [course]\nrequires: ["[[Base]]", "[[Archived]]", "[[Private note]]", "[[Inline tagged]]", "[[Kept]]"]\n---\n`);
+  vault.seed("Base.md", `---\ntype: concept\nmaterials: ["[[scan.pdf]]"]\n---\n`);
+  vault.seed("Archive/Archived.md", `---\ntype: concept\n---\n`);
+  vault.seed("Archive 2/Kept.md", `---\ntype: concept\nrequires: ["[[Base]]"]\n---\n`);
+  vault.seed("Private note.md", `---\ntype: concept\ntags: [private/old]\n---\n`);
+  vault.seed("Inline tagged.md", `---\ntype: concept\n---\nSome text #private\n`);
+  vault.seed("Attachments/scan.pdf", "");
+  vault.seed(defaultSettings(sampleLanguage).progressPath, `---\ntype: learning-progress\ngoal: "[[Goal]]"\nmastered: ["[[Archived]]"]\n---\n`);
+}
 vault.getMarkdownFiles().forEach((file: any) => (app as any).metadataCache.index(file));
 
 const workspace = (app as any).workspace;
@@ -48,6 +59,7 @@ workspace.right = new WorkspaceLeaf(document.getElementById("right")!, "right");
 workspace.note = new WorkspaceLeaf(document.getElementById("note")!, "note");
 
 const plugin = new (TropaPlugin as any)(app, {});
+if (scenario === "scope") plugin.data = { excludeFolders: ["Archive", "Attachments", "Tropa"], excludeTags: ["private"] };
 await plugin.onload();
 await new Promise((resolve) => setTimeout(resolve, 20));
 await workspace.center.setViewState({ type: "tropa-map" });

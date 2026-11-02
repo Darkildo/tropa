@@ -77,6 +77,10 @@ export class PanelView extends ItemView implements DetailHost {
   }
 
   private renderOffMap(file: TFile) {
+    if (this.store.isExcluded(file)) {
+      this.body.createEl("p", { cls: "tropa-callout", text: t.scope.excludedNote });
+      return;
+    }
     const block = this.body.createDiv({ cls: "tropa-offmap" });
     block.createDiv({ cls: "tropa-section-head", text: t.notOnMap });
     const actions = block.createDiv({ cls: "tropa-actions" });
