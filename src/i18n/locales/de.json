@@ -9,6 +9,8 @@
   "markSource": "Notiz zum Material machen",
   "setGoal": "Notiz als Ziel festlegen",
   "toggleMastered": "Notiz als beherrscht markieren oder zurück zum Lernen",
+  "toggleSkipped": "Notiz überspringen oder zurück in die Route",
+  "markKnownCommand": "Notiz und alles, was sie voraussetzt, als bekannt markieren",
   "nextConceptPrompt": "Welches Konzept kommt danach?",
   "conceptName": "Name des Konzepts",
   "createConcept": "Konzept „{name}“ erstellen",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} Std. {minutes} Min.",
   "state": {
     "mastered": "Beherrscht",
+    "skipped": "Übersprungen",
     "learning": "Wird gelernt",
     "available": "Bereit zum Start",
     "locked": "Gesperrt",
@@ -103,6 +106,26 @@
   "createNote": "Notiz erstellen",
   "startLearning": "Mit dem Lernen beginnen",
   "alreadyKnow": "Kann ich schon",
+  "knowWithPrerequisites": "Kann ich samt Voraussetzungen",
+  "skip": "Überspringen",
+  "unskip": "Zurück in die Route",
+  "skippedCallout": "Du hast dieses Konzept übersprungen. Es öffnet, was darauf aufbaut, zählt aber nicht als beherrscht.",
+  "skippedToast": "Übersprungen: {title}",
+  "goalNotSkipped": "Das Ziel kann nicht übersprungen werden. Entferne zuerst das Ziel.",
+  "markedKnown": {
+    "one": "{count} Konzept als bekannt markiert",
+    "other": "{count} Konzepte als bekannt markiert"
+  },
+  "knownTitle": "Als bekannt markieren",
+  "knownText": "Diese Konzepte werden als beherrscht markiert. Entferne das Häkchen bei allem, wo du unsicher bist.",
+  "knownFilter": "Konzepte filtern",
+  "knownConfirm": {
+    "one": "{count} Konzept markieren",
+    "other": "{count} Konzepte markieren"
+  },
+  "cancel": "Abbrechen",
+  "confidence": "Sicherheit",
+  "confidenceLevel": "Sicherheit {level} von 5",
   "markMastered": "Als beherrscht markieren",
   "unmark": "Markierung entfernen",
   "removeGoal": "Ziel entfernen",
@@ -159,6 +182,10 @@
   },
   "from": "ab {duration}",
   "progressOf": "{done} von {total}",
+  "skippedCount": {
+    "one": "{count} übersprungen",
+    "other": "{count} übersprungen"
+  },
   "expandPanel": "Leiste ausklappen",
   "collapsePanel": "Leiste einklappen",
   "emptyTitle": "Erstelle deine erste Karte",

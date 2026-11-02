@@ -9,6 +9,8 @@
   "markSource": "Jadikan catatan ini materi",
   "setGoal": "Jadikan catatan ini tujuan",
   "toggleMastered": "Tandai catatan ini sudah dikuasai atau kembalikan ke tahap belajar",
+  "toggleSkipped": "Lewati catatan ini atau kembalikan ke rute",
+  "markKnownCommand": "Tandai catatan ini dan semua prasyaratnya sudah diketahui",
   "nextConceptPrompt": "Konsep apa yang datang setelah ini?",
   "conceptName": "Nama konsep",
   "createConcept": "Buat konsep “{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} jam {minutes} mnt",
   "state": {
     "mastered": "Dikuasai",
+    "skipped": "Dilewati",
     "learning": "Sedang dipelajari",
     "available": "Siap dimulai",
     "locked": "Terkunci",
@@ -103,6 +106,24 @@
   "createNote": "Buat catatan",
   "startLearning": "Mulai belajar",
   "alreadyKnow": "Sudah tahu",
+  "knowWithPrerequisites": "Sudah tahu ini dan prasyaratnya",
+  "skip": "Lewati",
+  "unskip": "Kembalikan ke rute",
+  "skippedCallout": "Anda melewati konsep ini. Konsep yang bergantung padanya terbuka, tetapi ini tidak dihitung sebagai dikuasai.",
+  "skippedToast": "Dilewati: {title}",
+  "goalNotSkipped": "Tujuan tidak bisa dilewati. Hapus tujuan terlebih dulu.",
+  "markedKnown": {
+    "other": "{count} konsep ditandai sudah diketahui"
+  },
+  "knownTitle": "Tandai sudah diketahui",
+  "knownText": "Konsep-konsep ini akan ditandai sudah dikuasai. Hapus centang pada yang belum Anda yakini.",
+  "knownFilter": "Saring konsep",
+  "knownConfirm": {
+    "other": "Tandai {count} konsep"
+  },
+  "cancel": "Batal",
+  "confidence": "Keyakinan",
+  "confidenceLevel": "Keyakinan {level} dari 5",
   "markMastered": "Tandai dikuasai",
   "unmark": "Hapus tanda",
   "removeGoal": "Hapus tujuan",
@@ -154,6 +175,9 @@
   },
   "from": "mulai {duration}",
   "progressOf": "{done} dari {total}",
+  "skippedCount": {
+    "other": "{count} dilewati"
+  },
   "expandPanel": "Bentangkan panel",
   "collapsePanel": "Ciutkan panel",
   "emptyTitle": "Buat peta pertama Anda",

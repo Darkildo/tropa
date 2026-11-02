@@ -1,14 +1,17 @@
 import { Events, Notice, TFile, normalizePath, type App, type EventRef } from "obsidian";
 import { formatMinutes, parseFormat, safeFileName } from "./core/format";
 import {
+  cloneProgress,
   computeRoute,
   computeStates,
   emptyProgress,
   ghostId,
   isGhostId,
   LearningGraph,
+  newlyAvailable,
   unlockedBy,
 } from "./core/graph";
+import { readProgress, writeProgress } from "./core/progress";
 import { basename, linkTargets, toList } from "./core/links";
 import type { ConceptState, NoteInput, NoteRef, Progress, Route, SourceFormat } from "./core/types";
 import { t } from "./i18n";
@@ -43,6 +46,8 @@ export class Store extends Events {
 
   on(name: "change", callback: () => void): EventRef;
   on(name: "mastered", callback: (id: string, unlocked: string[], undo: Progress) => void): EventRef;
+  /** A change that touched more than one mark at once, with the progress to go back to. */
+  on(name: "undoable", callback: (message: string, unlocked: string[], undo: Progress) => void): EventRef;
   on(name: string, callback: (...data: never[]) => void): EventRef {
     return super.on(name, callback as (...data: unknown[]) => unknown);
   }
@@ -115,18 +120,7 @@ export class Store extends Events {
     const path = normalizePath(this.settings().progressPath);
     const file = this.app.vault.getAbstractFileByPath(path);
     const frontmatter = file instanceof TFile ? this.app.metadataCache.getFileCache(file)?.frontmatter : undefined;
-    if (!frontmatter) {
-      this.progress = emptyProgress();
-      return;
-    }
-    const ids = (key: string) => new Set(linkTargets(frontmatter[key]).map((target) => this.resolve(target, path).id));
-    const [goal] = linkTargets(frontmatter.goal).map((target) => this.resolve(target, path).id);
-    this.progress = {
-      goal: goal ?? null,
-      mastered: ids("mastered"),
-      learning: ids("learning"),
-      done: ids("done"),
-    };
+    this.progress = readProgress(frontmatter, (target) => this.resolve(target, path).id);
   }
 
   onProgressFileChanged() {
@@ -144,15 +138,11 @@ export class Store extends Events {
   // Personal progress
 
   private snapshot(): Progress {
-    return {
-      goal: this.progress.goal,
-      mastered: new Set(this.progress.mastered),
-      learning: new Set(this.progress.learning),
-      done: new Set(this.progress.done),
-    };
+    return cloneProgress(this.progress);
   }
 
   private commit() {
+    this.dropStaleConfidence();
     this.derive();
     this.pendingWrites++;
     this.writes = this.writes
@@ -180,21 +170,31 @@ export class Store extends Events {
     }
     const link = (id: string) => this.linkTo(id, path);
     await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
-      frontmatter.type = "learning-progress";
-      frontmatter.goal = this.progress.goal ? link(this.progress.goal) : null;
-      frontmatter.mastered = [...this.progress.mastered].map(link);
-      frontmatter.learning = [...this.progress.learning].map(link);
-      frontmatter.done = [...this.progress.done].map(link);
+      writeProgress(frontmatter, this.progress, link);
     });
   }
 
+  /** Confidence belongs to what is mastered or being learned; anything else loses it. */
+  private dropStaleConfidence() {
+    const { progress } = this;
+    const states = computeStates(this.graph, progress);
+    for (const id of progress.confidence.keys()) {
+      const state = states.get(id);
+      const kept = progress.mastered.has(id) || progress.learning.has(id) || state === "learning";
+      if (!kept || progress.skipped.has(id)) progress.confidence.delete(id);
+    }
+  }
+
+  /** A skipped concept chosen as the goal is wanted after all, so it returns to the map. */
   setGoal(id: string | null) {
     this.progress.goal = id;
+    if (id) this.progress.skipped.delete(id);
     this.commit();
   }
 
   startLearning(id: string) {
     this.progress.learning.add(id);
+    this.progress.skipped.delete(id);
     this.commit();
   }
 
@@ -204,11 +204,52 @@ export class Store extends Events {
     if (mastered) {
       this.progress.mastered.add(id);
       this.progress.learning.delete(id);
+      this.progress.skipped.delete(id);
     } else {
       this.progress.mastered.delete(id);
     }
     this.commit();
     if (mastered) this.trigger("mastered", id, unlocked, undo);
+  }
+
+  /** Skipping opens what depends on the concept without counting it as mastered. The goal cannot be skipped. */
+  setSkipped(id: string, skipped: boolean) {
+    if (skipped && id === this.progress.goal) {
+      new Notice(t.goalNotSkipped);
+      return;
+    }
+    const undo = this.snapshot();
+    if (skipped) {
+      this.progress.skipped.add(id);
+      this.progress.mastered.delete(id);
+      this.progress.learning.delete(id);
+    } else {
+      this.progress.skipped.delete(id);
+    }
+    const unlocked = newlyAvailable(this.graph, undo, this.progress);
+    this.commit();
+    if (skipped) this.trigger("undoable", t.skippedToast({ title: this.graph.nodes.get(id)?.title ?? "" }), unlocked, undo);
+  }
+
+  /** Marks several concepts as known in one step that can be undone as one. */
+  markKnown(ids: string[]) {
+    if (ids.length === 0) return;
+    const undo = this.snapshot();
+    for (const id of ids) {
+      this.progress.mastered.add(id);
+      this.progress.learning.delete(id);
+      this.progress.skipped.delete(id);
+    }
+    const unlocked = newlyAvailable(this.graph, undo, this.progress);
+    this.commit();
+    this.trigger("undoable", t.markedKnown({ count: ids.length }), unlocked, undo);
+  }
+
+  /** `null` clears the assessment. */
+  setConfidence(id: string, level: number | null) {
+    if (level === null) this.progress.confidence.delete(id);
+    else this.progress.confidence.set(id, Math.min(5, Math.max(1, Math.round(level))));
+    this.commit();
   }
 
   setDone(id: string, done: boolean) {

@@ -8,6 +8,7 @@ import { Store } from "./store";
 import { sample } from "./sample";
 import { MAP_VIEW, MapView } from "./ui/map-view";
 import { PANEL_VIEW, PanelView } from "./ui/panel-view";
+import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
 
 export default class TropaPlugin extends Plugin {
@@ -45,6 +46,17 @@ export default class TropaPlugin extends Plugin {
         const title = this.store.graph.nodes.get(id)?.title ?? "";
         const names = unlocked.map((u) => this.store.graph.nodes.get(u)?.title).join(t.listSeparator);
         new Notice(names ? t.unlocked({ names }) : t.mastered({ title }));
+      }),
+    );
+    this.registerEvent(
+      this.store.on("undoable", (message, _unlocked, undo) => {
+        if (this.app.workspace.getLeavesOfType(MAP_VIEW).length > 0) return;
+        const content = createFragment((fragment) => {
+          fragment.createSpan({ text: message });
+          const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });
+          button.addEventListener("click", () => this.store.restore(undo));
+        });
+        new Notice(content, 6000);
       }),
     );
 
@@ -114,6 +126,10 @@ export default class TropaPlugin extends Plugin {
     onActiveConcept("toggle-mastered", t.toggleMastered, (id) =>
       this.store.setMastered(id, !this.store.progress.mastered.has(id)),
     );
+    onActiveConcept("toggle-skipped", t.toggleSkipped, (id) =>
+      this.store.setSkipped(id, !this.store.progress.skipped.has(id)),
+    );
+    onActiveConcept("mark-known", t.markKnownCommand, (id) => openKnownModal(this.app, this.store, id));
   }
 
   async showMap(then?: (map: MapView) => void) {

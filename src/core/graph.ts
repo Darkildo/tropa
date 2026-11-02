@@ -15,7 +15,23 @@ export const isGhostId = (id: string) => id.startsWith(GHOST_PREFIX);
 export const ghostId = (title: string) => GHOST_PREFIX + title;
 
 export function emptyProgress(): Progress {
-  return { goal: null, mastered: new Set(), learning: new Set(), done: new Set() };
+  return { goal: null, mastered: new Set(), learning: new Set(), done: new Set(), skipped: new Set(), confidence: new Map() };
+}
+
+export function cloneProgress(progress: Progress): Progress {
+  return {
+    goal: progress.goal,
+    mastered: new Set(progress.mastered),
+    learning: new Set(progress.learning),
+    done: new Set(progress.done),
+    skipped: new Set(progress.skipped),
+    confidence: new Map(progress.confidence),
+  };
+}
+
+/** A concept no longer stands in the way: mastered, or skipped on purpose. */
+export function isPassed(progress: Progress, id: string) {
+  return progress.mastered.has(id) || progress.skipped.has(id);
 }
 
 export class LearningGraph {
@@ -194,9 +210,10 @@ export function computeStates(graph: LearningGraph, progress: Progress) {
   const states = new Map<string, ConceptState>();
   for (const node of graph.concepts) {
     if (progress.mastered.has(node.id)) states.set(node.id, "mastered");
+    else if (progress.skipped.has(node.id)) states.set(node.id, "skipped");
     else if (graph.isInCycle(node.id)) states.set(node.id, "cycle");
     else if (progress.learning.has(node.id) || node.taughtBy.some((id) => progress.done.has(id))) states.set(node.id, "learning");
-    else if (node.requires.every((id) => progress.mastered.has(id))) states.set(node.id, "available");
+    else if (node.requires.every((id) => isPassed(progress, id))) states.set(node.id, "available");
     else states.set(node.id, "locked");
   }
   return states;
@@ -207,7 +224,7 @@ export function sourceState(graph: LearningGraph, progress: Progress, id: string
   const node = graph.nodes.get(id);
   if (!node) return "locked";
   const ready = node.requires.every((requirement) =>
-    graph.nodes.get(requirement)?.kind === "source" ? progress.done.has(requirement) : progress.mastered.has(requirement),
+    graph.nodes.get(requirement)?.kind === "source" ? progress.done.has(requirement) : isPassed(progress, requirement),
   );
   return ready ? "ready" : "locked";
 }
@@ -245,7 +262,7 @@ export function computeRoute(
   const visit = (id: string) => {
     if (visited.has(id)) return;
     visited.add(id);
-    if (progress.mastered.has(id)) return;
+    if (isPassed(progress, id)) return;
     const prerequisites = graph.nodes.get(id)!.requires.filter((req) => graph.nodes.get(req)?.kind === "concept");
     for (const prerequisite of [...prerequisites].sort(byPriority)) visit(prerequisite);
     order.push(id);
@@ -281,7 +298,8 @@ export function computeRoute(
     steps,
     next: steps.find((step) => step.state === "learning" || step.state === "available")?.id ?? null,
     masteredCount: [...closure].filter((id) => progress.mastered.has(id)).length,
-    total: closure.size,
+    total: [...closure].filter((id) => !progress.skipped.has(id)).length,
+    skippedCount: [...closure].filter((id) => progress.skipped.has(id)).length,
     remainingMinutes,
     unestimated,
     gaps,
@@ -290,10 +308,34 @@ export function computeRoute(
 
 /** Concepts that become available once `id` is mastered. */
 export function unlockedBy(graph: LearningGraph, progress: Progress, id: string): string[] {
-  const after: Progress = { ...progress, mastered: new Set(progress.mastered).add(id) };
-  const before = computeStates(graph, progress);
+  const after = cloneProgress(progress);
+  after.mastered.add(id);
+  return newlyAvailable(graph, progress, after);
+}
+
+/** Concepts that were locked before a change of progress and can be started after it. */
+export function newlyAvailable(graph: LearningGraph, before: Progress, after: Progress): string[] {
+  const was = computeStates(graph, before);
   const now = computeStates(graph, after);
   return graph.concepts
     .map((node) => node.id)
-    .filter((conceptId) => before.get(conceptId) === "locked" && now.get(conceptId) === "available");
+    .filter((conceptId) => was.get(conceptId) === "locked" && now.get(conceptId) === "available");
+}
+
+/** The concept and every concept it needs that is not mastered yet, in the order they would be learned. */
+export function knownCandidates(graph: LearningGraph, progress: Progress, id: string): string[] {
+  const order: string[] = [];
+  const visited = new Set<string>();
+  const visit = (current: string) => {
+    if (visited.has(current)) return;
+    visited.add(current);
+    const node = graph.nodes.get(current);
+    if (node?.kind !== "concept" || progress.mastered.has(current)) return;
+    const prerequisites = node.requires.filter((req) => graph.nodes.get(req)?.kind === "concept");
+    for (const prerequisite of [...prerequisites].sort((a, b) => graph.nodes.get(a)!.title.localeCompare(graph.nodes.get(b)!.title)))
+      visit(prerequisite);
+    order.push(current);
+  };
+  visit(id);
+  return order;
 }

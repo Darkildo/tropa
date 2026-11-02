@@ -11,6 +11,7 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 - **Route to a goal.** Pick a concept you want to learn. Tropa shows only the steps that lead to it, in order, with the next one highlighted.
 - **Concepts and materials.** A concept is something you want to understand. A material is an article, video, book, paper, course or your own note that teaches it.
 - **Progress you can see.** Mark concepts as learning or mastered and materials as done. Mastering a concept unlocks the ones that depend on it. Every action can be undone.
+- **Start from what you know.** **I know this and what it needs** marks a concept together with its unmastered prerequisites in one step; untick anything you are unsure of. **Skip** leaves a concept out: it opens what depends on it but never counts as mastered. An optional confidence from 1 to 5 can be set on mastered and learning concepts.
 - **Time estimate.** Material durations add up to the time left on the route.
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
@@ -52,7 +53,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 
-Other commands: open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, and mark it mastered.
+Other commands: open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -76,7 +77,21 @@ requires: ["[[Derivatives]]"]     # a concept or another material
 ---
 ```
 
-Your goal and marks are stored in `Tropa/Progress.md`. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
+Your goal and marks are stored in `Tropa/Progress.md`:
+
+```yaml
+---
+type: learning-progress
+goal: "[[Transformer]]"
+mastered: ["[[Derivatives]]", "[[Vectors and matrices]]"]
+learning: ["[[Gradient]]"]
+done: ["[[3Blue1Brown, Essence of calculus]]"]   # finished materials
+skipped: ["[[Probability]]"]                      # opens what depends on it, not counted as mastered
+confidence-4: ["[[Derivatives]]"]                 # optional, confidence-1 … confidence-5
+---
+```
+
+`skipped` and the `confidence-N` lists are written only when they hold something and removed when they become empty, so a file from an earlier version reads as it is and stays unchanged until you use them. Marks are links, so renaming a note keeps them. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
 
 ## Demo vault (optional)
 
@@ -122,7 +137,7 @@ npm run bench:chromium  # the same in Chromium, plus how long the interface free
 - `src/ui`: map, sidebar panel, modals.
 - `harness`: a mock of the Obsidian API that runs the real plugin code in a browser.
 
-To release, run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults.
+To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md), run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults; the changelog section becomes the release notes, and the build fails if it is missing.
 
 ## Limitations
 

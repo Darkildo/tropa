@@ -175,6 +175,125 @@ const { open, stop } = await start();
   await page.close();
 }
 
+// --- skipping, confidence and marking what is known
+{
+  const { page, errors } = await open();
+  const side = (label) => page.locator(`.tropa-side button:text-is("${label}")`);
+  const legend = await page.locator(".tropa-legend-item").allInnerTexts();
+  ok("legend shows skipped", legend.length === 5 && legend.at(-1) === "Skipped", legend.join("|"));
+
+  await node(page, "Transformer").click(); await wait(page, 150);
+  ok("goal cannot be skipped", (await side("Skip").count()) === 0);
+  await page.evaluate("tropa.plugin.store.setSkipped(tropa.plugin.store.progress.goal, true)"); await wait(page, 150);
+  ok("goal is not skipped from a command either", !(await state(page, "Transformer")).includes("state-skipped"));
+
+  await node(page, "Probability").click(); await wait(page, 150);
+  await side("Skip").click(); await wait(page, 300);
+  ok("skip marks the concept", (await state(page, "Probability")).includes("state-skipped"));
+  ok("skip toast", (await page.locator(".tropa-toast").innerText()).includes("Skipped: Probability"));
+  ok("skip opens what depends on it", (await state(page, "Loss function")).includes("state-available"));
+  ok("skipped is not counted as mastered", (await page.locator(".tropa-progress-text").innerText()) === "3 of 16, 1 skipped",
+    await page.locator(".tropa-progress-text").innerText());
+  ok("skipped leaves the route steps", !(await page.locator(".tropa-panel .tropa-step-title, .tropa-side .tropa-step-title").allInnerTexts()).includes("Probability"));
+  await wait(page, 300);
+  ok("skip saved as its own list", /skipped:\s*\n\s*- "?\[\[Probability\]\]/.test(await page.evaluate(PROG)), await page.evaluate(PROG));
+  await page.screenshot({ path: SHOTS + "60-skipped.png" });
+  await page.click(".tropa-toast button"); await wait(page, 400);
+  ok("undo returns the concept", !(await state(page, "Probability")).includes("state-skipped"));
+  ok("empty list leaves the file", !(await page.evaluate(PROG)).includes("skipped"), await page.evaluate(PROG));
+
+  await node(page, "Probability").click(); await wait(page, 150);
+  await side("Skip").click(); await wait(page, 250);
+  ok("skipped callout", (await page.locator(".tropa-side .tropa-callout").innerText()).includes("does not count as mastered"));
+  await side("Return to route").click(); await wait(page, 250);
+  ok("return to route", (await state(page, "Probability")).includes("state-available"));
+
+  // Confidence on a mastered concept: a level, then the same level again to clear it.
+  await page.click('button:text-is("Whole map")'); await wait(page, 400);
+  await node(page, "Derivatives").click(); await wait(page, 150);
+  const dots = page.locator(".tropa-side .tropa-confidence-dot");
+  ok("confidence shown for mastered", (await dots.count()) === 5);
+  await dots.nth(3).click(); await wait(page, 300);
+  ok("confidence pressed", (await page.locator(".tropa-side .tropa-confidence-dot").nth(3).getAttribute("aria-pressed")) === "true");
+  ok("confidence saved", /confidence-4:\s*\n\s*- "?\[\[Derivatives\]\]/.test(await page.evaluate(PROG)), await page.evaluate(PROG));
+  await page.screenshot({ path: SHOTS + "61-confidence.png" });
+  await page.locator(".tropa-side .tropa-confidence-dot").nth(3).click(); await wait(page, 300);
+  ok("confidence cleared", !(await page.evaluate(PROG)).includes("confidence-"));
+  await node(page, "Probability").click(); await wait(page, 150);
+  ok("no confidence for an unstarted concept", (await page.locator(".tropa-side .tropa-confidence").count()) === 0);
+
+  // I know this and what it needs: the list, a filter, one box left out, one undo.
+  await node(page, "Backpropagation").click(); await wait(page, 150);
+  await side("I know this and what it needs").click(); await wait(page, 200);
+  const modal = page.locator(".tropa-known-modal");
+  const rows = modal.locator(".tropa-known-row");
+  const listed = await rows.allInnerTexts();
+  ok("known list starts with prerequisites and ends with the concept", listed.length > 2 && listed.at(-1).trim() === "Backpropagation", listed.join("|"));
+  ok("mastered prerequisites are not offered", !listed.some((text) => text.trim() === "Derivatives"));
+  ok("focus inside the dialog", await page.evaluate("!!document.activeElement.closest('.tropa-known-modal')"));
+  const confirm = modal.locator("button.mod-cta");
+  ok("confirm counts the concepts", (await confirm.innerText()) === `Mark ${listed.length} concepts`, await confirm.innerText());
+  await page.screenshot({ path: SHOTS + "62-known.png" });
+  await modal.locator(".tropa-known-filter").fill("descent"); await wait(page, 100);
+  ok("filter narrows the list", (await modal.locator(".tropa-known-row:not(.is-hidden)").count()) === 1);
+  await modal.locator(".tropa-known-row:not(.is-hidden) input").press("Space"); await wait(page, 100);
+  ok("space unticks a concept", (await confirm.innerText()) === `Mark ${listed.length - 1} concepts`, await confirm.innerText());
+  await modal.locator(".tropa-known-filter").press("Enter"); await wait(page, 400);
+  ok("dialog closes on confirm", (await page.locator(".tropa-known-modal").count()) === 0);
+  ok("concept marked known", (await state(page, "Backpropagation")).includes("state-mastered"));
+  ok("prerequisite marked known", (await state(page, "Loss function")).includes("state-mastered"));
+  ok("unticked concept left alone", !(await state(page, "Gradient descent")).includes("state-mastered"));
+  ok("bulk toast", (await page.locator(".tropa-toast").innerText()).includes(`${listed.length - 1} concepts marked as known`), await page.locator(".tropa-toast").innerText());
+  await wait(page, 300);
+  ok("bulk saved", (await page.evaluate(PROG)).includes("[[Backpropagation]]"));
+  await page.click(".tropa-toast button"); await wait(page, 400);
+  ok("one undo for the whole batch", !(await state(page, "Backpropagation")).includes("state-mastered") && !(await state(page, "Loss function")).includes("state-mastered"));
+
+  // The same from the context menu, closed with Escape.
+  await node(page, "Backpropagation").click({ button: "right" }); await wait(page, 100);
+  await page.click('.menu-item:text-is("I know this and what it needs")'); await wait(page, 200);
+  ok("context menu opens the list", (await page.locator(".tropa-known-modal").count()) === 1);
+  await page.keyboard.press("Escape"); await wait(page, 100);
+  ok("escape closes without marking", (await page.locator(".tropa-known-modal").count()) === 0 && !(await state(page, "Backpropagation")).includes("state-mastered"));
+  ok("no console errors (statuses)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ru" });
+  await node(page, "Вероятность").click(); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("Пропустить")'); await wait(page, 300);
+  ok("ru: skip", (await state(page, "Вероятность")).includes("state-skipped"));
+  ok("ru: skip toast", (await page.locator(".tropa-toast").innerText()).includes("Пропущено: Вероятность"));
+  ok("ru: skipped count", (await page.locator(".tropa-progress-text").innerText()).endsWith("1 пропущен"), await page.locator(".tropa-progress-text").innerText());
+  await node(page, "Обратное распространение").click(); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("Знаю это и всё, что нужно до него")'); await wait(page, 200);
+  const count = await page.locator(".tropa-known-row").count();
+  const label = await page.locator(".tropa-known-modal button.mod-cta").innerText();
+  const forms = new Intl.PluralRules("ru").select(count);
+  const word = { one: "концепт", few: "концепта", many: "концептов", other: "концепта" }[forms];
+  ok("ru: plural in confirm", label === `Отметить ${count} ${word}`, label);
+  await page.keyboard.press("Escape");
+  ok("no console errors (ru statuses)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar" });
+  await node(page, "Probability").click(); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("تخطٍّ")'); await wait(page, 300);
+  ok("ar: skip", (await state(page, "Probability")).includes("state-skipped"));
+  await node(page, "Backpropagation").click(); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("أعرف هذا وكل ما يسبقه")'); await wait(page, 200);
+  const modal = page.locator(".tropa-known-modal");
+  ok("ar: dialog is right to left", (await modal.getAttribute("dir")) === "rtl");
+  const titleDir = await modal.locator(".tropa-known-title").first().evaluate((el) => getComputedStyle(el).direction);
+  ok("ar: English titles keep their direction", titleDir === "ltr", titleDir);
+  ok("ar: no raw placeholders", !/[{}]/.test(await modal.innerText()));
+  await page.screenshot({ path: SHOTS + "63-known-ar.png" });
+  await page.keyboard.press("Escape");
+  ok("no console errors (ar statuses)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
 // --- Russian interface and vaults made before translation
 {
   const { page, errors } = await open({ query: "?lang=ru" });

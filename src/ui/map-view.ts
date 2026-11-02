@@ -3,12 +3,12 @@ import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
 import layoutWorker from "tropa:layout-worker";
-import { sourceState } from "../core/graph";
+import { isPassed, knownCandidates, sourceState } from "../core/graph";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
 import { isRtl, t } from "../i18n";
 import type TropaPlugin from "../main";
-import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
+import { openKnownModal, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
 
 export const MAP_VIEW = "tropa-map";
@@ -111,6 +111,7 @@ export class MapView extends ItemView implements DetailHost {
 
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(this.store.on("mastered", (id, unlocked, undo) => this.celebrate(id, unlocked, undo)));
+    this.registerEvent(this.store.on("undoable", (message, unlocked, undo) => this.announce(message, unlocked, undo)));
     this.render();
   }
 
@@ -325,10 +326,10 @@ export class MapView extends ItemView implements DetailHost {
   private nodeMeta(node: GraphNode) {
     const { store } = this;
     const state = store.states.get(node.id);
-    if (state === "mastered") return "";
+    if (state === "mastered" || state === "skipped") return "";
     if (node.ghost) return t.noNoteYet;
     if (state === "locked") {
-      const left = node.requires.filter((id) => !store.progress.mastered.has(id)).length;
+      const left = node.requires.filter((id) => !isPassed(store.progress, id)).length;
       return t.conceptsFirst({ count: left });
     }
     const count = node.taughtBy.length;
@@ -373,7 +374,7 @@ export class MapView extends ItemView implements DetailHost {
       const classes = ["tropa-edge", `is-${kind}`];
       if (onRoute) {
         classes.push("is-route");
-        if (store.progress.mastered.has(from)) classes.push(store.progress.mastered.has(to) ? "is-walked" : "is-frontier");
+        if (isPassed(store.progress, from)) classes.push(isPassed(store.progress, to) ? "is-walked" : "is-frontier");
       }
       if (kind === "requires" && store.graph.isInCycle(from) && store.graph.isInCycle(to)) classes.push("is-loop");
       path.setAttribute("class", classes.join(" "));
@@ -424,7 +425,9 @@ export class MapView extends ItemView implements DetailHost {
       const percent = route.total ? (route.masteredCount / route.total) * 100 : 0;
       meter.querySelector<HTMLElement>(".tropa-meter-fill")!.style.width = `${percent}%`;
       meter.querySelector<HTMLElement>(".tropa-meter")!.setAttribute("aria-valuenow", String(Math.round(percent)));
-      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = t.progressOf({ done: route.masteredCount, total: route.total });
+      const done = t.progressOf({ done: route.masteredCount, total: route.total });
+      const skipped = route.skippedCount ? `${t.listSeparator}${t.skippedCount({ count: route.skippedCount })}` : "";
+      meter.querySelector<HTMLElement>(".tropa-progress-text")!.textContent = done + skipped;
       meter.querySelector<HTMLElement>(".tropa-progress-time")!.textContent = this.store.describeRemaining();
     }
 
@@ -541,7 +544,7 @@ export class MapView extends ItemView implements DetailHost {
     });
 
     const legend = this.stage.createDiv({ cls: "tropa-legend" });
-    for (const state of ["mastered", "learning", "available", "locked"] as const) {
+    for (const state of ["mastered", "learning", "available", "locked", "skipped"] as const) {
       const item = legend.createDiv({ cls: "tropa-legend-item" });
       setGlyph(item.createSpan({ cls: `tropa-glyph is-small state-${state}` }), STATE_ICON[state]);
       item.createSpan({ text: t.state[state] });
@@ -761,9 +764,15 @@ export class MapView extends ItemView implements DetailHost {
     if (node.kind === "concept") {
       const mastered = store.progress.mastered.has(id);
       const isGoal = store.progress.goal === id;
+      const skipped = store.progress.skipped.has(id);
       menu.addItem((item) =>
         item.setTitle(mastered ? t.clearMastered : t.markMastered).setIcon("check").onClick(() => store.setMastered(id, !mastered)),
       );
+      if (!mastered && knownCandidates(store.graph, store.progress, id).length > 1) {
+        menu.addItem((item) => item.setTitle(t.knowWithPrerequisites).setIcon("list-checks").onClick(() => openKnownModal(this.app, store, id)));
+      }
+      if (skipped) menu.addItem((item) => item.setTitle(t.unskip).setIcon("undo-2").onClick(() => store.setSkipped(id, false)));
+      else if (!mastered && !isGoal) menu.addItem((item) => item.setTitle(t.skip).setIcon("skip-forward").onClick(() => store.setSkipped(id, true)));
       menu.addItem((item) =>
         item.setTitle(isGoal ? t.removeGoal : t.makeGoal).setIcon("flag").onClick(() => (isGoal ? store.setGoal(null) : this.chooseGoal(id))),
       );
@@ -849,6 +858,18 @@ export class MapView extends ItemView implements DetailHost {
     else if (names.length) text = t.unlocked({ names: `${names.slice(0, 3).join(t.listSeparator)}${names.length > 3 ? t.andMore({ count: names.length - 3 }) : ""}` });
 
     this.toast(text, t.undo, () => store.restore(undo));
+    this.flash(unlocked);
+  }
+
+  /** Skipping or marking several concepts at once. What opened up is highlighted on the map. */
+  private announce(message: string, unlocked: string[], undo: Progress) {
+    const { store } = this;
+    const text = store.route && store.route.steps.length === 0 ? t.goalReached : message;
+    this.toast(text, t.undo, () => store.restore(undo));
+    this.flash(unlocked);
+  }
+
+  private flash(unlocked: string[]) {
     for (const unlockedId of unlocked) {
       const el = this.nodeEls.get(unlockedId);
       if (!el) continue;

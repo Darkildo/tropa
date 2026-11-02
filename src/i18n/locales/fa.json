@@ -9,6 +9,8 @@
   "markSource": "این یادداشت را منبع کن",
   "setGoal": "این یادداشت را هدف کن",
   "toggleMastered": "علامت‌گذاری این یادداشت به‌عنوان آموخته یا بازگرداندن به یادگیری",
+  "toggleSkipped": "رد کردن این یادداشت یا بازگرداندن آن به مسیر",
+  "markKnownCommand": "علامت‌گذاری این یادداشت و همهٔ پیش‌نیازهایش به‌عنوان بلد",
   "nextConceptPrompt": "کدام مفهوم بعد از این می‌آید؟",
   "conceptName": "نام مفهوم",
   "createConcept": "ساختن مفهوم «{name}»",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} ساعت و {minutes} دقیقه",
   "state": {
     "mastered": "آموخته",
+    "skipped": "ردشده",
     "learning": "در حال یادگیری",
     "available": "آمادهٔ شروع",
     "locked": "قفل",
@@ -103,6 +106,26 @@
   "createNote": "ساختن یادداشت",
   "startLearning": "شروع یادگیری",
   "alreadyKnow": "بلدم",
+  "knowWithPrerequisites": "این و پیش‌نیازهایش را بلدم",
+  "skip": "رد کردن",
+  "unskip": "بازگشت به مسیر",
+  "skippedCallout": "این مفهوم را رد کرده‌اید. آنچه به آن وابسته است باز می‌شود، اما آموخته به حساب نمی‌آید.",
+  "skippedToast": "رد شد: {title}",
+  "goalNotSkipped": "هدف را نمی‌توان رد کرد. اول هدف را بردارید.",
+  "markedKnown": {
+    "one": "{count} مفهوم به‌عنوان بلد علامت خورد",
+    "other": "{count} مفهوم به‌عنوان بلد علامت خورد"
+  },
+  "knownTitle": "علامت‌گذاری به‌عنوان بلد",
+  "knownText": "این مفهوم‌ها به‌عنوان آموخته علامت می‌خورند. تیک مواردی را که مطمئن نیستید بردارید.",
+  "knownFilter": "پالایش مفهوم‌ها",
+  "knownConfirm": {
+    "one": "علامت‌گذاری {count} مفهوم",
+    "other": "علامت‌گذاری {count} مفهوم"
+  },
+  "cancel": "لغو",
+  "confidence": "اطمینان",
+  "confidenceLevel": "اطمینان {level} از ۵",
   "markMastered": "علامت آموخته",
   "unmark": "برداشتن علامت",
   "removeGoal": "برداشتن هدف",
@@ -159,6 +182,10 @@
   },
   "from": "از {duration}",
   "progressOf": "{done} از {total}",
+  "skippedCount": {
+    "one": "{count} ردشده",
+    "other": "{count} ردشده"
+  },
   "expandPanel": "باز کردن پنل",
   "collapsePanel": "جمع کردن پنل",
   "emptyTitle": "نخستین نقشه‌تان را بسازید",

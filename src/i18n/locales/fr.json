@@ -9,6 +9,8 @@
   "markSource": "Faire de cette note une ressource",
   "setGoal": "Faire de cette note l’objectif",
   "toggleMastered": "Marquer cette note comme maîtrisée ou la remettre en apprentissage",
+  "toggleSkipped": "Passer cette note ou la remettre dans le parcours",
+  "markKnownCommand": "Marquer cette note et tout ce qu’elle requiert comme connus",
   "nextConceptPrompt": "Quel concept vient après celui-ci ?",
   "conceptName": "Nom du concept",
   "createConcept": "Créer le concept « {name} »",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} h {minutes} min",
   "state": {
     "mastered": "Maîtrisé",
+    "skipped": "Passé",
     "learning": "En cours",
     "available": "Prêt à commencer",
     "locked": "Verrouillé",
@@ -103,6 +106,28 @@
   "createNote": "Créer la note",
   "startLearning": "Commencer",
   "alreadyKnow": "Je connais déjà",
+  "knowWithPrerequisites": "Je connais ceci et ses prérequis",
+  "skip": "Passer",
+  "unskip": "Remettre dans le parcours",
+  "skippedCallout": "Vous avez passé ce concept. Il débloque ce qui en dépend, mais ne compte pas comme maîtrisé.",
+  "skippedToast": "Passé : {title}",
+  "goalNotSkipped": "L’objectif ne peut pas être passé. Retirez d’abord l’objectif.",
+  "markedKnown": {
+    "one": "{count} concept marqué comme connu",
+    "many": "{count} concepts marqués comme connus",
+    "other": "{count} concepts marqués comme connus"
+  },
+  "knownTitle": "Marquer comme connu",
+  "knownText": "Ces concepts seront marqués comme maîtrisés. Décochez ceux dont vous n’êtes pas sûr.",
+  "knownFilter": "Filtrer les concepts",
+  "knownConfirm": {
+    "one": "Marquer {count} concept",
+    "many": "Marquer {count} concepts",
+    "other": "Marquer {count} concepts"
+  },
+  "cancel": "Annuler",
+  "confidence": "Assurance",
+  "confidenceLevel": "Assurance {level} sur 5",
   "markMastered": "Marquer comme maîtrisé",
   "unmark": "Retirer la marque",
   "removeGoal": "Retirer l’objectif",
@@ -164,6 +189,11 @@
   },
   "from": "dès {duration}",
   "progressOf": "{done} sur {total}",
+  "skippedCount": {
+    "one": "{count} passé",
+    "many": "{count} passés",
+    "other": "{count} passés"
+  },
   "expandPanel": "Déplier le panneau",
   "collapsePanel": "Replier le panneau",
   "emptyTitle": "Créez votre première carte",

@@ -1,11 +1,12 @@
 import { setIcon, type App } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
-import { isGhostId, recommendMaterial, sourceState } from "../core/graph";
+import { isGhostId, isPassed, knownCandidates, recommendMaterial, sourceState } from "../core/graph";
+import { CONFIDENCE_LEVELS } from "../core/progress";
 import type { GraphNode } from "../core/types";
 import { attempt } from "../attempt";
 import { locale, t } from "../i18n";
 import type { Store } from "../store";
-import { PickModal, SourceModal, type PickItem } from "./pick";
+import { KnownModal, PickModal, SourceModal, type PickItem } from "./pick";
 
 export interface DetailHost {
   app: App;
@@ -108,6 +109,30 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
   }, (name) => t.newMaterialNamed({ name })).open();
 }
 
+/** "I know this and what it needs": the concept and its unmastered prerequisites, after a look at the list. */
+export function openKnownModal(app: App, store: Store, id: string) {
+  const items = knownCandidates(store.graph, store.progress, id).map((conceptId) => ({
+    id: conceptId,
+    title: store.graph.nodes.get(conceptId)?.title ?? conceptId,
+    icon: STATE_ICON[store.states.get(conceptId) ?? "locked"],
+  }));
+  if (items.length) new KnownModal(app, items, (ids) => store.markKnown(ids)).open();
+}
+
+/** Five buttons; pressing the current level again clears it. */
+function confidenceControl(parent: HTMLElement, store: Store, id: string) {
+  const current = store.progress.confidence.get(id) ?? 0;
+  const el = parent.createDiv({ cls: "tropa-confidence", attr: { role: "group", "aria-label": t.confidence } });
+  el.createSpan({ cls: "tropa-confidence-label", text: t.confidence });
+  for (const level of CONFIDENCE_LEVELS) {
+    const dot = el.createEl("button", {
+      cls: `tropa-confidence-dot${level <= current ? " is-on" : ""}`,
+      attr: { "aria-label": t.confidenceLevel({ level }), "aria-pressed": String(level === current) },
+    });
+    dot.addEventListener("click", () => store.setConfidence(id, level === current ? null : level));
+  }
+}
+
 function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?: () => void) {
   const node = host.store.graph.nodes.get(id);
   if (!node) return;
@@ -150,7 +175,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
 
   if (state === "locked") {
     const missing = source.requires
-      .filter((req) => (store.graph.nodes.get(req)?.kind === "source" ? !store.progress.done.has(req) : !store.progress.mastered.has(req)))
+      .filter((req) => (store.graph.nodes.get(req)?.kind === "source" ? !store.progress.done.has(req) : !isPassed(store.progress, req)))
       .map((req) => store.graph.nodes.get(req)?.title)
       .join(t.listSeparator);
     body.createDiv({ cls: "tropa-material-note", text: t.first({ titles: missing }) });
@@ -204,8 +229,11 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     goal.createSpan({ text: t.yourGoal });
   }
 
+  if (state === "mastered" || state === "learning") confidenceControl(parent, store, node.id);
+
   if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
+  if (state === "skipped") parent.createEl("p", { cls: "tropa-callout", text: t.skippedCallout });
   if (state === "cycle") {
     parent.createEl("p", {
       cls: "tropa-callout is-danger",
@@ -233,12 +261,20 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     action(t.markMastered, true, () => store.setMastered(node.id, true));
   } else if (state === "locked" || state === "cycle") {
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
+  } else if (state === "skipped") {
+    action(t.unskip, false, () => store.setSkipped(node.id, false));
+    action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
   } else {
     action(t.unmark, false, () => store.setMastered(node.id, false));
   }
+  if (state !== "mastered" && knownCandidates(store.graph, store.progress, node.id).length > 1) {
+    action(t.knowWithPrerequisites, false, () => openKnownModal(host.app, store, node.id));
+  }
+  // The goal is what the route leads to, so it cannot be skipped.
+  if (state !== "mastered" && state !== "skipped" && !isGoal) action(t.skip, false, () => store.setSkipped(node.id, true));
   action(isGoal ? t.removeGoal : t.makeGoal, false, () => store.setGoal(isGoal ? null : node.id));
 
-  const blockers = node.requires.filter((id) => !store.progress.mastered.has(id));
+  const blockers = node.requires.filter((id) => !isPassed(store.progress, id));
   if (state === "locked" && blockers.length) {
     parent.createEl("p", { cls: "tropa-hint", text: t.leftToUnlock({ count: blockers.length }) });
   }
@@ -356,6 +392,7 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
   const left = route.steps.length;
   parent.createEl("h3", { cls: "tropa-title", text: t.stepsToGoal({ count: left }) });
   parent.createEl("p", { cls: "tropa-hint", text: t.remainingLine({ remaining: store.describeRemaining(), goal: goal.title }) });
+  if (route.skippedCount) parent.createEl("p", { cls: "tropa-hint", text: t.skippedCount({ count: route.skippedCount }) });
 
   if (route.gaps.length) {
     parent.createEl("p", { cls: "tropa-hint is-warning", text: t.gaps({ count: route.gaps.length }) });
