@@ -120,7 +120,7 @@ npm run screenshots  # README images in docs/screenshots
 - `src/ui`: map, sidebar panel, modals.
 - `harness`: a mock of the Obsidian API that runs the real plugin code in a browser.
 
-To release, run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults.
+To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md), run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults; the changelog section becomes the release notes, and the build fails if it is missing.
 
 ## Limitations
 

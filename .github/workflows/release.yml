@@ -31,6 +31,15 @@ jobs:
             echo "Tag $GITHUB_REF_NAME does not match manifest version $version"
             exit 1
           fi
+      - name: Release notes
+        # The section of CHANGELOG.md for the manifest version becomes the body of the release.
+        run: |
+          version=$(node -p 'require("./manifest.json").version')
+          awk -v head="## [$version]" 'index($0, head) == 1 { found = 1; next } found && /^## \[/ { exit } found' CHANGELOG.md > release-notes.md
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "CHANGELOG.md has no section for $version"
+            exit 1
+          fi
       - run: npm run lint
       - run: npm test
       - run: npm run build
@@ -50,6 +59,7 @@ jobs:
             styles.css
             tropa-demo-vault.zip
             tropa-demo-vault-ru.zip
+            release-notes.md
 
   publish:
     needs: build
@@ -67,5 +77,5 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes \
+            --notes-file release-notes.md \
             main.js manifest.json styles.css tropa-demo-vault.zip tropa-demo-vault-ru.zip
