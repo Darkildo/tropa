@@ -2,9 +2,10 @@ import { t } from "../i18n";
 import type { ConceptState, SourceFormat } from "./types";
 
 export function formatMinutes(minutes: number) {
-  if (minutes < 60) return t.minutes(Math.round(minutes));
+  if (minutes < 60) return t.minutes({ minutes: Math.round(minutes) });
   const hours = Math.floor(minutes / 60);
-  return t.hours(hours, Math.round(minutes - hours * 60));
+  const rest = Math.round(minutes - hours * 60);
+  return rest ? t.hoursMinutes({ hours, minutes: rest }) : t.hours({ hours });
 }
 
 export const STATE_ICON: Record<ConceptState, string> = {

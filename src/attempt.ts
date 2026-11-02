@@ -5,6 +5,6 @@ import { t } from "./i18n";
 export function attempt(task: Promise<unknown>, context: string) {
   task.catch((error: unknown) => {
     console.error(`Tropa: failed to ${context}`, error);
-    new Notice(t.actionFailed(error instanceof Error ? error.message : String(error)));
+    new Notice(t.actionFailed({ reason: error instanceof Error ? error.message : String(error) }));
   });
 }
