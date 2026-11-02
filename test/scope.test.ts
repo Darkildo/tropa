@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { computeRoute, computeStates, emptyProgress, LearningGraph } from "../src/core/graph";
+import { readProgress, writeProgress } from "../src/core/progress";
 import { hasTag, inFolders, isExcluded, parseFolders, parseTags } from "../src/core/scope";
-import type { NoteInput, NoteRef } from "../src/core/types";
+import type { NoteInput } from "../src/core/types";
 
 describe("reading the scope settings", () => {
   it("takes one folder per line and keeps commas in names", () => {
@@ -50,26 +51,32 @@ describe("matching notes", () => {
 });
 
 describe("links to excluded notes", () => {
-  const ref = (id: string): NoteRef => ({ id, title: id });
-  const excluded: NoteRef = { id: "ghost:Old basics", title: "Old basics", excluded: "Archive/Old basics.md" };
-  const notes: NoteInput[] = [
-    { id: "Goal", title: "Goal", kind: "concept", requires: [excluded, ref("Base")], recommends: [], teaches: [] },
-    { id: "Base", title: "Base", kind: "concept", requires: [], recommends: [], teaches: [] },
-  ];
+  // The store drops a link to an excluded note before the graph is built: here Archive/Old basics.md is excluded.
+  const goal = (requires: string[]): NoteInput => ({
+    id: "Goal", title: "Goal", kind: "concept", requires: requires.map((id) => ({ id, title: id })), recommends: [], teaches: [],
+  });
+  const base: NoteInput = { id: "Base", title: "Base", kind: "concept", requires: [], recommends: [], teaches: [] };
+  const scoped = new LearningGraph([goal(["Base"]), base]);
 
-  it("become placeholders that remember the note", () => {
-    const graph = new LearningGraph(notes);
-    const node = graph.nodes.get("ghost:Old basics")!;
-    expect(node.ghost).toBe(true);
-    expect(node.excluded).toBe("Archive/Old basics.md");
-    expect(graph.nodes.get("Base")?.excluded).toBeUndefined();
+  it("leave no node and no step on the route", () => {
+    expect([...scoped.nodes.keys()].sort()).toEqual(["Base", "Goal"]);
+    const progress = { ...emptyProgress(), goal: "Goal" };
+    const route = computeRoute(scoped, progress, computeStates(scoped, progress));
+    expect(route?.steps.map((step) => step.id)).toEqual(["Base", "Goal"]);
   });
 
-  it("block the route like any placeholder until marked", () => {
-    const graph = new LearningGraph(notes);
-    const progress = { ...emptyProgress(), goal: "Goal" };
-    const states = computeStates(graph, progress);
-    expect(states.get("ghost:Old basics")).toBe("available");
-    expect(computeRoute(graph, progress, states)?.steps.map((step) => step.id)).toEqual(expect.arrayContaining(["ghost:Old basics", "Base", "Goal"]));
+  it("do not block what depended on the excluded note", () => {
+    const progress = { ...emptyProgress(), goal: "Goal", mastered: new Set(["Base"]) };
+    expect(computeStates(scoped, progress).get("Goal")).toBe("available");
+  });
+
+  it("keep their marks in the progress file", () => {
+    const frontmatter = { type: "learning-progress", goal: "[[Goal]]", mastered: ["[[Archive/Old basics]]", "[[Base]]"] };
+    const progress = readProgress(frontmatter, (target) => (target === "Archive/Old basics" ? "Archive/Old basics.md" : target));
+    progress.mastered.add("Goal");
+    computeStates(scoped, progress);
+    const written: Record<string, unknown> = { ...frontmatter };
+    writeProgress(written, progress, (id) => `[[${id.replace(/\.md$/, "")}]]`);
+    expect(written.mastered).toEqual(["[[Archive/Old basics]]", "[[Base]]", "[[Goal]]"]);
   });
 });

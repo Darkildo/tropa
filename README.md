@@ -110,7 +110,7 @@ A material in a concept's `materials` list is a URL, a link to an attachment or 
 - **Excluded folders**: a folder and everything below it. Folders match whole path segments, so `Archive` does not cover `Archive 2`. Keep the concepts and materials folders out of this list: what you create from the map goes there, and Tropa warns when you exclude them.
 - **Excluded tags**: tags from the `tags` property and from the note text, `#` optional, case ignored. A tag covers its nested tags: `#draft` also excludes `#draft/old`.
 
-A link to an excluded note becomes a placeholder marked "Left out of the map"; its panel opens the note instead of creating a new one. Progress keeps marks on excluded notes, and the progress file is read even when its folder is excluded. Attachments listed in a concept's `materials` stay on the map wherever they are stored: the scope picks notes, not the files a note on the map points at. If the goal itself is excluded, Tropa says so and asks to choose another goal or change the settings.
+Excluded notes leave the map completely: a `requires`, `recommends` or `teaches` link to one is dropped, so it adds no node, no route step and blocks nothing, and what needed only that note becomes available. The side panel still says when the open note is left out. Marks on excluded notes stay in the progress file as they are and return with the note, and the progress file is read even when its folder is excluded. Attachments listed in a concept's `materials` stay on the map wherever they are stored: the scope picks notes, not the files a note on the map points at. If the goal itself is excluded, Tropa says so and asks to choose another goal or change the settings.
 
 ## Demo vault (optional)
 

@@ -166,7 +166,7 @@ export default class TropaPlugin extends Plugin {
       if (node.url) window.open(node.url, "_blank", "noopener");
       return;
     }
-    const file = this.store.fileOf(node?.inline ? node.file! : node?.excluded ?? id);
+    const file = this.store.fileOf(node?.inline ? node.file! : id);
     if (!file) return;
     const { workspace } = this.app;
     const noteLeaf = workspace.getLeavesOfType("markdown")[0];

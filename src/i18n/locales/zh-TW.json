@@ -45,15 +45,13 @@
     "materialsKeyDesc": "直接列在概念中的連結和附件，不另外建立筆記。",
     "scope": "地圖範圍",
     "excludeFolders": "排除的資料夾",
-    "excludeFoldersDesc": "每行一個資料夾。這些資料夾及其子資料夾中的筆記不會出現在地圖上，指向它們的連結會變成預留節點。進度檔案一律會讀取。不要把概念和資料的資料夾放進來：從地圖建立的內容會存到那裡。",
+    "excludeFoldersDesc": "每行一個資料夾。這些資料夾及其子資料夾中的筆記不會出現在地圖上，指向它們的連結會被忽略。進度檔案一律會讀取。不要把概念和資料的資料夾放進來：從地圖建立的內容會存到那裡。",
     "excludeFoldersPlaceholder": "封存\n範本",
     "excludeTags": "排除的標籤",
     "excludeTagsDesc": "每行一個標籤。帶有這些標籤的筆記不會出現在地圖上，巢狀標籤也一樣：#草稿 也會排除 #草稿/舊。",
     "excludeTagsPlaceholder": "#草稿\n#私人"
   },
   "scope": {
-    "excludedCallout": "這則筆記存在，但因資料夾或標籤設定被排除在地圖之外。",
-    "excludedMeta": "不在地圖上",
     "excludedNote": "這則筆記因資料夾或標籤設定被排除在地圖之外。",
     "goalExcluded": "目標 {title} 因資料夾或標籤設定被排除在地圖之外。",
     "ownFolderExcluded": "{folder} 已被排除，但新的概念或資料會建立在那裡：它們不會出現在地圖上。",

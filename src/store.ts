@@ -50,8 +50,6 @@ export class Store extends Events {
   private scope: Scope = { folders: [], tags: [] };
   /** The excluded goal already announced, so the notice comes once per change. */
   private announcedGoal: string | null = null;
-  /** Ghost id → path of the excluded note behind it, so progress keeps the exact link when it is written back. */
-  private excludedPaths = new Map<string, string>();
   private pendingWrites = 0;
   private writes: Promise<void> = Promise.resolve();
 
@@ -78,7 +76,6 @@ export class Store extends Events {
     const settings = this.settings();
     const progressPath = normalizePath(settings.progressPath);
     this.scope = { folders: settings.excludeFolders ?? [], tags: settings.excludeTags ?? [] };
-    this.excludedPaths.clear();
 
     for (const file of this.app.vault.getMarkdownFiles()) {
       if (file.path === progressPath || this.isExcluded(file)) continue;
@@ -86,7 +83,11 @@ export class Store extends Events {
       if (!frontmatter) continue;
       const kind = this.classify(frontmatter);
       if (!kind) continue;
-      const refs = (key: string) => linkTargets(frontmatter[key]).map((target) => this.resolve(target, file.path));
+      // A link to an excluded note is dropped: no node, no step, nothing to wait for.
+      const refs = (key: string) =>
+        linkTargets(frontmatter[key])
+          .map((target) => this.resolve(target, file.path))
+          .filter((ref) => !this.excludedNote(ref.id));
       const minutes = Number(frontmatter.minutes);
       inputs.push({
         id: file.path,
@@ -135,8 +136,14 @@ export class Store extends Events {
   /** Title of the goal when the scope settings leave its note out. Nothing links to it then, so it is not in the graph. */
   get excludedGoal(): string | null {
     const { goal } = this.progress;
-    if (!goal || !this.excludedPaths.has(goal)) return null;
-    return this.graph.nodes.get(goal)?.title ?? goal.slice("ghost:".length);
+    return goal ? this.excludedNote(goal)?.basename ?? null : null;
+  }
+
+  /** The note behind an id when the scope settings leave it out. Progress keeps such ids untouched. */
+  private excludedNote(id: string) {
+    if (isGhostId(id)) return null;
+    const file = this.fileOf(id);
+    return file?.extension === "md" && this.isExcluded(file) ? file : null;
   }
 
   private announceExcludedGoal() {
@@ -180,16 +187,9 @@ export class Store extends Events {
     return materialId(normalizeUrl(value));
   }
 
-  /** A link to an excluded note reads like a link to a missing one, but remembers the note. */
   private resolve(target: string, from: string): NoteRef {
     const file = this.app.metadataCache.getFirstLinkpathDest(target, from);
-    if (!file) return { id: ghostId(basename(target)), title: basename(target) };
-    if (file.extension === "md" && this.isExcluded(file)) {
-      const id = ghostId(file.basename);
-      this.excludedPaths.set(id, file.path);
-      return { id, title: file.basename, excluded: file.path };
-    }
-    return { id: file.path, title: file.basename };
+    return file ? { id: file.path, title: file.basename } : { id: ghostId(basename(target)), title: basename(target) };
   }
 
   private readProgress() {
@@ -376,11 +376,6 @@ export class Store extends Events {
 
   /** Turns a placeholder into a real note. Existing notes are returned as they are. */
   async materialize(id: string): Promise<TFile> {
-    const excluded = this.graph.nodes.get(id)?.excluded;
-    if (excluded) {
-      const file = this.fileOf(excluded);
-      if (file) return file;
-    }
     if (!isGhostId(id)) {
       const file = this.fileOf(id);
       if (!file) throw new Error(t.noteNotFound({ id }));
@@ -499,8 +494,8 @@ export class Store extends Events {
 
   private linkTo(id: string, from: string) {
     const node = this.graph.nodes.get(id);
-    const file = this.fileOf(isGhostId(id) ? this.excludedPaths.get(id) ?? "" : id);
-    if (isGhostId(id) && !file) return `[[${node?.title ?? id.slice("ghost:".length)}]]`;
+    if (isGhostId(id)) return `[[${node?.title ?? id.slice("ghost:".length)}]]`;
+    const file = this.fileOf(id);
     return file ? `[[${this.app.metadataCache.fileToLinktext(file, from, true)}]]` : `[[${node?.title ?? id}]]`;
   }
 

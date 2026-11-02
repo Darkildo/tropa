@@ -10,8 +10,6 @@ export interface NoteRef {
   /** Vault path, or `ghost:<title>` when the note does not exist yet. */
   id: string;
   title: string;
-  /** The link points at a note the map leaves out by its settings: the vault path of that note. */
-  excluded?: string;
 }
 
 /** A material listed inside a concept, with its link already resolved by the host. */
@@ -47,8 +45,6 @@ export interface GraphNode {
   title: string;
   kind: NodeKind;
   ghost: boolean;
-  /** Ghost of a note that exists but is left out of the map: its vault path. */
-  excluded?: string;
   /** Hard prerequisites. Concepts point at concepts, sources at concepts or sources. */
   requires: string[];
   /** Reverse of `requires`. */

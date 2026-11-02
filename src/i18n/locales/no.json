@@ -45,15 +45,13 @@
     "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat.",
     "scope": "Kartets omfang",
     "excludeFolders": "Utelatte mapper",
-    "excludeFoldersDesc": "Én mappe per linje. Notater i disse mappene og undermappene kommer ikke på kartet, og lenker til dem blir plassholdere. Fremdriftsfilen leses alltid. Ikke ta med mappene for begreper og materialer: Det du lager fra kartet, havner der.",
+    "excludeFoldersDesc": "Én mappe per linje. Notater i disse mappene og undermappene kommer ikke på kartet, og lenker til dem ignoreres. Fremdriftsfilen leses alltid. Ikke ta med mappene for begreper og materialer: Det du lager fra kartet, havner der.",
     "excludeFoldersPlaceholder": "Arkiv\nMaler",
     "excludeTags": "Utelatte tagger",
     "excludeTagsDesc": "Én tagg per linje. Notater med disse taggene kommer ikke på kartet, nestede tagger inkludert: #utkast dekker også #utkast/gammelt.",
     "excludeTagsPlaceholder": "#utkast\n#privat"
   },
   "scope": {
-    "excludedCallout": "Notatet finnes, men kartet utelater det på grunn av innstillingene for mapper eller tagger.",
-    "excludedMeta": "Utenfor kartet",
     "excludedNote": "Notatet holdes utenfor kartet av innstillingene for mapper eller tagger.",
     "goalExcluded": "Målet {title} holdes utenfor kartet av innstillingene for mapper eller tagger.",
     "ownFolderExcluded": "{folder} er utelatt, men nye begreper eller materialer opprettes der: De vises ikke på kartet.",

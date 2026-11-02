@@ -59,6 +59,7 @@ if (scenario === "scope") {
   vault.seed("Archive 2/Kept.md", `---\ntype: concept\nrequires: ["[[Base]]"]\n---\n`);
   vault.seed("Private note.md", `---\ntype: concept\ntags: [private/old]\n---\n`);
   vault.seed("Inline tagged.md", `---\ntype: concept\n---\nSome text #private\n`);
+  vault.seed("Next.md", `---\ntype: concept\nrequires: ["[[Private note]]"]\n---\n`);
   vault.seed("Attachments/scan.pdf", "");
   vault.seed(defaultSettings(sampleLanguage).progressPath, `---\ntype: learning-progress\ngoal: "[[Goal]]"\nmastered: ["[[Archived]]"]\n---\n`);
 }

@@ -286,8 +286,7 @@ export class MapView extends ItemView implements DetailHost {
     el.addEventListener("blur", () => this.highlight(null));
     el.addEventListener("keydown", (event) => this.onNodeKey(event, node.id));
     el.addEventListener("dblclick", () => {
-      const target = this.store.graph.nodes.get(node.id);
-      if (target?.ghost && !target.excluded) attempt(this.store.materialize(node.id), `create ${node.title}`);
+      if (this.store.graph.nodes.get(node.id)?.ghost) attempt(this.store.materialize(node.id), `create ${node.title}`);
       else this.openNote(node.id);
     });
     el.addEventListener("contextmenu", (event) => this.openContextMenu(event, node.id));
@@ -334,7 +333,6 @@ export class MapView extends ItemView implements DetailHost {
     const { store } = this;
     const state = store.states.get(node.id);
     if (state === "mastered" || state === "skipped") return "";
-    if (node.excluded) return t.scope.excludedMeta;
     if (node.ghost) return t.noNoteYet;
     if (state === "locked") {
       const left = node.requires.filter((id) => !isPassed(store.progress, id)).length;
@@ -767,7 +765,7 @@ export class MapView extends ItemView implements DetailHost {
     const node = store.graph.nodes.get(id);
     if (!node) return;
     const menu = new Menu();
-    if (node.ghost && !node.excluded) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => attempt(store.materialize(id), `create ${node.title}`)));
+    if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => attempt(store.materialize(id), `create ${node.title}`)));
     else if (node.inline) menu.addItem((item) => item.setTitle(t.openSource).setIcon("external-link").onClick(() => this.openNote(id)));
     else menu.addItem((item) => item.setTitle(t.openNote).setIcon("file-text").onClick(() => this.openNote(id)));
 

@@ -50,7 +50,7 @@ export const en = {
     materialsKeyDesc: "Links and attachments listed in the concept itself, without a separate note.",
     scope: "Map scope",
     excludeFolders: "Excluded folders",
-    excludeFoldersDesc: "One folder per line. Notes in these folders and below them stay off the map, and links to them become placeholders. The progress file is always read. Keep the concepts and materials folders out of this list: what you create from the map goes there.",
+    excludeFoldersDesc: "One folder per line. Notes in these folders and below them stay off the map, and links to them are ignored. The progress file is always read. Keep the concepts and materials folders out of this list: what you create from the map goes there.",
     excludeFoldersPlaceholder: "Archive\nTemplates",
     excludeTags: "Excluded tags",
     excludeTagsDesc: "One tag per line. Notes with these tags stay off the map, nested tags included: #draft also covers #draft/old.",
@@ -58,8 +58,6 @@ export const en = {
   },
 
   scope: {
-    excludedCallout: "This note exists, but the map leaves it out by the folder or tag settings.",
-    excludedMeta: "Left out of the map",
     excludedNote: "This note is left out of the map by the folder or tag settings.",
     goalExcluded: "The goal {title} is left out of the map by the folder or tag settings.",
     ownFolderExcluded: "{folder} is excluded, but new concepts or materials are created there: they will not show on the map.",

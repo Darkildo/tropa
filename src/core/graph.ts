@@ -67,7 +67,6 @@ export class LearningGraph {
           title: ref.title,
           kind: "concept",
           ghost: true,
-          excluded: ref.excluded,
           requires: [],
           requiredBy: [],
           recommends: [],

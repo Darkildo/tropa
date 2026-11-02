@@ -201,25 +201,17 @@ describe("layout runner", () => {
 });
 
 describe("layout after a map scope change", () => {
-  const ref = (id: string, excluded?: string) => ({ id, title: id.replace(/^ghost:/, "").replace(/^.*\//, ""), excluded });
-  const concept = (id: string, requires: ReturnType<typeof ref>[] = []) => ({ id, title: ref(id).title, kind: "concept" as const, requires, recommends: [], teaches: [] });
-  const full = new LearningGraph([
-    concept("Goal", [ref("Base"), ref("Archive/Archived")]),
-    concept("Base"),
-    concept("Archive/Archived", [ref("Base")]),
-    concept("Archive/Extra", [ref("Base")]),
-  ]);
-  // Archive excluded: the linked note turns into a placeholder, the unlinked one is gone.
-  const scoped = new LearningGraph([concept("Goal", [ref("Base"), ref("ghost:Archived", "Archive/Archived.md")]), concept("Base")]);
+  const ref = (id: string) => ({ id, title: id.replace(/^.*\//, "") });
+  const concept = (id: string, requires: string[] = []) => ({ id, title: ref(id).title, kind: "concept" as const, requires: requires.map(ref), recommends: [], teaches: [] });
+  const full = new LearningGraph([concept("Goal", ["Base", "Archive/Archived"]), concept("Base"), concept("Archive/Archived", ["Base"])]);
+  // Archive excluded: the note and the link to it are gone.
+  const scoped = new LearningGraph([concept("Goal", ["Base"]), concept("Base")]);
 
   it("gets a new shape key, so the cached layout is not reused", () => {
     expect(shapeKey(input(scoped, false))).not.toBe(shapeKey(input(full, false)));
   });
 
-  it("places the placeholder and drops the excluded note", () => {
-    const layout = layoutGraph(scoped, { showSources: false });
-    expect(layout.nodes.has("ghost:Archived")).toBe(true);
-    expect(layout.nodes.has("Archive/Extra")).toBe(false);
-    expect(layout.nodes.has("Archive/Archived")).toBe(false);
+  it("lays out only what is left", () => {
+    expect([...layoutGraph(scoped, { showSources: false }).nodes.keys()].sort()).toEqual(["Base", "Goal"]);
   });
 });

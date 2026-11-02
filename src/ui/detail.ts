@@ -260,7 +260,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   if (node.ghost) {
     parent.createEl("p", {
       cls: "tropa-callout",
-      text: node.excluded ? t.scope.excludedCallout : t.ghostCallout,
+      text: t.ghostCallout,
     });
   }
 
@@ -270,8 +270,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     button.addEventListener("click", run);
   };
 
-  if (node.excluded) action(t.openNote, false, () => host.openNote(node.id));
-  else if (node.ghost) action(t.createNote, state !== "available", () => attempt(store.materialize(node.id), `create ${node.title}`));
+  if (node.ghost) action(t.createNote, state !== "available", () => attempt(store.materialize(node.id), `create ${node.title}`));
   if (state === "available") {
     action(t.startLearning, true, () => store.startLearning(node.id));
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));

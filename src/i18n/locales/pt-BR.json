@@ -45,15 +45,13 @@
     "materialsKeyDesc": "Links e anexos listados no próprio conceito, sem uma nota separada.",
     "scope": "Escopo do mapa",
     "excludeFolders": "Pastas excluídas",
-    "excludeFoldersDesc": "Uma pasta por linha. As notas nessas pastas e nas subpastas ficam fora do mapa, e os links para elas viram rascunhos. O arquivo de progresso é sempre lido. Não inclua as pastas de conceitos e materiais: o que você cria pelo mapa vai para lá.",
+    "excludeFoldersDesc": "Uma pasta por linha. As notas nessas pastas e nas subpastas ficam fora do mapa, e os links para elas são ignorados. O arquivo de progresso é sempre lido. Não inclua as pastas de conceitos e materiais: o que você cria pelo mapa vai para lá.",
     "excludeFoldersPlaceholder": "Arquivo\nModelos",
     "excludeTags": "Tags excluídas",
     "excludeTagsDesc": "Uma tag por linha. As notas com essas tags ficam fora do mapa, incluindo as aninhadas: #rascunho também cobre #rascunho/antigo.",
     "excludeTagsPlaceholder": "#rascunho\n#privado"
   },
   "scope": {
-    "excludedCallout": "Esta nota existe, mas o mapa a deixa de fora pelas configurações de pastas ou tags.",
-    "excludedMeta": "Fora do mapa",
     "excludedNote": "Esta nota fica fora do mapa pelas configurações de pastas ou tags.",
     "goalExcluded": "O objetivo {title} fica fora do mapa pelas configurações de pastas ou tags.",
     "ownFolderExcluded": "{folder} está excluída, mas é lá que os novos conceitos ou materiais são criados: eles não vão aparecer no mapa.",

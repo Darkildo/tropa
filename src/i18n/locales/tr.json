@@ -45,15 +45,13 @@
     "materialsKeyDesc": "Ayrı bir not olmadan doğrudan kavramda listelenen bağlantılar ve ekler.",
     "scope": "Harita kapsamı",
     "excludeFolders": "Hariç tutulan klasörler",
-    "excludeFoldersDesc": "Her satıra bir klasör. Bu klasörlerdeki ve alt klasörlerindeki notlar haritaya girmez, onlara verilen bağlantılar taslağa dönüşür. İlerleme dosyası her zaman okunur. Kavram ve materyal klasörlerini buraya eklemeyin: haritadan oluşturduklarınız oraya kaydedilir.",
+    "excludeFoldersDesc": "Her satıra bir klasör. Bu klasörlerdeki ve alt klasörlerindeki notlar haritaya girmez, onlara verilen bağlantılar yok sayılır. İlerleme dosyası her zaman okunur. Kavram ve materyal klasörlerini buraya eklemeyin: haritadan oluşturduklarınız oraya kaydedilir.",
     "excludeFoldersPlaceholder": "Arşiv\nŞablonlar",
     "excludeTags": "Hariç tutulan etiketler",
     "excludeTagsDesc": "Her satıra bir etiket. Bu etiketleri taşıyan notlar haritaya girmez, iç içe etiketler de: #taslak, #taslak/eski etiketini de kapsar.",
     "excludeTagsPlaceholder": "#taslak\n#özel"
   },
   "scope": {
-    "excludedCallout": "Bu not var, ancak klasör veya etiket ayarları yüzünden haritada yer almıyor.",
-    "excludedMeta": "Harita dışında",
     "excludedNote": "Bu not, klasör veya etiket ayarları yüzünden harita dışında.",
     "goalExcluded": "{title} hedefi, klasör veya etiket ayarları yüzünden harita dışında.",
     "ownFolderExcluded": "{folder} hariç tutuluyor, ancak yeni kavramlar veya materyaller orada oluşturuluyor: haritada görünmeyecekler.",

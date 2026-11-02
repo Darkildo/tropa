@@ -45,15 +45,13 @@
     "materialsKeyDesc": "Länkar och bilagor som står direkt i begreppet, utan en separat anteckning.",
     "scope": "Kartans omfång",
     "excludeFolders": "Uteslutna mappar",
-    "excludeFoldersDesc": "En mapp per rad. Anteckningar i dessa mappar och undermappar hamnar inte på kartan, och länkar till dem blir platshållare. Framstegsfilen läses alltid. Lägg inte till mapparna för begrepp och material: Det du skapar från kartan hamnar där.",
+    "excludeFoldersDesc": "En mapp per rad. Anteckningar i dessa mappar och undermappar hamnar inte på kartan, och länkar till dem ignoreras. Framstegsfilen läses alltid. Lägg inte till mapparna för begrepp och material: Det du skapar från kartan hamnar där.",
     "excludeFoldersPlaceholder": "Arkiv\nMallar",
     "excludeTags": "Uteslutna taggar",
     "excludeTagsDesc": "En tagg per rad. Anteckningar med dessa taggar hamnar inte på kartan, nästlade taggar inräknade: #utkast gäller även #utkast/gammalt.",
     "excludeTagsPlaceholder": "#utkast\n#privat"
   },
   "scope": {
-    "excludedCallout": "Anteckningen finns, men kartan utelämnar den på grund av inställningarna för mappar eller taggar.",
-    "excludedMeta": "Utanför kartan",
     "excludedNote": "Anteckningen hålls utanför kartan av inställningarna för mappar eller taggar.",
     "goalExcluded": "Målet {title} hålls utanför kartan av inställningarna för mappar eller taggar.",
     "ownFolderExcluded": "{folder} är utesluten, men nya begrepp eller material skapas där: De syns inte på kartan.",
