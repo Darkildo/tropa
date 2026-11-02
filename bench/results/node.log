@@ -1,0 +1,192 @@
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node sample dagre: 12.59 ms (engine 11.94) crossings 4
+node sample dagre-lp: 12.58 ms (engine 12.43) crossings 3
+node sample dagre-ns: 9.57 ms (engine 9.44) crossings 4
+node sample elk: 77.43 ms (engine 77.21) crossings 1
+node sample sugi-ts: 2.94 ms (engine 2.76) crossings 3
+node sample sugi-wasm: 0.21 ms (engine 0.07, wasm 0.06) crossings 3
+node sample crate-wasm: 4.43 ms (engine 4.31) crossings 1
+case sample done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node sample+m dagre: 47.5 ms (engine 47.1) crossings 44
+node sample+m dagre-lp: 40.5 ms (engine 39.89) crossings 45
+node sample+m dagre-ns: 31.29 ms (engine 30.94) crossings 44
+node sample+m elk: 93.01 ms (engine 92.7) crossings 18
+node sample+m sugi-ts: 4.49 ms (engine 4.24) crossings 48
+node sample+m sugi-wasm: 0.29 ms (engine 0.12, wasm 0.1) crossings 48
+node sample+m crate-wasm: 1.49 ms (engine 1.38) crossings 46
+case sample+m done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 100 dagre: 188.33 ms (engine 186.03) crossings 2000
+node 100 dagre-lp: 148.68 ms (engine 146.6) crossings 2106
+node 100 dagre-ns: 178.39 ms (engine 177.43) crossings 2000
+node 100 elk: 214.67 ms (engine 213.57) crossings 1929
+node 100 sugi-ts: 15.53 ms (engine 14.87) crossings 1880
+node 100 sugi-wasm: 3.73 ms (engine 1.12, wasm 1.04) crossings 1880
+node 100 crate-wasm: 14.78 ms (engine 13.79) crossings 1974
+case 100 done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 100+m dagre: 674.42 ms (engine 669.22) crossings 4302
+node 100+m dagre-lp: 768.35 ms (engine 761.33) crossings 4368
+node 100+m dagre-ns: 692.25 ms (engine 690.49) crossings 4047
+node 100+m elk: 594.24 ms (engine 593.12) crossings 3837
+node 100+m sugi-ts: 21 ms (engine 18.99) crossings 4333
+node 100+m sugi-wasm: 4.04 ms (engine 2.26, wasm 2.15) crossings 4333
+node 100+m crate-wasm: 27.88 ms (engine 27.4) crossings 4764
+case 100+m done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 200 dagre: 353.02 ms (engine 349.31) crossings 8980
+node 200 dagre-lp: 387.9 ms (engine 384.97) crossings 9250
+node 200 dagre-ns: 395.85 ms (engine 391.56) crossings 8269
+node 200 elk: 517.89 ms (engine 516.18) crossings 7201
+node 200 sugi-ts: 25.56 ms (engine 21.1) crossings 8784
+node 200 sugi-wasm: 6.21 ms (engine 1.66, wasm 1.55) crossings 8784
+node 200 crate-wasm: 28.56 ms (engine 28.04) crossings 8183
+case 200 done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 200+m dagre: 3476.45 ms (engine 3472.35) crossings 18506
+node 200+m dagre-lp: 3473.32 ms (engine 3455.33) crossings 18690
+node 200+m dagre-ns: 3513.01 ms (engine 3495.86) crossings 17262
+node 200+m elk: 1451.93 ms (engine 1449.37) crossings 15263
+node 200+m sugi-ts: 66.07 ms (engine 56.35) crossings 19231
+node 200+m sugi-wasm: 26.95 ms (engine 12.59, wasm 12.25) crossings 19231
+node 200+m crate-wasm: 236.44 ms (engine 235.51) crossings 16174
+case 200+m done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 400 dagre: 1234.18 ms (engine 1230.41) crossings 23234
+node 400 dagre-lp: 1576.34 ms (engine 1556.72) crossings 28455
+node 400 dagre-ns: 1649.48 ms (engine 1644.25) crossings 21187
+node 400 elk: 1180.04 ms (engine 1175.93) crossings 21530
+node 400 sugi-ts: 36.46 ms (engine 26.01) crossings 22683
+node 400 sugi-wasm: 12.74 ms (engine 4.34, wasm 4.17) crossings 22683
+node 400 crate-wasm: 119.95 ms (engine 112.44) crossings 22151
+case 400 done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 400+m dagre: 11191.11 ms (engine 11155.23) crossings 58000
+node 400+m dagre-lp: 14995.41 ms (engine 14940.32) crossings 57760
+node 400+m dagre-ns: 11142.61 ms (engine 11099.17) crossings 56170
+node 400+m elk: 3107.31 ms (engine 3092.25) crossings 52524
+node 400+m sugi-ts: 204.01 ms (engine 163.31) crossings 58082
+node 400+m sugi-wasm: 98.42 ms (engine 47.93, wasm 45.86) crossings 58082
+node 400+m crate-wasm: 1322.3 ms (engine 1311.03) crossings 49601
+case 400+m done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 1000 dagre: 7373.74 ms (engine 7332.18) crossings 129226
+node 1000 dagre-lp: 8864.52 ms (engine 8800.2) crossings 147273
+node 1000 dagre-ns: 25698.5 ms (engine 25678.41) crossings 114449
+node 1000 elk: 5626.61 ms (engine 5616.67) crossings 110101
+node 1000 sugi-ts: 147.73 ms (engine 106.74) crossings 128718
+node 1000 sugi-wasm: 80.31 ms (engine 27.08, wasm 23.21) crossings 128718
+node 1000 crate-wasm: 2405.87 ms (engine 2401.31) crossings 124048
+case 1000 done
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 1000+m dagre: 93987.47 ms (engine 93374.47) crossings 358483
+node 1000+m dagre: ERROR out of memory
+port check sample: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check sample+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 100+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 200+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 400+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+port check 1000+m: max coordinate difference 0, edges with different bends 0, nodes on another rank 0
+node 1000+m dagre-lp: 88462.5 ms (engine 88145.86) crossings 365453
+node 1000+m dagre-ns: 86859.97 ms (engine 86591.85) crossings 338726
+node 1000+m elk: 7282.88 ms (engine 7267.6) crossings 306111
+node 1000+m sugi-ts: 1486.07 ms (engine 1230.68) crossings 353413
+node 1000+m sugi-wasm: 621.9 ms (engine 370.7, wasm 357.41) crossings 353413
+node 1000+m crate-wasm: 45146.88 ms (engine 45122.05) crossings 373778
+case 1000+m done
+node bench finished

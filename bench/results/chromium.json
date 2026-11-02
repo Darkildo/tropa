@@ -1,0 +1,526 @@
+{
+ "env": "chromium",
+ "rows": [
+  {
+   "engine": "dagre",
+   "case": "sample",
+   "totalMedian": 9.7,
+   "engineMedian": 9.4,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "sample",
+   "totalMedian": 9.1,
+   "engineMedian": 9.1,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "sample",
+   "totalMedian": 7.4,
+   "engineMedian": 7.3,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "sample",
+   "totalMedian": 50.2,
+   "engineMedian": 49.8,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "sample",
+   "totalMedian": 0.8,
+   "engineMedian": 0.7,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "sample",
+   "totalMedian": 0.2,
+   "engineMedian": 0.1,
+   "runs": 7,
+   "computeMedian": 0.1
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "sample",
+   "totalMedian": 0.7,
+   "engineMedian": 0.7,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "sample+m",
+   "totalMedian": 29.7,
+   "engineMedian": 29.4,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "sample+m",
+   "totalMedian": 22.2,
+   "engineMedian": 21.9,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "sample+m",
+   "totalMedian": 20.0,
+   "engineMedian": 18.4,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "sample+m",
+   "totalMedian": 68.0,
+   "engineMedian": 67.6,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "sample+m",
+   "totalMedian": 2.0,
+   "engineMedian": 1.8,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "sample+m",
+   "totalMedian": 0.4,
+   "engineMedian": 0.3,
+   "runs": 7,
+   "computeMedian": 0.2
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "sample+m",
+   "totalMedian": 1.7,
+   "engineMedian": 1.6,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "100",
+   "totalMedian": 118.4,
+   "engineMedian": 117.5,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "100",
+   "totalMedian": 99.9,
+   "engineMedian": 99.0,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "100",
+   "totalMedian": 117.1,
+   "engineMedian": 115.5,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "100",
+   "totalMedian": 125.6,
+   "engineMedian": 125.0,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "100",
+   "totalMedian": 6.8,
+   "engineMedian": 6.1,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "100",
+   "totalMedian": 1.9,
+   "engineMedian": 1.1,
+   "runs": 7,
+   "computeMedian": 1.1
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "100",
+   "totalMedian": 11.1,
+   "engineMedian": 10.7,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "100+m",
+   "totalMedian": 342.4,
+   "engineMedian": 341.1,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "100+m",
+   "totalMedian": 487.3,
+   "engineMedian": 485.8,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "100+m",
+   "totalMedian": 357.9,
+   "engineMedian": 356.7,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "100+m",
+   "totalMedian": 524.8,
+   "engineMedian": 523.4,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "100+m",
+   "totalMedian": 19.0,
+   "engineMedian": 16.9,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "100+m",
+   "totalMedian": 4.0,
+   "engineMedian": 2.5,
+   "runs": 7,
+   "computeMedian": 2.3
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "100+m",
+   "totalMedian": 27.7,
+   "engineMedian": 27.4,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "200",
+   "totalMedian": 209.6,
+   "engineMedian": 208.3,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "200",
+   "totalMedian": 213.8,
+   "engineMedian": 212.6,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "200",
+   "totalMedian": 315.1,
+   "engineMedian": 313.9,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "200",
+   "totalMedian": 222.8,
+   "engineMedian": 221.8,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "200",
+   "totalMedian": 11.5,
+   "engineMedian": 9.9,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "200",
+   "totalMedian": 2.1,
+   "engineMedian": 1.1,
+   "runs": 7,
+   "computeMedian": 1.1
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "200",
+   "totalMedian": 27.4,
+   "engineMedian": 26.9,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "200+m",
+   "totalMedian": 2110.5,
+   "engineMedian": 2104.0,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "200+m",
+   "totalMedian": 2185.5,
+   "engineMedian": 2181.1,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "200+m",
+   "totalMedian": 2096.7,
+   "engineMedian": 2094.3,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "200+m",
+   "totalMedian": 1251.6,
+   "engineMedian": 1249.8,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "200+m",
+   "totalMedian": 55.1,
+   "engineMedian": 49.7,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "200+m",
+   "totalMedian": 18.9,
+   "engineMedian": 13.1,
+   "runs": 7,
+   "computeMedian": 12.0
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "200+m",
+   "totalMedian": 200.3,
+   "engineMedian": 199.6,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "400",
+   "totalMedian": 753.0,
+   "engineMedian": 749.8,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "400",
+   "totalMedian": 869.4,
+   "engineMedian": 866.9,
+   "runs": 7
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "400",
+   "totalMedian": 890.9,
+   "engineMedian": 888.4,
+   "runs": 7
+  },
+  {
+   "engine": "elk",
+   "case": "400",
+   "totalMedian": 903.7,
+   "engineMedian": 901.7,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "400",
+   "totalMedian": 24.4,
+   "engineMedian": 20.1,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "400",
+   "totalMedian": 9.3,
+   "engineMedian": 5.0,
+   "runs": 7,
+   "computeMedian": 4.8
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "400",
+   "totalMedian": 129.7,
+   "engineMedian": 128.6,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "400+m",
+   "totalMedian": 7169.4,
+   "engineMedian": 7140.7,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "400+m",
+   "totalMedian": 7881.3,
+   "engineMedian": 7839.5,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "400+m",
+   "totalMedian": 7404.4,
+   "engineMedian": 7398.5,
+   "runs": 3
+  },
+  {
+   "engine": "elk",
+   "case": "400+m",
+   "totalMedian": 2211.4,
+   "engineMedian": 2208.2,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "400+m",
+   "totalMedian": 164.4,
+   "engineMedian": 145.5,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "400+m",
+   "totalMedian": 73.2,
+   "engineMedian": 42.3,
+   "runs": 7,
+   "computeMedian": 41.4
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "400+m",
+   "totalMedian": 1508.8,
+   "engineMedian": 1507.3,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "1000",
+   "totalMedian": 4678.8,
+   "engineMedian": 4651.0,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "1000",
+   "totalMedian": 5197.5,
+   "engineMedian": 5161.7,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "1000",
+   "totalMedian": 15482.0,
+   "engineMedian": 15474.0,
+   "runs": 3
+  },
+  {
+   "engine": "elk",
+   "case": "1000",
+   "totalMedian": 4118.1,
+   "engineMedian": 4113.6,
+   "runs": 3
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "1000",
+   "totalMedian": 104.6,
+   "engineMedian": 86.6,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "1000",
+   "totalMedian": 51.0,
+   "engineMedian": 23.4,
+   "runs": 7,
+   "computeMedian": 22.5
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "1000",
+   "totalMedian": 1670.0,
+   "engineMedian": 1668.0,
+   "runs": 7
+  },
+  {
+   "engine": "dagre",
+   "case": "1000+m",
+   "totalMedian": 39471.5,
+   "engineMedian": 39309.6,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-lp",
+   "case": "1000+m",
+   "totalMedian": 44465.6,
+   "engineMedian": 44265.8,
+   "runs": 3
+  },
+  {
+   "engine": "dagre-ns",
+   "case": "1000+m",
+   "totalMedian": 47021.5,
+   "engineMedian": 46882.9,
+   "runs": 3
+  },
+  {
+   "engine": "elk",
+   "case": "1000+m",
+   "totalMedian": 6815.3,
+   "engineMedian": 6805.4,
+   "runs": 3
+  },
+  {
+   "engine": "sugi-ts",
+   "case": "1000+m",
+   "totalMedian": 1188.4,
+   "engineMedian": 1026.5,
+   "runs": 7
+  },
+  {
+   "engine": "sugi-wasm",
+   "case": "1000+m",
+   "totalMedian": 650.5,
+   "engineMedian": 404.2,
+   "runs": 7,
+   "computeMedian": 364.5
+  },
+  {
+   "engine": "crate-wasm",
+   "case": "1000+m",
+   "totalMedian": 44288.7,
+   "engineMedian": 44281.6,
+   "runs": 3
+  }
+ ],
+ "worker": [
+  {
+   "case": "400",
+   "syncMs": 715,
+   "syncLongestPause": 715,
+   "workerColdMs": 1322,
+   "workerColdCompute": 1247,
+   "workerWarmMs": 1096,
+   "workerWarmCompute": 1087,
+   "workerLongestPause": 24
+  },
+  {
+   "case": "400+m",
+   "skipped": true
+  },
+  {
+   "case": "1000",
+   "skipped": true
+  }
+ ],
+ "note": "rows parsed from chromium.log; worker run for 400+m and 1000 hung and was stopped"
+}

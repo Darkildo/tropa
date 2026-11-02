@@ -1,0 +1,10 @@
+{"case":"1000+m","nodes":1700,"median":326.633,"p95":372.185}
+{"case":"1000","nodes":1000,"median":20.117,"p95":20.740}
+{"case":"100+m","nodes":170,"median":2.775,"p95":2.873}
+{"case":"100","nodes":100,"median":0.862,"p95":0.868}
+{"case":"200+m","nodes":340,"median":10.192,"p95":11.563}
+{"case":"200","nodes":200,"median":1.399,"p95":1.506}
+{"case":"400+m","nodes":680,"median":44.098,"p95":45.202}
+{"case":"400","nodes":400,"median":4.050,"p95":4.064}
+{"case":"sample+m","nodes":32,"median":0.113,"p95":0.119}
+{"case":"sample","nodes":20,"median":0.038,"p95":0.040}
