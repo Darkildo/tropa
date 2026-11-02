@@ -34,11 +34,22 @@ if (scenario === "cycle") {
 }
 if (scenario === "large") {
   const count = Number(params.get("n") ?? 300);
+  const links = (ids: number[], prefix = "Node") => `[${[...new Set(ids)].map((n) => `"[[${prefix} ${n}]]"`).join(", ")}]`;
   for (let i = 0; i < count; i++) {
     const reqs = [i - 1 - (i % 7), i - 3 - (i % 11), Math.floor(i / 2)].filter((n) => n >= 0 && n < i);
-    vault.seed(`Node ${i}.md`, `---\ntype: concept\nrequires: [${[...new Set(reqs)].map((n) => `"[[Node ${n}]]"`).join(", ")}]\n---\n`);
+    // `materials` adds soft links and about 0.7 materials per concept, like the benchmark's "+m" graphs.
+    const soft = params.has("materials") && i % 2 ? `recommends: ${links([(i * 37) % count].filter((n) => n !== i))}\n` : "";
+    vault.seed(`Node ${i}.md`, `---\ntype: concept\nrequires: ${links(reqs)}\n${soft}---\n`);
+  }
+  if (params.has("materials")) {
+    for (let i = 0; i < Math.round(count * 0.7); i++) {
+      const needs = i % 3 ? "" : `requires: ${links([(i * 13) % count])}\n`;
+      vault.seed(`Material ${i}.md`, `---\ntype: source\nformat: article\nminutes: ${10 + (i % 50)}\nteaches: ${links([(i * 7) % count])}\n${needs}---\n`);
+    }
   }
 }
+// The plugin must still work where workers are not available.
+if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
 vault.getMarkdownFiles().forEach((file: any) => (app as any).metadataCache.index(file));
 

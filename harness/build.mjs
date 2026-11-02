@@ -1,4 +1,5 @@
 import esbuild from "esbuild";
+import { layoutWorker } from "../layout-worker.esbuild.mjs";
 import { localesAsText } from "../locales.esbuild.mjs";
 import { copyFileSync, mkdirSync } from "node:fs";
 
@@ -11,7 +12,7 @@ await esbuild.build({
   outfile: "dist/preview/preview.js",
   alias: { obsidian: "./harness/obsidian-mock.ts" },
   charset: "utf8",
-  plugins: [localesAsText],
+  plugins: [localesAsText, layoutWorker],
   logLevel: "warning",
 });
 copyFileSync("harness/index.html", "dist/preview/index.html");
