@@ -1,5 +1,6 @@
 import type { LearningGraph } from "../src/core/graph";
-import { layoutGraph, type Layout, type LayoutOptions } from "../src/core/layout";
+import { finishLayout, layoutGraph, prepareLayout, svgPaths, type Layout, type LayoutOptions } from "../src/core/layout";
+import type { LayoutEngine } from "../src/core/layout-engine";
 import { layoutDagre } from "./dagre-as-shipped";
 import type { BenchCase } from "./gen";
 
@@ -13,6 +14,19 @@ export const ENGINES: Engine[] = [
   { id: "dagre", label: "dagre (0.1)", layout: layoutDagre },
   { id: "tropa", label: "own Sugiyama (0.2)", layout: layoutGraph },
 ];
+
+/** The same pipeline as `layoutGraph` with another engine, such as the WebAssembly one. */
+export function withEngine(id: string, label: string, engine: LayoutEngine): Engine {
+  return {
+    id,
+    label,
+    layout(graph, options) {
+      const prepared = prepareLayout(graph, options);
+      const output = engine.layout(prepared.input);
+      return finishLayout(prepared, { output, paths: svgPaths(output) });
+    },
+  };
+}
 
 export interface Timing {
   engine: string;

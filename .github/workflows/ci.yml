@@ -21,6 +21,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The layout engine's WebAssembly is built from crates/tropa-layout, never taken from git.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+          targets: wasm32-unknown-unknown
+      # Builds it twice from scratch and fails unless both builds are the same byte for byte.
+      - run: npm run build:wasm -- --verify
       - run: npm run lint
       - run: npm test
       - run: npm run build
@@ -37,4 +44,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The layout engine's WebAssembly is built from crates/tropa-layout, never taken from git.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.1
+          targets: wasm32-unknown-unknown
+      - run: npm run build:wasm
       - run: npm run bench

@@ -22,12 +22,16 @@ export async function start() {
   async function open({ width = 1440, height = 900, scale = 1, query = "" } = {}) {
     const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale });
     const errors = [];
-    page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+    const logs = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+      logs.push(message.text());
+    });
     page.on("pageerror", (error) => errors.push(String(error)));
     await page.goto(url + query);
     await page.waitForSelector("#center .tropa-map");
     await page.waitForTimeout(500);
-    return { page, errors };
+    return { page, errors, logs };
   }
 
   async function stop() {

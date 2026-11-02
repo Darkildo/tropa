@@ -1,0 +1,20 @@
+[package]
+name = "tropa-layout"
+version = "0.0.0"
+edition = "2021"
+license = "MIT"
+publish = false
+description = "Layered graph layout for Tropa, a port of src/core/sugiyama.ts to WebAssembly"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# No dependencies: the module only needs memory, no generated glue.
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = false
