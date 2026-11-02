@@ -1,6 +1,6 @@
 export type NodeKind = "concept" | "source";
 
-export type ConceptState = "mastered" | "learning" | "available" | "locked" | "cycle";
+export type ConceptState = "mastered" | "skipped" | "learning" | "available" | "locked" | "cycle";
 export type SourceState = "done" | "ready" | "locked";
 
 export type SourceFormat = "video" | "article" | "book" | "paper" | "course" | "note" | "other";
@@ -53,6 +53,10 @@ export interface Progress {
   learning: Set<string>;
   /** Finished sources. */
   done: Set<string>;
+  /** Concepts left out on purpose: they open what depends on them but never count as mastered. */
+  skipped: Set<string>;
+  /** Optional self-assessment from 1 to 5, kept for mastered and learning concepts only. */
+  confidence: Map<string, number>;
 }
 
 export interface RouteStep {
@@ -71,7 +75,9 @@ export interface Route {
   /** First step that can be started right now. */
   next: string | null;
   masteredCount: number;
+  /** Concepts to master for the goal: the closure without skipped ones. */
   total: number;
+  skippedCount: number;
   /** Sum of the recommended materials' durations. */
   remainingMinutes: number;
   /** Steps with no estimate, so the total above is a lower bound. */

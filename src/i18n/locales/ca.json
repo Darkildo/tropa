@@ -9,6 +9,8 @@
   "markSource": "Converteix aquesta nota en material",
   "setGoal": "Converteix aquesta nota en objectiu",
   "toggleMastered": "Marca aquesta nota com a dominada o torna-la a l’estudi",
+  "toggleSkipped": "Omet aquesta nota o torna-la a la ruta",
+  "markKnownCommand": "Marca aquesta nota i tot el que requereix com a sabut",
   "nextConceptPrompt": "Quin concepte ve després d’aquest?",
   "conceptName": "Nom del concepte",
   "createConcept": "Crea el concepte «{name}»",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} h {minutes} min",
   "state": {
     "mastered": "Dominat",
+    "skipped": "Omès",
     "learning": "Aprenent",
     "available": "A punt per començar",
     "locked": "Bloquejat",
@@ -103,6 +106,28 @@
   "createNote": "Crea la nota",
   "startLearning": "Comença a aprendre",
   "alreadyKnow": "Ja ho sé",
+  "knowWithPrerequisites": "Sé això i el que necessita",
+  "skip": "Omet",
+  "unskip": "Torna-ho a la ruta",
+  "skippedCallout": "Has omès aquest concepte. Desbloqueja el que en depèn, però no compta com a dominat.",
+  "skippedToast": "Omès: {title}",
+  "goalNotSkipped": "No es pot ometre l’objectiu. Treu primer l’objectiu.",
+  "markedKnown": {
+    "one": "{count} concepte marcat com a sabut",
+    "many": "{count} conceptes marcats com a sabuts",
+    "other": "{count} conceptes marcats com a sabuts"
+  },
+  "knownTitle": "Marca com a sabut",
+  "knownText": "Aquests conceptes es marcaran com a dominats. Desmarca els que no tinguis clars.",
+  "knownFilter": "Filtra els conceptes",
+  "knownConfirm": {
+    "one": "Marca {count} concepte",
+    "many": "Marca {count} conceptes",
+    "other": "Marca {count} conceptes"
+  },
+  "cancel": "Cancel·la",
+  "confidence": "Seguretat",
+  "confidenceLevel": "Seguretat {level} de 5",
   "markMastered": "Marca com a dominat",
   "unmark": "Treu la marca",
   "removeGoal": "Treu l’objectiu",
@@ -164,6 +189,11 @@
   },
   "from": "des de {duration}",
   "progressOf": "{done} de {total}",
+  "skippedCount": {
+    "one": "{count} omès",
+    "many": "{count} omesos",
+    "other": "{count} omesos"
+  },
   "expandPanel": "Desplega el tauler",
   "collapsePanel": "Plega el tauler",
   "emptyTitle": "Crea el teu primer mapa",

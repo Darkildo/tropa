@@ -9,6 +9,8 @@
   "markSource": "Deze notitie een leermiddel maken",
   "setGoal": "Deze notitie het doel maken",
   "toggleMastered": "Deze notitie als beheerst markeren of terugzetten naar leren",
+  "toggleSkipped": "Deze notitie overslaan of terugzetten in de route",
+  "markKnownCommand": "Deze notitie en alles wat ze vereist als bekend markeren",
   "nextConceptPrompt": "Welk concept komt hierna?",
   "conceptName": "Naam van het concept",
   "createConcept": "Concept ‘{name}’ maken",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} u {minutes} min",
   "state": {
     "mastered": "Beheerst",
+    "skipped": "Overgeslagen",
     "learning": "Bezig",
     "available": "Klaar om te beginnen",
     "locked": "Vergrendeld",
@@ -103,6 +106,26 @@
   "createNote": "Notitie maken",
   "startLearning": "Beginnen met leren",
   "alreadyKnow": "Ken ik al",
+  "knowWithPrerequisites": "Ken ik, met alles wat eraan voorafgaat",
+  "skip": "Overslaan",
+  "unskip": "Terug in de route",
+  "skippedCallout": "Je hebt dit concept overgeslagen. Het opent wat ervan afhangt, maar telt niet als beheerst.",
+  "skippedToast": "Overgeslagen: {title}",
+  "goalNotSkipped": "Het doel kan niet worden overgeslagen. Haal eerst het doel weg.",
+  "markedKnown": {
+    "one": "{count} concept als bekend gemarkeerd",
+    "other": "{count} concepten als bekend gemarkeerd"
+  },
+  "knownTitle": "Als bekend markeren",
+  "knownText": "Deze concepten worden als beheerst gemarkeerd. Vink uit waar je niet zeker van bent.",
+  "knownFilter": "Concepten filteren",
+  "knownConfirm": {
+    "one": "{count} concept markeren",
+    "other": "{count} concepten markeren"
+  },
+  "cancel": "Annuleren",
+  "confidence": "Zekerheid",
+  "confidenceLevel": "Zekerheid {level} van 5",
   "markMastered": "Als beheerst markeren",
   "unmark": "Markering weghalen",
   "removeGoal": "Doel verwijderen",
@@ -159,6 +182,10 @@
   },
   "from": "vanaf {duration}",
   "progressOf": "{done} van {total}",
+  "skippedCount": {
+    "one": "{count} overgeslagen",
+    "other": "{count} overgeslagen"
+  },
   "expandPanel": "Paneel uitklappen",
   "collapsePanel": "Paneel inklappen",
   "emptyTitle": "Maak je eerste kaart",

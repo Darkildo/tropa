@@ -9,6 +9,8 @@
   "markSource": "Gör anteckningen till ett material",
   "setGoal": "Gör anteckningen till målet",
   "toggleMastered": "Markera anteckningen som behärskad eller flytta tillbaka till studier",
+  "toggleSkipped": "Hoppa över anteckningen eller lägg tillbaka den i rutten",
+  "markKnownCommand": "Markera anteckningen och allt den kräver som känt",
   "nextConceptPrompt": "Vilket begrepp kommer efter det här?",
   "conceptName": "Begreppets namn",
   "createConcept": "Skapa begreppet ”{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} tim {minutes} min",
   "state": {
     "mastered": "Behärskat",
+    "skipped": "Överhoppat",
     "learning": "Pågår",
     "available": "Redo att börja",
     "locked": "Låst",
@@ -103,6 +106,26 @@
   "createNote": "Skapa anteckning",
   "startLearning": "Börja studera",
   "alreadyKnow": "Kan redan",
+  "knowWithPrerequisites": "Kan detta och allt som krävs före",
+  "skip": "Hoppa över",
+  "unskip": "Tillbaka till rutten",
+  "skippedCallout": "Du har hoppat över det här begreppet. Det öppnar det som bygger på det, men räknas inte som behärskat.",
+  "skippedToast": "Överhoppat: {title}",
+  "goalNotSkipped": "Målet kan inte hoppas över. Ta bort målet först.",
+  "markedKnown": {
+    "one": "{count} begrepp markerat som känt",
+    "other": "{count} begrepp markerade som kända"
+  },
+  "knownTitle": "Markera som känt",
+  "knownText": "De här begreppen markeras som behärskade. Avmarkera dem du är osäker på.",
+  "knownFilter": "Filtrera begrepp",
+  "knownConfirm": {
+    "one": "Markera {count} begrepp",
+    "other": "Markera {count} begrepp"
+  },
+  "cancel": "Avbryt",
+  "confidence": "Säkerhet",
+  "confidenceLevel": "Säkerhet {level} av 5",
   "markMastered": "Markera som behärskat",
   "unmark": "Ta bort markeringen",
   "removeGoal": "Ta bort målet",
@@ -159,6 +182,10 @@
   },
   "from": "från {duration}",
   "progressOf": "{done} av {total}",
+  "skippedCount": {
+    "one": "{count} överhoppat",
+    "other": "{count} överhoppade"
+  },
   "expandPanel": "Fäll ut panelen",
   "collapsePanel": "Fäll ihop panelen",
   "emptyTitle": "Bygg din första karta",

@@ -9,6 +9,8 @@
   "markSource": "Rendi questa nota un materiale",
   "setGoal": "Rendi questa nota l’obiettivo",
   "toggleMastered": "Segna questa nota come padroneggiata o rimettila in studio",
+  "toggleSkipped": "Salta questa nota o rimettila nel percorso",
+  "markKnownCommand": "Segna questa nota e tutto ciò che richiede come già noti",
   "nextConceptPrompt": "Quale concetto viene dopo questo?",
   "conceptName": "Nome del concetto",
   "createConcept": "Crea il concetto «{name}»",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} h {minutes} min",
   "state": {
     "mastered": "Padroneggiato",
+    "skipped": "Saltato",
     "learning": "In studio",
     "available": "Pronto per iniziare",
     "locked": "Bloccato",
@@ -103,6 +106,28 @@
   "createNote": "Crea nota",
   "startLearning": "Inizia a studiare",
   "alreadyKnow": "Lo so già",
+  "knowWithPrerequisites": "So questo e ciò che richiede",
+  "skip": "Salta",
+  "unskip": "Rimetti nel percorso",
+  "skippedCallout": "Hai saltato questo concetto. Sblocca ciò che ne dipende, ma non conta come padroneggiato.",
+  "skippedToast": "Saltato: {title}",
+  "goalNotSkipped": "L’obiettivo non si può saltare. Rimuovi prima l’obiettivo.",
+  "markedKnown": {
+    "one": "{count} concetto segnato come noto",
+    "many": "{count} concetti segnati come noti",
+    "other": "{count} concetti segnati come noti"
+  },
+  "knownTitle": "Segna come noto",
+  "knownText": "Questi concetti saranno segnati come padroneggiati. Togli la spunta a quelli di cui non sei sicuro.",
+  "knownFilter": "Filtra i concetti",
+  "knownConfirm": {
+    "one": "Segna {count} concetto",
+    "many": "Segna {count} concetti",
+    "other": "Segna {count} concetti"
+  },
+  "cancel": "Annulla",
+  "confidence": "Sicurezza",
+  "confidenceLevel": "Sicurezza {level} su 5",
   "markMastered": "Segna come padroneggiato",
   "unmark": "Togli il segno",
   "removeGoal": "Rimuovi obiettivo",
@@ -164,6 +189,11 @@
   },
   "from": "da {duration}",
   "progressOf": "{done} su {total}",
+  "skippedCount": {
+    "one": "{count} saltato",
+    "many": "{count} saltati",
+    "other": "{count} saltati"
+  },
   "expandPanel": "Espandi il pannello",
   "collapsePanel": "Comprimi il pannello",
   "emptyTitle": "Crea la tua prima mappa",

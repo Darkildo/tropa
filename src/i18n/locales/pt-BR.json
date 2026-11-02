@@ -9,6 +9,8 @@
   "markSource": "Transformar esta nota em material",
   "setGoal": "Transformar esta nota em objetivo",
   "toggleMastered": "Marcar esta nota como dominada ou voltar a estudá-la",
+  "toggleSkipped": "Pular esta nota ou devolvê-la à rota",
+  "markKnownCommand": "Marcar esta nota e tudo o que ela exige como conhecido",
   "nextConceptPrompt": "Qual conceito vem depois deste?",
   "conceptName": "Nome do conceito",
   "createConcept": "Criar conceito “{name}”",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours} h {minutes} min",
   "state": {
     "mastered": "Dominado",
+    "skipped": "Pulado",
     "learning": "Estudando",
     "available": "Pronto para começar",
     "locked": "Bloqueado",
@@ -103,6 +106,28 @@
   "createNote": "Criar nota",
   "startLearning": "Começar a estudar",
   "alreadyKnow": "Já sei",
+  "knowWithPrerequisites": "Sei isto e o que vem antes",
+  "skip": "Pular",
+  "unskip": "Voltar à rota",
+  "skippedCallout": "Você pulou este conceito. Ele libera o que depende dele, mas não conta como dominado.",
+  "skippedToast": "Pulado: {title}",
+  "goalNotSkipped": "Não é possível pular o objetivo. Remova o objetivo primeiro.",
+  "markedKnown": {
+    "one": "{count} conceito marcado como conhecido",
+    "many": "{count} conceitos marcados como conhecidos",
+    "other": "{count} conceitos marcados como conhecidos"
+  },
+  "knownTitle": "Marcar como conhecido",
+  "knownText": "Estes conceitos serão marcados como dominados. Desmarque os que você não tem certeza.",
+  "knownFilter": "Filtrar conceitos",
+  "knownConfirm": {
+    "one": "Marcar {count} conceito",
+    "many": "Marcar {count} conceitos",
+    "other": "Marcar {count} conceitos"
+  },
+  "cancel": "Cancelar",
+  "confidence": "Confiança",
+  "confidenceLevel": "Confiança {level} de 5",
   "markMastered": "Marcar como dominado",
   "unmark": "Remover marcação",
   "removeGoal": "Remover objetivo",
@@ -164,6 +189,11 @@
   },
   "from": "a partir de {duration}",
   "progressOf": "{done} de {total}",
+  "skippedCount": {
+    "one": "{count} pulado",
+    "many": "{count} pulados",
+    "other": "{count} pulados"
+  },
   "expandPanel": "Expandir painel",
   "collapsePanel": "Recolher painel",
   "emptyTitle": "Crie seu primeiro mapa",

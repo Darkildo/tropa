@@ -8,7 +8,7 @@ import type { SourceDraft } from "../store";
 
 // Typed text takes its own direction, so "What is AI?" keeps its question mark at the end.
 // An empty field keeps the interface's direction, so a right-to-left placeholder stays in place.
-function typedDirection(input: HTMLInputElement) {
+export function typedDirection(input: HTMLInputElement) {
   const update = () => (input.value ? (input.dir = "auto") : input.removeAttribute("dir"));
   input.addEventListener("input", update);
   update();
@@ -130,6 +130,90 @@ export class SourceModal extends Modal {
         attempt(Promise.resolve(this.onSave(this.draft)), `add material "${this.draft.title}"`);
       }),
     );
+  }
+
+  onClose() {
+    this.contentEl.empty();
+  }
+}
+
+export interface KnownItem {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+/** Shows what "I know this and what it needs" is about to mark, so doubtful concepts can be left out. */
+export class KnownModal extends Modal {
+  private readonly chosen: Set<string>;
+
+  constructor(app: App, private readonly items: KnownItem[], private readonly onConfirm: (ids: string[]) => void) {
+    super(app);
+    if (isRtl()) this.modalEl.dir = "rtl";
+    this.chosen = new Set(items.map((item) => item.id));
+  }
+
+  onOpen() {
+    this.setTitle(t.knownTitle);
+    this.modalEl.addClass("tropa-known-modal");
+    const { contentEl } = this;
+    contentEl.createEl("p", { cls: "tropa-hint", text: t.knownText });
+    const filter = contentEl.createEl("input", {
+      type: "search",
+      cls: "tropa-known-filter",
+      attr: { placeholder: t.knownFilter, "aria-label": t.knownFilter },
+    });
+    typedDirection(filter);
+    const list = contentEl.createDiv({ cls: "tropa-known-list", attr: { role: "group", "aria-label": t.knownTitle } });
+    const empty = contentEl.createDiv({ cls: "tropa-hint tropa-known-empty", text: t.nothingFound });
+    const buttons = contentEl.createDiv({ cls: "modal-button-container" });
+    const confirm = buttons.createEl("button", { cls: "mod-cta" });
+    buttons.createEl("button", { text: t.cancel }).addEventListener("click", () => this.close());
+    confirm.addEventListener("click", () => this.confirm());
+
+    const refresh = () => {
+      const query = filter.value.trim().toLowerCase();
+      let shown = 0;
+      for (const { item, row } of rows) {
+        const visible = item.title.toLowerCase().includes(query);
+        row.toggleClass("is-hidden", !visible);
+        if (visible) shown++;
+      }
+      empty.toggleClass("is-hidden", shown > 0);
+      confirm.setText(t.knownConfirm({ count: this.chosen.size }));
+      confirm.disabled = this.chosen.size === 0;
+    };
+
+    const rows = this.items.map((item) => {
+      const row = list.createEl("label", { cls: "tropa-known-row" });
+      const box = row.createEl("input", { type: "checkbox" });
+      box.checked = true;
+      box.dataset.id = item.id;
+      box.addEventListener("change", () => {
+        if (box.checked) this.chosen.add(item.id);
+        else this.chosen.delete(item.id);
+        refresh();
+      });
+      setIcon(row.createSpan({ cls: "tropa-pick-icon" }), item.icon);
+      row.createSpan({ cls: "tropa-known-title", text: item.title, attr: { dir: "auto" } });
+      return { item, row };
+    });
+
+    filter.addEventListener("input", refresh);
+    // Enter in the filter or Ctrl+Enter anywhere confirms; Space still ticks a focused box.
+    contentEl.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey || event.target === filter)) return;
+      event.preventDefault();
+      this.confirm();
+    });
+    refresh();
+    window.setTimeout(() => (this.items.length > 8 ? filter : confirm).focus());
+  }
+
+  private confirm() {
+    if (this.chosen.size === 0) return;
+    this.close();
+    this.onConfirm(this.items.map((item) => item.id).filter((id) => this.chosen.has(id)));
   }
 
   onClose() {

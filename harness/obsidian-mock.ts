@@ -25,16 +25,28 @@ function create(this: HTMLElement, tag: string, options: any = {}, callback?: Ca
   return el;
 }
 
-proto.createEl = create;
-proto.createDiv = function (options?: any, cb?: Callback) { return create.call(this, "div", options, cb); };
-proto.createSpan = function (options?: any, cb?: Callback) { return create.call(this, "span", options, cb); };
+// Obsidian adds the same helpers to elements and document fragments.
+for (const target of [proto, DocumentFragment.prototype as any]) {
+  target.createEl = create;
+  target.createDiv = function (options?: any, cb?: Callback) { return create.call(this, "div", options, cb); };
+  target.createSpan = function (options?: any, cb?: Callback) { return create.call(this, "span", options, cb); };
+}
 // Obsidian's global helpers return detached elements.
 const detached = (tag: string) => (options?: any, cb?: Callback) => {
   const el = create.call(document.createDocumentFragment(), tag, options, cb);
   el.remove();
   return el;
 };
-Object.assign(globalThis, { createDiv: detached("div"), createSpan: detached("span"), createEl: (tag: string, options?: any, cb?: Callback) => detached(tag)(options, cb) });
+Object.assign(globalThis, {
+  createDiv: detached("div"),
+  createSpan: detached("span"),
+  createEl: (tag: string, options?: any, cb?: Callback) => detached(tag)(options, cb),
+  createFragment: (cb?: (fragment: DocumentFragment) => void) => {
+    const fragment = document.createDocumentFragment();
+    cb?.(fragment);
+    return fragment;
+  },
+});
 nodeProto.empty = function () { while (this.firstChild) this.removeChild(this.firstChild); };
 elementProto.addClass = function (...c: string[]) { this.classList.add(...c); };
 elementProto.removeClass = function (...c: string[]) { this.classList.remove(...c); };
@@ -314,10 +326,12 @@ export class PluginSettingTab {
 export const notices: string[] = [];
 
 export class Notice {
-  constructor(message: string) {
-    notices.push(message);
-    const el = (document.body as any).createDiv({ cls: "notice", text: message });
-    window.setTimeout(() => el.remove(), 3000);
+  constructor(message: string | DocumentFragment, duration = 3000) {
+    notices.push(typeof message === "string" ? message : message.textContent ?? "");
+    const el = (document.body as any).createDiv({ cls: "notice" });
+    if (typeof message === "string") el.textContent = message;
+    else el.appendChild(message);
+    window.setTimeout(() => el.remove(), duration);
   }
 }
 

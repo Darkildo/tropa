@@ -9,6 +9,8 @@
   "markSource": "이 노트를 자료로 만들기",
   "setGoal": "이 노트를 목표로 정하기",
   "toggleMastered": "이 노트를 익힘으로 표시하거나 학습 중으로 되돌리기",
+  "toggleSkipped": "이 노트를 건너뛰거나 경로로 되돌리기",
+  "markKnownCommand": "이 노트와 필요한 선행 개념을 모두 아는 것으로 표시",
   "nextConceptPrompt": "이 다음에 오는 개념은?",
   "conceptName": "개념 이름",
   "createConcept": "‘{name}’ 개념 만들기",
@@ -45,6 +47,7 @@
   "hoursMinutes": "{hours}시간 {minutes}분",
   "state": {
     "mastered": "익힘",
+    "skipped": "건너뜀",
     "learning": "학습 중",
     "available": "시작 가능",
     "locked": "잠김",
@@ -103,6 +106,24 @@
   "createNote": "노트 만들기",
   "startLearning": "학습 시작",
   "alreadyKnow": "이미 알아요",
+  "knowWithPrerequisites": "이것과 선행 개념을 모두 알아요",
+  "skip": "건너뛰기",
+  "unskip": "경로로 되돌리기",
+  "skippedCallout": "이 개념을 건너뛰었습니다. 이 개념에 의존하는 것은 열리지만 익힘으로 계산되지는 않습니다.",
+  "skippedToast": "건너뜀: {title}",
+  "goalNotSkipped": "목표는 건너뛸 수 없습니다. 먼저 목표를 해제하세요.",
+  "markedKnown": {
+    "other": "개념 {count}개를 아는 것으로 표시했습니다"
+  },
+  "knownTitle": "아는 것으로 표시",
+  "knownText": "이 개념들은 익힘으로 표시됩니다. 확실하지 않은 것은 선택을 해제하세요.",
+  "knownFilter": "개념 필터",
+  "knownConfirm": {
+    "other": "개념 {count}개 표시"
+  },
+  "cancel": "취소",
+  "confidence": "자신감",
+  "confidenceLevel": "자신감 {level}/5",
   "markMastered": "익힘으로 표시",
   "unmark": "표시 해제",
   "removeGoal": "목표 해제",
@@ -154,6 +175,9 @@
   },
   "from": "{duration}부터",
   "progressOf": "{done}/{total}",
+  "skippedCount": {
+    "other": "{count}개 건너뜀"
+  },
   "expandPanel": "패널 펼치기",
   "collapsePanel": "패널 접기",
   "emptyTitle": "첫 지도를 만들어 보세요",
