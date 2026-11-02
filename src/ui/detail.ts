@@ -386,6 +386,8 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     for (const id of cycle) conceptRow(callout, host, id);
   }
 
+  if (store.excludedGoal) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
+
   if (!route) {
     const available = graph.concepts.filter((node) => store.states.get(node.id) === "available");
     parent.createEl("h3", { cls: "tropa-title", text: t.whereTo });

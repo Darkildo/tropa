@@ -42,7 +42,20 @@
     "teachesKey": "Mit tanít a tananyag",
     "teachesKeyDesc": "A fogalmak, amelyeket a tananyag feldolgoz.",
     "materialsKey": "Tananyagok a fogalomban",
-    "materialsKeyDesc": "Közvetlenül a fogalomban felsorolt hivatkozások és mellékletek, külön jegyzet nélkül."
+    "materialsKeyDesc": "Közvetlenül a fogalomban felsorolt hivatkozások és mellékletek, külön jegyzet nélkül.",
+    "scope": "A térkép hatóköre",
+    "excludeFolders": "Kizárt mappák",
+    "excludeFoldersDesc": "Soronként egy mappa. Az ezekben és az alattuk lévő mappákban levő jegyzetek nem kerülnek a térképre, a rájuk mutató hivatkozásokat figyelmen kívül hagyja. A haladási fájlt mindig beolvassa. A fogalmak és anyagok mappáját ne vedd fel ide: a térképről létrehozott elemek oda kerülnek.",
+    "excludeFoldersPlaceholder": "Archívum\nSablonok",
+    "excludeTags": "Kizárt címkék",
+    "excludeTagsDesc": "Soronként egy címke. Az ilyen címkéjű jegyzetek nem kerülnek a térképre, a beágyazott címkékkel együtt: a #vázlat a #vázlat/régi címkét is lefedi.",
+    "excludeTagsPlaceholder": "#vázlat\n#privát"
+  },
+  "scope": {
+    "excludedNote": "Ez a jegyzet a mappa- vagy címkebeállítások miatt kimarad a térképről.",
+    "goalExcluded": "A(z) {title} cél a mappa- vagy címkebeállítások miatt kimarad a térképről.",
+    "ownFolderExcluded": "A(z) {folder} ki van zárva, de ott jönnek létre az új fogalmak vagy anyagok: nem jelennek meg a térképen.",
+    "goalExcludedHint": "A célt a mappa- vagy címkebeállítások kizárják, ezért nem tudni, mi kell hozzá előbb. Válassz másik célt, vagy módosítsd a beállításokat."
   },
   "minutes": "{minutes} perc",
   "hours": "{hours} óra",

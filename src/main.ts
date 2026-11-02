@@ -3,6 +3,7 @@ import { STATE_ICON } from "./core/format";
 import { attempt } from "./attempt";
 import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
+import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
 import { sample } from "./sample";
@@ -69,6 +70,9 @@ export default class TropaPlugin extends Plugin {
     const legacy = !saved && (await this.app.vault.adapter.exists(LEGACY_PROGRESS));
     this.defaults = defaultSettings(legacy ? "ru" : exampleLang());
     this.settings = { ...this.defaults, ...saved };
+    // Hand-edited data can hold a string or stray `#`: the store expects clean lists.
+    this.settings.excludeFolders = parseFolders(this.settings.excludeFolders);
+    this.settings.excludeTags = parseTags(this.settings.excludeTags);
     if (!saved) await this.saveSettings();
   }
 

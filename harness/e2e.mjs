@@ -159,7 +159,9 @@ const { open, stop } = await start();
     document.getElementById("note").dataset.open = "";
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
-  ok("settings groups", headings.join("|") === "Files|Note properties", headings.join("|"));
+  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope", headings.join("|"));
+  ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
+  ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
   ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 8);
   ok("materials key setting", (await page.locator('#settings input[data-key="materialsKey"]').inputValue()) === "materials");
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
@@ -173,6 +175,90 @@ const { open, stop } = await start();
   await field("requiresKey").fill("needs"); await field("requiresKey").dispatchEvent("change"); await wait(page, 300);
   ok("graph reread after setting change", (await page.evaluate("tropa.plugin.store.topologyKey")) !== before);
   ok("no console errors (settings)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
+// --- map scope: excluded folders and tags
+const openSettings = (page) =>
+  page.evaluate(() => {
+    const tab = tropa.plugin.settingTab;
+    tab.display();
+    tab.containerEl.id = "settings";
+    document.getElementById("note").replaceChildren(tab.containerEl);
+    document.getElementById("note").dataset.open = "";
+  });
+const setScope = async (page, key, value) => {
+  await openSettings(page);
+  const area = page.locator(`#settings textarea[data-key="${key}"]`);
+  await area.fill(value); await area.dispatchEvent("change"); await wait(page, 300);
+};
+{
+  const { page, errors } = await open({ query: "?scenario=scope&panel=1" });
+  await page.click('button:text-is("Whole map")'); await wait(page, 400);
+  const absent = async (title) => (await node(page, title).count()) === 0;
+  ok("scope: note in an excluded folder is not on the map", await absent("Archived"));
+  ok("scope: folder rule matches whole segments", !(await absent("Kept")));
+  ok("scope: nested frontmatter tag excluded", await absent("Private note"));
+  ok("scope: inline tag excluded", await absent("Inline tagged"));
+  ok("scope: no placeholder for excluded notes", (await page.locator(".tropa-node.is-ghost").count()) === 0);
+  ok("scope: what needed only an excluded note is available", (await state(page, "Next")).includes("state-available"), await state(page, "Next"));
+  ok("scope: progress read from an excluded folder", (await page.locator(".tropa-goal-label").innerText()) === "Goal");
+  await page.click('button:text-is("Route")'); await wait(page, 300);
+  const steps = (await page.locator(".tropa-side .tropa-step-title").allInnerTexts()).join("|");
+  ok("scope: excluded notes are not route steps", steps === "Base|Kept|Goal", steps);
+
+  await node(page, "Base").click(); await wait(page, 150);
+  ok("scope: attachment in an excluded folder stays a material", (await page.locator(".tropa-side .tropa-material").allInnerTexts()).join(" ").includes("scan"),
+    (await page.locator(".tropa-side .tropa-material").allInnerTexts()).join(" | "));
+  await page.click('.tropa-side button:text-is("I already know this")'); await wait(page, 400);
+  const written = await page.evaluate("tropa.app.vault.contents.get('Tropa/Progress.md')");
+  ok("scope: marks on excluded notes stay in the progress file", written.includes("[[Archived]]") && written.includes("[[Base]]"), written);
+
+  await page.evaluate("tropa.app.workspace.setActive(tropa.app.vault.files.get('Private note.md'))"); await wait(page, 200);
+  ok("scope: panel says the open note is left out", (await page.locator("#right .tropa-callout").allInnerTexts()).some((text) => text.includes("left out of the map")) &&
+    (await page.locator("#right .tropa-offmap").count()) === 0);
+  await page.screenshot({ path: SHOTS + "80-scope.png" });
+
+  await page.click('button:text-is("Whole map")'); await wait(page, 300);
+  const layoutKey = () => page.evaluate("tropa.app.workspace.center.view.layoutKey");
+  const before = await layoutKey();
+  await setScope(page, "excludeFolders", "Attachments\nTropa");
+  ok("scope: folders saved as a list", JSON.stringify(await page.evaluate("tropa.plugin.data.excludeFolders")) === '["Attachments","Tropa"]');
+  ok("scope: a new shape is laid out again", (await layoutKey()) !== before);
+  ok("scope: removing a folder brings the note back", (await page.evaluate("tropa.app.workspace.center.view.layout.nodes.has('Archive/Archived.md')")) && !(await absent("Archived")));
+  ok("scope: its mark comes back with it", (await state(page, "Archived")).includes("state-mastered"));
+  const notices = await page.evaluate("tropa.notices");
+  ok("scope: excluding the concepts folder is warned about", notices.some((text) => text.includes("Tropa/Concepts is excluded")) &&
+    notices.some((text) => text.includes("Tropa/Materials is excluded")), JSON.stringify(notices));
+
+  await setScope(page, "excludeTags", "#Private\ncourse");
+  ok("scope: tags saved without # in lower case", JSON.stringify(await page.evaluate("tropa.plugin.data.excludeTags")) === '["private","course"]');
+  ok("scope: excluded goal is announced", (await page.evaluate("tropa.notices")).some((text) => text.includes("The goal Goal is left out")),
+    JSON.stringify(await page.evaluate("tropa.notices")));
+  await page.evaluate("tropa.app.workspace.setActive(null)"); await wait(page, 150);
+  const hints = (await page.locator(".tropa-callout").allInnerTexts()).join(" | ");
+  ok("scope: route explains the excluded goal", hints.includes("Choose another goal or change the settings"), hints);
+  ok("scope: goal mark stays in the progress file", (await page.evaluate("tropa.app.vault.contents.get('Tropa/Progress.md')")).includes("[[Goal]]"));
+  await page.screenshot({ path: SHOTS + "81-scope-goal.png" });
+  ok("no console errors (scope)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+for (const [lang, callout, heading] of [["ru", "Эта заметка не попадает на карту", "Область карты"], ["ar", "هذه الملاحظة خارج الخريطة", "نطاق الخريطة"]]) {
+  const { page, errors } = await open({ query: `?scenario=scope&panel=1&lang=${lang}` });
+  // The map opens on the route, where Next is not shown, so the graph is asked directly.
+  ok(`${lang}: excluded note not in the graph`, !(await page.evaluate("tropa.plugin.store.graph.nodes.has('Private note.md')")));
+  ok(`${lang}: what needed it is available`, (await page.evaluate("tropa.plugin.store.states.get('Next.md')")) === "available");
+  await page.evaluate("tropa.app.workspace.setActive(tropa.app.vault.files.get('Private note.md'))"); await wait(page, 200);
+  const box = page.locator("#right .tropa-callout").first();
+  ok(`${lang}: left-out callout translated`, (await box.innerText()).includes(callout), await box.innerText());
+  if (lang === "ar") {
+    ok("ar: callout right to left", (await box.evaluate((el) => getComputedStyle(el).direction)) === "rtl");
+    await page.screenshot({ path: SHOTS + "82-scope-ar.png" });
+  }
+  await openSettings(page);
+  const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
+  ok(`${lang}: scope settings heading`, headings.includes(heading), headings.join("|"));
+  ok(`no console errors (scope ${lang})`, errors.length === 0, JSON.stringify(errors));
   await page.close();
 }
 
@@ -651,6 +737,25 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   ok("same shape comes from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) >= 1);
   await page.screenshot({ path: SHOTS + "50-large.png" });
   ok("large graph: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+// A scope change on a large map: a new shape, laid out again by WebAssembly in the worker.
+{
+  const { page, errors } = await open({ query: "?scenario=large&n=400&archive" });
+  await layoutDone(page);
+  ok("scope (large): all notes before the change", (await page.locator(".tropa-node").count()) === 400);
+  const key = await page.evaluate(`${view}.layoutKey`);
+  const cached = await page.evaluate(`${view}.layouts.stats.cached`);
+  const inWorker = await page.evaluate(`${view}.layouts.stats.inWorker`);
+  await setScope(page, "excludeFolders", "Archive");
+  await layoutDone(page);
+  ok("scope (large): excluded folder leaves the map", (await page.locator(".tropa-node").count()) === 360, String(await page.locator(".tropa-node").count()));
+  ok("scope (large): new layout key", (await page.evaluate(`${view}.layoutKey`)) !== key);
+  ok("scope (large): the new shape is not taken from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) === cached);
+  ok("scope (large): laid out in the worker", (await page.evaluate(`${view}.layouts.stats.inWorker`)) > inWorker);
+  const engine = await page.evaluate(`${view}.layouts.stats.engine`);
+  ok("scope (large): by WebAssembly", engine === "wasm in a worker", engine);
+  ok("scope (large): no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 {

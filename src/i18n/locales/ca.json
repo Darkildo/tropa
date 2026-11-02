@@ -42,7 +42,20 @@
     "teachesKey": "Què ensenya un material",
     "teachesKeyDesc": "Conceptes que tracta el material.",
     "materialsKey": "Materials al concepte",
-    "materialsKeyDesc": "Enllaços i adjunts llistats al mateix concepte, sense una nota a part."
+    "materialsKeyDesc": "Enllaços i adjunts llistats al mateix concepte, sense una nota a part.",
+    "scope": "Abast del mapa",
+    "excludeFolders": "Carpetes excloses",
+    "excludeFoldersDesc": "Una carpeta per línia. Les notes d’aquestes carpetes i de les subcarpetes queden fora del mapa, i els enllaços cap a elles s’ignoren. El fitxer de progrés es llegeix sempre. No hi posis les carpetes de conceptes i materials: el que crees des del mapa hi va a parar.",
+    "excludeFoldersPlaceholder": "Arxiu\nPlantilles",
+    "excludeTags": "Etiquetes excloses",
+    "excludeTagsDesc": "Una etiqueta per línia. Les notes amb aquestes etiquetes queden fora del mapa, incloses les niades: #esborrany també cobreix #esborrany/antic.",
+    "excludeTagsPlaceholder": "#esborrany\n#privat"
+  },
+  "scope": {
+    "excludedNote": "Aquesta nota queda fora del mapa pels ajustos de carpetes o etiquetes.",
+    "goalExcluded": "L’objectiu {title} queda fora del mapa pels ajustos de carpetes o etiquetes.",
+    "ownFolderExcluded": "{folder} està exclosa, però s’hi creen els conceptes o materials nous: no apareixeran al mapa.",
+    "goalExcludedHint": "L’objectiu està exclòs pels ajustos de carpetes o etiquetes, així que no se’n coneixen els requisits. Tria un altre objectiu o canvia els ajustos."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

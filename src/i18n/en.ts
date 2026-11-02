@@ -48,6 +48,20 @@ export const en = {
     teachesKeyDesc: "Concepts the material covers.",
     materialsKey: "Materials inside a concept",
     materialsKeyDesc: "Links and attachments listed in the concept itself, without a separate note.",
+    scope: "Map scope",
+    excludeFolders: "Excluded folders",
+    excludeFoldersDesc: "One folder per line. Notes in these folders and below them stay off the map, and links to them are ignored. The progress file is always read. Keep the concepts and materials folders out of this list: what you create from the map goes there.",
+    excludeFoldersPlaceholder: "Archive\nTemplates",
+    excludeTags: "Excluded tags",
+    excludeTagsDesc: "One tag per line. Notes with these tags stay off the map, nested tags included: #draft also covers #draft/old.",
+    excludeTagsPlaceholder: "#draft\n#private",
+  },
+
+  scope: {
+    excludedNote: "This note is left out of the map by the folder or tag settings.",
+    goalExcluded: "The goal {title} is left out of the map by the folder or tag settings.",
+    ownFolderExcluded: "{folder} is excluded, but new concepts or materials are created there: they will not show on the map.",
+    goalExcludedHint: "The goal is left out of the map by the folder or tag settings, so its prerequisites are unknown. Choose another goal or change the settings.",
   },
 
   minutes: "{minutes} min",

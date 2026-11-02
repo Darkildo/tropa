@@ -42,7 +42,20 @@
     "teachesKey": "资料讲授的内容",
     "teachesKeyDesc": "资料涉及的概念。",
     "materialsKey": "概念内的资料",
-    "materialsKeyDesc": "直接列在概念中的链接和附件，不单独建笔记。"
+    "materialsKeyDesc": "直接列在概念中的链接和附件，不单独建笔记。",
+    "scope": "地图范围",
+    "excludeFolders": "排除的文件夹",
+    "excludeFoldersDesc": "每行一个文件夹。这些文件夹及其子文件夹中的笔记不会出现在地图上，指向它们的链接会被忽略。进度文件始终会被读取。不要把概念和资料文件夹放进来：从地图创建的内容会存到那里。",
+    "excludeFoldersPlaceholder": "归档\n模板",
+    "excludeTags": "排除的标签",
+    "excludeTagsDesc": "每行一个标签。带有这些标签的笔记不会出现在地图上，嵌套标签也一样：#草稿 也会排除 #草稿/旧。",
+    "excludeTagsPlaceholder": "#草稿\n#私人"
+  },
+  "scope": {
+    "excludedNote": "这篇笔记因文件夹或标签设置被排除在地图之外。",
+    "goalExcluded": "目标 {title} 因文件夹或标签设置被排除在地图之外。",
+    "ownFolderExcluded": "{folder} 已被排除，但新的概念或资料会创建在那里：它们不会出现在地图上。",
+    "goalExcludedHint": "目标被文件夹或标签设置排除，因此无法知道需要先学什么。请选择其他目标或更改设置。"
   },
   "minutes": "{minutes} 分钟",
   "hours": "{hours} 小时",

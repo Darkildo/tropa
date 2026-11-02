@@ -42,7 +42,20 @@
     "teachesKey": "Čo materiál učí",
     "teachesKeyDesc": "Pojmy, ktoré materiál preberá.",
     "materialsKey": "Materiály v pojme",
-    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky."
+    "materialsKeyDesc": "Odkazy a prílohy uvedené priamo v pojme, bez samostatnej poznámky.",
+    "scope": "Rozsah mapy",
+    "excludeFolders": "Vylúčené priečinky",
+    "excludeFoldersDesc": "Jeden priečinok na riadok. Poznámky v týchto priečinkoch a pod nimi sa na mapu nedostanú a odkazy na ne sa ignorujú. Súbor s pokrokom sa číta vždy. Nepridávajte sem priečinky pojmov a materiálov: ukladá sa do nich, čo vytvoríte z mapy.",
+    "excludeFoldersPlaceholder": "Archív\nŠablóny",
+    "excludeTags": "Vylúčené štítky",
+    "excludeTagsDesc": "Jeden štítok na riadok. Poznámky s týmito štítkami sa na mapu nedostanú, vrátane vnorených: #koncept pokrýva aj #koncept/starý.",
+    "excludeTagsPlaceholder": "#koncept\n#súkromné"
+  },
+  "scope": {
+    "excludedNote": "Táto poznámka je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "goalExcluded": "Cieľ {title} je pre nastavenia priečinkov alebo štítkov mimo mapy.",
+    "ownFolderExcluded": "Priečinok {folder} je vylúčený, ale vytvárajú sa v ňom nové pojmy alebo materiály: na mape sa neobjavia.",
+    "goalExcludedHint": "Cieľ je vylúčený nastaveniami priečinkov alebo štítkov, takže nie je známe, čo treba vedieť vopred. Vyberte iný cieľ alebo zmeňte nastavenia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",

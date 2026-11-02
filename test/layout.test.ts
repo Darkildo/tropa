@@ -199,3 +199,19 @@ describe("layout runner", () => {
     expect(shapeKey({ ...base, height: base.height.map((h, i) => (i === 0 ? h + 1 : h)) })).not.toBe(shapeKey(base));
   });
 });
+
+describe("layout after a map scope change", () => {
+  const ref = (id: string) => ({ id, title: id.replace(/^.*\//, "") });
+  const concept = (id: string, requires: string[] = []) => ({ id, title: ref(id).title, kind: "concept" as const, requires: requires.map(ref), recommends: [], teaches: [] });
+  const full = new LearningGraph([concept("Goal", ["Base", "Archive/Archived"]), concept("Base"), concept("Archive/Archived", ["Base"])]);
+  // Archive excluded: the note and the link to it are gone.
+  const scoped = new LearningGraph([concept("Goal", ["Base"]), concept("Base")]);
+
+  it("gets a new shape key, so the cached layout is not reused", () => {
+    expect(shapeKey(input(scoped, false))).not.toBe(shapeKey(input(full, false)));
+  });
+
+  it("lays out only what is left", () => {
+    expect([...layoutGraph(scoped, { showSources: false }).nodes.keys()].sort()).toEqual(["Base", "Goal"]);
+  });
+});

@@ -42,7 +42,20 @@
     "teachesKey": "Mitä materiaali opettaa",
     "teachesKeyDesc": "Käsitteet, joita materiaali käsittelee.",
     "materialsKey": "Materiaalit käsitteessä",
-    "materialsKeyDesc": "Linkit ja liitteet, jotka on lueteltu suoraan käsitteessä ilman erillistä muistiinpanoa."
+    "materialsKeyDesc": "Linkit ja liitteet, jotka on lueteltu suoraan käsitteessä ilman erillistä muistiinpanoa.",
+    "scope": "Kartan rajaus",
+    "excludeFolders": "Rajatut kansiot",
+    "excludeFoldersDesc": "Yksi kansio riville. Näiden kansioiden ja niiden alikansioiden muistiinpanot jäävät pois kartalta, ja linkit niihin ohitetaan. Edistymistiedosto luetaan aina. Älä lisää tähän käsitteiden ja materiaalien kansioita: kartalta luodut asiat tallentuvat niihin.",
+    "excludeFoldersPlaceholder": "Arkisto\nMallit",
+    "excludeTags": "Rajatut tunnisteet",
+    "excludeTagsDesc": "Yksi tunniste riville. Muistiinpanot, joilla on nämä tunnisteet, jäävät pois kartalta, myös sisäkkäiset: #luonnos kattaa myös #luonnos/vanha.",
+    "excludeTagsPlaceholder": "#luonnos\n#yksityinen"
+  },
+  "scope": {
+    "excludedNote": "Tämä muistiinpano jää pois kartalta kansio- tai tunnisteasetusten vuoksi.",
+    "goalExcluded": "Tavoite {title} jää pois kartalta kansio- tai tunnisteasetusten vuoksi.",
+    "ownFolderExcluded": "{folder} on rajattu pois, mutta uudet käsitteet tai materiaalit luodaan sinne: ne eivät näy kartalla.",
+    "goalExcludedHint": "Tavoite on rajattu pois kansio- tai tunnisteasetuksilla, joten sen esitiedot eivät ole tiedossa. Valitse toinen tavoite tai muuta asetuksia."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
