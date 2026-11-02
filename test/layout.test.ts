@@ -60,6 +60,23 @@ describe("layout engine", () => {
   });
 });
 
+describe("layout of materials listed in concepts", () => {
+  it("places them like material notes and draws what they teach", () => {
+    const listed = { id: "material:https://example.com/a", title: "A", url: "https://example.com/a", format: "article" as const };
+    const graph = new LearningGraph([
+      { id: "a", title: "a", kind: "concept", requires: [], recommends: [], teaches: [], materials: [listed] },
+      { id: "b", title: "b", kind: "concept", requires: [{ id: "a", title: "a" }], recommends: [], teaches: [], materials: [listed] },
+    ]);
+    const layout = layoutGraph(graph, { showSources: true });
+    const material = layout.nodes.get(listed.id)!;
+    expect(material).toBeDefined();
+    expect(material.height).toBeLessThan(layout.nodes.get("a")!.height);
+    const taught = layout.edges.filter((edge) => edge.from === listed.id && edge.kind === "teaches").map((edge) => edge.to);
+    expect(taught.sort()).toEqual(["a", "b"]);
+    expect(quality(layout).throughNodes).toBe(0);
+  });
+});
+
 describe("layout of a route with skipped concepts", () => {
   const notes = generate(60, false);
   const graph = new LearningGraph(notes);
