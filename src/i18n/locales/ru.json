@@ -40,7 +40,9 @@
     "recommendsKey": "Желательная связь",
     "recommendsKeyDesc": "Полезно, но не закрывает доступ.",
     "teachesKey": "Чему учит материал",
-    "teachesKeyDesc": "Концепты, которые раскрывает материал."
+    "teachesKeyDesc": "Концепты, которые раскрывает материал.",
+    "materialsKey": "Материалы в концепте",
+    "materialsKeyDesc": "Ссылки и вложения, перечисленные прямо в концепте, без отдельной заметки."
   },
   "minutes": "{minutes} мин",
   "hours": "{hours} ч",
@@ -87,6 +89,11 @@
   "durationDesc": "В минутах. Из этого складывается оценка маршрута.",
   "addMaterial": "Добавить материал",
   "materialNameRequired": "Укажите название материала",
+  "inlineMaterial": "Оставить в концепте",
+  "inlineMaterialDesc": "Добавить ссылку в список самого концепта, не создавая заметку для материала.",
+  "inlineLinkRequired": "Укажите ссылку вида https://… или [[файл.pdf]]",
+  "inlineMaterialHint": "Указан прямо в концепте, отдельной заметки нет.",
+  "attachment": "Вложение",
   "knowBeforePrompt": "Что нужно знать до «{title}»?",
   "unlocksPrompt": "Что откроет «{title}»?",
   "note": "Заметка",

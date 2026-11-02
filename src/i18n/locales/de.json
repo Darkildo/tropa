@@ -40,7 +40,9 @@
     "recommendsKey": "Empfohlene Verbindung",
     "recommendsKeyDesc": "Hilfreich, sperrt aber nichts.",
     "teachesKey": "Was ein Material vermittelt",
-    "teachesKeyDesc": "Konzepte, die das Material behandelt."
+    "teachesKeyDesc": "Konzepte, die das Material behandelt.",
+    "materialsKey": "Materialien im Konzept",
+    "materialsKeyDesc": "Links und Anhänge, die direkt im Konzept stehen, ohne eigene Notiz."
   },
   "minutes": "{minutes} Min.",
   "hours": "{hours} Std.",
@@ -87,6 +89,11 @@
   "durationDesc": "In Minuten. Daraus ergibt sich die Schätzung für die Route.",
   "addMaterial": "Material hinzufügen",
   "materialNameRequired": "Gib einen Namen für das Material ein",
+  "inlineMaterial": "Im Konzept behalten",
+  "inlineMaterialDesc": "Den Link in die Liste des Konzepts eintragen, statt eine Notiz für das Material anzulegen.",
+  "inlineLinkRequired": "Gib einen Link wie https://… oder [[datei.pdf]] ein",
+  "inlineMaterialHint": "Steht direkt im Konzept, eine eigene Notiz gibt es nicht.",
+  "attachment": "Anhang",
   "knowBeforePrompt": "Was sollte man vor „{title}“ wissen?",
   "unlocksPrompt": "Was schaltet „{title}“ frei?",
   "note": "Notiz",

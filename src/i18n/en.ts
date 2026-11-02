@@ -46,6 +46,8 @@ export const en = {
     recommendsKeyDesc: "Useful, but does not block access.",
     teachesKey: "What a material teaches",
     teachesKeyDesc: "Concepts the material covers.",
+    materialsKey: "Materials inside a concept",
+    materialsKeyDesc: "Links and attachments listed in the concept itself, without a separate note.",
   },
 
   minutes: "{minutes} min",
@@ -98,6 +100,11 @@ export const en = {
   durationDesc: "In minutes. The route estimate is the sum of these.",
   addMaterial: "Add material",
   materialNameRequired: "Enter the material name",
+  inlineMaterial: "Keep in the concept",
+  inlineMaterialDesc: "Add the link to the concept's own list instead of creating a note for the material.",
+  inlineLinkRequired: "Enter a link such as https://… or [[file.pdf]]",
+  inlineMaterialHint: "Listed in the concept itself, there is no separate note.",
+  attachment: "Attachment",
 
   knowBeforePrompt: "What should you know before “{title}”?",
   unlocksPrompt: "What does “{title}” unlock?",

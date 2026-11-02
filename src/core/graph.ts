@@ -1,3 +1,4 @@
+import { normalizeUrl } from "./materials";
 import type {
   ConceptState,
   GraphNode,
@@ -88,6 +89,8 @@ export class LearningGraph {
       }
     }
 
+    this.attachInlineMaterials(notes);
+
     for (const note of notes) {
       const node = this.nodes.get(note.id)!;
       for (const ref of note.requires) {
@@ -105,6 +108,52 @@ export class LearningGraph {
     }
 
     this.findCycles();
+  }
+
+  /**
+   * Materials listed in a concept become source nodes. One that is already a material
+   * note, by its link or by the same URL, is shown as that note instead of twice.
+   */
+  private attachInlineMaterials(notes: NoteInput[]) {
+    const byUrl = new Map<string, string>();
+    for (const note of notes) if (note.kind === "source" && note.url) byUrl.set(normalizeUrl(note.url), note.id);
+
+    for (const note of notes) {
+      if (note.kind !== "concept" || !note.materials?.length) continue;
+      const concept = this.nodes.get(note.id)!;
+      for (const material of note.materials) {
+        const existing =
+          (material.file && this.nodes.get(material.file)?.kind === "source" ? material.file : undefined) ??
+          (material.url ? byUrl.get(normalizeUrl(material.url)) : undefined);
+        const id = existing ?? material.id;
+        let source = this.nodes.get(id);
+        if (!source) {
+          source = {
+            id,
+            title: material.title,
+            kind: "source",
+            ghost: false,
+            inline: true,
+            requires: [],
+            requiredBy: [],
+            recommends: [],
+            teaches: [],
+            taughtBy: [],
+            format: material.format,
+            minutes: material.minutes,
+            url: material.url,
+            file: material.file,
+          };
+          this.nodes.set(id, source);
+        } else if (source.inline) {
+          // The same link in several concepts: the first title wins, a later estimate fills a gap.
+          source.minutes ??= material.minutes;
+        }
+        if (source.kind !== "source") continue;
+        pushUnique(source.teaches, concept.id);
+        pushUnique(concept.taughtBy, id);
+      }
+    }
   }
 
   get concepts(): GraphNode[] {

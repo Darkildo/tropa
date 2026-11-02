@@ -40,7 +40,9 @@
     "recommendsKey": "Połączenie zalecane",
     "recommendsKeyDesc": "Przydatne, ale niczego nie blokuje.",
     "teachesKey": "Czego uczy materiał",
-    "teachesKeyDesc": "Pojęcia, które omawia materiał."
+    "teachesKeyDesc": "Pojęcia, które omawia materiał.",
+    "materialsKey": "Materiały w pojęciu",
+    "materialsKeyDesc": "Linki i załączniki wymienione bezpośrednio w pojęciu, bez osobnej notatki."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} godz.",
@@ -87,6 +89,11 @@
   "durationDesc": "W minutach. Z tego sumuje się szacunek trasy.",
   "addMaterial": "Dodaj materiał",
   "materialNameRequired": "Podaj nazwę materiału",
+  "inlineMaterial": "Zostaw w pojęciu",
+  "inlineMaterialDesc": "Dodaj link do listy samego pojęcia zamiast tworzyć notatkę dla materiału.",
+  "inlineLinkRequired": "Wpisz link w rodzaju https://… lub [[plik.pdf]]",
+  "inlineMaterialHint": "Wymieniony bezpośrednio w pojęciu, osobnej notatki nie ma.",
+  "attachment": "Załącznik",
   "knowBeforePrompt": "Co trzeba wiedzieć przed „{title}”?",
   "unlocksPrompt": "Co odblokowuje „{title}”?",
   "note": "Notatka",

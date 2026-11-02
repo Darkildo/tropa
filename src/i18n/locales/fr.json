@@ -40,7 +40,9 @@
     "recommendsKey": "Lien conseillé",
     "recommendsKeyDesc": "Utile, mais ne bloque pas l’accès.",
     "teachesKey": "Ce qu’enseigne une ressource",
-    "teachesKeyDesc": "Les concepts que couvre la ressource."
+    "teachesKeyDesc": "Les concepts que couvre la ressource.",
+    "materialsKey": "Ressources dans le concept",
+    "materialsKeyDesc": "Liens et pièces jointes listés directement dans le concept, sans note séparée."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "En minutes. L’estimation du parcours en est la somme.",
   "addMaterial": "Ajouter une ressource",
   "materialNameRequired": "Indiquez le nom de la ressource",
+  "inlineMaterial": "Garder dans le concept",
+  "inlineMaterialDesc": "Ajouter le lien à la liste du concept au lieu de créer une note pour la ressource.",
+  "inlineLinkRequired": "Saisissez un lien comme https://… ou [[fichier.pdf]]",
+  "inlineMaterialHint": "Listée dans le concept lui-même, sans note séparée.",
+  "attachment": "Pièce jointe",
   "knowBeforePrompt": "Que faut-il savoir avant « {title} » ?",
   "unlocksPrompt": "Que débloque « {title} » ?",
   "note": "Note",

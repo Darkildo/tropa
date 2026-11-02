@@ -40,7 +40,9 @@
     "recommendsKey": "Anbefalt lenke",
     "recommendsKeyDesc": "Nyttig, men låser ikke noe.",
     "teachesKey": "Hva et læremiddel lærer bort",
-    "teachesKeyDesc": "Begreper som læremiddelet dekker."
+    "teachesKeyDesc": "Begreper som læremiddelet dekker.",
+    "materialsKey": "Læremidler i begrepet",
+    "materialsKeyDesc": "Lenker og vedlegg som står direkte i begrepet, uten et eget notat."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} t",
@@ -87,6 +89,11 @@
   "durationDesc": "I minutter. Rutens anslag er summen av disse.",
   "addMaterial": "Legg til læremiddel",
   "materialNameRequired": "Skriv inn navnet på læremiddelet",
+  "inlineMaterial": "Behold i begrepet",
+  "inlineMaterialDesc": "Legg lenken til i begrepets egen liste i stedet for å lage et notat for læremiddelet.",
+  "inlineLinkRequired": "Skriv inn en lenke som https://… eller [[fil.pdf]]",
+  "inlineMaterialHint": "Står i selve begrepet, det finnes ikke noe eget notat.",
+  "attachment": "Vedlegg",
   "knowBeforePrompt": "Hva må man kunne før «{title}»?",
   "unlocksPrompt": "Hva låser «{title}» opp?",
   "note": "Notat",

@@ -40,7 +40,9 @@
     "recommendsKey": "Ajánlott kapcsolat",
     "recommendsKeyDesc": "Hasznos, de nem zár le semmit.",
     "teachesKey": "Mit tanít a tananyag",
-    "teachesKeyDesc": "A fogalmak, amelyeket a tananyag feldolgoz."
+    "teachesKeyDesc": "A fogalmak, amelyeket a tananyag feldolgoz.",
+    "materialsKey": "Tananyagok a fogalomban",
+    "materialsKeyDesc": "Közvetlenül a fogalomban felsorolt hivatkozások és mellékletek, külön jegyzet nélkül."
   },
   "minutes": "{minutes} perc",
   "hours": "{hours} óra",
@@ -87,6 +89,11 @@
   "durationDesc": "Percben. Az útvonal becslése ezek összege.",
   "addMaterial": "Tananyag hozzáadása",
   "materialNameRequired": "Add meg a tananyag nevét",
+  "inlineMaterial": "Maradjon a fogalomban",
+  "inlineMaterialDesc": "A hivatkozás a fogalom saját listájába kerül, és nem készül jegyzet a tananyaghoz.",
+  "inlineLinkRequired": "Adj meg egy hivatkozást, például https://… vagy [[fajl.pdf]]",
+  "inlineMaterialHint": "Közvetlenül a fogalomban szerepel, külön jegyzet nincs hozzá.",
+  "attachment": "Melléklet",
   "knowBeforePrompt": "Mit kell tudni a(z) „{title}” előtt?",
   "unlocksPrompt": "Mit old fel a(z) „{title}”?",
   "note": "Jegyzet",

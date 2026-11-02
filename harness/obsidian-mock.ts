@@ -104,7 +104,9 @@ export class TFile extends TAbstractFile {
     super();
     this.path = path;
     this.name = path.split("/").pop()!;
-    this.basename = this.name.replace(/\.md$/, "");
+    const dot = this.name.lastIndexOf(".");
+    this.extension = dot > 0 ? this.name.slice(dot + 1) : "";
+    this.basename = dot > 0 ? this.name.slice(0, dot) : this.name;
   }
 }
 
@@ -132,7 +134,8 @@ class Vault extends Events {
   contents = new Map<string, string>();
   adapter = { exists: async (path: string) => this.files.has(path) || this.folders.has(path) };
 
-  getMarkdownFiles() { return [...this.files.values()]; }
+  getMarkdownFiles() { return [...this.files.values()].filter((file) => file.extension === "md"); }
+  getFiles() { return [...this.files.values()]; }
   getAbstractFileByPath(path: string) { return this.files.get(path) ?? (this.folders.has(path) ? new TFolder(path) : null); }
   async read(file: TFile) { return this.contents.get(file.path) ?? ""; }
 
@@ -186,11 +189,20 @@ class MetadataCache extends Events {
     }, 30);
   }
   getFileCache(file: TFile) { return this.cache.get(file.path) ?? null; }
+  // Notes match without ".md", attachments by their full name, as in Obsidian.
   getFirstLinkpathDest(link: string) {
-    const files = app.vault.getMarkdownFiles();
-    return files.find((f) => f.path === link || f.path === `${link}.md`) ?? files.find((f) => f.basename === link) ?? null;
+    const files = app.vault.getFiles();
+    return (
+      files.find((f) => f.path === link || f.path === `${link}.md`) ??
+      files.find((f) => (f.extension === "md" ? f.basename : f.name) === link) ??
+      null
+    );
   }
   fileToLinktext(file: TFile) {
+    if (file.extension !== "md") {
+      const unique = app.vault.getFiles().filter((f) => f.name === file.name).length === 1;
+      return unique ? file.name : file.path;
+    }
     const unique = app.vault.getMarkdownFiles().filter((f) => f.basename === file.basename).length === 1;
     return unique ? file.basename : file.path.replace(/\.md$/, "");
   }
@@ -454,6 +466,24 @@ export class Setting {
       },
       setValue(v: string) { select.value = v; return api; },
       onChange(fn: Callback) { select.addEventListener("change", () => fn(select.value)); return api; },
+    };
+    cb(api);
+    return this;
+  }
+  addToggle(cb: (toggle: any) => void) {
+    const container = (this.control as any).createDiv({ cls: "checkbox-container" }) as HTMLElement;
+    const input = (container as any).createEl("input", { type: "checkbox" }) as HTMLInputElement;
+    const api = {
+      toggleEl: container,
+      getValue: () => input.checked,
+      setValue(v: boolean) { input.checked = v; container.toggleClass("is-enabled", v); return api; },
+      onChange(fn: Callback) {
+        input.addEventListener("change", () => {
+          container.toggleClass("is-enabled", input.checked);
+          fn(input.checked);
+        });
+        return api;
+      },
     };
     cb(api);
     return this;

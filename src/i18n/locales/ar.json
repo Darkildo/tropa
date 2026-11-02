@@ -40,7 +40,9 @@
     "recommendsKey": "رابط مُستحسَن",
     "recommendsKeyDesc": "مفيد، لكنه لا يمنع الوصول.",
     "teachesKey": "ما تُعلّمه المادة",
-    "teachesKeyDesc": "المفاهيم التي تتناولها المادة."
+    "teachesKeyDesc": "المفاهيم التي تتناولها المادة.",
+    "materialsKey": "المواد داخل المفهوم",
+    "materialsKeyDesc": "روابط ومرفقات مدرجة في المفهوم نفسه، دون ملاحظة منفصلة."
   },
   "minutes": "{minutes} د",
   "hours": "{hours} س",
@@ -87,6 +89,11 @@
   "durationDesc": "بالدقائق. تقدير المسار هو مجموع هذه الأوقات.",
   "addMaterial": "إضافة مادة",
   "materialNameRequired": "أدخل اسم المادة",
+  "inlineMaterial": "إبقاؤها في المفهوم",
+  "inlineMaterialDesc": "أضف الرابط إلى قائمة المفهوم نفسه بدلًا من إنشاء ملاحظة للمادة.",
+  "inlineLinkRequired": "أدخل رابطًا مثل https://… أو [[ملف.pdf]]",
+  "inlineMaterialHint": "مدرجة في المفهوم نفسه، ولا توجد ملاحظة منفصلة.",
+  "attachment": "مرفق",
   "knowBeforePrompt": "ما الذي يجب معرفته قبل «{title}»؟",
   "unlocksPrompt": "ما الذي يفتحه «{title}»؟",
   "note": "ملاحظة",

@@ -40,7 +40,9 @@
     "recommendsKey": "Ligação recomendada",
     "recommendsKeyDesc": "Útil, mas não bloqueia o acesso.",
     "teachesKey": "O que um material ensina",
-    "teachesKeyDesc": "Conceitos que o material aborda."
+    "teachesKeyDesc": "Conceitos que o material aborda.",
+    "materialsKey": "Materiais no conceito",
+    "materialsKeyDesc": "Ligações e anexos listados no próprio conceito, sem nota à parte."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "Em minutos. A estimativa do percurso é a soma destes tempos.",
   "addMaterial": "Adicionar material",
   "materialNameRequired": "Indique o nome do material",
+  "inlineMaterial": "Manter no conceito",
+  "inlineMaterialDesc": "Adicionar a ligação à lista do conceito em vez de criar uma nota para o material.",
+  "inlineLinkRequired": "Introduza uma ligação como https://… ou [[ficheiro.pdf]]",
+  "inlineMaterialHint": "Está no próprio conceito, não há nota à parte.",
+  "attachment": "Anexo",
   "knowBeforePrompt": "O que é preciso saber antes de «{title}»?",
   "unlocksPrompt": "O que desbloqueia «{title}»?",
   "note": "Nota",

@@ -40,7 +40,9 @@
     "recommendsKey": "推荐链接",
     "recommendsKeyDesc": "有帮助，但不会锁定。",
     "teachesKey": "资料讲授的内容",
-    "teachesKeyDesc": "资料涉及的概念。"
+    "teachesKeyDesc": "资料涉及的概念。",
+    "materialsKey": "概念内的资料",
+    "materialsKeyDesc": "直接列在概念中的链接和附件，不单独建笔记。"
   },
   "minutes": "{minutes} 分钟",
   "hours": "{hours} 小时",
@@ -87,6 +89,11 @@
   "durationDesc": "以分钟计。路线的估算时间就是它们的总和。",
   "addMaterial": "添加资料",
   "materialNameRequired": "请输入资料名称",
+  "inlineMaterial": "保留在概念中",
+  "inlineMaterialDesc": "把链接加到概念自身的列表中，而不是为资料新建笔记。",
+  "inlineLinkRequired": "请输入链接，例如 https://… 或 [[文件.pdf]]",
+  "inlineMaterialHint": "直接列在概念中，没有单独的笔记。",
+  "attachment": "附件",
   "knowBeforePrompt": "学习“{title}”之前需要知道什么？",
   "unlocksPrompt": "“{title}”会解锁什么？",
   "note": "笔记",

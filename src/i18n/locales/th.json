@@ -40,7 +40,9 @@
     "recommendsKey": "ลิงก์แนะนำ",
     "recommendsKeyDesc": "มีประโยชน์ แต่ไม่ล็อกอะไร",
     "teachesKey": "สิ่งที่สื่อการเรียนสอน",
-    "teachesKeyDesc": "แนวคิดที่สื่อการเรียนครอบคลุม"
+    "teachesKeyDesc": "แนวคิดที่สื่อการเรียนครอบคลุม",
+    "materialsKey": "สื่อการเรียนในแนวคิด",
+    "materialsKeyDesc": "ลิงก์และไฟล์แนบที่ระบุไว้ในแนวคิดโดยตรง โดยไม่มีโน้ตแยก"
   },
   "minutes": "{minutes} นาที",
   "hours": "{hours} ชม.",
@@ -87,6 +89,11 @@
   "durationDesc": "เป็นนาที เวลาประเมินของเส้นทางคือผลรวมของค่านี้",
   "addMaterial": "เพิ่มสื่อการเรียน",
   "materialNameRequired": "ใส่ชื่อสื่อการเรียน",
+  "inlineMaterial": "เก็บไว้ในแนวคิด",
+  "inlineMaterialDesc": "เพิ่มลิงก์ลงในรายการของแนวคิดเอง แทนการสร้างโน้ตสำหรับสื่อการเรียน",
+  "inlineLinkRequired": "ใส่ลิงก์ เช่น https://… หรือ [[ไฟล์.pdf]]",
+  "inlineMaterialHint": "ระบุไว้ในแนวคิดโดยตรง ไม่มีโน้ตแยก",
+  "attachment": "ไฟล์แนบ",
   "knowBeforePrompt": "ต้องรู้อะไรก่อน “{title}”",
   "unlocksPrompt": "“{title}” ปลดล็อกอะไร",
   "note": "โน้ต",

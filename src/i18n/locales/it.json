@@ -40,7 +40,9 @@
     "recommendsKey": "Collegamento consigliato",
     "recommendsKeyDesc": "Utile, ma non blocca l’accesso.",
     "teachesKey": "Cosa insegna un materiale",
-    "teachesKeyDesc": "I concetti trattati dal materiale."
+    "teachesKeyDesc": "I concetti trattati dal materiale.",
+    "materialsKey": "Materiali nel concetto",
+    "materialsKeyDesc": "Link e allegati elencati direttamente nel concetto, senza una nota a parte."
   },
   "minutes": "{minutes} min",
   "hours": "{hours} h",
@@ -87,6 +89,11 @@
   "durationDesc": "In minuti. La stima del percorso è la loro somma.",
   "addMaterial": "Aggiungi materiale",
   "materialNameRequired": "Inserisci il nome del materiale",
+  "inlineMaterial": "Tieni nel concetto",
+  "inlineMaterialDesc": "Aggiungi il link all'elenco del concetto invece di creare una nota per il materiale.",
+  "inlineLinkRequired": "Inserisci un link come https://… o [[file.pdf]]",
+  "inlineMaterialHint": "Elencato nel concetto stesso, non c'è una nota a parte.",
+  "attachment": "Allegato",
   "knowBeforePrompt": "Cosa bisogna sapere prima di «{title}»?",
   "unlocksPrompt": "Cosa sblocca «{title}»?",
   "note": "Nota",

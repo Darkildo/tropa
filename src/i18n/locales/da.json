@@ -40,7 +40,9 @@
     "recommendsKey": "Anbefalet link",
     "recommendsKeyDesc": "Nyttigt, men låser ikke noget.",
     "teachesKey": "Hvad et materiale lærer",
-    "teachesKeyDesc": "Begreber, som materialet dækker."
+    "teachesKeyDesc": "Begreber, som materialet dækker.",
+    "materialsKey": "Materialer i begrebet",
+    "materialsKeyDesc": "Links og vedhæftede filer, der står direkte i begrebet, uden en separat note."
   },
   "minutes": "{minutes} min.",
   "hours": "{hours} t.",
@@ -87,6 +89,11 @@
   "durationDesc": "I minutter. Rutens overslag er summen af dem.",
   "addMaterial": "Tilføj materiale",
   "materialNameRequired": "Skriv materialets navn",
+  "inlineMaterial": "Behold i begrebet",
+  "inlineMaterialDesc": "Tilføj linket til begrebets egen liste i stedet for at oprette en note til materialet.",
+  "inlineLinkRequired": "Skriv et link som https://… eller [[fil.pdf]]",
+  "inlineMaterialHint": "Står i selve begrebet, der er ingen separat note.",
+  "attachment": "Vedhæftet fil",
   "knowBeforePrompt": "Hvad skal man vide før »{title}«?",
   "unlocksPrompt": "Hvad låser »{title}« op?",
   "note": "Note",
