@@ -13,10 +13,11 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 - **Progress you can see.** Mark concepts as learning or mastered and materials as done. Mastering a concept unlocks the ones that depend on it. Every action can be undone.
 - **Start from what you know.** **I know this and what it needs** marks a concept together with its unmastered prerequisites in one step; untick anything you are unsure of. **Skip** leaves a concept out: it opens what depends on it but never counts as mastered. An optional confidence from 1 to 5 can be set on mastered and learning concepts.
 - **Time estimate.** Material durations add up to the time left on the route.
+- **Focus and fold.** **Focus** (or F) shows only what is near the selected concept: what it needs, what it opens and soft links, one to three steps around, with their materials when **Materials** is on. Esc or the cross brings back the map as it was. The badge under a concept folds away everything that needs it and then shows how many concepts it hides; a highlighted badge means route steps are among them, and the route list marks them. Picking such a step unfolds its branch. Focus and folds belong to the map view: they are kept with Obsidian's workspace layout, never in notes or progress.
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
-- **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, Esc returns to the route.
+- **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, F focuses on the concept or leaves the focus, 1–3 set the steps around, C folds or unfolds what the concept opens, Esc leaves the focus and then returns to the route.
 - **33 languages.** The interface follows Obsidian's language, right-to-left included. See [Languages](#languages).
 
 ## Screenshots
@@ -52,6 +53,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 3. Choose a goal in the top left corner. The panel on the right lists the steps and what to study first.
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
+6. On a big map, select a concept and press **Focus** to see only what is near it, or fold the branches you do not need with the badge under a concept.
 
 Other commands: open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
 
