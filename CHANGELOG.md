@@ -4,7 +4,7 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
 
 ## [0.3.0] - 2026-11-02
 
-Requires Obsidian 1.13.0 or later. The strings added in this release are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. See [Fix or add a translation](README.md#fix-or-add-a-translation).
+Requires Obsidian 1.13.0 or later. The strings added in this release are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. See [Fix or add a translation](https://github.com/Darkildo/tropa#fix-or-add-a-translation).
 
 ### Added
 - **Skip, confidence and "I know this".**
