@@ -1,5 +1,6 @@
 import esbuild from "esbuild";
 import { resolve } from "node:path";
+import { layoutWasm } from "./layout-wasm.esbuild.mjs";
 
 // `import source from "tropa:layout-worker"` gives the layout worker as a script, bundled on every
 // build, so main.js stays a single file and the worker needs no file of its own.
@@ -17,6 +18,7 @@ export const layoutWorker = {
         write: false,
         metafile: true,
         logLevel: "warning",
+        plugins: [layoutWasm],
       });
       return {
         contents: `export default ${JSON.stringify(result.outputFiles[0].text)};`,

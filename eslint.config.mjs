@@ -4,7 +4,7 @@ import globals from "globals";
 
 export default defineConfig([
   // harness is a mock of the Obsidian API for browser checks, not plugin code.
-  globalIgnores(["node_modules", "dist", "main.js", "harness", "*.mjs", "bench/*.mjs"]),
+  globalIgnores(["node_modules", "dist", "main.js", "harness", "crates", "*.mjs", "bench/*.mjs", "scripts/*.mjs"]),
   ...obsidianmd.configs.recommended,
   {
     languageOptions: {
