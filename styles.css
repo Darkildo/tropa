@@ -1014,3 +1014,13 @@ a.tropa-icon-button { opacity: 1; }
 .tropa-known-row input { margin: 0; }
 .modal[dir="rtl"] .tropa-known-title[dir="auto"] { text-align: right; }
 .tropa-notice-undo { margin-inline-start: 12px; }
+
+/* Export */
+
+.tropa-export-modal .is-hidden { display: none; }
+.tropa-export-modal .tropa-export-exists { margin: 8px 0 12px; }
+.tropa-export-modal .tropa-actions { justify-content: flex-end; margin: 12px 0 0; }
+.tropa-export-modal .tropa-export-path-setting { flex-wrap: wrap; }
+.tropa-export-modal .tropa-export-path-setting .setting-item-control { flex: 1 0 100%; margin-top: 8px; }
+.tropa-export-modal .tropa-export-path { width: 100%; }
+button.tropa-export { flex: none; width: 32px; height: 32px; padding: 0; }

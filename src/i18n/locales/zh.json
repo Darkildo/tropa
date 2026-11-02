@@ -261,5 +261,20 @@
     "cycles": "循环依赖",
     "cyclesHint": "每个概念依赖下一个，最后一个又依赖第一个，所以哪个都无法先学。",
     "showOnMap": "在导图上显示"
-  }
+  },
+  "exportMap": "导出地图",
+  "exportCanvas": "将地图导出为 Canvas",
+  "exportSvg": "将地图导出为 SVG",
+  "exportPath": "文件",
+  "exportPathDesc": "仓库中的路径。缺少的文件夹会自动创建。",
+  "exportPathInvalid": "请输入仓库内的文件路径",
+  "exportExists": "{path} 已存在",
+  "exportReplace": "替换",
+  "exportSave": "保存",
+  "exportKeepBoth": "两个都保留",
+  "exportProgress": "显示我的进度",
+  "exportProgressDesc": "为已掌握、学习中的概念和目标着色。关闭后可分享不含个人进度的地图。",
+  "exportSaved": "已保存：{path}",
+  "exportNotReady": "地图仍在排布中，请稍后再试。",
+  "canvasSoftLabel": "推荐"
 }

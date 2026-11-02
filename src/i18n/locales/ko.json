@@ -261,5 +261,20 @@
     "cycles": "순환 의존",
     "cyclesHint": "각 개념이 다음 개념을 요구하고 마지막이 처음을 요구하므로 어느 것도 먼저 배울 수 없습니다.",
     "showOnMap": "지도에서 보기"
-  }
+  },
+  "exportMap": "지도 내보내기",
+  "exportCanvas": "지도를 Canvas로 내보내기",
+  "exportSvg": "지도를 SVG로 내보내기",
+  "exportPath": "파일",
+  "exportPathDesc": "보관소 안의 경로입니다. 없는 폴더는 새로 만듭니다.",
+  "exportPathInvalid": "보관소 안의 파일 경로를 입력하세요",
+  "exportExists": "{path}이(가) 이미 있습니다",
+  "exportReplace": "바꾸기",
+  "exportSave": "저장",
+  "exportKeepBoth": "둘 다 유지",
+  "exportProgress": "내 진행 상황 표시",
+  "exportProgressDesc": "익힌 개념, 학습 중인 개념, 목표에 색을 입힙니다. 진행 상황 없이 지도를 공유하려면 끄세요.",
+  "exportSaved": "저장됨: {path}",
+  "exportNotReady": "지도를 아직 배치하는 중입니다. 잠시 후 다시 시도하세요.",
+  "canvasSoftLabel": "추천"
 }

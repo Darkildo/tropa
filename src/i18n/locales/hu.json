@@ -276,5 +276,20 @@
     "cycles": "Körkörös függőségek",
     "cyclesHint": "Minden fogalom a következőt igényli, az utolsó pedig az elsőt, így egyiket sem lehet elsőként megtanulni.",
     "showOnMap": "Megjelenítés a térképen"
-  }
+  },
+  "exportMap": "Térkép exportálása",
+  "exportCanvas": "Térkép exportálása Canvasba",
+  "exportSvg": "Térkép exportálása SVG-ként",
+  "exportPath": "Fájl",
+  "exportPathDesc": "Elérési út a széfben. A hiányzó mappák létrejönnek.",
+  "exportPathInvalid": "Adj meg egy fájlútvonalat a széfen belül",
+  "exportExists": "{path} már létezik",
+  "exportReplace": "Csere",
+  "exportSave": "Mentés",
+  "exportKeepBoth": "Mindkettő megtartása",
+  "exportProgress": "Haladásom mutatása",
+  "exportProgressDesc": "Az elsajátított és tanult fogalmak, valamint a cél színezése. Kapcsold ki, ha haladásod nélkül osztanád meg a térképet.",
+  "exportSaved": "Mentve: {path}",
+  "exportNotReady": "A térkép elrendezése még folyik. Próbáld újra egy pillanat múlva.",
+  "canvasSoftLabel": "ajánlott"
 }

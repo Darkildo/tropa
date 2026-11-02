@@ -291,5 +291,20 @@
     "cycles": "Dependências circulares",
     "cyclesHint": "Cada conceito exige o próximo e o último exige o primeiro, então nenhum pode ser aprendido primeiro.",
     "showOnMap": "Mostrar no mapa"
-  }
+  },
+  "exportMap": "Exportar mapa",
+  "exportCanvas": "Exportar o mapa para Canvas",
+  "exportSvg": "Exportar o mapa como SVG",
+  "exportPath": "Arquivo",
+  "exportPathDesc": "Caminho no cofre. As pastas que faltarem serão criadas.",
+  "exportPathInvalid": "Informe um caminho de arquivo dentro do cofre",
+  "exportExists": "{path} já existe",
+  "exportReplace": "Substituir",
+  "exportSave": "Salvar",
+  "exportKeepBoth": "Manter os dois",
+  "exportProgress": "Mostrar meu progresso",
+  "exportProgressDesc": "Colorir os conceitos dominados e em estudo e o objetivo. Desative para compartilhar o mapa sem o seu progresso.",
+  "exportSaved": "Salvo: {path}",
+  "exportNotReady": "O mapa ainda está sendo organizado. Tente de novo em instantes.",
+  "canvasSoftLabel": "recomendado"
 }

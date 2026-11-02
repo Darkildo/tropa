@@ -276,5 +276,20 @@
     "cycles": "Sirkulære avhengigheter",
     "cyclesHint": "Hvert begrep krever det neste, og det siste krever det første, så ingen kan læres først.",
     "showOnMap": "Vis på kartet"
-  }
+  },
+  "exportMap": "Eksporter kart",
+  "exportCanvas": "Eksporter kartet til Canvas",
+  "exportSvg": "Eksporter kartet som SVG",
+  "exportPath": "Fil",
+  "exportPathDesc": "Sti i hvelvet. Manglende mapper opprettes.",
+  "exportPathInvalid": "Skriv inn en filsti i hvelvet",
+  "exportExists": "{path} finnes allerede",
+  "exportReplace": "Erstatt",
+  "exportSave": "Lagre",
+  "exportKeepBoth": "Behold begge",
+  "exportProgress": "Vis fremgangen min",
+  "exportProgressDesc": "Farg mestrede og påbegynte begreper og målet. Slå av for å dele kartet uten fremgangen din.",
+  "exportSaved": "Lagret: {path}",
+  "exportNotReady": "Kartet legges fortsatt ut. Prøv igjen om et øyeblikk.",
+  "canvasSoftLabel": "anbefalt"
 }
