@@ -1,6 +1,7 @@
 import { App, Modal, Notice, Setting, SuggestModal, setIcon } from "obsidian";
-import { FORMAT_LABEL, guessFormat } from "../core/format";
+import { guessFormat } from "../core/format";
 import type { SourceFormat } from "../core/types";
+import { t } from "../i18n";
 import type { SourceDraft } from "../store";
 
 export interface PickItem {
@@ -22,11 +23,11 @@ export class PickModal extends SuggestModal<PickItem> {
   ) {
     super(app);
     this.setPlaceholder(placeholder);
-    this.emptyStateText = "Ничего не найдено";
+    this.emptyStateText = t.nothingFound;
     this.setInstructions([
-      { command: "↑↓", purpose: "выбрать" },
-      { command: "↵", purpose: "подтвердить" },
-      { command: "esc", purpose: "закрыть" },
+      { command: "↑↓", purpose: t.toNavigate },
+      { command: "↵", purpose: t.toChoose },
+      { command: "esc", purpose: t.toDismiss },
     ]);
   }
 
@@ -63,18 +64,18 @@ export class SourceModal extends Modal {
   }
 
   onOpen() {
-    this.setTitle("Новый материал");
+    this.setTitle(t.newMaterial);
     const { contentEl } = this;
     let formatControl: { setValue(value: string): unknown } | undefined;
 
-    new Setting(contentEl).setName("Название").addText((text) => {
+    new Setting(contentEl).setName(t.name).addText((text) => {
       text.setValue(this.draft.title).onChange((value) => (this.draft.title = value));
       if (!this.draft.title) window.setTimeout(() => text.inputEl.focus());
     });
 
     new Setting(contentEl)
-      .setName("Ссылка")
-      .setDesc("Необязательно. Для своих конспектов оставьте пустой.")
+      .setName(t.link)
+      .setDesc(t.linkDesc)
       .addText((text) => {
         text.setPlaceholder("https://").onChange((value) => {
           this.draft.url = value.trim();
@@ -86,8 +87,8 @@ export class SourceModal extends Modal {
         if (this.draft.title) window.setTimeout(() => text.inputEl.focus());
       });
 
-    new Setting(contentEl).setName("Формат").addDropdown((dropdown) => {
-      dropdown.addOptions(FORMAT_LABEL).setValue(this.draft.format).onChange((value) => {
+    new Setting(contentEl).setName(t.formatName).addDropdown((dropdown) => {
+      dropdown.addOptions(t.format).setValue(this.draft.format).onChange((value) => {
         this.formatTouched = true;
         this.draft.format = value as SourceFormat;
       });
@@ -95,8 +96,8 @@ export class SourceModal extends Modal {
     });
 
     new Setting(contentEl)
-      .setName("Сколько времени займёт")
-      .setDesc("В минутах. Из этого складывается оценка маршрута.")
+      .setName(t.duration)
+      .setDesc(t.durationDesc)
       .addText((text) => {
         text.inputEl.type = "number";
         text.inputEl.min = "1";
@@ -107,9 +108,9 @@ export class SourceModal extends Modal {
       });
 
     new Setting(contentEl).addButton((button) =>
-      button.setButtonText("Добавить материал").setCta().onClick(() => {
+      button.setButtonText(t.addMaterial).setCta().onClick(() => {
         if (!this.draft.title.trim()) {
-          new Notice("Укажите название материала");
+          new Notice(t.materialNameRequired);
           return;
         }
         this.close();

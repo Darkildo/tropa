@@ -1,24 +1,31 @@
+import * as obsidian from "obsidian";
 import { Notice, Plugin, TFile, debounce, normalizePath } from "obsidian";
 import { STATE_ICON } from "./core/format";
-import { DEFAULT_SETTINGS, TropaSettingTab, type TropaSettings } from "./settings";
+import { setLang, t, type Lang } from "./i18n";
+import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
+import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
-import { sampleFiles, SAMPLE_FOLDER, SAMPLE_GOAL, SAMPLE_MASTERED } from "./sample";
+import { sample } from "./sample";
 import { MAP_VIEW, MapView } from "./ui/map-view";
 import { PANEL_VIEW, PanelView } from "./ui/panel-view";
 import { PickModal } from "./ui/pick";
 
 export default class TropaPlugin extends Plugin {
   settings!: TropaSettings;
+  defaults!: TropaSettings;
   store!: Store;
+  lang: Lang = "en";
 
   async onload() {
-    this.settings = { ...DEFAULT_SETTINGS, ...(await this.loadData()) };
+    this.lang = detectLang();
+    setLang(this.lang);
+    await this.loadSettings();
     this.store = new Store(this.app, () => this.settings);
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
     this.addSettingTab(new TropaSettingTab(this.app, this));
-    this.addRibbonIcon("route", "Открыть карту обучения", () => void this.showMap());
+    this.addRibbonIcon("route", t.mapTitle, () => void this.showMap());
 
     const rebuild = debounce(() => this.store.rebuild(), 120, true);
     this.app.workspace.onLayoutReady(() => {
@@ -39,11 +46,20 @@ export default class TropaPlugin extends Plugin {
         if (this.app.workspace.getLeavesOfType(MAP_VIEW).length > 0) return;
         const title = this.store.graph.nodes.get(id)?.title ?? "";
         const names = unlocked.map((u) => this.store.graph.nodes.get(u)?.title).join(", ");
-        new Notice(names ? `Открыто: ${names}` : `Освоено: ${title}`);
+        new Notice(names ? t.unlocked(names) : t.mastered(title));
       }),
     );
 
     this.addCommands();
+  }
+
+  /** Saved settings win. On first launch the defaults follow the language and are saved, so paths stay put. */
+  private async loadSettings() {
+    const saved = (await this.loadData()) as Partial<TropaSettings> | null;
+    const legacy = !saved && (await this.app.vault.adapter.exists(LEGACY_PROGRESS));
+    this.defaults = defaultSettings(legacy ? "ru" : this.lang);
+    this.settings = { ...this.defaults, ...saved };
+    if (!saved) await this.saveSettings();
   }
 
   async saveSettings() {
@@ -51,21 +67,21 @@ export default class TropaPlugin extends Plugin {
   }
 
   private addCommands() {
-    this.addCommand({ id: "open-map", name: "Открыть карту обучения", callback: () => void this.showMap() });
-    this.addCommand({ id: "open-panel", name: "Открыть боковую панель", callback: () => void this.showPanel() });
-    this.addCommand({ id: "new-concept", name: "Новый концепт", callback: () => this.promptNewConcept() });
-    this.addCommand({ id: "install-sample", name: "Добавить пример карты", callback: () => void this.installSample() });
+    this.addCommand({ id: "open-map", name: t.mapTitle, callback: () => void this.showMap() });
+    this.addCommand({ id: "open-panel", name: t.openPanel, callback: () => void this.showPanel() });
+    this.addCommand({ id: "new-concept", name: t.newConcept, callback: () => this.promptNewConcept() });
+    this.addCommand({ id: "install-sample", name: t.installSample, callback: () => void this.installSample() });
 
     this.addCommand({
       id: "find-concept",
-      name: "Найти концепт на карте",
+      name: t.findConcept,
       callback: () => {
         const items = this.store.graph.concepts.map((node) => ({
           id: node.id,
           title: node.title,
           icon: STATE_ICON[this.store.states.get(node.id) ?? "locked"],
         }));
-        new PickModal(this.app, items, "Какой концепт показать?", (item) => {
+        new PickModal(this.app, items, t.findConceptPrompt, (item) => {
           void this.showMap((map) => map.focusNode(item.id));
         }).open();
       },
@@ -82,8 +98,8 @@ export default class TropaPlugin extends Plugin {
           return true;
         },
       });
-    onActiveNote("mark-concept", "Сделать заметку концептом", "concept");
-    onActiveNote("mark-source", "Сделать заметку материалом", "source");
+    onActiveNote("mark-concept", t.markConcept, "concept");
+    onActiveNote("mark-source", t.markSource, "source");
 
     const onActiveConcept = (id: string, name: string, run: (conceptId: string) => void) =>
       this.addCommand({
@@ -96,8 +112,8 @@ export default class TropaPlugin extends Plugin {
           return true;
         },
       });
-    onActiveConcept("set-goal", "Сделать заметку целью", (id) => this.store.setGoal(id));
-    onActiveConcept("toggle-mastered", "Отметить заметку освоенной или вернуть в изучение", (id) =>
+    onActiveConcept("set-goal", t.setGoal, (id) => this.store.setGoal(id));
+    onActiveConcept("toggle-mastered", t.toggleMastered, (id) =>
       this.store.setMastered(id, !this.store.progress.mastered.has(id)),
     );
   }
@@ -137,35 +153,35 @@ export default class TropaPlugin extends Plugin {
   promptNewConcept(requires: string[] = []) {
     const items = this.store.graph.concepts.filter((node) => !requires.includes(node.id));
     const options = items.map((node) => ({ id: node.id, title: node.title, icon: STATE_ICON[this.store.states.get(node.id) ?? "locked"] }));
-    const placeholder = requires.length ? "Какой концепт откроется после этого?" : "Название концепта";
+    const placeholder = requires.length ? t.nextConceptPrompt : t.conceptName;
     new PickModal(this.app, requires.length ? options : [], placeholder, async (item) => {
       if (item.create) {
         await this.store.createConcept(item.title, requires);
       } else if (requires.length && !requires.some((id) => this.store.graph.wouldCreateCycle(item.id, id))) {
         for (const id of requires) await this.store.addLink(item.id, "requiresKey", id);
       } else if (requires.length) {
-        new Notice("Такая связь замкнёт цикл, поэтому она не добавлена");
+        new Notice(t.cycleRefused);
       }
-    }, (query) => `Создать концепт «${query}»`).open();
+    }, t.createConcept).open();
   }
 
   async installSample() {
     const { vault } = this.app;
-    if (vault.getAbstractFileByPath(normalizePath(SAMPLE_FOLDER))) {
-      new Notice(`Пример уже добавлен: папка ${SAMPLE_FOLDER}`);
+    const example = sample(this.lang);
+    if (vault.getAbstractFileByPath(normalizePath(example.folder))) {
+      new Notice(t.sampleExists(example.folder));
       await this.showMap();
       return;
     }
-    for (const { path, content } of sampleFiles()) {
+    for (const { path, content } of example.files) {
       await this.store.ensureFolder(path.split("/").slice(0, -1).join("/"));
       await vault.create(path, content);
     }
-    await this.waitForNote(`${SAMPLE_FOLDER}/Концепты/${SAMPLE_GOAL}.md`);
+    await this.waitForNote(`${example.goal}.md`);
     this.store.rebuild(true);
-    const find = (title: string) => `${SAMPLE_FOLDER}/Концепты/${title}.md`;
     if (!this.store.progress.goal) {
-      SAMPLE_MASTERED.forEach((title) => this.store.progress.mastered.add(find(title)));
-      this.store.setGoal(find(SAMPLE_GOAL));
+      example.mastered.forEach((path) => this.store.progress.mastered.add(`${path}.md`));
+      this.store.setGoal(`${example.goal}.md`);
     }
     await this.showMap();
   }
@@ -178,4 +194,16 @@ export default class TropaPlugin extends Plugin {
       await new Promise((resolve) => window.setTimeout(resolve, 100));
     }
   }
+}
+
+/** Obsidian's interface language. `getLanguage` appeared in 1.8, older builds keep it in local storage. */
+function detectLang(): Lang {
+  const { getLanguage } = obsidian as { getLanguage?: () => string };
+  let code = "";
+  try {
+    code = getLanguage?.() ?? window.localStorage.getItem("language") ?? "";
+  } catch {
+    // Local storage can be unavailable.
+  }
+  return code.toLowerCase().startsWith("ru") ? "ru" : "en";
 }

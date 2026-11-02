@@ -314,7 +314,7 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 }
 
 .tropa-node.is-next::before {
-  content: "Следующий шаг";
+  content: var(--tropa-next-label, "Next step");
   position: absolute;
   top: -12px;
   left: 12px;
@@ -334,7 +334,7 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 }
 
 .tropa-node.is-goal::after {
-  content: "Цель";
+  content: var(--tropa-goal-label, "Goal");
   position: absolute;
   top: -12px;
   right: 12px;

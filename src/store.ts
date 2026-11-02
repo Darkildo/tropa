@@ -11,7 +11,8 @@ import {
 } from "./core/graph";
 import { basename, linkTargets, toList } from "./core/links";
 import type { ConceptState, NoteInput, NoteRef, Progress, Route, SourceFormat } from "./core/types";
-import type { TropaSettings } from "./settings";
+import { t } from "./i18n";
+import type { TropaSettings } from "./defaults";
 
 export type LinkKind = "requiresKey" | "recommendsKey" | "teachesKey";
 
@@ -158,7 +159,7 @@ export class Store extends Events {
       .then(() => this.writeProgress())
       .catch((error) => {
         console.error("Tropa: failed to save progress", error);
-        new Notice(`Прогресс не сохранён: ${error instanceof Error ? error.message : error}`);
+        new Notice(t.progressNotSaved(error instanceof Error ? error.message : String(error)));
       })
       .finally(() => {
         this.pendingWrites--;
@@ -172,7 +173,7 @@ export class Store extends Events {
       await this.ensureFolder(path.split("/").slice(0, -1).join("/"));
       file = await this.app.vault.create(
         path,
-        "---\ntype: learning-progress\n---\n\nЭтот файл ведёт плагин Tropa: здесь хранятся ваша цель и отметки об освоении.\n",
+        `---\ntype: learning-progress\n---\n\n${t.progressFileText}\n`,
       );
     }
     const link = (id: string) => this.linkTo(id, path);
@@ -249,7 +250,7 @@ export class Store extends Events {
   async materialize(id: string): Promise<TFile> {
     if (!isGhostId(id)) {
       const file = this.fileOf(id);
-      if (!file) throw new Error(`Заметка не найдена: ${id}`);
+      if (!file) throw new Error(t.noteNotFound(id));
       return file;
     }
     return this.createConcept(this.graph.nodes.get(id)?.title ?? id.slice("ghost:".length));
@@ -301,9 +302,9 @@ export class Store extends Events {
   describeRemaining() {
     if (!this.route) return "";
     const { remainingMinutes, unestimated, steps } = this.route;
-    if (steps.length === 0) return "Цель достигнута";
-    if (remainingMinutes === 0) return "Время пока не оценить";
-    return `${unestimated ? "От " : "Около "}${formatMinutes(remainingMinutes)}`;
+    if (steps.length === 0) return t.goalReached;
+    if (remainingMinutes === 0) return t.noEstimate;
+    return (unestimated ? t.atLeast : t.about)(formatMinutes(remainingMinutes));
   }
 
   private linkTo(id: string, from: string) {
@@ -323,7 +324,7 @@ export class Store extends Events {
   }
 
   private async freePath(folder: string, title: string) {
-    const name = safeFileName(title) || "Без названия";
+    const name = safeFileName(title) || t.untitled;
     await this.ensureFolder(folder);
     const base = normalizePath(`${folder}/${name}`);
     let path = `${base}.md`;

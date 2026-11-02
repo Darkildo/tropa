@@ -1,7 +1,8 @@
 import { setIcon, type App } from "obsidian";
-import { FORMAT_ICON, FORMAT_LABEL, STATE_ICON, STATE_LABEL, formatMinutes, plural } from "../core/format";
+import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
 import { isGhostId, recommendMaterial, sourceState } from "../core/graph";
 import type { GraphNode } from "../core/types";
+import { lang, t } from "../i18n";
 import type { Store } from "../store";
 import { PickModal, SourceModal, type PickItem } from "./pick";
 
@@ -52,7 +53,7 @@ function stateGlyph(parent: HTMLElement, host: DetailHost, id: string) {
 function conceptItems(host: DetailHost, except: Set<string>): PickItem[] {
   return host.store.graph.concepts
     .filter((node) => !except.has(node.id))
-    .sort((a, b) => a.title.localeCompare(b.title, "ru"))
+    .sort((a, b) => a.title.localeCompare(b.title, lang()))
     .map((node) => ({ id: node.id, title: node.title, icon: STATE_ICON[host.store.states.get(node.id) ?? "locked"] }));
 }
 
@@ -63,18 +64,18 @@ async function linkedConcept(host: DetailHost, item: PickItem) {
 export function pickPrerequisite(host: DetailHost, node: GraphNode) {
   const { store, app } = host;
   const items = conceptItems(host, new Set([node.id, ...node.requires, ...store.graph.descendants(node.id)]));
-  new PickModal(app, items, `Что нужно знать до «${node.title}»?`, async (item) => {
+  new PickModal(app, items, t.knowBeforePrompt(node.title), async (item) => {
     await store.addLink(node.id, "requiresKey", await linkedConcept(host, item));
-  }, (query) => `Создать концепт «${query}»`).open();
+  }, t.createConcept).open();
 }
 
 function pickUnlock(host: DetailHost, node: GraphNode) {
   const { store, app } = host;
   const items = conceptItems(host, new Set([node.id, ...node.requiredBy, ...store.graph.ancestors(node.id)]));
-  new PickModal(app, items, `Что откроет «${node.title}»?`, async (item) => {
+  new PickModal(app, items, t.unlocksPrompt(node.title), async (item) => {
     if (item.create) await store.createConcept(item.title, [node.id]);
     else await store.addLink(item.id, "requiresKey", node.id);
-  }, (query) => `Создать концепт «${query}»`).open();
+  }, t.createConcept).open();
 }
 
 function pickMaterial(host: DetailHost, node: GraphNode) {
@@ -87,14 +88,14 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
       id: source.id,
       title: source.title,
       icon: FORMAT_ICON[source.format ?? "other"],
-      hint: source.format ? FORMAT_LABEL[source.format] : undefined,
+      hint: source.format ? t.format[source.format] : undefined,
     })),
     ...app.vault
       .getMarkdownFiles()
       .filter((file) => !known.has(file.path) && !attached.has(file.path) && !store.graph.nodes.has(file.path))
-      .map((file) => ({ id: file.path, title: file.basename, icon: "file", hint: "Заметка" })),
+      .map((file) => ({ id: file.path, title: file.basename, icon: "file", hint: t.note })),
   ];
-  new PickModal(app, items, `Материал для «${node.title}»`, (item) => {
+  new PickModal(app, items, t.materialForPrompt(node.title), (item) => {
     if (!item.create) {
       void store.attachSource(item.id, node.id);
       return;
@@ -103,7 +104,7 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
       const target = (await store.materialize(node.id)).path;
       await store.createSource({ ...draft, teaches: [target] });
     }).open();
-  }, (query) => `Новый материал «${query}»`).open();
+  }, t.newMaterialNamed).open();
 }
 
 function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?: () => void) {
@@ -118,7 +119,7 @@ function conceptRow(parent: HTMLElement, host: DetailHost, id: string, onRemove?
   el.addEventListener("keydown", (event) => {
     if (event.key === "Enter") host.select(id);
   });
-  if (onRemove) iconButton(el, "x", `Убрать связь с «${node.title}»`, onRemove);
+  if (onRemove) iconButton(el, "x", t.unlink(node.title), onRemove);
 }
 
 function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept: GraphNode | null, recommended: boolean) {
@@ -130,7 +131,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
 
   const check = el.createEl("input", { type: "checkbox", cls: "task-list-item-checkbox" });
   check.checked = state === "done";
-  check.setAttr("aria-label", `Материал «${source.title}» пройден`);
+  check.setAttr("aria-label", t.materialDone(source.title));
   check.addEventListener("change", () => store.setDone(id, check.checked));
 
   const body = el.createDiv({ cls: "tropa-material-body" });
@@ -142,7 +143,7 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
 
   const meta = body.createDiv({ cls: "tropa-material-meta" });
   setIcon(meta.createSpan(), FORMAT_ICON[source.format ?? "other"]);
-  const parts = [FORMAT_LABEL[source.format ?? "other"]];
+  const parts = [t.format[source.format ?? "other"]];
   if (source.minutes) parts.push(formatMinutes(source.minutes));
   meta.createSpan({ text: parts.join(", ") });
 
@@ -151,27 +152,27 @@ function materialRow(parent: HTMLElement, host: DetailHost, id: string, concept:
       .filter((req) => (store.graph.nodes.get(req)?.kind === "source" ? !store.progress.done.has(req) : !store.progress.mastered.has(req)))
       .map((req) => store.graph.nodes.get(req)?.title)
       .join(", ");
-    body.createDiv({ cls: "tropa-material-note", text: `Сначала: ${missing}` });
+    body.createDiv({ cls: "tropa-material-note", text: t.first(missing) });
   } else if (recommended) {
-    body.createDiv({ cls: "tropa-material-note is-accent", text: "Начните с этого" });
+    body.createDiv({ cls: "tropa-material-note is-accent", text: t.startHere });
   }
 
   if (source.url) {
     const link = el.createEl("a", {
       cls: "tropa-icon-button clickable-icon",
       href: source.url,
-      attr: { "aria-label": "Открыть источник", target: "_blank", rel: "noopener" },
+      attr: { "aria-label": t.openSource, target: "_blank", rel: "noopener" },
     });
     setIcon(link, "external-link");
   }
-  if (concept) iconButton(el, "x", `Отвязать материал «${source.title}»`, () => void store.removeLink(id, "teachesKey", concept.id));
+  if (concept) iconButton(el, "x", t.detachMaterial(source.title), () => void store.removeLink(id, "teachesKey", concept.id));
 }
 
 function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
   if (host.canGoBack) {
     const back = parent.createEl("button", { cls: "tropa-back" });
     setIcon(back.createSpan(), "arrow-left");
-    back.createSpan({ text: host.store.route ? "К маршруту" : "К списку" });
+    back.createSpan({ text: host.store.route ? t.backToRoute : t.backToList });
     back.addEventListener("click", () => host.select(null));
   }
   const title = parent.createEl("h3", { cls: "tropa-title" });
@@ -195,11 +196,11 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   const statusRow = parent.createDiv({ cls: "tropa-status-row" });
   const status = statusRow.createDiv({ cls: `tropa-status state-${state}` });
   setIcon(status.createSpan(), STATE_ICON[state]);
-  status.createSpan({ text: STATE_LABEL[state] });
+  status.createSpan({ text: t.state[state] });
   if (isGoal) {
     const goal = statusRow.createDiv({ cls: "tropa-status is-goal" });
     setIcon(goal.createSpan(), "flag");
-    goal.createSpan({ text: "Ваша цель" });
+    goal.createSpan({ text: t.yourGoal });
   }
 
   if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary });
@@ -207,13 +208,13 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   if (state === "cycle") {
     parent.createEl("p", {
       cls: "tropa-callout is-danger",
-      text: "Этот концепт зависит сам от себя через другие заметки. Уберите одну из связей в цикле, и он откроется.",
+      text: t.cycleCallout,
     });
   }
   if (node.ghost) {
     parent.createEl("p", {
       cls: "tropa-callout",
-      text: "На этот концепт есть ссылки, но заметки пока нет.",
+      text: t.ghostCallout,
     });
   }
 
@@ -223,53 +224,51 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     button.addEventListener("click", run);
   };
 
-  if (node.ghost) action("Создать заметку", state !== "available", () => void store.materialize(node.id));
+  if (node.ghost) action(t.createNote, state !== "available", () => void store.materialize(node.id));
   if (state === "available") {
-    action("Начать изучение", true, () => store.startLearning(node.id));
-    action("Уже знаю", false, () => store.setMastered(node.id, true));
+    action(t.startLearning, true, () => store.startLearning(node.id));
+    action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
   } else if (state === "learning") {
-    action("Отметить освоенным", true, () => store.setMastered(node.id, true));
+    action(t.markMastered, true, () => store.setMastered(node.id, true));
   } else if (state === "locked" || state === "cycle") {
-    action("Уже знаю", false, () => store.setMastered(node.id, true));
+    action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
   } else {
-    action("Снять отметку", false, () => store.setMastered(node.id, false));
+    action(t.unmark, false, () => store.setMastered(node.id, false));
   }
-  action(isGoal ? "Убрать цель" : "Сделать целью", false, () => store.setGoal(isGoal ? null : node.id));
+  action(isGoal ? t.removeGoal : t.makeGoal, false, () => store.setGoal(isGoal ? null : node.id));
 
   const blockers = node.requires.filter((id) => !store.progress.mastered.has(id));
   if (state === "locked" && blockers.length) {
-    const left = plural(blockers.length, "остался", "осталось", "осталось");
-    const word = plural(blockers.length, "концепт", "концепта", "концептов");
-    parent.createEl("p", { cls: "tropa-hint", text: `До открытия ${left} ${blockers.length} ${word}.` });
+    parent.createEl("p", { cls: "tropa-hint", text: t.leftToUnlock(blockers.length) });
   }
 
   const recommended = recommendMaterial(store.graph, store.progress, node.id);
-  const materials = section(parent, "Материалы", node.taughtBy.length);
+  const materials = section(parent, t.materials, node.taughtBy.length);
   if (node.taughtBy.length === 0) {
-    materials.createEl("p", { cls: "tropa-hint", text: "Пока учиться не по чему. Добавьте статью, видео, книгу или свою заметку." });
+    materials.createEl("p", { cls: "tropa-hint", text: t.nothingToLearnFrom });
   }
   const showRecommended = state !== "mastered" && node.taughtBy.length > 1;
   // The order stays fixed: rows must not jump under the cursor when one is ticked.
   for (const id of node.taughtBy) materialRow(materials, host, id, node, showRecommended && id === recommended);
-  addButton(materials, "Добавить материал", () => pickMaterial(host, node));
+  addButton(materials, t.addMaterial, () => pickMaterial(host, node));
 
-  const requires = section(parent, "Нужно знать до этого", node.requires.length);
+  const requires = section(parent, t.knowBefore, node.requires.length);
   for (const id of node.requires) {
     conceptRow(requires, host, id, node.ghost ? undefined : () => void store.removeLink(node.id, "requiresKey", id));
   }
-  addButton(requires, "Добавить требование", () => pickPrerequisite(host, node));
+  addButton(requires, t.addPrerequisite, () => pickPrerequisite(host, node));
 
-  const unlocks = section(parent, "Открывает", node.requiredBy.length);
+  const unlocks = section(parent, t.unlocks, node.requiredBy.length);
   for (const id of node.requiredBy) {
     const dependent = store.graph.nodes.get(id);
     if (dependent?.kind === "concept") {
       conceptRow(unlocks, host, id, isGhostId(id) ? undefined : () => void store.removeLink(id, "requiresKey", node.id));
     }
   }
-  addButton(unlocks, "Добавить следующий концепт", () => pickUnlock(host, node));
+  addButton(unlocks, t.addNextConcept, () => pickUnlock(host, node));
 
   if (node.recommends.length) {
-    const soft = section(parent, "Желательно знать", node.recommends.length);
+    const soft = section(parent, t.goodToKnow, node.recommends.length);
     for (const id of node.recommends) conceptRow(soft, host, id);
   }
 }
@@ -281,7 +280,7 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
 
   const status = parent.createDiv({ cls: "tropa-status" });
   setIcon(status.createSpan(), FORMAT_ICON[node.format ?? "other"]);
-  const parts = [FORMAT_LABEL[node.format ?? "other"]];
+  const parts = [t.format[node.format ?? "other"]];
   if (node.minutes) parts.push(formatMinutes(node.minutes));
   status.createSpan({ text: parts.join(", ") });
 
@@ -289,25 +288,25 @@ export function renderSource(parent: HTMLElement, host: DetailHost, node: GraphN
 
   const actions = parent.createDiv({ cls: "tropa-actions" });
   const done = actions.createEl("button", {
-    text: state === "done" ? "Вернуть в список" : "Отметить пройденным",
+    text: state === "done" ? t.markNotDone : t.markDone,
     cls: state === "done" ? "" : "mod-cta",
   });
   done.addEventListener("click", () => store.setDone(node.id, state !== "done"));
   if (node.url) {
-    actions.createEl("a", { cls: "tropa-link-button", text: "Открыть источник", href: node.url, attr: { target: "_blank", rel: "noopener" } });
+    actions.createEl("a", { cls: "tropa-link-button", text: t.openSource, href: node.url, attr: { target: "_blank", rel: "noopener" } });
   }
 
-  const teaches = section(parent, "Чему учит", node.teaches.length);
+  const teaches = section(parent, t.teaches, node.teaches.length);
   for (const id of node.teaches) conceptRow(teaches, host, id, () => void store.removeLink(node.id, "teachesKey", id));
-  addButton(teaches, "Добавить концепт", () => {
+  addButton(teaches, t.addConcept, () => {
     const items = conceptItems(host, new Set(node.teaches));
-    new PickModal(host.app, items, `Чему учит «${node.title}»?`, async (item) => {
+    new PickModal(host.app, items, t.teachesPrompt(node.title), async (item) => {
       await store.addLink(node.id, "teachesKey", await linkedConcept(host, item));
-    }, (query) => `Создать концепт «${query}»`).open();
+    }, t.createConcept).open();
   });
 
   if (node.requires.length) {
-    const requires = section(parent, "Нужно до начала", node.requires.length);
+    const requires = section(parent, t.neededBefore, node.requires.length);
     for (const id of node.requires) {
       const target = store.graph.nodes.get(id);
       if (target?.kind === "concept") conceptRow(requires, host, id, () => void store.removeLink(node.id, "requiresKey", id));
@@ -323,22 +322,22 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
 
   for (const cycle of graph.cycles) {
     const callout = parent.createDiv({ cls: "tropa-callout is-danger" });
-    callout.createEl("strong", { text: "Цикл в зависимостях" });
-    callout.createEl("p", { text: "Эти концепты требуют друг друга, поэтому их нельзя пройти по порядку:" });
+    callout.createEl("strong", { text: t.cycleTitle });
+    callout.createEl("p", { text: t.cycleText });
     for (const id of cycle) conceptRow(callout, host, id);
   }
 
   if (!route) {
     const available = graph.concepts.filter((node) => store.states.get(node.id) === "available");
-    parent.createEl("h3", { cls: "tropa-title", text: "Куда хотите прийти?" });
+    parent.createEl("h3", { cls: "tropa-title", text: t.whereTo });
     parent.createEl("p", {
       cls: "tropa-hint",
-      text: "Выберите цель, и Tropa соберёт маршрут только из того, чего вы ещё не знаете.",
+      text: t.whereToHint,
     });
-    const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: "Выбрать цель" });
+    const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: t.chooseGoal });
     button.addEventListener("click", pickGoal);
     if (available.length) {
-      const list = section(parent, "Можно начать прямо сейчас", available.length);
+      const list = section(parent, t.startNow, available.length);
       for (const node of available) conceptRow(list, host, node.id);
     }
     return;
@@ -346,23 +345,19 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
 
   const goal = graph.nodes.get(route.goal)!;
   if (route.steps.length === 0) {
-    parent.createEl("h3", { cls: "tropa-title", text: "Цель достигнута" });
-    parent.createEl("p", { cls: "tropa-hint", text: `Вы освоили всё, что нужно для «${goal.title}». Выберите следующую цель.` });
-    const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: "Выбрать цель" });
+    parent.createEl("h3", { cls: "tropa-title", text: t.goalReached });
+    parent.createEl("p", { cls: "tropa-hint", text: t.goalReachedText(goal.title) });
+    const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: t.chooseGoal });
     button.addEventListener("click", pickGoal);
     return;
   }
 
   const left = route.steps.length;
-  parent.createEl("h3", { cls: "tropa-title", text: `${left} ${plural(left, "шаг", "шага", "шагов")} до цели` });
-  parent.createEl("p", { cls: "tropa-hint", text: `${store.describeRemaining()}. Цель: ${goal.title}.` });
+  parent.createEl("h3", { cls: "tropa-title", text: t.stepsToGoal(left) });
+  parent.createEl("p", { cls: "tropa-hint", text: t.remainingLine(store.describeRemaining(), goal.title) });
 
   if (route.gaps.length) {
-    const count = route.gaps.length;
-    parent.createEl("p", {
-      cls: "tropa-hint is-warning",
-      text: `Для ${count} ${plural(count, "шага", "шагов", "шагов")} пока нет материалов, поэтому время может оказаться больше.`,
-    });
+    parent.createEl("p", { cls: "tropa-hint is-warning", text: t.gaps(route.gaps.length) });
   }
 
   const list = parent.createEl("ol", { cls: "tropa-steps" });
@@ -382,7 +377,7 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
       const time = material.minutes ? `, ${formatMinutes(material.minutes)}` : "";
       item.createDiv({ cls: "tropa-step-meta", text: `${material.title}${time}` });
     } else if (!material && node.taughtBy.length === 0) {
-      item.createDiv({ cls: "tropa-step-meta", text: "Нет материалов" });
+      item.createDiv({ cls: "tropa-step-meta", text: t.noMaterials });
     }
   });
 }
