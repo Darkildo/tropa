@@ -209,5 +209,29 @@
   "zoomOut": "Zoom ut",
   "fitAll": "Vis hele kartet",
   "openNote": "Åpne notatet",
-  "clearMastered": "Fjern merkingen mestret"
+  "clearMastered": "Fjern merkingen mestret",
+  "audit": {
+    "command": "Gå gjennom kartet",
+    "title": "Gjennomgang av kartet",
+    "summary": {
+      "one": "{count} ting å se på",
+      "other": "{count} ting å se på"
+    },
+    "clean": "Ingenting å rette: hvert begrep har materialer, hver lenke har et notat, og ingenting krever seg selv.",
+    "noMaterials": "Begreper uten materialer",
+    "noMaterialsHint": "Ingenting lærer dem bort ennå. Legg til et materiale for hvert, eller koble til et du har.",
+    "orphans": "Ikke koblet",
+    "orphansHint": "Ingen lenker til eller fra andre notater på kartet.",
+    "ghosts": "Lenker til manglende notater",
+    "ghostsHint": "Andre notater lenker til disse begrepene, men notatene finnes ikke ennå.",
+    "linkedFrom": {
+      "one": "Lenket fra {count} notat",
+      "other": "Lenket fra {count} notater"
+    },
+    "duplicates": "Mulige duplikater",
+    "duplicatesHint": "Navn som bare skiller seg i store/små bokstaver eller aksenter. Slå dem sammen, eller gi ett nytt navn.",
+    "cycles": "Sirkulære avhengigheter",
+    "cyclesHint": "Hvert begrep krever det neste, og det siste krever det første, så ingen kan læres først.",
+    "showOnMap": "Vis på kartet"
+  }
 }

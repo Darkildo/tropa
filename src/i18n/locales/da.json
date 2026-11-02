@@ -209,5 +209,29 @@
   "zoomOut": "Zoom ud",
   "fitAll": "Vis hele kortet",
   "openNote": "Åbn noten",
-  "clearMastered": "Fjern markeringen mestret"
+  "clearMastered": "Fjern markeringen mestret",
+  "audit": {
+    "command": "Gennemgå kortet",
+    "title": "Gennemgang af kortet",
+    "summary": {
+      "one": "{count} ting at se på",
+      "other": "{count} ting at se på"
+    },
+    "clean": "Intet at rette: hvert begreb har materialer, hvert link har en note, og intet kræver sig selv.",
+    "noMaterials": "Begreber uden materialer",
+    "noMaterialsHint": "Intet underviser i dem endnu. Tilføj et materiale til hvert, eller knyt et, du allerede har.",
+    "orphans": "Ikke forbundet",
+    "orphansHint": "Ingen links til eller fra andre noter på kortet.",
+    "ghosts": "Links til manglende noter",
+    "ghostsHint": "Andre noter linker til disse begreber, men noterne findes ikke endnu.",
+    "linkedFrom": {
+      "one": "Linket fra {count} note",
+      "other": "Linket fra {count} noter"
+    },
+    "duplicates": "Mulige dubletter",
+    "duplicatesHint": "Navne, der kun adskiller sig ved store/små bogstaver eller accenter. Flet dem, eller omdøb et.",
+    "cycles": "Cirkulære afhængigheder",
+    "cyclesHint": "Hvert begreb kræver det næste, og det sidste kræver det første, så intet kan læres først.",
+    "showOnMap": "Vis på kortet"
+  }
 }

@@ -50,6 +50,19 @@ if (scenario === "large") {
 }
 // The plugin must still work where workers are not available.
 if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
+if (scenario === "audit") {
+  // One of each finding: a concept without materials, a lone note, a missing note, duplicate names, a loop.
+  const note = (title: string, front: string) => vault.seed(`${title}.md`, `---\n${front}---\n`);
+  note("Algebra", "type: concept\n");
+  note("Algebra course", 'type: source\nformat: course\nteaches: ["[[Algebra]]"]\n');
+  note("Calculus", 'type: concept\nrequires: ["[[Algebra]]", "[[Missing note]]"]\n');
+  note("Lonely", "type: concept\n");
+  note("Café", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("cafe", 'type: concept\nrequires: ["[[Algebra]]"]\n');
+  note("Loop A", 'type: concept\nrequires: ["[[Loop B]]"]\n');
+  note("Loop B", 'type: concept\nrequires: ["[[Loop C]]"]\n');
+  note("Loop C", 'type: concept\nrequires: ["[[Loop A]]"]\n');
+}
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
 vault.getMarkdownFiles().forEach((file: any) => (app as any).metadataCache.index(file));
 

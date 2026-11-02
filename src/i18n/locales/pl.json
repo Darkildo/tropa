@@ -225,5 +225,33 @@
   "zoomOut": "Pomniejsz",
   "fitAll": "Pokaż całą mapę",
   "openNote": "Otwórz notatkę",
-  "clearMastered": "Usuń oznaczenie opanowania"
+  "clearMastered": "Usuń oznaczenie opanowania",
+  "audit": {
+    "command": "Sprawdź mapę",
+    "title": "Przegląd mapy",
+    "summary": {
+      "one": "{count} rzecz do sprawdzenia",
+      "few": "{count} rzeczy do sprawdzenia",
+      "many": "{count} rzeczy do sprawdzenia",
+      "other": "{count} rzeczy do sprawdzenia"
+    },
+    "clean": "Nic do poprawy: każde pojęcie ma materiały, każdy link ma notatkę i nic nie wymaga samego siebie.",
+    "noMaterials": "Pojęcia bez materiałów",
+    "noMaterialsHint": "Jeszcze nic ich nie uczy. Dodaj materiał do każdego albo podłącz taki, który już masz.",
+    "orphans": "Bez powiązań",
+    "orphansHint": "Żadnych linków do innych notatek na mapie ani z nich.",
+    "ghosts": "Linki do brakujących notatek",
+    "ghostsHint": "Inne notatki odsyłają do tych pojęć, ale same notatki jeszcze nie istnieją.",
+    "linkedFrom": {
+      "one": "Odsyła {count} notatka",
+      "few": "Odsyłają {count} notatki",
+      "many": "Odsyła {count} notatek",
+      "other": "Odsyła {count} notatki"
+    },
+    "duplicates": "Możliwe duplikaty",
+    "duplicatesHint": "Nazwy różniące się tylko wielkością liter lub znakami diakrytycznymi. Scal je albo zmień nazwę jednej.",
+    "cycles": "Zależności cykliczne",
+    "cyclesHint": "Każde pojęcie wymaga następnego, a ostatnie pierwszego, więc żadnego nie da się poznać jako pierwszego.",
+    "showOnMap": "Pokaż na mapie"
+  }
 }

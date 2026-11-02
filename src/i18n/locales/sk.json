@@ -225,5 +225,33 @@
   "zoomOut": "Oddialiť",
   "fitAll": "Zobraziť celú mapu",
   "openNote": "Otvoriť poznámku",
-  "clearMastered": "Zrušiť označenie zvládnuté"
+  "clearMastered": "Zrušiť označenie zvládnuté",
+  "audit": {
+    "command": "Skontrolovať mapu",
+    "title": "Kontrola mapy",
+    "summary": {
+      "one": "{count} vec na kontrolu",
+      "few": "{count} veci na kontrolu",
+      "many": "{count} veci na kontrolu",
+      "other": "{count} vecí na kontrolu"
+    },
+    "clean": "Nie je čo opravovať: každý pojem má materiály, každý odkaz má poznámku a nič nevyžaduje samo seba.",
+    "noMaterials": "Pojmy bez materiálov",
+    "noMaterialsHint": "Zatiaľ ich nič neučí. Pridajte ku každému materiál alebo pripojte niektorý, ktorý už máte.",
+    "orphans": "Bez prepojení",
+    "orphansHint": "Žiadne odkazy na iné poznámky na mape ani z nich.",
+    "ghosts": "Odkazy na chýbajúce poznámky",
+    "ghostsHint": "Iné poznámky odkazujú na tieto pojmy, no samotné poznámky ešte neexistujú.",
+    "linkedFrom": {
+      "one": "Odkazuje {count} poznámka",
+      "few": "Odkazujú {count} poznámky",
+      "many": "Odkazuje {count} poznámky",
+      "other": "Odkazuje {count} poznámok"
+    },
+    "duplicates": "Možné duplikáty",
+    "duplicatesHint": "Názvy, ktoré sa líšia len veľkosťou písmen alebo diakritikou. Zlúčte ich alebo jeden premenujte.",
+    "cycles": "Cyklické závislosti",
+    "cyclesHint": "Každý pojem vyžaduje ďalší a posledný vyžaduje prvý, takže žiadny sa nedá naučiť ako prvý.",
+    "showOnMap": "Ukázať na mape"
+  }
 }

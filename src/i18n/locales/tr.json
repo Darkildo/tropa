@@ -209,5 +209,29 @@
   "zoomOut": "Uzaklaştır",
   "fitAll": "Tüm haritayı göster",
   "openNote": "Notu aç",
-  "clearMastered": "Öğrenildi işaretini kaldır"
+  "clearMastered": "Öğrenildi işaretini kaldır",
+  "audit": {
+    "command": "Haritayı denetle",
+    "title": "Harita denetimi",
+    "summary": {
+      "one": "Bakılacak {count} şey",
+      "other": "Bakılacak {count} şey"
+    },
+    "clean": "Düzeltilecek bir şey yok: her kavramın materyali, her bağlantının notu var ve hiçbir şey kendini gerektirmiyor.",
+    "noMaterials": "Materyali olmayan kavramlar",
+    "noMaterialsHint": "Henüz hiçbir şey bunları öğretmiyor. Her birine bir materyal ekleyin veya elinizdekini bağlayın.",
+    "orphans": "Bağlantısız",
+    "orphansHint": "Haritadaki diğer notlarla hiçbir bağlantısı yok.",
+    "ghosts": "Olmayan notlara bağlantılar",
+    "ghostsHint": "Başka notlar bu kavramlara bağlantı veriyor, ancak notlar henüz yok.",
+    "linkedFrom": {
+      "one": "{count} nottan bağlantı var",
+      "other": "{count} nottan bağlantı var"
+    },
+    "duplicates": "Olası kopyalar",
+    "duplicatesHint": "Yalnızca büyük/küçük harf veya aksanla ayrılan adlar. Birleştirin ya da birini yeniden adlandırın.",
+    "cycles": "Döngüsel bağımlılıklar",
+    "cyclesHint": "Her kavram bir sonrakini, sonuncusu da ilkini gerektiriyor; bu yüzden hiçbiri önce öğrenilemez.",
+    "showOnMap": "Haritada göster"
+  }
 }

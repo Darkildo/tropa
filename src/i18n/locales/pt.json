@@ -217,5 +217,31 @@
   "zoomOut": "Afastar",
   "fitAll": "Mostrar o mapa completo",
   "openNote": "Abrir nota",
-  "clearMastered": "Remover marcação de dominado"
+  "clearMastered": "Remover marcação de dominado",
+  "audit": {
+    "command": "Verificar o mapa",
+    "title": "Verificação do mapa",
+    "summary": {
+      "one": "{count} ponto a rever",
+      "many": "{count} pontos a rever",
+      "other": "{count} pontos a rever"
+    },
+    "clean": "Nada a corrigir: cada conceito tem materiais, cada ligação tem a sua nota e nada depende de si próprio.",
+    "noMaterials": "Conceitos sem materiais",
+    "noMaterialsHint": "Ainda nada os ensina. Adicione um material a cada um ou ligue um que já tenha.",
+    "orphans": "Sem ligações",
+    "orphansHint": "Nenhuma ligação de ou para outras notas do mapa.",
+    "ghosts": "Ligações para notas em falta",
+    "ghostsHint": "Outras notas ligam para estes conceitos, mas as notas ainda não existem.",
+    "linkedFrom": {
+      "one": "Ligado a partir de {count} nota",
+      "many": "Ligado a partir de {count} notas",
+      "other": "Ligado a partir de {count} notas"
+    },
+    "duplicates": "Possíveis duplicados",
+    "duplicatesHint": "Nomes que só diferem em maiúsculas ou acentos. Junte-os ou mude o nome de um.",
+    "cycles": "Dependências circulares",
+    "cyclesHint": "Cada conceito requer o seguinte e o último requer o primeiro, por isso nenhum pode ser aprendido primeiro.",
+    "showOnMap": "Mostrar no mapa"
+  }
 }

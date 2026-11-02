@@ -554,6 +554,54 @@ const dashes = (page, kind) => page.evaluate((k) => getComputedStyle(document.qu
   await page.close();
 }
 
+// --- map audit
+const runCommand = (page, id) => page.evaluate((cid) => tropa.plugin.commands.find((c) => c.id === cid).callback(), id);
+const auditCount = (page, kind) => page.evaluate((k) => document.querySelector(`.tropa-audit-section.is-${k} .tropa-audit-count`)?.textContent ?? "0", kind);
+{
+  const { page, errors } = await open({ query: "?scenario=audit" });
+  ok("audit command is registered", await page.evaluate(() => tropa.plugin.commands.some((c) => c.id === "audit-map" && c.name === "Audit the map")));
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  ok("audit opens", (await page.locator(".tropa-audit h2").innerText()) === "Map audit");
+  ok("audit summary counts findings", (await page.locator(".tropa-audit-summary").innerText()) === "10 things to look at", await page.locator(".tropa-audit-summary").innerText());
+  const counts = {};
+  for (const kind of ["cycles", "ghosts", "duplicates", "no-materials", "orphans"]) counts[kind] = await auditCount(page, kind);
+  ok("audit groups", JSON.stringify(counts) === JSON.stringify({ cycles: "1", ghosts: "1", duplicates: "1", "no-materials": "6", orphans: "1" }), JSON.stringify(counts));
+  const chain = await page.locator(".tropa-audit-chip").allInnerTexts();
+  ok("cycle shown as a chain back to its start", chain.length === 4 && chain[0] === chain[3] && new Set(chain).size === 3, chain.join(" → "));
+  ok("ghost shows who links to it", (await page.locator(".is-ghosts .tropa-audit-meta").innerText()) === "Linked from 1 note");
+  ok("duplicates listed together", (await page.locator(".is-duplicates .tropa-audit-name").allInnerTexts()).sort().join() === "Café,cafe");
+  await page.screenshot({ path: SHOTS + "60-audit.png" });
+  // Show on the map: the lone note gets selected on the map.
+  await page.locator('.is-orphans .tropa-audit-row[data-id="Lonely.md"] .tropa-audit-map').click(); await wait(page, 300);
+  ok("show on map selects the note", (await page.locator("#center .tropa-side .tropa-title").innerText()) === "Lonely");
+  // Create the missing note: the audit follows the vault.
+  await page.locator(".is-ghosts .tropa-audit-create").click(); await wait(page, 500);
+  ok("missing note created", await page.evaluate(() => [...tropa.app.vault.contents.keys()].some((path) => path.endsWith("/Missing note.md"))));
+  ok("audit updates after a fix", (await page.locator(".tropa-audit-section.is-ghosts").count()) === 0 && (await auditCount(page, "no-materials")) === "7");
+  // A row opens its note.
+  await page.locator('.is-no-materials .tropa-audit-row[data-id="Calculus.md"] .tropa-audit-main').click(); await wait(page, 200);
+  ok("row opens its note", (await page.locator("#note .note-title").innerText()) === "Calculus");
+  ok("audit: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page } = await open({ query: "?scenario=audit&lang=ru" });
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  ok("ru: audit in Russian", (await page.locator(".tropa-audit h2").innerText()) === "Проверка карты" && (await page.locator(".tropa-audit-summary").innerText()) === "10 мест требуют внимания", await page.locator(".tropa-audit-summary").innerText());
+  ok("ru: command name", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "audit-map").name === "Проверить карту"));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=audit&lang=ar&theme=dark" });
+  await runCommand(page, "audit-map"); await wait(page, 200);
+  ok("ar: audit right to left", (await page.locator(".tropa-audit[dir=rtl]").count()) === 1 && (await page.locator(".tropa-audit h2").innerText()) === "فحص الخريطة");
+  ok("ar: Latin names keep their own direction", await page.evaluate(() => getComputedStyle(document.querySelector(".tropa-audit-name")).direction === "ltr"));
+  ok("ar: arrows point along the chain", await page.evaluate(() => getComputedStyle(document.querySelector(".tropa-audit-arrow svg")).transform !== "none"));
+  await page.screenshot({ path: SHOTS + "61-audit-ar.png" });
+  ok("ar audit: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 // --- large graph performance
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });

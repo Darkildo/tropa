@@ -16,6 +16,14 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
+- **Map audit.** The command **Tropa: Audit the map** opens one list of what needs a look:
+  - dependency cycles, shown as a chain back to where they start;
+  - links to missing notes, with how many notes point to each and a button to create it;
+  - possible duplicates, names that differ only in case or accents;
+  - concepts without materials;
+  - notes with no links at all.
+
+  Each row opens its note or shows it on the map, and the list updates as you fix things.
 - **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, Esc returns to the route.
 - **33 languages.** The interface follows Obsidian's language, right-to-left included. See [Languages](#languages).
 
@@ -53,7 +61,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 
-Other commands: open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: audit the map, open the sidebar panel, create a concept, find a concept on the map, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 

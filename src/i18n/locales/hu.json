@@ -209,5 +209,29 @@
   "zoomOut": "Kicsinyítés",
   "fitAll": "Teljes térkép mutatása",
   "openNote": "Jegyzet megnyitása",
-  "clearMastered": "Elsajátítás jelölésének törlése"
+  "clearMastered": "Elsajátítás jelölésének törlése",
+  "audit": {
+    "command": "Térkép ellenőrzése",
+    "title": "Térkép ellenőrzése",
+    "summary": {
+      "one": "{count} dolog, amit érdemes megnézni",
+      "other": "{count} dolog, amit érdemes megnézni"
+    },
+    "clean": "Nincs mit javítani: minden fogalomnak van anyaga, minden hivatkozásnak van jegyzete, és semmi sem igényli önmagát.",
+    "noMaterials": "Anyag nélküli fogalmak",
+    "noMaterialsHint": "Még semmi sem tanítja őket. Adj mindegyikhez anyagot, vagy kapcsolj hozzá egy meglévőt.",
+    "orphans": "Kapcsolat nélkül",
+    "orphansHint": "Nincs hivatkozás a térkép más jegyzeteire vagy azokból.",
+    "ghosts": "Hiányzó jegyzetekre mutató hivatkozások",
+    "ghostsHint": "Más jegyzetek hivatkoznak ezekre a fogalmakra, de a jegyzetek még nem léteznek.",
+    "linkedFrom": {
+      "one": "{count} jegyzet hivatkozik rá",
+      "other": "{count} jegyzet hivatkozik rá"
+    },
+    "duplicates": "Lehetséges ismétlődések",
+    "duplicatesHint": "Csak kis- és nagybetűben vagy ékezetben eltérő nevek. Vond össze őket, vagy nevezz át egyet.",
+    "cycles": "Körkörös függőségek",
+    "cyclesHint": "Minden fogalom a következőt igényli, az utolsó pedig az elsőt, így egyiket sem lehet elsőként megtanulni.",
+    "showOnMap": "Megjelenítés a térképen"
+  }
 }

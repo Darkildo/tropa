@@ -209,5 +209,29 @@
   "zoomOut": "Zooma ut",
   "fitAll": "Visa hela kartan",
   "openNote": "Öppna anteckningen",
-  "clearMastered": "Ta bort markeringen behärskat"
+  "clearMastered": "Ta bort markeringen behärskat",
+  "audit": {
+    "command": "Granska kartan",
+    "title": "Granskning av kartan",
+    "summary": {
+      "one": "{count} sak att titta på",
+      "other": "{count} saker att titta på"
+    },
+    "clean": "Inget att åtgärda: varje begrepp har material, varje länk har en anteckning och inget kräver sig självt.",
+    "noMaterials": "Begrepp utan material",
+    "noMaterialsHint": "Inget lär ut dem ännu. Lägg till ett material för varje, eller länka ett du redan har.",
+    "orphans": "Inte kopplade",
+    "orphansHint": "Inga länkar till eller från andra anteckningar på kartan.",
+    "ghosts": "Länkar till saknade anteckningar",
+    "ghostsHint": "Andra anteckningar länkar till de här begreppen, men anteckningarna finns inte än.",
+    "linkedFrom": {
+      "one": "Länkad från {count} anteckning",
+      "other": "Länkad från {count} anteckningar"
+    },
+    "duplicates": "Möjliga dubbletter",
+    "duplicatesHint": "Namn som bara skiljer sig i versaler eller accenter. Slå ihop dem eller byt namn på ett.",
+    "cycles": "Cirkulära beroenden",
+    "cyclesHint": "Varje begrepp kräver nästa och det sista kräver det första, så inget kan läras först.",
+    "showOnMap": "Visa på kartan"
+  }
 }

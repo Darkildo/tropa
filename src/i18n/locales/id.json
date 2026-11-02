@@ -201,5 +201,27 @@
   "zoomOut": "Perkecil",
   "fitAll": "Tampilkan seluruh peta",
   "openNote": "Buka catatan",
-  "clearMastered": "Hapus tanda dikuasai"
+  "clearMastered": "Hapus tanda dikuasai",
+  "audit": {
+    "command": "Periksa peta",
+    "title": "Pemeriksaan peta",
+    "summary": {
+      "other": "{count} hal untuk diperiksa"
+    },
+    "clean": "Tidak ada yang perlu diperbaiki: setiap konsep punya materi, setiap tautan punya catatan, dan tidak ada yang mensyaratkan dirinya sendiri.",
+    "noMaterials": "Konsep tanpa materi",
+    "noMaterialsHint": "Belum ada yang mengajarkannya. Tambahkan materi untuk masing-masing, atau tautkan yang sudah ada.",
+    "orphans": "Tidak terhubung",
+    "orphansHint": "Tidak ada tautan ke atau dari catatan lain di peta.",
+    "ghosts": "Tautan ke catatan yang belum ada",
+    "ghostsHint": "Catatan lain menautkan konsep ini, tetapi catatannya belum ada.",
+    "linkedFrom": {
+      "other": "Ditautkan dari {count} catatan"
+    },
+    "duplicates": "Kemungkinan duplikat",
+    "duplicatesHint": "Nama yang hanya berbeda huruf besar-kecil atau aksen. Gabungkan, atau ganti nama salah satunya.",
+    "cycles": "Ketergantungan melingkar",
+    "cyclesHint": "Setiap konsep mensyaratkan konsep berikutnya dan yang terakhir mensyaratkan yang pertama, jadi tidak ada yang bisa dipelajari lebih dulu.",
+    "showOnMap": "Tampilkan di peta"
+  }
 }

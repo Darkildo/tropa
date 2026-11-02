@@ -7,6 +7,7 @@ import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
 import { sample } from "./sample";
 import { MAP_VIEW, MapView } from "./ui/map-view";
+import { AUDIT_VIEW, AuditView } from "./ui/audit-view";
 import { PANEL_VIEW, PanelView } from "./ui/panel-view";
 import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
@@ -23,6 +24,7 @@ export default class TropaPlugin extends Plugin {
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
+    this.registerView(AUDIT_VIEW, (leaf) => new AuditView(leaf, this));
     this.addSettingTab(new TropaSettingTab(this.app, this));
     this.addRibbonIcon("route", t.mapTitle, () => attempt(this.showMap(), "open the map"));
 
@@ -81,6 +83,7 @@ export default class TropaPlugin extends Plugin {
     this.addCommand({ id: "open-panel", name: t.openPanel, callback: () => attempt(this.showPanel(), "open the panel") });
     this.addCommand({ id: "new-concept", name: t.newConcept, callback: () => this.promptNewConcept() });
     this.addCommand({ id: "install-sample", name: t.installSample, callback: () => attempt(this.installSample(), "add the example map") });
+    this.addCommand({ id: "audit-map", name: t.audit.command, callback: () => attempt(this.showAudit(), "open the map audit") });
 
     this.addCommand({
       id: "find-concept",
@@ -151,6 +154,17 @@ export default class TropaPlugin extends Plugin {
       if (!right) return;
       leaf = right;
       await leaf.setViewState({ type: PANEL_VIEW, active: true });
+    }
+    await workspace.revealLeaf(leaf);
+  }
+
+  /** The audit opens in a tab of its own, next to the map. */
+  async showAudit() {
+    const { workspace } = this.app;
+    let leaf = workspace.getLeavesOfType(AUDIT_VIEW)[0];
+    if (!leaf) {
+      leaf = workspace.getLeaf("tab");
+      await leaf.setViewState({ type: AUDIT_VIEW, active: true });
     }
     await workspace.revealLeaf(leaf);
   }

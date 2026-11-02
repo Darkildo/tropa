@@ -201,5 +201,27 @@
   "zoomOut": "축소",
   "fitAll": "전체 지도 보기",
   "openNote": "노트 열기",
-  "clearMastered": "익힘 표시 해제"
+  "clearMastered": "익힘 표시 해제",
+  "audit": {
+    "command": "지도 점검",
+    "title": "지도 점검",
+    "summary": {
+      "other": "살펴볼 항목 {count}개"
+    },
+    "clean": "고칠 것이 없습니다. 모든 개념에 자료가 있고, 모든 링크에 노트가 있으며, 자기 자신을 요구하는 것도 없습니다.",
+    "noMaterials": "자료가 없는 개념",
+    "noMaterialsHint": "아직 아무것도 이 개념을 가르치지 않습니다. 각각에 자료를 추가하거나 가진 자료를 연결하세요.",
+    "orphans": "연결 없음",
+    "orphansHint": "지도의 다른 노트와 주고받는 링크가 없습니다.",
+    "ghosts": "없는 노트로 가는 링크",
+    "ghostsHint": "다른 노트가 이 개념들에 링크하지만 노트는 아직 없습니다.",
+    "linkedFrom": {
+      "other": "노트 {count}개에서 링크됨"
+    },
+    "duplicates": "중복 가능성",
+    "duplicatesHint": "대소문자나 악센트만 다른 이름입니다. 합치거나 하나의 이름을 바꾸세요.",
+    "cycles": "순환 의존",
+    "cyclesHint": "각 개념이 다음 개념을 요구하고 마지막이 처음을 요구하므로 어느 것도 먼저 배울 수 없습니다.",
+    "showOnMap": "지도에서 보기"
+  }
 }
