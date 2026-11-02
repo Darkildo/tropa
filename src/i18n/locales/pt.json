@@ -217,5 +217,40 @@
   "zoomOut": "Afastar",
   "fitAll": "Mostrar o mapa completo",
   "openNote": "Abrir nota",
-  "clearMastered": "Remover marcação de dominado"
+  "clearMastered": "Remover marcação de dominado",
+  "focus": "Foco",
+  "focusTitle": "Mostrar só o que está perto deste conceito (F)",
+  "focusHint": "Escolha um conceito para ver só o que está perto dele",
+  "focusHere": "Mostrar o que está perto",
+  "focusOn": "Foco: {title}",
+  "focusDepth": "Passos à volta",
+  "focusSteps": {
+    "many": "{count} passos à volta",
+    "one": "{count} passo à volta",
+    "other": "{count} passos à volta"
+  },
+  "exitFocus": "Sair do foco",
+  "fold": "Ocultar o que desbloqueia",
+  "unfold": {
+    "many": "Mostrar {count} conceitos ocultos",
+    "one": "Mostrar {count} conceito oculto",
+    "other": "Mostrar {count} conceitos ocultos"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} conceitos ocultos",
+    "one": "{count} conceito oculto",
+    "other": "{count} conceitos ocultos"
+  },
+  "unfolded": {
+    "many": "{count} conceitos visíveis de novo",
+    "one": "{count} conceito visível de novo",
+    "other": "{count} conceitos visíveis de novo"
+  },
+  "foldedRoute": {
+    "many": "Aqui estão ocultos {count} passos do percurso",
+    "one": "Aqui está oculto {count} passo do percurso",
+    "other": "Aqui estão ocultos {count} passos do percurso"
+  },
+  "hiddenOnMap": "Oculto no mapa"
 }

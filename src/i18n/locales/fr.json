@@ -217,5 +217,40 @@
   "zoomOut": "Zoom arrière",
   "fitAll": "Afficher toute la carte",
   "openNote": "Ouvrir la note",
-  "clearMastered": "Retirer la marque « maîtrisé »"
+  "clearMastered": "Retirer la marque « maîtrisé »",
+  "focus": "Focus",
+  "focusTitle": "N’afficher que ce qui est proche de ce concept (F)",
+  "focusHint": "Choisissez un concept pour n’afficher que ce qui l’entoure",
+  "focusHere": "Afficher ce qui est proche",
+  "focusOn": "Focus : {title}",
+  "focusDepth": "Étapes autour",
+  "focusSteps": {
+    "many": "{count} étapes autour",
+    "one": "{count} étape autour",
+    "other": "{count} étapes autour"
+  },
+  "exitFocus": "Quitter le focus",
+  "fold": "Masquer ce qu’il débloque",
+  "unfold": {
+    "many": "Afficher {count} concepts masqués",
+    "one": "Afficher {count} concept masqué",
+    "other": "Afficher {count} concepts masqués"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} concepts masqués",
+    "one": "{count} concept masqué",
+    "other": "{count} concepts masqués"
+  },
+  "unfolded": {
+    "many": "{count} concepts de nouveau visibles",
+    "one": "{count} concept de nouveau visible",
+    "other": "{count} concepts de nouveau visibles"
+  },
+  "foldedRoute": {
+    "many": "{count} étapes de la route sont masquées ici",
+    "one": "{count} étape de la route est masquée ici",
+    "other": "{count} étapes de la route sont masquées ici"
+  },
+  "hiddenOnMap": "Masqué sur la carte"
 }

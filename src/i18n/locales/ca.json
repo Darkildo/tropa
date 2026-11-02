@@ -217,5 +217,40 @@
   "zoomOut": "Redueix",
   "fitAll": "Mostra tot el mapa",
   "openNote": "Obre la nota",
-  "clearMastered": "Treu la marca de dominat"
+  "clearMastered": "Treu la marca de dominat",
+  "focus": "Focus",
+  "focusTitle": "Mostra només el que és a prop d’aquest concepte (F)",
+  "focusHint": "Tria un concepte per veure només el que té a prop",
+  "focusHere": "Mostra el que és a prop",
+  "focusOn": "Focus: {title}",
+  "focusDepth": "Passos al voltant",
+  "focusSteps": {
+    "many": "{count} passos al voltant",
+    "one": "{count} pas al voltant",
+    "other": "{count} passos al voltant"
+  },
+  "exitFocus": "Surt del focus",
+  "fold": "Amaga el que desbloqueja",
+  "unfold": {
+    "many": "Mostra {count} conceptes amagats",
+    "one": "Mostra {count} concepte amagat",
+    "other": "Mostra {count} conceptes amagats"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "many": "{count} conceptes amagats",
+    "one": "{count} concepte amagat",
+    "other": "{count} conceptes amagats"
+  },
+  "unfolded": {
+    "many": "{count} conceptes tornen a ser visibles",
+    "one": "{count} concepte torna a ser visible",
+    "other": "{count} conceptes tornen a ser visibles"
+  },
+  "foldedRoute": {
+    "many": "Aquí hi ha {count} passos de la ruta amagats",
+    "one": "Aquí hi ha {count} pas de la ruta amagat",
+    "other": "Aquí hi ha {count} passos de la ruta amagats"
+  },
+  "hiddenOnMap": "Amagat al mapa"
 }

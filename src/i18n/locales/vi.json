@@ -201,5 +201,30 @@
   "zoomOut": "Thu nhỏ",
   "fitAll": "Xem toàn bộ bản đồ",
   "openNote": "Mở ghi chú",
-  "clearMastered": "Bỏ đánh dấu đã nắm vững"
+  "clearMastered": "Bỏ đánh dấu đã nắm vững",
+  "focus": "Tập trung",
+  "focusTitle": "Chỉ hiện những gì ở gần khái niệm này (F)",
+  "focusHint": "Chọn một khái niệm để chỉ xem những gì ở gần nó",
+  "focusHere": "Hiện những gì ở gần",
+  "focusOn": "Tập trung: {title}",
+  "focusDepth": "Số bước xung quanh",
+  "focusSteps": {
+    "other": "{count} bước xung quanh"
+  },
+  "exitFocus": "Thoát chế độ tập trung",
+  "fold": "Ẩn những gì nó mở khóa",
+  "unfold": {
+    "other": "Hiện {count} khái niệm bị ẩn"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "Đã ẩn {count} khái niệm"
+  },
+  "unfolded": {
+    "other": "{count} khái niệm hiện lại"
+  },
+  "foldedRoute": {
+    "other": "Có {count} bước của lộ trình bị ẩn ở đây"
+  },
+  "hiddenOnMap": "Bị ẩn trên bản đồ"
 }

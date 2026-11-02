@@ -201,5 +201,30 @@
   "zoomOut": "Perkecil",
   "fitAll": "Tampilkan seluruh peta",
   "openNote": "Buka catatan",
-  "clearMastered": "Hapus tanda dikuasai"
+  "clearMastered": "Hapus tanda dikuasai",
+  "focus": "Fokus",
+  "focusTitle": "Tampilkan hanya yang dekat dengan konsep ini (F)",
+  "focusHint": "Pilih konsep untuk melihat hanya yang ada di dekatnya",
+  "focusHere": "Tampilkan yang dekat",
+  "focusOn": "Fokus: {title}",
+  "focusDepth": "Langkah di sekitar",
+  "focusSteps": {
+    "other": "{count} langkah di sekitar"
+  },
+  "exitFocus": "Keluar dari fokus",
+  "fold": "Sembunyikan yang dibukanya",
+  "unfold": {
+    "other": "Tampilkan {count} konsep tersembunyi"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "{count} konsep disembunyikan"
+  },
+  "unfolded": {
+    "other": "{count} konsep terlihat lagi"
+  },
+  "foldedRoute": {
+    "other": "{count} langkah rute tersembunyi di sini"
+  },
+  "hiddenOnMap": "Tersembunyi di peta"
 }

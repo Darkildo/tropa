@@ -209,5 +209,35 @@
   "zoomOut": "کوچک‌نمایی",
   "fitAll": "نمایش کل نقشه",
   "openNote": "باز کردن یادداشت",
-  "clearMastered": "برداشتن علامت آموخته"
+  "clearMastered": "برداشتن علامت آموخته",
+  "focus": "تمرکز",
+  "focusTitle": "فقط آنچه نزدیک این مفهوم است نمایش داده شود (F)",
+  "focusHint": "مفهومی را انتخاب کنید تا فقط اطراف آن را ببینید",
+  "focusHere": "نمایش اطراف",
+  "focusOn": "تمرکز: {title}",
+  "focusDepth": "گام‌های اطراف",
+  "focusSteps": {
+    "one": "{count} گام در اطراف",
+    "other": "{count} گام در اطراف"
+  },
+  "exitFocus": "خروج از تمرکز",
+  "fold": "پنهان کردن آنچه باز می‌کند",
+  "unfold": {
+    "one": "نمایش {count} مفهوم پنهان",
+    "other": "نمایش {count} مفهوم پنهان"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} مفهوم پنهان شد",
+    "other": "{count} مفهوم پنهان شد"
+  },
+  "unfolded": {
+    "one": "{count} مفهوم دوباره نمایش داده شد",
+    "other": "{count} مفهوم دوباره نمایش داده شد"
+  },
+  "foldedRoute": {
+    "one": "{count} گام مسیر اینجا پنهان است",
+    "other": "{count} گام مسیر اینجا پنهان است"
+  },
+  "hiddenOnMap": "پنهان در نقشه"
 }

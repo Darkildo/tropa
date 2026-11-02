@@ -4,9 +4,10 @@ import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../c
 import { LayoutRunner } from "../core/layout-runner";
 import layoutWorker from "tropa:layout-worker";
 import { isPassed, knownCandidates, sourceState } from "../core/graph";
+import { MAX_FOCUS_DEPTH, fold, foldersOf, neighborhood } from "../core/neighborhood";
 import type { GraphNode, Progress } from "../core/types";
 import { attempt } from "../attempt";
-import { isRtl, t } from "../i18n";
+import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
 import { openKnownModal, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
@@ -24,6 +25,19 @@ const CLOSE_ZOOM = 0.8;
  */
 const DASHED_EDGES_MAX = 1000;
 const SVG_NS = "http://www.w3.org/2000/svg";
+
+interface Viewport {
+  x: number;
+  y: number;
+  k: number;
+  userMoved: boolean;
+}
+
+interface MapState {
+  selected?: string | null;
+  focus?: { center?: unknown; depth?: unknown } | null;
+  folded?: unknown;
+}
 
 interface Press {
   nodeId: string | null;
@@ -64,6 +78,23 @@ export class MapView extends ItemView implements DetailHost {
   /** Until the person pans or zooms, the view keeps itself framed. */
   private userMoved = false;
   private overview = false;
+
+  /** Only what is near one node. Kept with the view, never in notes or progress. */
+  private focus: { center: string; depth: number } | null = null;
+  private focusDepth = 1;
+  /** Where the map was before focusing, to come back to. */
+  private beforeFocus: Viewport | null = null;
+  private restoreView: Viewport | null = null;
+  /** Concepts whose branch of what they open is folded away. */
+  private readonly folded = new Set<string>();
+  /** On the current map: concepts left out by folds, how many each fold hides, and of those on the route. */
+  private hidden = new Set<string>();
+  private foldCounts = new Map<string, number>();
+  private foldedRoute = new Map<string, number>();
+  /** Concepts that open something on the current map, so they can be folded. */
+  private foldable = new Set<string>();
+  /** Concepts on the current map before folds: the focus, the route or all of them. */
+  private inScope = new Set<string>();
 
   canGoBack = true;
 
@@ -122,22 +153,65 @@ export class MapView extends ItemView implements DetailHost {
   }
 
   getState() {
-    return { selected: this.selected };
+    const { graph } = this.store;
+    // Folds of concepts that are gone are dropped once the vault has been read.
+    const folded = [...this.folded].filter((id) => graph.nodes.size === 0 || graph.nodes.has(id));
+    return { selected: this.selected, focus: this.focus, folded };
   }
 
-  async setState(state: { selected?: string | null }, result: ViewStateResult) {
+  async setState(state: MapState, result: ViewStateResult) {
+    if (Array.isArray(state?.folded)) {
+      this.folded.clear();
+      state.folded.forEach((id) => typeof id === "string" && this.folded.add(id));
+    }
+    const center = state?.focus?.center;
+    if (typeof center === "string") {
+      this.focusDepth = clamp(Math.round(Number(state.focus?.depth) || 1), 1, MAX_FOCUS_DEPTH);
+      this.focus = { center, depth: this.focusDepth };
+      this.needsFit = true;
+      this.overview = true;
+    }
     if (state?.selected && this.store.graph.nodes.has(state.selected)) this.select(state.selected);
+    else this.render();
     await super.setState(state, result);
+  }
+
+  private saveViewState() {
+    this.app.workspace.requestSaveLayout();
+  }
+
+  /** Route steps that the map does not show right now: folded away or outside the focus. */
+  isHidden(id: string) {
+    return this.hidden.has(id) || (this.focus !== null && !this.inScope.has(id));
   }
 
   // DetailHost
 
   select(id: string | null) {
+    if (id) this.bringIntoView(id);
     this.selected = id;
     this.sideCollapsed = false;
     this.renderSide();
     this.paintNodes();
+    this.renderFocusControls();
     if (id) this.reveal(id);
+  }
+
+  /** A concept picked from the route list or a command may sit in a folded branch or outside the focus. */
+  private bringIntoView(id: string) {
+    const { graph } = this.store;
+    if (this.focus && graph.nodes.get(id)?.kind === "concept" && !this.inScope.has(id)) {
+      this.focus = null;
+      this.beforeFocus = null;
+      this.needsFit = false;
+      this.saveViewState();
+      this.render();
+    }
+    if (this.hidden.has(id)) {
+      foldersOf(graph, this.folded, id).forEach((folder) => this.folded.delete(folder));
+      this.saveViewState();
+      this.render();
+    }
   }
 
   openNote(id: string, newTab = false) {
@@ -198,7 +272,15 @@ export class MapView extends ItemView implements DetailHost {
     this.paintNodes();
     this.drawEdges();
     this.renderSide();
-    if (this.needsFit && this.stage.clientWidth > 0) {
+    if (this.restoreView) {
+      const view = this.restoreView;
+      this.restoreView = null;
+      this.needsFit = false;
+      this.overview = false;
+      ({ x: this.x, y: this.y, k: this.k, userMoved: this.userMoved } = view);
+      this.animate();
+      this.applyTransform();
+    } else if (this.needsFit && this.stage.clientWidth > 0) {
       this.needsFit = false;
       this.userMoved = false;
       if (this.overview) this.fit(true);
@@ -211,7 +293,7 @@ export class MapView extends ItemView implements DetailHost {
     const { store } = this;
     const { showSources } = this.plugin.settings;
     const mode = this.effectiveMode();
-    const only = mode === "route" ? store.route!.closure : undefined;
+    const only = this.shownConcepts(mode);
     const key = [store.topologyKey, mode, showSources, only ? [...only].sort().join("|") : ""].join("#");
     if (key === this.layoutKey) return;
     this.layoutKey = key;
@@ -230,6 +312,30 @@ export class MapView extends ItemView implements DetailHost {
       }),
       "lay out the map",
     );
+  }
+
+  /** Concepts to lay out: the focus, the route or everything, without folded branches. `undefined` is all. */
+  private shownConcepts(mode: "route" | "all"): Set<string> | undefined {
+    const { graph, route } = this.store;
+    if (this.focus && !graph.nodes.has(this.focus.center)) this.focus = null;
+    let only: Set<string> | undefined;
+    if (this.focus) only = neighborhood(graph, this.focus.center, this.focus.depth);
+    else if (mode === "route") only = route!.closure;
+    const concepts = only ?? new Set(graph.concepts.map((node) => node.id));
+    this.inScope = concepts;
+    this.foldable = new Set([...concepts].filter((id) => graph.nodes.get(id)!.requiredBy.some((child) => concepts.has(child))));
+    const { hidden, counts } = fold(graph, concepts, this.folded);
+    this.hidden = hidden;
+    this.foldCounts = counts;
+    this.foldedRoute = new Map();
+    if (route && hidden.size) {
+      for (const id of counts.keys()) {
+        let count = 0;
+        graph.descendants(id).forEach((other) => hidden.has(other) && route.closure.has(other) && count++);
+        if (count) this.foldedRoute.set(id, count);
+      }
+    }
+    return hidden.size ? new Set([...concepts].filter((id) => !hidden.has(id))) : only;
   }
 
   private setLayout(layout: Layout) {
@@ -279,6 +385,14 @@ export class MapView extends ItemView implements DetailHost {
     text.createSpan({ cls: "tropa-node-meta" });
     if (node.kind === "concept") {
       el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: t.portTitle } });
+      // The node itself is the keyboard target (C folds), so the badge stays out of the tab order.
+      const toggle = el.createEl("button", { cls: "tropa-fold", attr: { tabindex: "-1" } });
+      toggle.addEventListener("pointerdown", (event) => event.stopPropagation());
+      toggle.addEventListener("dblclick", (event) => event.stopPropagation());
+      toggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        this.toggleFold(node.id);
+      });
     }
     el.addEventListener("pointerenter", () => this.highlight(node.id));
     el.addEventListener("pointerleave", () => this.highlight(null));
@@ -305,7 +419,7 @@ export class MapView extends ItemView implements DetailHost {
 
       if (node.kind === "source") {
         const state = sourceState(store.graph, store.progress, id);
-        el.className = `tropa-node is-source state-${state}${isSelected ? " is-selected" : ""}`;
+        setClass(el, `tropa-node is-source state-${state}${isSelected ? " is-selected" : ""}`);
         setGlyph(glyph, state === "done" ? "check" : FORMAT_ICON[node.format ?? "other"]);
         meta.textContent = node.minutes ? formatMinutes(node.minutes) : "";
         el.setAttribute("aria-label", t.materialLabel({ title: node.title }));
@@ -321,12 +435,54 @@ export class MapView extends ItemView implements DetailHost {
       if (isNext) classes.push("is-next");
       if (node.ghost) classes.push("is-ghost");
       if (route?.closure.has(id)) classes.push("is-on-route");
-      el.className = classes.join(" ");
+      const isFolded = this.foldable.has(id) && this.folded.has(id);
+      if (isFolded) classes.push("is-folded");
+      setClass(el, classes.join(" "));
       setGlyph(glyph, STATE_ICON[state]);
-      meta.textContent = this.nodeMeta(node);
-      el.setAttribute("aria-label", `${node.title}. ${t.state[state]}${isGoal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`);
+      setText(meta, this.nodeMeta(node));
+      this.paintFold(el, id, isFolded);
+      const label = `${node.title}. ${t.state[state]}${isGoal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`;
+      el.setAttribute("aria-label", isFolded ? `${label}. ${t.folded({ count: this.foldCounts.get(id) ?? 0 })}` : label);
     }
     this.paintEdgeRoute();
+  }
+
+  /** The badge under a concept that opens something: a fold control, and "+K" once folded. */
+  private paintFold(el: HTMLElement, id: string, isFolded: boolean) {
+    const toggle = el.querySelector<HTMLElement>(".tropa-fold");
+    if (!toggle) return;
+    const canFold = this.foldable.has(id);
+    toggle.toggleClass("is-hidden", !canFold);
+    if (!canFold) {
+      el.removeAttribute("aria-expanded");
+      return;
+    }
+    el.setAttribute("aria-expanded", String(!isFolded));
+    const count = this.foldCounts.get(id) ?? 0;
+    const onRoute = isFolded ? (this.foldedRoute.get(id) ?? 0) : 0;
+    toggle.toggleClass("has-route", onRoute > 0);
+    const label = isFolded ? t.unfold({ count }) : t.fold;
+    const title = onRoute ? `${label}. ${t.foldedRoute({ count: onRoute })}` : label;
+    toggle.setAttribute("aria-label", title);
+    toggle.setAttribute("title", title);
+    if (isFolded) {
+      delete toggle.dataset.icon;
+      setText(toggle, t.foldBadge({ count }));
+    } else {
+      setGlyph(toggle, "chevron-up");
+    }
+  }
+
+  private toggleFold(id: string) {
+    const wasFolded = this.folded.has(id);
+    if (!wasFolded && !this.foldable.has(id)) return;
+    const before = this.foldCounts.get(id) ?? 0;
+    if (wasFolded) this.folded.delete(id);
+    else this.folded.add(id);
+    this.saveViewState();
+    this.render();
+    const count = wasFolded ? before : (this.foldCounts.get(id) ?? 0);
+    this.toast(wasFolded ? t.unfolded({ count }) : t.folded({ count }), t.undo, () => this.toggleFold(id));
   }
 
   private nodeMeta(node: GraphNode) {
@@ -448,6 +604,66 @@ export class MapView extends ItemView implements DetailHost {
     const sources = this.bar.querySelector<HTMLElement>(".tropa-toggle-sources")!;
     sources.toggleClass("is-active", this.plugin.settings.showSources);
     sources.setAttribute("aria-pressed", String(this.plugin.settings.showSources));
+    this.renderFocusControls();
+  }
+
+  private renderFocusControls() {
+    const group = this.bar.querySelector<HTMLElement>(".tropa-focus");
+    if (!group) return;
+    const { graph } = this.store;
+    const focus = this.focus;
+    group.toggleClass("is-active", focus !== null);
+    const toggle = group.querySelector<HTMLButtonElement>(".tropa-focus-toggle")!;
+    const center = focus ? graph.nodes.get(focus.center) : null;
+    const target = this.selected ? graph.nodes.get(this.selected) : null;
+    toggle.disabled = !focus && !target;
+    toggle.setAttribute("aria-pressed", String(focus !== null));
+    const title = center ? t.focusOn({ title: center.title }) : target ? t.focusTitle : t.focusHint;
+    toggle.setAttribute("aria-label", title);
+    toggle.setAttribute("title", title);
+    group.querySelectorAll<HTMLButtonElement>("[data-depth]").forEach((button) => {
+      const active = Number(button.dataset.depth) === (focus?.depth ?? this.focusDepth);
+      button.toggleClass("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  private enterFocus(id: string | null) {
+    const node = id ? this.store.graph.nodes.get(id) : null;
+    // A material that teaches nothing has nothing around it.
+    if (!node || neighborhood(this.store.graph, node.id, 1).size === 0) return;
+    if (!this.focus) this.beforeFocus = { x: this.x, y: this.y, k: this.k, userMoved: this.userMoved };
+    this.focus = { center: node.id, depth: this.focusDepth };
+    this.selected = node.id;
+    this.needsFit = true;
+    this.overview = true;
+    this.saveViewState();
+    this.render();
+    this.toast(t.focusOn({ title: node.title }), t.exitFocus, () => this.exitFocus());
+  }
+
+  private setFocusDepth(depth: number) {
+    this.focusDepth = depth;
+    if (this.focus) {
+      this.focus = { ...this.focus, depth };
+      this.needsFit = true;
+      this.overview = true;
+      this.saveViewState();
+      this.render();
+    } else {
+      this.renderFocusControls();
+    }
+  }
+
+  private exitFocus() {
+    if (!this.focus) return;
+    this.focus = null;
+    this.restoreView = this.beforeFocus;
+    this.beforeFocus = null;
+    this.needsFit = !this.restoreView;
+    this.overview = false;
+    this.saveViewState();
+    this.render();
   }
 
   private renderSide() {
@@ -533,6 +749,22 @@ export class MapView extends ItemView implements DetailHost {
       this.render();
     });
 
+    const focus = this.bar.createDiv({ cls: "tropa-focus", attr: { role: "group", "aria-label": t.focus } });
+    const enter = focus.createEl("button", { cls: "tropa-focus-toggle" });
+    setIcon(enter.createSpan({ cls: "tropa-focus-icon" }), "focus");
+    enter.createSpan({ text: t.focus });
+    enter.addEventListener("click", () => (this.focus ? this.exitFocus() : this.enterFocus(this.selected)));
+    const depths = focus.createDiv({ cls: "tropa-segment tropa-focus-depth", attr: { role: "group", "aria-label": t.focusDepth } });
+    const number = new Intl.NumberFormat(locale());
+    for (let depth = 1; depth <= MAX_FOCUS_DEPTH; depth++) {
+      const button = depths.createEl("button", { text: number.format(depth), attr: { "aria-label": t.focusSteps({ count: depth }) } });
+      button.dataset.depth = String(depth);
+      button.addEventListener("click", () => this.setFocusDepth(depth));
+    }
+    const exit = focus.createEl("button", { cls: "tropa-focus-exit clickable-icon", attr: { "aria-label": t.exitFocus, title: t.exitFocus } });
+    setIcon(exit, "x");
+    exit.addEventListener("click", () => this.exitFocus());
+
     const add = this.bar.createEl("button", { cls: "tropa-add-concept clickable-icon", attr: { "aria-label": t.newConcept } });
     setIcon(add, "plus");
     add.addEventListener("click", () => this.plugin.promptNewConcept());
@@ -566,9 +798,29 @@ export class MapView extends ItemView implements DetailHost {
     this.registerDomEvent(this.canvas, "pointerup", (event) => this.onPointerUp(event));
     this.registerDomEvent(this.canvas, "pointercancel", (event) => this.onPointerUp(event));
     this.registerDomEvent(this.canvas, "wheel", (event) => this.onWheel(event), { passive: false });
-    this.registerDomEvent(this.root, "keydown", (event) => {
-      if (event.key === "Escape" && this.selected) this.select(null);
-    });
+    this.registerDomEvent(this.root, "keydown", (event) => this.onKey(event));
+  }
+
+  /** Map-wide keys. F and C act on the focused node, or on the selected one. */
+  private onKey(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+    if (event.ctrlKey || event.metaKey || event.altKey || target.closest("input, textarea, [contenteditable]")) return;
+    const key = event.key.toLowerCase();
+    const id = target.closest<HTMLElement>(".tropa-node")?.dataset.id ?? this.selected;
+    if (event.key === "Escape") {
+      if (this.focus) this.exitFocus();
+      else if (this.selected) this.select(null);
+    } else if (key === "f" || key === "а") {
+      if (this.focus && (!id || id === this.focus.center)) this.exitFocus();
+      else this.enterFocus(id);
+    } else if ((key === "c" || key === "с") && id) {
+      this.toggleFold(id);
+    } else if (this.focus && /^[1-9]$/.test(event.key) && Number(event.key) <= MAX_FOCUS_DEPTH) {
+      this.setFocusDepth(Number(event.key));
+    } else {
+      return;
+    }
+    event.preventDefault();
   }
 
   private onPointerDown(event: PointerEvent) {
@@ -768,6 +1020,14 @@ export class MapView extends ItemView implements DetailHost {
     if (node.ghost) menu.addItem((item) => item.setTitle(t.createNote).setIcon("file-plus").onClick(() => attempt(store.materialize(id), `create ${node.title}`)));
     else if (node.inline) menu.addItem((item) => item.setTitle(t.openSource).setIcon("external-link").onClick(() => this.openNote(id)));
     else menu.addItem((item) => item.setTitle(t.openNote).setIcon("file-text").onClick(() => this.openNote(id)));
+    if (this.focus?.center !== id && neighborhood(store.graph, id, 1).size > 0) {
+      menu.addItem((item) => item.setTitle(t.focusHere).setIcon("focus").onClick(() => this.enterFocus(id)));
+    }
+    if (this.foldable.has(id)) {
+      const isFolded = this.folded.has(id);
+      const title = isFolded ? t.unfold({ count: this.foldCounts.get(id) ?? 0 }) : t.fold;
+      menu.addItem((item) => item.setTitle(title).setIcon(isFolded ? "chevron-down" : "chevron-up").onClick(() => this.toggleFold(id)));
+    }
 
     if (node.kind === "concept") {
       const mastered = store.progress.mastered.has(id);
@@ -899,6 +1159,15 @@ export class MapView extends ItemView implements DetailHost {
     this.toastEl = el;
     this.toastTimer = window.setTimeout(() => el.remove(), 6000);
   }
+}
+
+/** Painting runs for every node on each change; untouched nodes keep their styles. */
+function setClass(el: HTMLElement, className: string) {
+  if (el.className !== className) el.className = className;
+}
+
+function setText(el: HTMLElement, text: string) {
+  if (el.textContent !== text) el.textContent = text;
 }
 
 function setGlyph(el: HTMLElement, icon: string) {

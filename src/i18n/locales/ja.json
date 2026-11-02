@@ -201,5 +201,30 @@
   "zoomOut": "縮小",
   "fitAll": "マップ全体を表示",
   "openNote": "ノートを開く",
-  "clearMastered": "習得済みのマークを外す"
+  "clearMastered": "習得済みのマークを外す",
+  "focus": "フォーカス",
+  "focusTitle": "この概念の周辺だけを表示 (F)",
+  "focusHint": "概念を選ぶと、その周辺だけを表示できます",
+  "focusHere": "周辺だけを表示",
+  "focusOn": "フォーカス: {title}",
+  "focusDepth": "周辺のステップ数",
+  "focusSteps": {
+    "other": "周辺{count}ステップ"
+  },
+  "exitFocus": "フォーカスを終了",
+  "fold": "この先を隠す",
+  "unfold": {
+    "other": "隠れた{count}個の概念を表示"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "{count}個の概念を隠しました"
+  },
+  "unfolded": {
+    "other": "{count}個の概念を再表示しました"
+  },
+  "foldedRoute": {
+    "other": "ここにルートの{count}ステップが隠れています"
+  },
+  "hiddenOnMap": "マップ上で非表示"
 }

@@ -217,5 +217,40 @@
   "zoomOut": "Micșorează",
   "fitAll": "Arată toată harta",
   "openNote": "Deschide nota",
-  "clearMastered": "Șterge marcajul de stăpânit"
+  "clearMastered": "Șterge marcajul de stăpânit",
+  "focus": "Focus",
+  "focusTitle": "Arată doar ce e aproape de acest concept (F)",
+  "focusHint": "Alege un concept ca să vezi doar ce e aproape de el",
+  "focusHere": "Arată ce e aproape",
+  "focusOn": "Focus: {title}",
+  "focusDepth": "Pași în jur",
+  "focusSteps": {
+    "few": "{count} pași în jur",
+    "one": "{count} pas în jur",
+    "other": "{count} de pași în jur"
+  },
+  "exitFocus": "Ieși din focus",
+  "fold": "Ascunde ce deblochează",
+  "unfold": {
+    "few": "Arată {count} concepte ascunse",
+    "one": "Arată {count} concept ascuns",
+    "other": "Arată {count} de concepte ascunse"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "few": "{count} concepte ascunse",
+    "one": "{count} concept ascuns",
+    "other": "{count} de concepte ascunse"
+  },
+  "unfolded": {
+    "few": "{count} concepte vizibile din nou",
+    "one": "{count} concept vizibil din nou",
+    "other": "{count} de concepte vizibile din nou"
+  },
+  "foldedRoute": {
+    "few": "Aici sunt ascunși {count} pași din traseu",
+    "one": "Aici e ascuns {count} pas din traseu",
+    "other": "Aici sunt ascunși {count} de pași din traseu"
+  },
+  "hiddenOnMap": "Ascuns pe hartă"
 }

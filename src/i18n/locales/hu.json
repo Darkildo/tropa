@@ -209,5 +209,35 @@
   "zoomOut": "Kicsinyítés",
   "fitAll": "Teljes térkép mutatása",
   "openNote": "Jegyzet megnyitása",
-  "clearMastered": "Elsajátítás jelölésének törlése"
+  "clearMastered": "Elsajátítás jelölésének törlése",
+  "focus": "Fókusz",
+  "focusTitle": "Csak a fogalom közvetlen környezetének megjelenítése (F)",
+  "focusHint": "Válassz egy fogalmat, hogy csak a környezetét lásd",
+  "focusHere": "Környezet megjelenítése",
+  "focusOn": "Fókusz: {title}",
+  "focusDepth": "Lépések körülötte",
+  "focusSteps": {
+    "one": "{count} lépés körülötte",
+    "other": "{count} lépés körülötte"
+  },
+  "exitFocus": "Kilépés a fókuszból",
+  "fold": "Amit megnyit, annak elrejtése",
+  "unfold": {
+    "one": "{count} rejtett fogalom megjelenítése",
+    "other": "{count} rejtett fogalom megjelenítése"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "one": "{count} fogalom elrejtve",
+    "other": "{count} fogalom elrejtve"
+  },
+  "unfolded": {
+    "one": "{count} fogalom ismét látható",
+    "other": "{count} fogalom ismét látható"
+  },
+  "foldedRoute": {
+    "one": "Itt {count} útvonallépés rejtve van",
+    "other": "Itt {count} útvonallépés rejtve van"
+  },
+  "hiddenOnMap": "Rejtve a térképen"
 }

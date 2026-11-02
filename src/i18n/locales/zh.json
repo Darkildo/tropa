@@ -201,5 +201,30 @@
   "zoomOut": "缩小",
   "fitAll": "显示整张地图",
   "openNote": "打开笔记",
-  "clearMastered": "取消已掌握标记"
+  "clearMastered": "取消已掌握标记",
+  "focus": "聚焦",
+  "focusTitle": "只显示这个概念附近的内容 (F)",
+  "focusHint": "选择一个概念，只看它附近的内容",
+  "focusHere": "只看附近",
+  "focusOn": "聚焦：{title}",
+  "focusDepth": "周围步数",
+  "focusSteps": {
+    "other": "周围 {count} 步"
+  },
+  "exitFocus": "退出聚焦",
+  "fold": "隐藏它解锁的内容",
+  "unfold": {
+    "other": "显示 {count} 个隐藏的概念"
+  },
+  "foldBadge": "+{count}",
+  "folded": {
+    "other": "已隐藏 {count} 个概念"
+  },
+  "unfolded": {
+    "other": "已重新显示 {count} 个概念"
+  },
+  "foldedRoute": {
+    "other": "这里隐藏了路线中的 {count} 步"
+  },
+  "hiddenOnMap": "在地图上已隐藏"
 }
