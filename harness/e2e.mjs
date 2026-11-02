@@ -693,6 +693,44 @@ const fold = (page, title) => node(page, title).locator(".tropa-fold");
   ok("focus and fold: no errors", errors.length === 0 && (await page.evaluate("tropa.missingIcons.size")) === 0, errors.join("; "));
   await page.close();
 }
+// Focus and folds on a map with excluded folders, and excluding what is focused or folded.
+{
+  const { page, errors } = await open({ query: "?scenario=scope" });
+  await page.click('button:text-is("Whole map")'); await wait(page, 400);
+  const titles = async () => (await page.locator(".tropa-node .tropa-node-title").allInnerTexts()).sort().join("|");
+  ok("scope+focus: whole map without excluded notes", (await titles()) === "Base|Goal|Kept|Next", await titles());
+
+  await node(page, "Base").click(); await wait(page, 200);
+  await node(page, "Base").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  ok("scope+focus: focus leaves excluded notes out", (await titles()) === "Base|Goal|Kept", await titles());
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa\nArchive 2");
+  ok("scope+focus: excluding a note in focus keeps the focus", (await titles()) === "Base|Goal" && (await page.locator(".tropa-focus.is-active").count()) === 1, await titles());
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa");
+  ok("scope+focus: it comes back into focus", (await titles()) === "Base|Goal|Kept", await titles());
+  await node(page, "Kept").click(); await wait(page, 200);
+  await node(page, "Kept").focus(); await page.keyboard.press("f"); await wait(page, 500);
+  ok("scope+focus: focus moves to Kept", (await page.evaluate(`${mapView}.getState().focus?.center`)) === "Archive 2/Kept.md");
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa\nArchive 2");
+  ok("scope+focus: excluding the focused note ends the focus", (await page.locator(".tropa-focus.is-active").count()) === 0 && (await titles()) === "Base|Goal|Next", await titles());
+
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa");
+  await page.keyboard.press("Escape"); await wait(page, 200);
+  await node(page, "Base").hover();
+  await fold(page, "Base").click(); await wait(page, 500);
+  ok("scope+fold: fold hides what Base opens", (await titles()) === "Base|Next" && (await fold(page, "Base").innerText()) === "+2", `${await titles()} ${await fold(page, "Base").innerText()}`);
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa\nArchive 2");
+  ok("scope+fold: the badge counts only what is left", (await fold(page, "Base").innerText()) === "+1", await fold(page, "Base").innerText());
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa");
+  await fold(page, "Base").click(); await wait(page, 500);
+  await node(page, "Kept").hover();
+  await fold(page, "Kept").click(); await wait(page, 500);
+  ok("scope+fold: fold Kept", (await titles()) === "Base|Kept|Next", await titles());
+  await setScope(page, "excludeFolders", "Archive\nAttachments\nTropa\nArchive 2");
+  ok("scope+fold: excluding the folded note shows what it hid", (await titles()) === "Base|Goal|Next", await titles());
+  ok("scope+fold: a gone fold is not kept with the view", !(await page.evaluate(`${mapView}.getState().folded`)).includes("Archive 2/Kept.md"));
+  ok("scope+focus+fold: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
 {
   const { page, errors } = await open({ query: "?lang=ru" });
   await node(page, "Градиент").click(); await wait(page, 200);
