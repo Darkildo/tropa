@@ -17,6 +17,12 @@ const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 1.6;
 const READABLE_ZOOM = 0.6;
 const CLOSE_ZOOM = 0.8;
+/**
+ * A zoomed-out map with more edges than this draws them without dashes. Dashed paths are slow to
+ * rasterise: on a 1700-node map (3400 edges) the browser froze for over 30 s, while maps of 400
+ * concepts, even with their materials (about 1400 edges), keep their dashes.
+ */
+const DASHED_EDGES_MAX = 1500;
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 interface Press {
@@ -346,6 +352,7 @@ export class MapView extends ItemView implements DetailHost {
   private drawEdges() {
     const layout = this.layout!;
     this.svg.empty();
+    this.world.toggleClass("is-dense", layout.edges.length > DASHED_EDGES_MAX);
     const pad = 200;
     this.svg.setAttribute("width", String(layout.width + pad * 2));
     this.svg.setAttribute("height", String(layout.height + pad * 2));

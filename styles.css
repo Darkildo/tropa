@@ -217,10 +217,10 @@ button.tropa-add-concept { flex: none; width: 32px; height: 32px; padding: 0; }
 .tropa-edge.is-loop { stroke: var(--tropa-danger); stroke-width: 2.5; }
 .tropa-edge.is-wire { stroke: var(--tropa-route); stroke-width: 2.5; stroke-dasharray: 6 5; }
 
-/* Zoomed out, dashes are too fine to read and slow to draw on a large map: soft links fade instead. */
-.tropa-world.is-far .tropa-edge.is-teaches,
-.tropa-world.is-far .tropa-edge.is-recommends { stroke-dasharray: none; }
-.tropa-world.is-far .tropa-edge.is-recommends { stroke-opacity: 0.45; }
+/* A large map zoomed out drops dashes, which are slow to draw (DASHED_EDGES_MAX): soft links fade instead. */
+.tropa-world.is-far.is-dense .tropa-edge.is-teaches,
+.tropa-world.is-far.is-dense .tropa-edge.is-recommends { stroke-dasharray: none; }
+.tropa-world.is-far.is-dense .tropa-edge.is-recommends { stroke-opacity: 0.45; }
 
 .tropa-world.has-focus .tropa-edge:not(.is-related) { opacity: 0.3; }
 .tropa-world.has-focus .tropa-node:not(.is-related) { opacity: 0.55; }

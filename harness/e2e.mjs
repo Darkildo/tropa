@@ -539,6 +539,21 @@ for (const [lang, wholeMap] of [["de", "Ganze Karte"], ["ja", "マップ全体"]
   await page.close();
 }
 
+// --- dashes on a small map stay when zoomed out
+const dashes = (page, kind) => page.evaluate((k) => getComputedStyle(document.querySelector(`.tropa-edge.is-${k}`)).strokeDasharray, kind);
+{
+  const { page } = await open();
+  await page.click('button:text-is("Whole map")');
+  await page.click(".tropa-toggle-sources"); await wait(page, 400);
+  for (let i = 0; i < 8 && !(await page.locator(".tropa-world.is-far").count()); i++) {
+    await page.click(".tropa-zoom button >> nth=1"); await wait(page, 120);
+  }
+  ok("example zoomed out", (await page.locator(".tropa-world.is-far").count()) === 1);
+  const teaches = await dashes(page, "teaches");
+  ok("example keeps dashes zoomed out", teaches !== "none" && (await page.locator(".tropa-world.is-dense").count()) === 0, teaches);
+  await page.close();
+}
+
 // --- large graph performance
 const view = "tropa.app.workspace.center.view";
 const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(".tropa-canvas.is-laying-out"), null, { timeout: 60_000 });
@@ -595,8 +610,15 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   console.log(`1700 nodes in the worker: ${Math.round(total)} ms; first ${Math.round(freeze.pending)} ms: longest pause ${Math.round(freeze.longest)} ms; click ${clickMs} ms`);
   ok("interface stays responsive during layout", freeze.pending > 500 && freeze.longest < 150, JSON.stringify(freeze));
   ok("materials laid out", (await page.locator(".tropa-node").count()) === 1700);
-  await page.click(".tropa-toggle-sources"); await layoutDone(page);
+  const teaches = await dashes(page, "teaches");
+  ok("large map zoomed out drops dashes", (await page.locator(".tropa-world.is-far.is-dense").count()) === 1 && teaches === "none", teaches);
+  await page.click(".tropa-toggle-sources"); await layoutDone(page); await wait(page, 500);
+  const drawn = Date.now();
   await page.click(".tropa-toggle-sources");
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const drawMs = Date.now() - drawn;
+  console.log(`1700 nodes from the cache drawn in ${drawMs} ms`);
+  ok("large map draws without a long freeze", drawMs < 5000, `${drawMs} ms`);
   ok("switching back uses the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await page.locator(".tropa-node").count()) === 1700);
   ok("1000 concepts: no errors", errors.length === 0, errors.join("; "));
   await page.close();
