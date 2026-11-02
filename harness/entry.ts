@@ -48,8 +48,17 @@ if (scenario === "large") {
     }
   }
 }
-// The plugin must still work where workers are not available.
+// The plugin must still work where workers are not available, or WebAssembly is not.
 if (params.has("noworker")) Reflect.deleteProperty(window, "Worker");
+if (params.has("nowasm")) {
+  const Native = window.Worker;
+  window.Worker = class extends Native {
+    constructor(url: string | URL, options?: WorkerOptions) {
+      const script = `self.WebAssembly = undefined; importScripts(${JSON.stringify(String(url))});`;
+      super(URL.createObjectURL(new Blob([script], { type: "text/javascript" })), options);
+    }
+  };
+}
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
 // Folder and tag exclusions: the progress file and an attachment sit in excluded folders but must keep working.
 if (scenario === "scope") {

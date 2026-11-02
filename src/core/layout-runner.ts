@@ -14,6 +14,8 @@ export interface LayoutRequest {
 
 export interface LayoutReply {
   id: number;
+  /** The engine that did the work: the one asked for, or `ts` when it could not run. */
+  engine?: string;
   result?: EngineResult;
   error?: string;
 }
@@ -46,7 +48,7 @@ export class LayoutRunner {
   private job: Job | null = null;
   private nextId = 1;
   private readonly cache = new Map<string, EngineResult>();
-  readonly stats = { computed: 0, cached: 0, inWorker: 0, cancelled: 0 };
+  readonly stats = { computed: 0, cached: 0, inWorker: 0, cancelled: 0, engine: "" };
 
   /**
    * @param source The worker script, bundled from `layout-worker.ts`.
@@ -96,9 +98,11 @@ export class LayoutRunner {
   }
 
   private compute(key: string, input: EngineInput) {
-    const output = ENGINES[this.engine].layout(input);
+    const engine = ENGINES[this.engine] ?? ENGINES.ts;
+    const output = engine.layout(input);
     const result = { output, paths: svgPaths(output) };
     this.stats.computed++;
+    this.used(engine.id, "on the main thread");
     this.remember(key, result);
     return result;
   }
@@ -152,6 +156,7 @@ export class LayoutRunner {
     }
     this.job = null;
     this.stats.inWorker++;
+    this.used(reply.engine ?? this.engine, "in a worker");
     this.remember(job.key, reply.result);
     job.resolve(reply.result);
   }
@@ -165,6 +170,13 @@ export class LayoutRunner {
     const job = this.job;
     this.job = null;
     if (job) job.resolve(this.compute(job.key, job.input));
+  }
+
+  /** Says once which engine lays the map out, and again whenever that changes. */
+  private used(engine: string, where: string) {
+    const said = `${engine} ${where}`;
+    if (said !== this.stats.engine) console.debug(`Tropa: map layout by ${engine} ${where}`);
+    this.stats.engine = said;
   }
 
   private remember(key: string, result: EngineResult) {
