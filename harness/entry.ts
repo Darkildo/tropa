@@ -11,6 +11,36 @@ document.documentElement.lang = language;
 document.body.classList.add(params.get("theme") === "dark" ? "theme-dark" : "theme-light");
 document.body.classList.toggle("is-right-open", params.has("panel"));
 
+/*
+  A phone, as Obsidian mobile sets it up: classes on the body, a navigation bar floating over the
+  bottom of the view, and side panels that open on a horizontal swipe. Obsidian builds that swipe
+  from touch events that reach the document; touches inside an element with data-ignore-swipe do
+  not count. `swipeAll` drops that opt-out, to check that the map holds its touches back anyway.
+*/
+const swipes: string[] = [];
+if (params.has("phone")) {
+  document.body.classList.add("is-mobile", "is-phone");
+  document.body.createDiv({ cls: "mobile-navbar" });
+  const honour = !params.has("swipeAll");
+  let start: { x: number; y: number } | null = null;
+  document.addEventListener("touchstart", (event) => {
+    const touch = event.touches[0];
+    const ignored = honour && (event.target as Element).closest?.("[data-ignore-swipe]");
+    start = event.touches.length === 1 && !ignored ? { x: touch.clientX, y: touch.clientY } : null;
+  });
+  document.addEventListener("touchmove", (event) => {
+    if (!start) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      swipes.push(dx > 0 ? "open-left" : "open-right");
+      start = null;
+    }
+  });
+  document.addEventListener("touchend", () => (start = null));
+}
+
 // `holdlayout` lets a test keep the worker's answer back while it acts on the map, so the action is sure to
 // land while the layout is pending. The worker still computes as usual; only the delivery waits.
 if (params.has("holdlayout")) {
@@ -134,4 +164,4 @@ await workspace.center.setViewState({ type: "tropa-map" });
 await workspace.right.setViewState({ type: "tropa-panel" });
 requestAnimationFrame(() => workspace.center.view.render());
 
-Object.assign(window, { tropa: { app, plugin, notices, missingIcons } });
+Object.assign(window, { tropa: { app, plugin, notices, missingIcons, swipes } });

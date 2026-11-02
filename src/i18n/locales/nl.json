@@ -291,5 +291,8 @@
   "exportProgressDesc": "Beheerste en geleerde concepten en het doel kleuren. Zet uit om de kaart zonder je voortgang te delen.",
   "exportSaved": "Opgeslagen: {path}",
   "exportNotReady": "De kaart wordt nog opgebouwd. Probeer het zo opnieuw.",
-  "canvasSoftLabel": "aanbevolen"
+  "canvasSoftLabel": "aanbevolen",
+  "moreActions": "Meer acties",
+  "sheetHandle": "Paneelgrootte: tik of sleep",
+  "linkNext": "Koppelen aan het volgende concept…"
 }

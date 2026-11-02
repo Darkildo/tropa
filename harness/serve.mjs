@@ -19,8 +19,8 @@ export async function start() {
   // CHROMIUM_PATH points at an already installed browser when its revision differs from Playwright's.
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 
-  async function open({ width = 1440, height = 900, scale = 1, query = "" } = {}) {
-    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale });
+  async function open({ width = 1440, height = 900, scale = 1, query = "", touch = false } = {}) {
+    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale, hasTouch: touch });
     const errors = [];
     const logs = [];
     page.on("console", (message) => {

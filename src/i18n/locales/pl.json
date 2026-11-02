@@ -321,5 +321,8 @@
   "exportProgressDesc": "Oznacz kolorami opanowane i poznawane pojęcia oraz cel. Wyłącz, aby udostępnić mapę bez swojego postępu.",
   "exportSaved": "Zapisano: {path}",
   "exportNotReady": "Mapa jest jeszcze układana. Spróbuj za chwilę.",
-  "canvasSoftLabel": "polecane"
+  "canvasSoftLabel": "polecane",
+  "moreActions": "Więcej działań",
+  "sheetHandle": "Rozmiar panelu: dotknij lub przeciągnij",
+  "linkNext": "Połącz z następnym pojęciem…"
 }

@@ -306,5 +306,8 @@
   "exportProgressDesc": "Colora i concetti padroneggiati e in studio e l’obiettivo. Disattiva per condividere la mappa senza i tuoi progressi.",
   "exportSaved": "Salvato: {path}",
   "exportNotReady": "La mappa è ancora in fase di disposizione. Riprova tra un attimo.",
-  "canvasSoftLabel": "consigliato"
+  "canvasSoftLabel": "consigliato",
+  "moreActions": "Altre azioni",
+  "sheetHandle": "Dimensione del pannello: tocca o trascina",
+  "linkNext": "Collega al concetto successivo…"
 }

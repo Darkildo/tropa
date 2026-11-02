@@ -80,6 +80,14 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 6. On a big map, select a concept and press **Focus** to see only what is near it, or fold the branches you do not need with the badge under a concept.
 
+### On a phone
+
+- The bar is one row: the goal, **Route** and **Whole map** as icons, and **⋯** with materials, focus, the audit (its count shows on the button), export and a new concept. The progress is the thin line under it.
+- Drag with one finger to move around the map, pinch to zoom, double tap to zoom in. Swipes inside the map and the panel move the map or the panel, not Obsidian's side panels; swipe on the bar or use Obsidian's buttons for those.
+- Tap a concept to open its details. Hold a concept for its menu, which also links it to the next concept (there is no dot to drag on a phone).
+- The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
+- The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
+
 Other commands: audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model

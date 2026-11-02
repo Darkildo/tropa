@@ -291,5 +291,8 @@
   "exportProgressDesc": "Beherrschte und begonnene Konzepte und das Ziel einfärben. Ausschalten, um die Karte ohne deinen Fortschritt zu teilen.",
   "exportSaved": "Gespeichert: {path}",
   "exportNotReady": "Die Karte wird noch angeordnet. Versuch es gleich noch einmal.",
-  "canvasSoftLabel": "empfohlen"
+  "canvasSoftLabel": "empfohlen",
+  "moreActions": "Weitere Aktionen",
+  "sheetHandle": "Panelgröße: tippen oder ziehen",
+  "linkNext": "Mit dem nächsten Konzept verbinden …"
 }

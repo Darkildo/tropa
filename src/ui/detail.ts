@@ -74,7 +74,7 @@ export function pickPrerequisite(host: DetailHost, node: GraphNode) {
   }, (name) => t.createConcept({ name })).open();
 }
 
-function pickUnlock(host: DetailHost, node: GraphNode) {
+export function pickUnlock(host: DetailHost, node: GraphNode) {
   const { store, app } = host;
   const items = conceptItems(host, new Set([node.id, ...node.requiredBy, ...store.graph.ancestors(node.id)]));
   new PickModal(app, items, t.unlocksPrompt({ title: node.title }), async (item) => {

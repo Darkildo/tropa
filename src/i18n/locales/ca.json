@@ -306,5 +306,8 @@
   "exportProgressDesc": "Acoloreix els conceptes dominats i en estudi i l’objectiu. Desactiva-ho per compartir el mapa sense el teu progrés.",
   "exportSaved": "Desat: {path}",
   "exportNotReady": "El mapa encara s’està organitzant. Torna-ho a provar d’aquí a un moment.",
-  "canvasSoftLabel": "recomanat"
+  "canvasSoftLabel": "recomanat",
+  "moreActions": "Més accions",
+  "sheetHandle": "Mida del tauler: toca o arrossega",
+  "linkNext": "Enllaça amb el concepte següent…"
 }

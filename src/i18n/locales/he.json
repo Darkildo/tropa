@@ -306,5 +306,8 @@
   "exportProgressDesc": "צביעת מושגים שנלמדו ושבלמידה, וגם את היעד. כבו כדי לשתף את המפה בלי ההתקדמות שלכם.",
   "exportSaved": "נשמר: {path}",
   "exportNotReady": "המפה עדיין מסודרת. נסו שוב בעוד רגע.",
-  "canvasSoftLabel": "מומלץ"
+  "canvasSoftLabel": "מומלץ",
+  "moreActions": "פעולות נוספות",
+  "sheetHandle": "גודל הלוח: הקישו או גררו",
+  "linkNext": "קישור למושג הבא…"
 }
