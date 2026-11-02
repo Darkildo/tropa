@@ -60,7 +60,7 @@ const { open, stop } = await start();
   await page.screenshot({ path: SHOTS + "13-all.png" });
   await page.click(".tropa-toggle-sources"); await wait(page, 500);
   const sources = await page.locator(".tropa-node.is-source").count();
-  ok("materials shown", sources === 12, String(sources));
+  ok("materials shown", sources === 13, String(sources));
   await page.screenshot({ path: SHOTS + "14-materials.png" });
   await page.click(".tropa-toggle-sources"); await wait(page, 300);
   // goal change
