@@ -467,6 +467,10 @@ export class Menu {
     cb(item);
     return this;
   }
+  addSeparator() {
+    (this.el as any).createDiv({ cls: "menu-separator" });
+    return this;
+  }
   showAtMouseEvent(event: MouseEvent) {
     this.showAtPosition({ x: event.clientX, y: event.clientY });
   }
@@ -487,14 +491,16 @@ export const Platform = {
 
 export class Setting {
   settingEl: HTMLElement;
+  nameEl: HTMLElement;
   private info: HTMLElement;
   private control: HTMLElement;
   constructor(parent: HTMLElement) {
     this.settingEl = (parent as any).createDiv({ cls: "setting-item" });
     this.info = (this.settingEl as any).createDiv({ cls: "setting-item-info" });
+    this.nameEl = (this.info as any).createDiv({ cls: "setting-item-name" });
     this.control = (this.settingEl as any).createDiv({ cls: "setting-item-control" });
   }
-  setName(name: string) { (this.info as any).createDiv({ cls: "setting-item-name", text: name }); return this; }
+  setName(name: string) { this.nameEl.textContent = name; return this; }
   setDesc(desc: string) { (this.info as any).createDiv({ cls: "setting-item-description", text: desc }); return this; }
   setHeading() { this.settingEl.addClass("setting-item-heading"); return this; }
   addText(cb: (text: any) => void) {

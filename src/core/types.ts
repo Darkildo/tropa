@@ -66,7 +66,16 @@ export interface GraphNode {
 }
 
 export interface Progress {
+  /** The goal the route leads to. When several goals are kept, the one shown unless `allGoals` is on. */
   goal: string | null;
+  /** Every goal kept, in the order they were added. The active one is among them. */
+  goals: string[];
+  /** Route to every goal at once instead of the active one. */
+  allGoals: boolean;
+  /** Goal → deadline as YYYY-MM-DD. */
+  deadlines: Map<string, string>;
+  /** Planned study time, in hours a week. */
+  paceHours: number | null;
   mastered: Set<string>;
   learning: Set<string>;
   /** Finished sources. */
@@ -82,10 +91,15 @@ export interface RouteStep {
   state: ConceptState;
   /** Recommended material for this step, if any. */
   material: string | null;
+  /** The goals of the route that need this step. */
+  goals: string[];
 }
 
 export interface Route {
+  /** The first goal of the route. */
   goal: string;
+  /** Every goal the route leads to, earliest deadline first. */
+  goals: string[];
   /** Everything the goal depends on, mastered parts included. */
   closure: Set<string>;
   /** Unmastered concepts in the order they should be studied. */
