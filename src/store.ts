@@ -9,6 +9,7 @@ import {
   isGhostId,
   LearningGraph,
   newlyAvailable,
+  sameProgress,
   unlockedBy,
 } from "./core/graph";
 import { readProgress, writeProgress } from "./core/progress";
@@ -29,6 +30,12 @@ import type { TropaSettings } from "./defaults";
 
 export type LinkKind = "requiresKey" | "recommendsKey" | "teachesKey";
 
+/** The progress before a change, and the revision right after it: undo is offered only while nothing has changed since. */
+export interface Undo {
+  progress: Progress;
+  revision: number;
+}
+
 export interface SourceDraft {
   title: string;
   url: string;
@@ -45,6 +52,8 @@ export class Store extends Events {
   route: Route | null = null;
   /** Changes when the shape of the graph changes, so views can keep their layout otherwise. */
   topologyKey = "";
+  /** Counts changes of the progress, made here or read from the file (another device, a hand edit). */
+  revision = 0;
 
   private signature = "";
   private scope: Scope = { folders: [], tags: [] };
@@ -58,9 +67,9 @@ export class Store extends Events {
   }
 
   on(name: "change", callback: () => void): EventRef;
-  on(name: "mastered", callback: (id: string, unlocked: string[], undo: Progress) => void): EventRef;
+  on(name: "mastered", callback: (id: string, unlocked: string[], undo: Undo) => void): EventRef;
   /** A change that touched more than one mark at once, with the progress to go back to. */
-  on(name: "undoable", callback: (message: string, unlocked: string[], undo: Progress) => void): EventRef;
+  on(name: "undoable", callback: (message: string, unlocked: string[], undo: Undo) => void): EventRef;
   on(name: string, callback: (...data: never[]) => void): EventRef {
     return super.on(name, callback as (...data: unknown[]) => unknown);
   }
@@ -197,11 +206,14 @@ export class Store extends Events {
     const path = normalizePath(this.settings().progressPath);
     const file = this.app.vault.getAbstractFileByPath(path);
     const frontmatter = file instanceof TFile ? this.app.metadataCache.getFileCache(file)?.frontmatter : undefined;
-    this.progress = readProgress(
+    const progress = readProgress(
       frontmatter,
       (target) => this.resolve(target, path).id,
       (value) => this.materialIdOf(value, path),
     );
+    // Reading back what was just saved changes nothing, so a pending undo stays valid.
+    if (!sameProgress(progress, this.progress)) this.revision++;
+    this.progress = progress;
   }
 
   onProgressFileChanged() {
@@ -222,8 +234,14 @@ export class Store extends Events {
     return cloneProgress(this.progress);
   }
 
+  /** Called after the change has been committed, so the revision is the one the undo belongs to. */
+  private undoTo(progress: Progress): Undo {
+    return { progress, revision: this.revision };
+  }
+
   private commit() {
     this.dropStaleConfidence();
+    this.revision++;
     this.derive();
     this.pendingWrites++;
     this.writes = this.writes
@@ -294,7 +312,7 @@ export class Store extends Events {
       this.progress.mastered.delete(id);
     }
     this.commit();
-    if (mastered) this.trigger("mastered", id, unlocked, undo);
+    if (mastered) this.trigger("mastered", id, unlocked, this.undoTo(undo));
   }
 
   /** Skipping opens what depends on the concept without counting it as mastered. The goal cannot be skipped. */
@@ -313,7 +331,7 @@ export class Store extends Events {
     }
     const unlocked = newlyAvailable(this.graph, undo, this.progress);
     this.commit();
-    if (skipped) this.trigger("undoable", t.skippedToast({ title: this.graph.nodes.get(id)?.title ?? "" }), unlocked, undo);
+    if (skipped) this.trigger("undoable", t.skippedToast({ title: this.graph.nodes.get(id)?.title ?? "" }), unlocked, this.undoTo(undo));
   }
 
   /** Marks several concepts as known in one step that can be undone as one. */
@@ -327,7 +345,7 @@ export class Store extends Events {
     }
     const unlocked = newlyAvailable(this.graph, undo, this.progress);
     this.commit();
-    this.trigger("undoable", t.markedKnown({ count: ids.length }), unlocked, undo);
+    this.trigger("undoable", t.markedKnown({ count: ids.length }), unlocked, this.undoTo(undo));
   }
 
   /** `null` clears the assessment. */
@@ -343,9 +361,16 @@ export class Store extends Events {
     this.commit();
   }
 
-  restore(progress: Progress) {
-    this.progress = progress;
+  /** False once anything else has changed the progress: going back then would undo that change too. */
+  canUndo(undo: Undo) {
+    return undo.revision === this.revision;
+  }
+
+  undo(undo: Undo) {
+    if (!this.canUndo(undo)) return false;
+    this.progress = cloneProgress(undo.progress);
     this.commit();
+    return true;
   }
 
   // Editing notes

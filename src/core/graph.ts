@@ -30,6 +30,20 @@ export function cloneProgress(progress: Progress): Progress {
   };
 }
 
+/** The same marks, goal and confidence, whatever order the lists were read in. */
+export function sameProgress(a: Progress, b: Progress) {
+  const sameSet = (x: Set<string>, y: Set<string>) => x.size === y.size && [...x].every((id) => y.has(id));
+  return (
+    a.goal === b.goal &&
+    sameSet(a.mastered, b.mastered) &&
+    sameSet(a.learning, b.learning) &&
+    sameSet(a.done, b.done) &&
+    sameSet(a.skipped, b.skipped) &&
+    a.confidence.size === b.confidence.size &&
+    [...a.confidence].every(([id, level]) => b.confidence.get(id) === level)
+  );
+}
+
 /** A concept no longer stands in the way: mastered, or skipped on purpose. */
 export function isPassed(progress: Progress, id: string) {
   return progress.mastered.has(id) || progress.skipped.has(id);

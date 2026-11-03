@@ -6,10 +6,11 @@ import layoutWorker from "tropa:layout-worker";
 import { auditCount, auditGraph, type Audit } from "../core/audit";
 import { isPassed, knownCandidates, sourceState, type LearningGraph } from "../core/graph";
 import { MAX_FOCUS_DEPTH, fold, foldersOf, neighborhood } from "../core/neighborhood";
-import type { GraphNode, Progress } from "../core/types";
+import type { GraphNode } from "../core/types";
 import { attempt } from "../attempt";
 import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
+import type { Undo } from "../store";
 import { openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
 import { navbarOverlap } from "./phone";
@@ -85,6 +86,8 @@ export class MapView extends ItemView implements DetailHost {
   private body!: HTMLElement;
   private toastEl: HTMLElement | null = null;
   private toastTimer = 0;
+  /** The progress change the toast offers to undo, if any. */
+  private toastUndo: Undo | null = null;
 
   private readonly nodeEls = new Map<string, HTMLElement>();
   private layout: Layout | null = null;
@@ -195,7 +198,12 @@ export class MapView extends ItemView implements DetailHost {
     // Obsidian's bar at the bottom of a phone can appear after the view; measure again once it has.
     this.registerEvent(this.app.workspace.on("layout-change", () => this.placeSheet()));
     window.setTimeout(() => this.placeSheet(), 400);
-    this.registerEvent(this.store.on("change", () => this.render()));
+    this.registerEvent(
+      this.store.on("change", () => {
+        this.dropStaleUndo();
+        this.render();
+      }),
+    );
     this.registerEvent(this.store.on("mastered", (id, unlocked, undo) => this.celebrate(id, unlocked, undo)));
     this.registerEvent(this.store.on("undoable", (message, unlocked, undo) => this.announce(message, unlocked, undo)));
     this.render();
@@ -1683,7 +1691,7 @@ export class MapView extends ItemView implements DetailHost {
 
   // Feedback
 
-  private celebrate(id: string, unlocked: string[], undo: Progress) {
+  private celebrate(id: string, unlocked: string[], undo: Undo) {
     const { store } = this;
     const title = store.graph.nodes.get(id)?.title ?? "";
     const names = unlocked.map((unlockedId) => store.graph.nodes.get(unlockedId)?.title).filter(Boolean);
@@ -1691,15 +1699,15 @@ export class MapView extends ItemView implements DetailHost {
     if (store.route && store.route.steps.length === 0) text = t.goalReached;
     else if (names.length) text = t.unlocked({ names: `${names.slice(0, 3).join(t.listSeparator)}${names.length > 3 ? t.andMore({ count: names.length - 3 }) : ""}` });
 
-    this.toast(text, t.undo, () => store.restore(undo));
+    this.toast(text, t.undo, () => store.undo(undo), undo);
     this.flash(unlocked);
   }
 
   /** Skipping or marking several concepts at once. What opened up is highlighted on the map. */
-  private announce(message: string, unlocked: string[], undo: Progress) {
+  private announce(message: string, unlocked: string[], undo: Undo) {
     const { store } = this;
     const text = store.route && store.route.steps.length === 0 ? t.goalReached : message;
-    this.toast(text, t.undo, () => store.restore(undo));
+    this.toast(text, t.undo, () => store.undo(undo), undo);
     this.flash(unlocked);
   }
 
@@ -1712,9 +1720,17 @@ export class MapView extends ItemView implements DetailHost {
     }
   }
 
-  private toast(text: string, action: string, run: () => void) {
+  /** Once anything else has changed the progress, undoing would revert that too, so the offer goes. */
+  private dropStaleUndo() {
+    if (!this.toastUndo || this.store.canUndo(this.toastUndo)) return;
+    this.toastEl?.remove();
+    this.toastUndo = null;
+  }
+
+  private toast(text: string, action: string, run: () => void, undo: Undo | null = null) {
     this.toastEl?.remove();
     window.clearTimeout(this.toastTimer);
+    this.toastUndo = undo;
     const el = this.stage.createDiv({ cls: "tropa-toast", attr: { role: "status" } });
     el.createSpan({ text });
     const button = el.createEl("button", { text: action });
