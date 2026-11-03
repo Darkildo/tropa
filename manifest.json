@@ -1,7 +1,7 @@
 {
   "id": "tropa",
   "name": "Tropa",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "minAppVersion": "1.13.0",
   "description": "Build a graph of concepts and materials from your notes and follow a personal learning route to any goal.",
   "author": "Darkildo",

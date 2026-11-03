@@ -2,26 +2,24 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
-## [Unreleased]
+## [0.4.0] - 2026-11-03
 
-The new strings are machine translations into all 33 languages.
+Tropa now teaches, not only plans: several goals with a deadline and a pace, a learning journal, review of mastered concepts with FSRS and self-check questions in concept notes. Requires Obsidian 1.13.0 or later. The new strings are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. New dependency: [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2 (MIT, no dependencies of its own).
 
 ### Added
 - **Learning journal.** Every change of progress made in Tropa is appended as a line to `Tropa/Journal/<YYYY-MM> <device>.md`: the local time with its offset, the action, the note as a link (or the URL of a material listed in a concept) and optional fields. One file per month and device, written only by that device, so a sync never has to merge them; the device name is kept outside the vault. Undo appends lines flagged `undo` instead of erasing any. Lines that do not parse are skipped.
 - **Activity in the side panel:** concepts mastered, time with finished materials and reviews over the last 7 and 30 days, read from the journals of all devices. Files that change by sync are read again on their own.
 - **Settings → Learning journal** turns the journal off or moves its folder. The folder is never on the map and its files are not offered as materials.
-- The core keeps the merged history by concept, with reviews and when a mark was made, for reviews to come.
 - **Several goals.** The goal button lists your goals: switch between them, route to all of them at once, add one more, replace or remove the active one. A route to several goals takes each prerequisite once, starts with the goal due first, and a step only some of the goals need names them. **Add as goal** in a concept's details and menu, and the commands **Add this note to your goals** (the former "Make this note the goal", same hotkey) and **Remove this note from your goals**.
 - **Deadline and pace.** Hours of study a week and a deadline for each goal, from the route panel, the goal button or the command **Set deadline and pace**. The route then says when you finish at that pace, the hours a week each deadline needs or whether you are on track, and how many steps have no time estimate.
 - The progress file gains `goals`, `all-goals`, `deadline-YYYY-MM-DD` lists of goals and `pace-hours`, written only when used. `goal` stays the goal the route leads to, so older versions read the file as before. The journal adds `goal-added`, `goal-removed`, `deadline` and `pace` lines; `goal` still names the goal the route leads to, and routing to all goals is not written.
 - **Review of mastered concepts with FSRS** ([ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2, MIT, no dependencies).
-  - The schedule of each concept is replayed from the journal: it starts with the mastered mark (as Good) or the known mark (as Easy), and every `reviewed` or `checked` line after it is one FSRS step. Nothing else is stored, so reviews on other devices, Undo and a new target recall all count the same way.
+  - The schedule of each concept is replayed from the journal: it starts with the mastered mark (as **Recalled**, FSRS Good) or the known mark (as **Easy**), and every `reviewed` or `checked` line after it is one FSRS step. Nothing else is stored, so reviews on other devices, Undo and a new target recall all count the same way.
   - A concept is due when the chance to recall it falls below the target recall (90% by default; 80, 85 or 95% in the settings). It stays mastered and blocks nothing; the map shows a badge on it and in the legend, and **Review today** above the route lists the due concepts, the longest overdue first, in the side panel and in the map's panel, on a phone too.
   - Four ratings, **Forgot**, **Hard**, **Recalled**, **Easy**, each with the interval it would give. Not due yet: **Review now**. A notice says when the concept comes back and offers Undo, which appends a `reviewed … undo` line.
   - Marks with no date in the journal (made before it, or on a device without one) start on the day review is first on, spread over one week to two months, a few a day, so an old map is not due all at once.
   - Commands **Review the next concept** and **Open the review queue**. The activity in the panel counts reviews.
   - **Settings → Review** turns it off and sets the target recall. Review needs the journal and is off without it.
-  - A self-check feature can register questions for a concept; review then offers **Check yourself** before the ratings, and a check just before the mastered mark sets how well the memory starts.
 - **Self-check.** Questions are `> [!question]-` callouts in a concept's note, the answer inside; Tropa reads them and never changes the note.
   - **Check yourself** in a concept's details, on a row of **Review today** and as a command asks them one at a time: the answer opens on a press (Space), and you grade your own answer **Right**, **Partly** or **Wrong** (1 to 3). On a phone the buttons are finger-sized; right-to-left languages are mirrored.
   - The grades suggest a rating: all right is **Recalled**, or **Easy** with three questions or more; three quarters right **Recalled**, about half **Hard**, less **Forgot**. On a mastered concept the check is a review with the four ratings, the suggested one first in line. On one not mastered yet it ends with **Mark as mastered** or **Not yet**, and the result starts the memory when the mark follows within a day.
@@ -31,8 +29,16 @@ The new strings are machine translations into all 33 languages.
   - The example map and the demo vaults have questions on a few concepts.
 
 ### Changed
-- **Translations in `main.js` no longer repeat their keys:** each language is a JSON array of its values in the order of the English keys, and only the active one is parsed at startup, as before. The 32 translations take 457 KB instead of 590 KB, and `main.js` 803 KB instead of 936 KB. The files in `src/i18n/locales` stay ordinary JSON.
+- **Translations in `main.js` no longer repeat their keys:** each language is a JSON array of its values in the order of the English keys, and only the active one is parsed at startup, as before. The files in `src/i18n/locales` stay ordinary JSON.
 - **Set as goal** on a concept, when there is a goal already, is now **Add as goal**: the earlier goal is kept. Choosing a goal from the goal button still replaces the active one.
+
+### Fixed
+- Writing the progress file and a journal at the same moment no longer fails with "Folder already exists" when the folder is new.
+
+### Performance
+- Translations without repeated keys take 457 KB instead of 590 KB in `main.js` (measured before self-check added its strings).
+- `main.js` is 867 KB (0.3.2: 738 KB). The new features and their strings in 33 languages make up the growth; ts-fsrs adds about 21 KB.
+- The journal of 20 000 lines is read and summed in about 0.15 s; one language is parsed at startup.
 
 ## [0.3.2] - 2026-11-03
 
@@ -141,6 +147,7 @@ Requires Obsidian 1.13.0 or later. The strings added in this release are machine
 - First release: a graph of concepts and materials built from note properties, a personal route to any goal, progress kept in `Tropa/Progress.md`.
 - English and Russian interface, example map and demo vaults in both languages.
 
+[0.4.0]: https://github.com/Darkildo/tropa/compare/0.3.2...0.4.0
 [0.3.2]: https://github.com/Darkildo/tropa/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/Darkildo/tropa/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/Darkildo/tropa/compare/0.2.0...0.3.0

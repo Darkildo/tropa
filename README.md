@@ -6,15 +6,13 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 
 ![Learning route, light theme](docs/screenshots/route-light.png)
 
-## What's new in 0.3
+## What's new in 0.4
 
-- **Skip, confidence and "I know this"** for maps you already know part of.
-- **Materials without a note:** links and attachments listed in a concept.
-- **Map scope:** leave folders and tags out of the map.
-- **Focus and fold** to see only what is near a concept.
-- **Map audit** with a counter in the bar.
-- **Export** to Canvas and SVG.
-- **A layout engine of its own,** run as WebAssembly in a worker: large maps lay out in a fraction of a second and draw with fewer crossings.
+- **Several goals, a deadline and a pace:** route to one goal or all of them, and see when you finish at your pace.
+- **Learning journal:** every change of progress is appended to a file per month and device, and the side panel sums up your activity.
+- **Review with FSRS:** mastered concepts come back when you are about to forget them, in **Review today**, without blocking the route.
+- **Self-check:** questions as callouts in a concept's note, asked one at a time before you mark it mastered and when you review it.
+- **A smaller `main.js`:** translations no longer repeat their keys.
 
 Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 
@@ -53,6 +51,9 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 | Route | ![Route, light](docs/screenshots/route-light.png) | ![Route, dark](docs/screenshots/route-dark.png) |
 | Concept details | ![Concept, light](docs/screenshots/concept-light.png) | ![Concept, dark](docs/screenshots/concept-dark.png) |
 | Whole map with materials | ![Map, light](docs/screenshots/map-light.png) | ![Map, dark](docs/screenshots/map-dark.png) |
+| Review: a concept due, with the four ratings | ![Review, light](docs/screenshots/review-light.png) | ![Review, dark](docs/screenshots/review-dark.png) |
+| Self-check with the answer shown | ![Self-check, light](docs/screenshots/check-light.png) | ![Self-check, dark](docs/screenshots/check-dark.png) |
+| Two goals, the route to both, deadline and pace | ![Goals, light](docs/screenshots/goals-light.png) | ![Goals, dark](docs/screenshots/goals-dark.png) |
 
 The map audit, opened from its button in the map's bar: a cycle, a link to a missing note, a duplicate name, concepts without materials and a lone note.
 
@@ -84,6 +85,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 6. On a big map, select a concept and press **Focus** to see only what is near it, or fold the branches you do not need with the badge under a concept.
+7. Come back for **Review today** above the route: open a due concept and rate how well you recalled it, or **Check yourself** if its note has questions.
 
 ### On a phone
 
@@ -274,6 +276,8 @@ Translations go into `main.js` as JSON text without their keys (`locales.esbuild
 ### For reviewers of the community catalog
 
 The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. The release workflow builds it from `crates/tropa-layout` (no dependencies), prints its sha256 in the log and adds it to the release notes.
+
+The one runtime dependency bundled into `main.js` is [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2 (MIT, no dependencies of its own), the review scheduler. Translations are readable JSON text.
 
 To check a release:
 1. Check out its tag and run `npm ci && npm run build:wasm`.
