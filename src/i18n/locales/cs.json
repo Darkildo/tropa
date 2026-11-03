@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Archiv\nŠablony",
     "excludeTags": "Vyloučené štítky",
     "excludeTagsDesc": "Jeden štítek na řádek. Poznámky s těmito štítky se na mapu nedostanou, včetně vnořených: #koncept pokrývá i #koncept/starý.",
-    "excludeTagsPlaceholder": "#koncept\n#soukromé"
+    "excludeTagsPlaceholder": "#koncept\n#soukromé",
+    "journalGroup": "Studijní deník",
+    "journal": "Vést studijní deník",
+    "journalDesc": "Každá změna vašeho pokroku se připíše jako řádek do souboru pro měsíc a toto zařízení. Z něj vzniká statistika.",
+    "journalFolder": "Složka deníku",
+    "journalFolderDesc": "Jeden soubor na měsíc a zařízení. Tato složka se nikdy neobjeví na mapě."
   },
   "scope": {
     "excludedNote": "Tato poznámka je kvůli nastavení složek nebo štítků mimo mapu.",
@@ -381,5 +386,14 @@
   "canvasSoftLabel": "doporučeno",
   "moreActions": "Další akce",
   "sheetHandle": "Velikost panelu: klepněte nebo táhněte",
-  "linkNext": "Propojit s dalším pojmem…"
+  "linkNext": "Propojit s dalším pojmem…",
+  "journal": {
+    "fileText": "Tropa sem připisuje řádek při každé změně pokroku na tomto zařízení. Statistika se čte z těchto řádků, proto zachovejte jejich formát.",
+    "title": "Aktivita",
+    "week": "7 dní",
+    "month": "30 dní",
+    "mastered": "Zvládnuto",
+    "time": "Čas s materiály",
+    "reviews": "Opakování"
+  }
 }

@@ -14,11 +14,13 @@ import {
   sameProgress,
   unlockedBy,
 } from "./core/graph";
+import type { ChangeCause } from "./core/journal";
 import { readProgress, writeProgress } from "./core/progress";
-import { isExcluded, type Scope } from "./core/scope";
+import { inFolders, isExcluded, type Scope } from "./core/scope";
 import { basename, linkTargets, parseLinkTarget, toList } from "./core/links";
 import {
   entryFormat,
+  isMaterialId,
   materialId,
   materialKey,
   normalizeUrl,
@@ -62,6 +64,8 @@ export class Store extends Events {
   /** Excluded goals already announced, so the notice comes once per change. */
   private announcedGoals = new Set<string>();
   private pendingWrites = 0;
+  /** Progress as last read or committed: a commit reports what changed since, for the journal. */
+  private recorded: Progress = emptyProgress();
   private writes: Promise<void> = Promise.resolve();
 
   constructor(private readonly app: App, private readonly settings: () => TropaSettings) {
@@ -72,6 +76,8 @@ export class Store extends Events {
   on(name: "mastered", callback: (id: string, unlocked: string[], undo: Undo) => void): EventRef;
   /** A change that touched more than one mark at once, with the progress to go back to. */
   on(name: "undoable", callback: (message: string, unlocked: string[], undo: Undo) => void): EventRef;
+  /** Every change made here, with the progress before and after. Changes read from the file are not reported. */
+  on(name: "commit", callback: (before: Progress, after: Progress, cause: ChangeCause | undefined) => void): EventRef;
   on(name: string, callback: (...data: never[]) => void): EventRef {
     return super.on(name, callback as (...data: unknown[]) => unknown);
   }
@@ -89,7 +95,7 @@ export class Store extends Events {
     this.scope = { folders: settings.excludeFolders ?? [], tags: settings.excludeTags ?? [] };
 
     for (const file of this.app.vault.getMarkdownFiles()) {
-      if (file.path === progressPath || this.isExcluded(file)) continue;
+      if (this.isOwnFile(file.path) || this.isExcluded(file)) continue;
       const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
       if (!frontmatter) continue;
       const kind = this.classify(frontmatter);
@@ -142,6 +148,14 @@ export class Store extends Events {
     if (file.path === normalizePath(this.settings().progressPath)) return false;
     const cache = tags.length ? this.app.metadataCache.getFileCache(file) : null;
     return isExcluded(file.path, (cache && getAllTags(cache)) ?? [], this.scope);
+  }
+
+  /** The progress file and the journal: Tropa's own files, never concepts or materials. */
+  isOwnFile(path: string) {
+    const settings = this.settings();
+    if (path === normalizePath(settings.progressPath)) return true;
+    const journal = normalizePath(settings.journalFolder);
+    return journal !== "" && inFolders(path, [journal]);
   }
 
   /** Title of the goal when the scope settings leave its note out. Nothing links to it then, so it is not in the graph. */
@@ -223,6 +237,7 @@ export class Store extends Events {
     // Reading back what was just saved changes nothing, so a pending undo stays valid.
     if (!sameProgress(progress, this.progress)) this.revision++;
     this.progress = progress;
+    this.recorded = cloneProgress(this.progress);
   }
 
   onProgressFileChanged() {
@@ -248,10 +263,13 @@ export class Store extends Events {
     return { progress, revision: this.revision };
   }
 
-  private commit() {
+  private commit(cause?: ChangeCause) {
     this.dropStaleConfidence();
     this.revision++;
     this.derive();
+    const before = this.recorded;
+    this.recorded = cloneProgress(this.progress);
+    this.trigger("commit", before, this.recorded, cause);
     this.pendingWrites++;
     this.writes = this.writes
       .then(() => this.writeProgress())
@@ -277,10 +295,7 @@ export class Store extends Events {
       );
     }
     const link = (id: string) => this.linkTo(id, path);
-    const material = (id: string) => {
-      const attachment = this.fileOf(materialKey(id));
-      return attachment ? `[[${this.app.metadataCache.fileToLinktext(attachment, path, false)}]]` : materialKey(id);
-    };
+    const material = (id: string) => this.materialLink(id, path);
     await this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
       writeProgress(frontmatter, this.progress, link, material);
     });
@@ -301,10 +316,10 @@ export class Store extends Events {
    * Puts `id` in place of the active goal, or makes it the active one if it already is a goal.
    * `null` removes the active goal. A skipped concept chosen as a goal is wanted after all, so it returns to the map.
    */
-  setGoal(id: string | null) {
+  setGoal(id: string | null, cause?: ChangeCause) {
     const { progress } = this;
     if (id === null) {
-      if (progress.goal) this.removeGoal(progress.goal);
+      if (progress.goal) this.removeGoal(progress.goal, cause);
       return;
     }
     const goals = allGoalsOf(progress);
@@ -318,7 +333,7 @@ export class Store extends Events {
     progress.goals = goals;
     progress.goal = id;
     progress.skipped.delete(id);
-    this.commit();
+    this.commit(cause);
   }
 
   /** Keeps the goals there are and adds `id`, which becomes the active one. */
@@ -333,7 +348,7 @@ export class Store extends Events {
   }
 
   /** Drops a goal with its deadline. The next goal becomes the active one. */
-  removeGoal(id: string) {
+  removeGoal(id: string, cause?: ChangeCause) {
     const { progress } = this;
     const goals = allGoalsOf(progress);
     const index = goals.indexOf(id);
@@ -343,7 +358,7 @@ export class Store extends Events {
     progress.deadlines.delete(id);
     if (progress.goal === id) progress.goal = goals[Math.min(index, goals.length - 1)] ?? null;
     if (goals.length < 2) progress.allGoals = false;
-    this.commit();
+    this.commit(cause);
   }
 
   /** Shows the route to one goal. */
@@ -424,7 +439,7 @@ export class Store extends Events {
       this.progress.skipped.delete(id);
     }
     const unlocked = newlyAvailable(this.graph, undo, this.progress);
-    this.commit();
+    this.commit("known");
     this.trigger("undoable", t.markedKnown({ count: ids.length }), unlocked, this.undoTo(undo));
   }
 
@@ -449,7 +464,7 @@ export class Store extends Events {
   undo(undo: Undo) {
     if (!this.canUndo(undo)) return false;
     this.progress = cloneProgress(undo.progress);
-    this.commit();
+    this.commit("undo");
     return true;
   }
 
@@ -597,6 +612,34 @@ export class Store extends Events {
     return unestimated ? t.atLeast({ duration }) : t.about({ duration });
   }
 
+  /** A material from a concept's list as the progress file and the journal write it: an attachment as a link, a URL as it is. */
+  private materialLink(id: string, from: string) {
+    const attachment = this.fileOf(materialKey(id));
+    return attachment ? `[[${this.app.metadataCache.fileToLinktext(attachment, from, false)}]]` : materialKey(id);
+  }
+
+  /** How the journal names a concept or material: a link, so renames follow it, or the URL of a listed material. */
+  journalTarget(id: string | null, from: string) {
+    if (!id) return "-";
+    return isMaterialId(id) ? this.materialLink(id, from) : this.linkTo(id, from);
+  }
+
+  /**
+   * The id a journal target stands for in the current graph, or null. A link to a note that is both
+   * a material note and listed in a concept resolves to whichever the graph has.
+   */
+  journalId(target: string, from: string): string | null {
+    if (target === "-") return null;
+    if (!/^\s*\[\[/.test(target)) return materialId(normalizeUrl(target));
+    const link = parseLinkTarget(target);
+    if (!link) return null;
+    const file = this.app.metadataCache.getFirstLinkpathDest(link, from);
+    if (!file) return ghostId(basename(link));
+    if (this.graph.nodes.has(file.path)) return file.path;
+    const material = materialId(file.path);
+    return file.extension !== "md" || this.graph.nodes.has(material) ? material : file.path;
+  }
+
   private linkTo(id: string, from: string) {
     const node = this.graph.nodes.get(id);
     if (isGhostId(id)) return `[[${node?.title ?? id.slice("ghost:".length)}]]`;
@@ -622,7 +665,13 @@ export class Store extends Events {
     const parts = normalizePath(folder).split("/");
     for (let depth = 1; depth <= parts.length; depth++) {
       const path = parts.slice(0, depth).join("/");
-      if (!(await this.app.vault.adapter.exists(path))) await this.app.vault.createFolder(path);
+      if (await this.app.vault.adapter.exists(path)) continue;
+      // The progress file and the journal can be written at once: whoever comes second finds the folder made.
+      try {
+        await this.app.vault.createFolder(path);
+      } catch (error) {
+        if (!(await this.app.vault.adapter.exists(path))) throw error;
+      }
     }
   }
 

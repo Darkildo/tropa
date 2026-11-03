@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arkiv\nMaler",
     "excludeTags": "Utelatte tagger",
     "excludeTagsDesc": "Én tagg per linje. Notater med disse taggene kommer ikke på kartet, nestede tagger inkludert: #utkast dekker også #utkast/gammelt.",
-    "excludeTagsPlaceholder": "#utkast\n#privat"
+    "excludeTagsPlaceholder": "#utkast\n#privat",
+    "journalGroup": "Læringsjournal",
+    "journal": "Før læringsjournal",
+    "journalDesc": "Hver endring i fremgangen din legges til som en linje i en fil per måned og enhet. Statistikken bygges på den.",
+    "journalFolder": "Journalmappe",
+    "journalFolderDesc": "Én fil per måned og enhet. Mappen havner aldri på kartet."
   },
   "scope": {
     "excludedNote": "Notatet holdes utenfor kartet av innstillingene for mapper eller tagger.",
@@ -345,5 +350,14 @@
   "canvasSoftLabel": "anbefalt",
   "moreActions": "Flere handlinger",
   "sheetHandle": "Panelstørrelse: trykk eller dra",
-  "linkNext": "Koble til neste begrep …"
+  "linkNext": "Koble til neste begrep …",
+  "journal": {
+    "fileText": "Tropa legger til en linje her for hver endring i fremgangen på denne enheten. Statistikken leses fra disse linjene, så behold formatet deres.",
+    "title": "Aktivitet",
+    "week": "7 dager",
+    "month": "30 dager",
+    "mastered": "Mestret",
+    "time": "Tid med læremidler",
+    "reviews": "Repetisjoner"
+  }
 }

@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arhivă\nȘabloane",
     "excludeTags": "Etichete excluse",
     "excludeTagsDesc": "Câte o etichetă pe rând. Notele cu aceste etichete rămân în afara hărții, inclusiv cele imbricate: #ciornă acoperă și #ciornă/veche.",
-    "excludeTagsPlaceholder": "#ciornă\n#privat"
+    "excludeTagsPlaceholder": "#ciornă\n#privat",
+    "journalGroup": "Jurnal de învățare",
+    "journal": "Ține un jurnal de învățare",
+    "journalDesc": "Fiecare schimbare a progresului este adăugată ca rând într-un fișier pe lună și pe dispozitiv. Statisticile se bazează pe el.",
+    "journalFolder": "Dosarul jurnalului",
+    "journalFolderDesc": "Câte un fișier pe lună și dispozitiv. Acest dosar nu apare niciodată pe hartă."
   },
   "scope": {
     "excludedNote": "Această notă rămâne în afara hărții din cauza setărilor de dosare sau etichete.",
@@ -363,5 +368,14 @@
   "canvasSoftLabel": "recomandat",
   "moreActions": "Mai multe acțiuni",
   "sheetHandle": "Mărimea panoului: atinge sau trage",
-  "linkNext": "Leagă de conceptul următor…"
+  "linkNext": "Leagă de conceptul următor…",
+  "journal": {
+    "fileText": "Tropa adaugă aici un rând pentru fiecare schimbare a progresului pe acest dispozitiv. Statisticile sunt citite din aceste rânduri, așa că păstrează-le formatul.",
+    "title": "Activitate",
+    "week": "7 zile",
+    "month": "30 de zile",
+    "mastered": "Stăpânite",
+    "time": "Timp cu materialele",
+    "reviews": "Recapitulări"
+  }
 }

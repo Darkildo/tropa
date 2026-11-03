@@ -54,6 +54,11 @@ export const en = {
     excludeTags: "Excluded tags",
     excludeTagsDesc: "One tag per line. Notes with these tags stay off the map, nested tags included: #draft also covers #draft/old.",
     excludeTagsPlaceholder: "#draft\n#private",
+    journalGroup: "Learning journal",
+    journal: "Keep a learning journal",
+    journalDesc: "Each change of your progress is added as a line to a file for the month and this device. Statistics are built from it.",
+    journalFolder: "Journal folder",
+    journalFolderDesc: "One file per month and device. This folder is never on the map.",
   },
 
   scope: {
@@ -312,5 +317,14 @@ export const en = {
     cycles: "Dependency cycles",
     cyclesHint: "Each concept requires the next and the last requires the first, so none of them can be learned first.",
     showOnMap: "Show on the map",
+  },
+  journal: {
+    fileText: "Tropa adds a line here for each change of progress on this device. Statistics are read from these lines, so keep their format.",
+    title: "Activity",
+    week: "7 days",
+    month: "30 days",
+    mastered: "Mastered",
+    time: "Time with materials",
+    reviews: "Reviews",
   },
 } as const;

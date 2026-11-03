@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Archiwum\nSzablony",
     "excludeTags": "Wykluczone tagi",
     "excludeTagsDesc": "Jeden tag w wierszu. Notatki z tymi tagami nie trafiają na mapę, także z tagami zagnieżdżonymi: #szkic obejmuje też #szkic/stare.",
-    "excludeTagsPlaceholder": "#szkic\n#prywatne"
+    "excludeTagsPlaceholder": "#szkic\n#prywatne",
+    "journalGroup": "Dziennik nauki",
+    "journal": "Prowadź dziennik nauki",
+    "journalDesc": "Każda zmiana postępów jest dopisywana jako wiersz do pliku dla miesiąca i tego urządzenia. Na tej podstawie powstają statystyki.",
+    "journalFolder": "Folder dziennika",
+    "journalFolderDesc": "Jeden plik na miesiąc i urządzenie. Ten folder nigdy nie trafia na mapę."
   },
   "scope": {
     "excludedNote": "Ta notatka jest poza mapą przez ustawienia folderów lub tagów.",
@@ -381,5 +386,14 @@
   "canvasSoftLabel": "polecane",
   "moreActions": "Więcej działań",
   "sheetHandle": "Rozmiar panelu: dotknij lub przeciągnij",
-  "linkNext": "Połącz z następnym pojęciem…"
+  "linkNext": "Połącz z następnym pojęciem…",
+  "journal": {
+    "fileText": "Tropa dopisuje tu wiersz przy każdej zmianie postępów na tym urządzeniu. Statystyki są odczytywane z tych wierszy, więc zachowaj ich format.",
+    "title": "Aktywność",
+    "week": "7 dni",
+    "month": "30 dni",
+    "mastered": "Opanowane",
+    "time": "Czas z materiałami",
+    "reviews": "Powtórki"
+  }
 }

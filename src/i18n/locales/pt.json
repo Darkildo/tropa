@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arquivo\nModelos",
     "excludeTags": "Etiquetas excluídas",
     "excludeTagsDesc": "Uma etiqueta por linha. As notas com estas etiquetas ficam fora do mapa, incluindo as aninhadas: #rascunho também abrange #rascunho/antigo.",
-    "excludeTagsPlaceholder": "#rascunho\n#privado"
+    "excludeTagsPlaceholder": "#rascunho\n#privado",
+    "journalGroup": "Diário de aprendizagem",
+    "journal": "Manter um diário de aprendizagem",
+    "journalDesc": "Cada alteração do seu progresso é acrescentada como uma linha a um ficheiro por mês e por dispositivo. As estatísticas vêm daí.",
+    "journalFolder": "Pasta do diário",
+    "journalFolderDesc": "Um ficheiro por mês e dispositivo. Esta pasta nunca aparece no mapa."
   },
   "scope": {
     "excludedNote": "Esta nota fica fora do mapa pelas definições de pastas ou etiquetas.",
@@ -363,5 +368,14 @@
   "canvasSoftLabel": "recomendado",
   "moreActions": "Mais ações",
   "sheetHandle": "Tamanho do painel: toque ou arraste",
-  "linkNext": "Ligar ao conceito seguinte…"
+  "linkNext": "Ligar ao conceito seguinte…",
+  "journal": {
+    "fileText": "O Tropa acrescenta aqui uma linha por cada alteração de progresso neste dispositivo. As estatísticas são lidas destas linhas, por isso mantenha o seu formato.",
+    "title": "Atividade",
+    "week": "7 dias",
+    "month": "30 dias",
+    "mastered": "Dominados",
+    "time": "Tempo com materiais",
+    "reviews": "Revisões"
+  }
 }

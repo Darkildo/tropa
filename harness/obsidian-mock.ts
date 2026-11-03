@@ -138,6 +138,12 @@ class Vault extends Events {
   getFiles() { return [...this.files.values()]; }
   getAbstractFileByPath(path: string) { return this.files.get(path) ?? (this.folders.has(path) ? new TFolder(path) : null); }
   async read(file: TFile) { return this.contents.get(file.path) ?? ""; }
+  async cachedRead(file: TFile) { return this.contents.get(file.path) ?? ""; }
+  async process(file: TFile, fn: (data: string) => string) {
+    const content = fn(this.contents.get(file.path) ?? "");
+    await this.modify(file, content);
+    return content;
+  }
 
   seed(path: string, content: string) {
     this.files.set(path, new TFile(path));
@@ -288,6 +294,15 @@ export class App {
   metadataCache = new MetadataCache();
   fileManager = new FileManager();
   workspace = new Workspace();
+  // Per vault and device in Obsidian; here the page's own storage, so a reload keeps the device.
+  loadLocalStorage(key: string) {
+    const value = localStorage.getItem(`vault:${key}`);
+    return value === null ? null : JSON.parse(value);
+  }
+  saveLocalStorage(key: string, data: unknown) {
+    if (data === null) localStorage.removeItem(`vault:${key}`);
+    else localStorage.setItem(`vault:${key}`, JSON.stringify(data));
+  }
 }
 
 export const app = new App();
@@ -329,7 +344,7 @@ export class PluginSettingTab {
     await this.plugin.saveData(this.plugin.settings);
   }
 
-  // Renders what Tropa uses of the declarative API (1.13): groups, rows, text and textarea controls.
+  // Renders what Tropa uses of the declarative API (1.13): groups, rows, toggles, text and textarea controls.
   display() {
     const root = this.containerEl as any;
     root.empty();
@@ -339,6 +354,13 @@ export class PluginSettingTab {
       info.createDiv({ cls: "setting-item-name", text: def.name });
       if (def.desc) info.createDiv({ cls: "setting-item-description", text: def.desc });
       const control = def.control;
+      if (control?.type === "toggle") {
+        const box = item.createDiv({ cls: "setting-item-control" }).createEl("input", { type: "checkbox" }) as HTMLInputElement;
+        box.dataset.key = control.key;
+        box.checked = this.getControlValue(control.key) === true;
+        box.addEventListener("change", () => void this.setControlValue(control.key, box.checked));
+        return;
+      }
       if (control?.type !== "text" && control?.type !== "textarea") return;
       const host = item.createDiv({ cls: "setting-item-control" });
       const input = (
@@ -486,6 +508,7 @@ export class Menu {
 export const Platform = {
   get isMobile() { return document.body.classList.contains("is-mobile"); },
   get isPhone() { return document.body.classList.contains("is-phone"); },
+  get isTablet() { return document.body.classList.contains("is-tablet"); },
   get isDesktop() { return !document.body.classList.contains("is-mobile"); },
 };
 

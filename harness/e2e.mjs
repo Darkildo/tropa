@@ -161,12 +161,14 @@ const { open, stop } = await start();
     document.getElementById("note").dataset.open = "";
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
-  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope", headings.join("|"));
+  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal", headings.join("|"));
   ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
-  ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 8);
-  ok("materials key setting", (await page.locator('#settings input[data-key="materialsKey"]').inputValue()) === "materials");
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
+  ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 10);
+  ok("journal is on by default", await page.locator('#settings input[data-key="journal"]').isChecked());
+  ok("journal folder follows the language", (await field("journalFolder").inputValue()) === "Tropa/Journal");
+  ok("materials key setting", (await page.locator('#settings input[data-key="materialsKey"]').inputValue()) === "materials");
   ok("settings show values", (await field("conceptsFolder").inputValue()) === "Tropa/Concepts");
   ok("settings show defaults as placeholders", (await field("progressPath").getAttribute("placeholder")) === "Tropa/Progress.md");
   await field("conceptsFolder").fill("Learning/Concepts"); await field("conceptsFolder").dispatchEvent("change"); await wait(page, 150);
@@ -1541,9 +1543,22 @@ async function goalChecks(page, label, words) {
   const menuItem = (text) => page.locator(`.menu-item:text-is("${text}")`);
   const progressFile = () => page.evaluate("tropa.app.vault.contents.get(tropa.plugin.settings.progressPath)");
   const goalMenu = async () => { await page.click(".tropa-goal"); await wait(page, 150); };
+  const journal = async () => {
+    await page.evaluate(() => tropa.plugin.journal.settled());
+    return page.evaluate(() => {
+      const folder = tropa.plugin.settings.journalFolder + "/";
+      return [...tropa.app.vault.contents].filter(([path]) => path.startsWith(folder)).map(([, text]) => text).join("\n");
+    });
+  };
+  const lines = async (action) => (await journal()).split("\n").filter((line) => line.split(" ")[2] === action);
 
+  // A mark with its undo, then a goal added another way: the undo goes, both changes stay and are written.
+  await page.evaluate(async (id) => tropa.plugin.store.setMastered(id, true), await conceptPath(page, words.markFirst)); await wait(page, 300);
+  const toastsBefore = await page.locator("#center .tropa-toast").count();
   await pick(words.second); await wait(page, 150);
   await side(words.add).click(); await wait(page, 400);
+  ok(`${label}: adding a goal takes a pending undo away`, toastsBefore === 1 && (await page.locator("#center .tropa-toast").count()) === 0, JSON.stringify({ toastsBefore }));
+  ok(`${label}: the journal has the mark and the new active goal`, (await lines("mastered")).length >= 1 && (await lines("goal")).some((line) => line.includes(`[[${words.second}]]`)) && (await lines("goal-added")).length === 0, await journal());
   ok(`${label}: adding a goal makes it the active one`, (await page.locator(".tropa-goal-label").innerText()) === words.second);
   ok(`${label}: the bar counts the other goal`, (await page.locator(".tropa-goal-more").innerText()) === "+1");
   const saved = await progressFile();
@@ -1552,6 +1567,7 @@ async function goalChecks(page, label, words) {
 
   await goalMenu();
   ok(`${label}: the menu lists both goals and all of them`, (await menuItem(words.first).count()) === 1 && (await menuItem(words.all).count()) === 1);
+  const goalLines = (await lines("goal")).length;
   await menuItem(words.all).click(); await wait(page, 1200);
   ok(`${label}: all goals in the bar`, (await page.locator(".tropa-goal-label").innerText()) === words.count2, await page.locator(".tropa-goal-label").innerText());
   ok(`${label}: both goals marked on the map`, (await state(page, words.first)).includes("is-goal") && (await state(page, words.second)).includes("is-goal"));
@@ -1562,6 +1578,7 @@ async function goalChecks(page, label, words) {
   ok(`${label}: a step one goal needs names it, the shared ones do not`,
     named.length > 0 && named.length < steps && named.every((text) => text.includes(words.first) !== text.includes(words.second)), JSON.stringify({ named, steps }));
   ok(`${label}: the route to all is saved`, (await progressFile()).includes("all-goals: true"));
+  ok(`${label}: routing to all goals writes no journal line`, (await lines("goal")).length === goalLines, await journal());
 
   // Deadline and pace from the route panel.
   await page.locator("#center .tropa-plan-button").click(); await wait(page, 150);
@@ -1574,6 +1591,9 @@ async function goalChecks(page, label, words) {
   await page.locator(`.modal .tropa-plan-deadline[data-goal$="${words.first}.md"]`).fill(deadline);
   await page.locator(`.modal button:text-is("${words.save}")`).click(); await wait(page, 500);
   const file = await progressFile();
+  const planned = { deadline: await lines("deadline"), pace: await lines("pace") };
+  ok(`${label}: the journal has the deadline and the pace`,
+    planned.deadline.length === 1 && planned.deadline[0].includes(`[[${words.first}]] date=${deadline}`) && planned.pace.length === 1 && planned.pace[0].endsWith(`pace - hours=${words.paceSaved}`), JSON.stringify(planned));
   ok(`${label}: pace and deadline are saved as plain properties`, file.includes(`pace-hours: ${words.paceSaved}`) && file.includes(`deadline-${deadline}:`), file.slice(0, 600));
   const forecast = await page.locator("#center .tropa-plan-forecast .tropa-hint").allInnerTexts();
   ok(`${label}: the forecast gives a finish date at the pace`, forecast.some((line) => line.startsWith(words.finish)), JSON.stringify(forecast));
@@ -1597,12 +1617,15 @@ async function goalChecks(page, label, words) {
   const left = await progressFile();
   ok(`${label}: with one goal left the lists go`, !/^goals:/m.test(left) && !left.includes("all-goals") && !left.includes(`deadline-${deadline}`), left.slice(0, 400));
   ok(`${label}: the pace stays`, left.includes(`pace-hours: ${words.paceSaved}`));
+  const removed = await lines("goal-removed");
+  ok(`${label}: the journal has the removed goal, and no line for its deadline`,
+    removed.length === 1 && removed[0].includes(`[[${words.first}]]`) && (await lines("deadline")).length === 1, await journal());
 }
 const EN_GOALS = {
   first: "Transformer", second: "Convolutional networks", add: "Add as goal", skip: "Skip", all: "All goals", count2: "2 goals",
   stepsToGoals: "to your goals", save: "Save", paceInvalid: "Enter hours a week", pace: "5", paceSaved: "5",
   finish: "At 5 h a week: done by", goalLineSep: ": ", unestimated: "without a time estimate", deadlineStart: "Behind:",
-  remove: "Remove goal “Transformer”",
+  remove: "Remove goal “Transformer”", markFirst: "Gradient",
 };
 {
   const { page, errors } = await open();
@@ -1618,7 +1641,7 @@ const EN_GOALS = {
     first: "Трансформер", second: "Свёрточные сети", add: "Добавить в цели", skip: "Пропустить", all: "Все цели", count2: "2 цели",
     stepsToGoals: "до ваших целей", save: "Сохранить", paceInvalid: "Введите часы в неделю", pace: "2,5", paceSaved: "2.5",
     finish: "При 2,5 ч в неделю — к", goalLineSep: ": ", unestimated: "без оценки времени", deadlineStart: "Не успеваете:",
-    remove: "Убрать цель «Трансформер»",
+    remove: "Убрать цель «Трансформер»", markFirst: "Градиент",
   });
   ok("no console errors (ru goals)", errors.length === 0, JSON.stringify(errors));
   await page.close();
@@ -1643,6 +1666,155 @@ const EN_GOALS = {
   await page.screenshot({ path: SHOTS + "75-phone-goals.png" });
   ok("phone goals: the bar stays one row with the goal count", (await box(page, "#center .tropa-bar")).height <= 56);
   ok("no console errors (phone goals)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+// --- learning journal: a line per change, one file per month and device, read back from every device
+const journalFiles = (page, folder = "Tropa/Journal") =>
+  page.evaluate((f) => [...tropa.app.vault.files.keys()].filter((path) => path.startsWith(f + "/")), folder);
+const settled = (page) => page.evaluate(() => tropa.plugin.journal.settled());
+const statsCell = (page, row, column = 0) => page.locator(`#right .tropa-stats tr.${row} td`).nth(column).innerText();
+// An entry from today, as another device would write it.
+const todayLine = (page, action, target) =>
+  page.evaluate(([a, t]) => `- ${new Date().toISOString().replace(/\.\d+Z$/, "Z")} ${a} ${t}`, [action, target]);
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  ok("journal: nothing written before any change", (await journalFiles(page)).length === 0);
+  ok("journal: no activity block without a journal", (await page.locator("#right .tropa-stats").count()) === 0);
+  await node(page, "Gradient").click(); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("Start learning")'); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("Mark as mastered")'); await wait(page, 150);
+  await settled(page); await wait(page, 100);
+  const files = await journalFiles(page);
+  const device = await page.evaluate(() => tropa.plugin.journal.device);
+  ok("journal: one file for the month and this device", files.length === 1 && /^Tropa\/Journal\/\d{4}-\d{2} desktop-[0-9a-f]{4}\.md$/.test(files[0]) && files[0].endsWith(` ${device}.md`), files.join(", "));
+  ok("journal: the device name is kept outside the vault", (await page.evaluate(() => tropa.app.loadLocalStorage("tropa-device"))) === device);
+  let text = await note(page, files[0]);
+  ok("journal: file says what it is", text.startsWith(`---\ntype: learning-journal\ndevice: ${device}\n---\n`), text.slice(0, 120));
+  ok("journal: a line per action, with links", /\n- \S+[+-]\d{2}:\d{2} started \[\[Gradient\]\]\n- \S+ mastered \[\[Gradient\]\]\n$/.test(text), text);
+  ok("journal: activity shows what was mastered", (await statsCell(page, "is-mastered")) === "1" && (await statsCell(page, "is-mastered", 1)) === "1");
+  ok("journal: activity heading and periods", (await page.locator("#right .tropa-stats th[scope=col]").allInnerTexts()).join("|") === "7 days|30 days");
+  ok("journal: journal files are not on the map", await page.evaluate((path) => !tropa.plugin.store.graph.nodes.has(path) && tropa.plugin.store.isOwnFile(path), files[0]));
+  await page.click(".tropa-toast button"); await wait(page, 150);
+  await settled(page); await wait(page, 100);
+  text = await note(page, files[0]);
+  ok("journal: Undo adds lines that put it back", /mastered \[\[Gradient\]\]\n- \S+ unmastered \[\[Gradient\]\] undo\n- \S+ started \[\[Gradient\]\] undo\n$/.test(text), text);
+  ok("journal: an undone mark does not count", (await statsCell(page, "is-mastered")) === "0");
+
+  // Another device's file arrives by sync, with a broken line in it; then it grows, then it is deleted.
+  const phoneFile = "Tropa/Journal/2026-11 phone-beef.md";
+  const phoneText = `---\ntype: learning-journal\n---\n\n${await todayLine(page, "mastered", "[[Chain rule]]")}\n- this line was mangled\n${await todayLine(page, "done", "[[3Blue1Brown, Essence of calculus]]")}\n`;
+  await page.evaluate(([path, content]) => tropa.app.vault.create(path, content), [phoneFile, phoneText]); await wait(page, 150);
+  ok("journal: another device's lines count", (await statsCell(page, "is-mastered")) === "1", await statsCell(page, "is-mastered"));
+  const minutes = await page.evaluate(() => [...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "3Blue1Brown, Essence of calculus")?.minutes);
+  ok("journal: time with finished materials", minutes > 0 && (await statsCell(page, "is-time")) !== "—", `${minutes} ${await statsCell(page, "is-time")}`);
+  await page.evaluate(async ([path, line]) => {
+    const vault = tropa.app.vault;
+    await vault.modify(vault.files.get(path), vault.contents.get(path) + line + "\n");
+  }, [phoneFile, await todayLine(page, "mastered", "[[Embeddings]]")]); await wait(page, 150);
+  ok("journal: a synced change is read again", (await statsCell(page, "is-mastered")) === "2");
+  await page.evaluate((path) => tropa.app.vault.delete(tropa.app.vault.files.get(path)), phoneFile); await wait(page, 150);
+  ok("journal: a deleted file no longer counts", (await statsCell(page, "is-mastered")) === "0");
+  ok("journal: the other device's file was never written to", (await journalFiles(page)).length === 1);
+
+  // Journal files are no materials to pick.
+  await node(page, "Probability").click(); await wait(page, 150);
+  await page.click('.tropa-side button:has-text("Add material")'); await wait(page, 150);
+  const picks = await page.locator(".modal, .prompt").allInnerTexts();
+  ok("journal: not offered as a material", picks.join(" ").includes("3Blue1Brown") && !picks.join(" ").includes(device), picks.join(" ").slice(0, 200));
+  await page.keyboard.press("Escape"); await wait(page, 100);
+
+  // Turned off: nothing more is written, and the activity block goes away.
+  await page.evaluate(async () => {
+    await tropa.plugin.settingTab.setControlValue("journal", false);
+    const store = tropa.plugin.store;
+    const id = [...store.graph.nodes.values()].find((n) => n.title === "Gradient").id;
+    store.setMastered(id, true);
+  });
+  await settled(page); await wait(page, 100);
+  ok("journal: off writes nothing", (await note(page, files[0])) === text);
+  ok("journal: off hides activity", (await page.locator("#right .tropa-stats").count()) === 0);
+  // Back on, in another folder: the folder is read anew and written to.
+  await page.evaluate(async () => {
+    const tab = tropa.plugin.settingTab;
+    await tab.setControlValue("journal", true);
+    await tab.setControlValue("journalFolder", "Learning/Log");
+    const store = tropa.plugin.store;
+    store.setMastered([...store.graph.nodes.values()].find((n) => n.title === "Gradient").id, false);
+  });
+  await settled(page); await wait(page, 100);
+  const moved = await journalFiles(page, "Learning/Log");
+  ok("journal: a new folder is used", moved.length === 1 && (await note(page, moved[0])).includes("unmastered [[Gradient]]"), moved.join(", "));
+  ok("journal: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // 20 000 lines from another device: read at start and summed without a visible pause.
+  const { page, errors } = await open({ query: "?panel=1" });
+  const took = await page.evaluate(async () => {
+    const lines = [];
+    const now = Date.now();
+    const titles = [...tropa.plugin.store.graph.nodes.values()].map((n) => n.title);
+    for (let i = 0; i < 20000; i++) {
+      const time = new Date(now - i * 60000).toISOString().replace(/\.\d+Z$/, "Z");
+      lines.push(`- ${time} ${["started", "mastered", "reviewed", "done"][i % 4]} [[${titles[i % titles.length]}]] rating=3`);
+    }
+    await tropa.app.vault.create("Tropa/Journal/2026-10 desktop-0000.md", lines.join("\n"));
+    const journal = tropa.plugin.journal;
+    const t = performance.now();
+    await journal.load();
+    const panel = tropa.app.workspace.right.view;
+    panel.render();
+    return performance.now() - t;
+  });
+  const reviews = Number(await statsCell(page, "is-reviews", 1));
+  console.log(`journal of 20 000 lines: read and shown in ${Math.round(took)} ms`);
+  ok("journal: 20 000 lines read and summed quickly", took < 300 && reviews > 1000, `${took} ms, ${reviews}`);
+  ok("journal (large): no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, folder, heading, row, column, dir] of [
+  ["ru", "Tropa/Журнал", "Активность", "Освоено", "7 дней", "ltr"],
+  ["ar", "Tropa/Journal", "النشاط", "مُتقَن", "7 أيام", "rtl"],
+]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  await page.evaluate(() => {
+    const store = tropa.plugin.store;
+    const id = [...store.states].find(([, s]) => s === "available")[0];
+    store.setMastered(id, true);
+  });
+  await settled(page); await wait(page, 100);
+  const files = await journalFiles(page, folder);
+  ok(`journal ${lang}: file in ${folder}`, files.length === 1, files.join(", "));
+  ok(`journal ${lang}: file text translated`, lang !== "ru" || (await note(page, files[0])).includes("Tropa дописывает сюда строку"));
+  ok(`journal ${lang}: activity in the panel`, (await page.locator("#right .tropa-stats .tropa-section-head").innerText()) === heading);
+  ok(`journal ${lang}: rows and columns`, (await page.locator("#right .tropa-stats tr.is-mastered th").innerText()) === row && (await page.locator("#right .tropa-stats th[scope=col]").first().innerText()) === column);
+  ok(`journal ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector("#right .tropa-stats")).direction)) === dir);
+  if (dir === "rtl") {
+    const box = await page.evaluate(() => {
+      const head = document.querySelector("#right .tropa-stats tr.is-mastered th").getBoundingClientRect();
+      const cell = document.querySelector("#right .tropa-stats tr.is-mastered td").getBoundingClientRect();
+      return { head: head.right, cell: cell.right };
+    });
+    ok("journal ar: row names on the right", box.head > box.cell, JSON.stringify(box));
+  }
+  ok(`journal ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?phone&panel=1" });
+  await page.evaluate(() => {
+    const store = tropa.plugin.store;
+    store.setMastered([...store.states].find(([, s]) => s === "available")[0], true);
+  });
+  await settled(page); await wait(page, 150);
+  const files = await journalFiles(page);
+  ok("journal phone: named after the phone", files.length === 1 && / phone-[0-9a-f]{4}\.md$/.test(files[0]), files.join(", "));
+  const stats = page.locator("#right .tropa-stats");
+  await stats.scrollIntoViewIfNeeded();
+  const box = await stats.boundingBox();
+  ok("journal phone: activity fits the screen", box && box.width <= 390 && box.x >= 0 && (await stats.isVisible()), JSON.stringify(box));
+  await page.screenshot({ path: SHOTS + "90-journal-phone.png" });
+  ok("journal phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

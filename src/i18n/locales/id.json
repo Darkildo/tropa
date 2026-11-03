@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arsip\nTemplat",
     "excludeTags": "Tag yang dikecualikan",
     "excludeTagsDesc": "Satu tag per baris. Catatan dengan tag ini tidak masuk peta, termasuk tag bersarang: #draf juga mencakup #draf/lama.",
-    "excludeTagsPlaceholder": "#draf\n#pribadi"
+    "excludeTagsPlaceholder": "#draf\n#pribadi",
+    "journalGroup": "Jurnal belajar",
+    "journal": "Simpan jurnal belajar",
+    "journalDesc": "Setiap perubahan kemajuan Anda ditambahkan sebagai baris ke berkas per bulan dan per perangkat. Statistik dibuat darinya.",
+    "journalFolder": "Folder jurnal",
+    "journalFolderDesc": "Satu berkas per bulan dan perangkat. Folder ini tidak pernah muncul di peta."
   },
   "scope": {
     "excludedNote": "Catatan ini berada di luar peta karena pengaturan folder atau tag.",
@@ -327,5 +332,14 @@
   "canvasSoftLabel": "disarankan",
   "moreActions": "Tindakan lainnya",
   "sheetHandle": "Ukuran panel: ketuk atau seret",
-  "linkNext": "Tautkan ke konsep berikutnya…"
+  "linkNext": "Tautkan ke konsep berikutnya…",
+  "journal": {
+    "fileText": "Tropa menambahkan satu baris di sini untuk setiap perubahan kemajuan di perangkat ini. Statistik dibaca dari baris-baris ini, jadi pertahankan formatnya.",
+    "title": "Aktivitas",
+    "week": "7 hari",
+    "month": "30 hari",
+    "mastered": "Dikuasai",
+    "time": "Waktu dengan materi",
+    "reviews": "Pengulangan"
+  }
 }

@@ -960,6 +960,16 @@ button.tropa-add svg { width: 14px; height: 14px; }
 
 .tropa-offmap { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--tropa-line); }
 
+/* Activity from the learning journal, under the route in the side panel */
+
+.tropa-stats { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--tropa-line); }
+.tropa-stats table { width: 100%; border-collapse: collapse; font-size: var(--font-ui-small); }
+.tropa-stats th,
+.tropa-stats td { padding: 4px 0; text-align: end; font-variant-numeric: tabular-nums; }
+.tropa-stats th[scope="row"] { text-align: start; font-weight: var(--font-normal); color: var(--text-muted); }
+.tropa-stats th[scope="col"] { color: var(--text-faint); font-weight: var(--font-normal); }
+.tropa-stats td { padding-inline-start: 12px; }
+
 /* Search rows */
 
 .tropa-pick { display: flex; align-items: center; gap: 10px; }

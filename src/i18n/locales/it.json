@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Archivio\nModelli",
     "excludeTags": "Tag esclusi",
     "excludeTagsDesc": "Un tag per riga. Le note con questi tag restano fuori dalla mappa, tag annidati compresi: #bozza copre anche #bozza/vecchia.",
-    "excludeTagsPlaceholder": "#bozza\n#privato"
+    "excludeTagsPlaceholder": "#bozza\n#privato",
+    "journalGroup": "Diario di studio",
+    "journal": "Tieni un diario di studio",
+    "journalDesc": "Ogni modifica dei tuoi progressi viene aggiunta come riga a un file per mese e per dispositivo. Le statistiche si basano su questo.",
+    "journalFolder": "Cartella del diario",
+    "journalFolderDesc": "Un file per mese e dispositivo. Questa cartella non compare mai sulla mappa."
   },
   "scope": {
     "excludedNote": "Questa nota resta fuori dalla mappa per le impostazioni di cartelle o tag.",
@@ -363,5 +368,14 @@
   "canvasSoftLabel": "consigliato",
   "moreActions": "Altre azioni",
   "sheetHandle": "Dimensione del pannello: tocca o trascina",
-  "linkNext": "Collega al concetto successivo…"
+  "linkNext": "Collega al concetto successivo…",
+  "journal": {
+    "fileText": "Tropa aggiunge qui una riga per ogni modifica dei progressi su questo dispositivo. Le statistiche vengono lette da queste righe, quindi mantienine il formato.",
+    "title": "Attività",
+    "week": "7 giorni",
+    "month": "30 giorni",
+    "mastered": "Padroneggiati",
+    "time": "Tempo con i materiali",
+    "reviews": "Ripassi"
+  }
 }

@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arkisto\nMallit",
     "excludeTags": "Rajatut tunnisteet",
     "excludeTagsDesc": "Yksi tunniste riville. Muistiinpanot, joilla on nämä tunnisteet, jäävät pois kartalta, myös sisäkkäiset: #luonnos kattaa myös #luonnos/vanha.",
-    "excludeTagsPlaceholder": "#luonnos\n#yksityinen"
+    "excludeTagsPlaceholder": "#luonnos\n#yksityinen",
+    "journalGroup": "Oppimispäiväkirja",
+    "journal": "Pidä oppimispäiväkirjaa",
+    "journalDesc": "Jokainen edistymisen muutos lisätään rivinä kuukauden ja tämän laitteen tiedostoon. Tilastot lasketaan siitä.",
+    "journalFolder": "Päiväkirjan kansio",
+    "journalFolderDesc": "Yksi tiedosto kuukautta ja laitetta kohden. Kansio ei koskaan näy kartalla."
   },
   "scope": {
     "excludedNote": "Tämä muistiinpano jää pois kartalta kansio- tai tunnisteasetusten vuoksi.",
@@ -345,5 +350,14 @@
   "canvasSoftLabel": "suositeltu",
   "moreActions": "Lisää toimintoja",
   "sheetHandle": "Paneelin koko: napauta tai vedä",
-  "linkNext": "Yhdistä seuraavaan käsitteeseen…"
+  "linkNext": "Yhdistä seuraavaan käsitteeseen…",
+  "journal": {
+    "fileText": "Tropa lisää tähän rivin jokaisesta edistymisen muutoksesta tällä laitteella. Tilastot luetaan näistä riveistä, joten säilytä niiden muoto.",
+    "title": "Toiminta",
+    "week": "7 päivää",
+    "month": "30 päivää",
+    "mastered": "Hallussa",
+    "time": "Aika materiaalien parissa",
+    "reviews": "Kertaukset"
+  }
 }

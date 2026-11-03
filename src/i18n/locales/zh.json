@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "归档\n模板",
     "excludeTags": "排除的标签",
     "excludeTagsDesc": "每行一个标签。带有这些标签的笔记不会出现在地图上，嵌套标签也一样：#草稿 也会排除 #草稿/旧。",
-    "excludeTagsPlaceholder": "#草稿\n#私人"
+    "excludeTagsPlaceholder": "#草稿\n#私人",
+    "journalGroup": "学习日志",
+    "journal": "记录学习日志",
+    "journalDesc": "每次进度变化都会作为一行追加到按月和本设备区分的文件中。统计由此生成。",
+    "journalFolder": "日志文件夹",
+    "journalFolderDesc": "每月每台设备一个文件。此文件夹不会出现在地图上。"
   },
   "scope": {
     "excludedNote": "这篇笔记因文件夹或标签设置被排除在地图之外。",
@@ -327,5 +332,14 @@
   "canvasSoftLabel": "推荐",
   "moreActions": "更多操作",
   "sheetHandle": "面板大小：点按或拖动",
-  "linkNext": "连接到下一个概念…"
+  "linkNext": "连接到下一个概念…",
+  "journal": {
+    "fileText": "Tropa 会在本设备的进度每次变化时在此追加一行。统计从这些行中读取，请保持其格式。",
+    "title": "活动",
+    "week": "7 天",
+    "month": "30 天",
+    "mastered": "已掌握",
+    "time": "学习资料用时",
+    "reviews": "复习"
+  }
 }

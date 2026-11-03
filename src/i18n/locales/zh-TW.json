@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "封存\n範本",
     "excludeTags": "排除的標籤",
     "excludeTagsDesc": "每行一個標籤。帶有這些標籤的筆記不會出現在地圖上，巢狀標籤也一樣：#草稿 也會排除 #草稿/舊。",
-    "excludeTagsPlaceholder": "#草稿\n#私人"
+    "excludeTagsPlaceholder": "#草稿\n#私人",
+    "journalGroup": "學習日誌",
+    "journal": "記錄學習日誌",
+    "journalDesc": "每次進度變化都會以一行附加到依月份與本裝置區分的檔案中。統計由此產生。",
+    "journalFolder": "日誌資料夾",
+    "journalFolderDesc": "每月每台裝置一個檔案。此資料夾不會出現在地圖上。"
   },
   "scope": {
     "excludedNote": "這則筆記因資料夾或標籤設定被排除在地圖之外。",
@@ -327,5 +332,14 @@
   "canvasSoftLabel": "推薦",
   "moreActions": "更多操作",
   "sheetHandle": "面板大小：點按或拖曳",
-  "linkNext": "連結到下一個概念…"
+  "linkNext": "連結到下一個概念…",
+  "journal": {
+    "fileText": "Tropa 會在本裝置的進度每次變化時於此附加一行。統計從這些行讀取，請保持其格式。",
+    "title": "活動",
+    "week": "7 天",
+    "month": "30 天",
+    "mastered": "已掌握",
+    "time": "教材使用時間",
+    "reviews": "複習"
+  }
 }

@@ -31,6 +31,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
+- **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
 - **Map audit.** The command **Tropa: Audit the map** opens one list of what needs a look:
   - dependency cycles, shown as a chain back to where they start;
   - links to missing notes, with how many notes point to each and a button to create it;
@@ -153,6 +154,25 @@ A material in a concept's `materials` list is a URL, a link to an attachment or 
 - **Excluded tags**: tags from the `tags` property and from the note text, `#` optional, case ignored. A tag covers its nested tags: `#draft` also excludes `#draft/old`.
 
 Excluded notes leave the map completely: a `requires`, `recommends` or `teaches` link to one is dropped, so it adds no node, no route step and blocks nothing, and what needed only that note becomes available. The side panel still says when the open note is left out. Marks on excluded notes stay in the progress file as they are and return with the note, and the progress file is read even when its folder is excluded. Attachments listed in a concept's `materials` stay on the map wherever they are stored: the scope picks notes, not the files a note on the map points at. If the goal itself is excluded, Tropa says so and asks to choose another goal or change the settings.
+
+### Learning journal
+
+`Tropa/Progress.md` says where you stand; the journal says how you got there. Each change made on this device is appended to `Tropa/Journal/<YYYY-MM> <device>.md`:
+
+```markdown
+- 2026-11-03T14:05:12+03:00 started [[Gradient]]
+- 2026-11-03T14:31:40+03:00 mastered [[Gradient]]
+- 2026-11-03T14:31:44+03:00 unmastered [[Gradient]] undo
+- 2026-11-03T14:40:02+03:00 confidence [[Derivatives]] level=4
+- 2026-11-03T15:10:00+03:00 done https://en.wikipedia.org/wiki/Gradient
+```
+
+- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`; `reviewed` and `checked` are reserved for reviews and self-checks.
+- Undo appends lines flagged `undo` that put things back, instead of erasing lines: the files only grow, so a sync never has to merge two versions of one.
+- The device name, like `desktop-3f9a` or `phone-07c1`, is kept by Obsidian on the device and is not synced. Each device writes only its own file and reads all of them, so the activity in the panel covers every device.
+- Links follow renames like any other links. Lines that do not parse, such as notes you add between them, are skipped.
+- Only changes made in Tropa are written. A progress file edited by hand or changed by a sync from another device is not, since that device writes its own lines.
+- **Settings → Tropa → Learning journal** turns it off or moves the folder. The folder is never on the map. Vaults without a journal work as before; the panel shows activity once there is something to show.
 
 ## Demo vault (optional)
 

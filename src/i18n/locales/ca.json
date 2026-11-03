@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arxiu\nPlantilles",
     "excludeTags": "Etiquetes excloses",
     "excludeTagsDesc": "Una etiqueta per línia. Les notes amb aquestes etiquetes queden fora del mapa, incloses les niades: #esborrany també cobreix #esborrany/antic.",
-    "excludeTagsPlaceholder": "#esborrany\n#privat"
+    "excludeTagsPlaceholder": "#esborrany\n#privat",
+    "journalGroup": "Diari d’aprenentatge",
+    "journal": "Portar un diari d’aprenentatge",
+    "journalDesc": "Cada canvi del teu progrés s’afegeix com una línia a un fitxer per mes i per dispositiu. Les estadístiques en surten.",
+    "journalFolder": "Carpeta del diari",
+    "journalFolderDesc": "Un fitxer per mes i dispositiu. Aquesta carpeta no apareix mai al mapa."
   },
   "scope": {
     "excludedNote": "Aquesta nota queda fora del mapa pels ajustos de carpetes o etiquetes.",
@@ -363,5 +368,14 @@
   "canvasSoftLabel": "recomanat",
   "moreActions": "Més accions",
   "sheetHandle": "Mida del tauler: toca o arrossega",
-  "linkNext": "Enllaça amb el concepte següent…"
+  "linkNext": "Enllaça amb el concepte següent…",
+  "journal": {
+    "fileText": "Tropa afegeix aquí una línia per cada canvi de progrés en aquest dispositiu. Les estadístiques es llegeixen d’aquestes línies, així que conserva’n el format.",
+    "title": "Activitat",
+    "week": "7 dies",
+    "month": "30 dies",
+    "mastered": "Dominats",
+    "time": "Temps amb materials",
+    "reviews": "Repassos"
+  }
 }

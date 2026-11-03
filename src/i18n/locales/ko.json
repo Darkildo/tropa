@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "보관함\n템플릿",
     "excludeTags": "제외할 태그",
     "excludeTagsDesc": "한 줄에 태그 하나. 이 태그가 있는 노트는 지도에 나오지 않으며 중첩 태그도 포함됩니다: #초안 은 #초안/옛것 도 제외합니다.",
-    "excludeTagsPlaceholder": "#초안\n#개인"
+    "excludeTagsPlaceholder": "#초안\n#개인",
+    "journalGroup": "학습 일지",
+    "journal": "학습 일지 기록",
+    "journalDesc": "진행 상황이 바뀔 때마다 월과 이 기기별 파일에 한 줄씩 추가됩니다. 통계는 여기서 만들어집니다.",
+    "journalFolder": "일지 폴더",
+    "journalFolderDesc": "월과 기기마다 파일 하나. 이 폴더는 지도에 나타나지 않습니다."
   },
   "scope": {
     "excludedNote": "이 노트는 폴더 또는 태그 설정 때문에 지도에서 빠졌습니다.",
@@ -327,5 +332,14 @@
   "canvasSoftLabel": "추천",
   "moreActions": "기타 작업",
   "sheetHandle": "패널 크기: 탭하거나 끌기",
-  "linkNext": "다음 개념과 연결…"
+  "linkNext": "다음 개념과 연결…",
+  "journal": {
+    "fileText": "Tropa는 이 기기에서 진행 상황이 바뀔 때마다 여기에 한 줄을 추가합니다. 통계는 이 줄에서 읽으므로 형식을 유지하세요.",
+    "title": "활동",
+    "week": "7일",
+    "month": "30일",
+    "mastered": "익힘",
+    "time": "자료와 보낸 시간",
+    "reviews": "복습"
+  }
 }

@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "Arkiv\nMallar",
     "excludeTags": "Uteslutna taggar",
     "excludeTagsDesc": "En tagg per rad. Anteckningar med dessa taggar hamnar inte på kartan, nästlade taggar inräknade: #utkast gäller även #utkast/gammalt.",
-    "excludeTagsPlaceholder": "#utkast\n#privat"
+    "excludeTagsPlaceholder": "#utkast\n#privat",
+    "journalGroup": "Inlärningsjournal",
+    "journal": "För en inlärningsjournal",
+    "journalDesc": "Varje ändring av dina framsteg läggs till som en rad i en fil per månad och enhet. Statistiken bygger på den.",
+    "journalFolder": "Journalmapp",
+    "journalFolderDesc": "En fil per månad och enhet. Mappen hamnar aldrig på kartan."
   },
   "scope": {
     "excludedNote": "Anteckningen hålls utanför kartan av inställningarna för mappar eller taggar.",
@@ -345,5 +350,14 @@
   "canvasSoftLabel": "rekommenderas",
   "moreActions": "Fler åtgärder",
   "sheetHandle": "Panelens storlek: tryck eller dra",
-  "linkNext": "Koppla till nästa begrepp …"
+  "linkNext": "Koppla till nästa begrepp …",
+  "journal": {
+    "fileText": "Tropa lägger till en rad här för varje ändring av framsteg på den här enheten. Statistiken läses från raderna, så behåll deras format.",
+    "title": "Aktivitet",
+    "week": "7 dagar",
+    "month": "30 dagar",
+    "mastered": "Behärskat",
+    "time": "Tid med material",
+    "reviews": "Repetitioner"
+  }
 }

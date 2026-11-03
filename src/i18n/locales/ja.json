@@ -48,7 +48,12 @@
     "excludeFoldersPlaceholder": "アーカイブ\nテンプレート",
     "excludeTags": "除外するタグ",
     "excludeTagsDesc": "1行に1タグ。これらのタグが付いたノートはマップに載りません。入れ子のタグも含みます：#下書き は #下書き/古い も対象です。",
-    "excludeTagsPlaceholder": "#下書き\n#非公開"
+    "excludeTagsPlaceholder": "#下書き\n#非公開",
+    "journalGroup": "学習ジャーナル",
+    "journal": "学習ジャーナルを記録する",
+    "journalDesc": "進捗が変わるたびに、月とこのデバイスごとのファイルに1行追記されます。統計はここから作られます。",
+    "journalFolder": "ジャーナルのフォルダー",
+    "journalFolderDesc": "月とデバイスごとに1ファイル。このフォルダーはマップに表示されません。"
   },
   "scope": {
     "excludedNote": "このノートはフォルダーまたはタグの設定によりマップから除外されています。",
@@ -327,5 +332,14 @@
   "canvasSoftLabel": "推奨",
   "moreActions": "その他の操作",
   "sheetHandle": "パネルの大きさ：タップまたはドラッグ",
-  "linkNext": "次の概念とつなぐ…"
+  "linkNext": "次の概念とつなぐ…",
+  "journal": {
+    "fileText": "Tropa はこのデバイスで進捗が変わるたびにここへ1行追記します。統計はこれらの行から読み取るため、形式を変えないでください。",
+    "title": "アクティビティ",
+    "week": "7日間",
+    "month": "30日間",
+    "mastered": "習得済み",
+    "time": "教材に費やした時間",
+    "reviews": "復習"
+  }
 }

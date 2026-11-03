@@ -99,7 +99,7 @@ function pickMaterial(host: DetailHost, node: GraphNode) {
     })),
     ...app.vault
       .getMarkdownFiles()
-      .filter((file) => !known.has(file.path) && !attached.has(file.path) && !store.graph.nodes.has(file.path))
+      .filter((file) => !known.has(file.path) && !attached.has(file.path) && !store.graph.nodes.has(file.path) && !store.isOwnFile(file.path))
       .map((file) => ({ id: file.path, title: file.basename, icon: "file", hint: t.note })),
   ];
   // Attachments go into the concept's own list: a PDF or a video needs no note to be a material.
