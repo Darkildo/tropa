@@ -7,6 +7,7 @@
   --tropa-walked: var(--color-green);
   --tropa-learning: var(--color-yellow);
   --tropa-danger: var(--color-red);
+  --tropa-review: var(--color-orange);
   --tropa-line: var(--background-modifier-border);
   --tropa-line-strong: color-mix(in srgb, var(--text-muted) 55%, transparent);
 }
@@ -482,6 +483,31 @@ button.tropa-focus-toggle:disabled { opacity: 0.5; cursor: default; }
 .tropa-port:hover { opacity: 1; transform: scale(1); }
 .is-connecting .tropa-port { display: none; }
 
+/* Due for review: a mastered concept the memory of which is fading. A badge with an icon, not only a color. */
+.tropa-due {
+  position: absolute;
+  top: -9px;
+  inset-inline-end: -9px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--background-primary);
+  border-radius: 50%;
+  background: var(--tropa-review);
+  color: var(--background-primary);
+  pointer-events: none;
+}
+
+.tropa-due svg { width: 11px; height: 11px; stroke-width: 2.5; }
+.tropa-node.is-due .tropa-due { display: inline-flex; }
+.tropa-node.is-due { border-color: color-mix(in srgb, var(--tropa-review) 70%, transparent); }
+
+.tropa-glyph.is-due { border-color: var(--tropa-review); background: var(--tropa-review); color: var(--background-primary); }
+.tropa-legend-item.is-review { display: none; }
+.tropa-map.has-review .tropa-legend-item.is-review { display: inline-flex; }
+
 /* Fold: hide what a concept opens. Shown on hover, kept as "+K" once folded. */
 .tropa-fold {
   position: absolute;
@@ -952,6 +978,48 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .tropa-stats th[scope="row"] { text-align: start; font-weight: var(--font-normal); color: var(--text-muted); }
 .tropa-stats th[scope="col"] { color: var(--text-faint); font-weight: var(--font-normal); }
 .tropa-stats td { padding-inline-start: 12px; }
+
+/* Review: when a mastered concept comes back, and four ratings */
+.tropa-review {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--tropa-line);
+  border-radius: var(--radius-m);
+}
+
+.tropa-review.is-due { border-color: color-mix(in srgb, var(--tropa-review) 60%, transparent); background: color-mix(in srgb, var(--tropa-review) 8%, transparent); }
+.tropa-review-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-weight: var(--font-semibold); }
+.tropa-review-icon { display: inline-flex; color: var(--text-muted); }
+.tropa-review.is-due .tropa-review-icon { color: var(--tropa-review); }
+.tropa-review-icon svg { width: 16px; height: 16px; }
+.tropa-review .tropa-hint { margin-bottom: 8px; }
+.tropa-review-prompt { margin: 4px 0 6px; color: var(--text-muted); font-size: var(--font-ui-small); }
+.tropa-review-check { margin-bottom: 8px; }
+
+.tropa-review-ratings {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.tropa-review-ratings button.tropa-review-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  height: auto;
+  min-height: 44px;
+  padding: 6px 4px;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+.tropa-review-rating-name { font-size: var(--font-ui-small); text-align: center; }
+.tropa-review-rating-interval { color: var(--text-muted); font-size: var(--font-ui-smaller); font-variant-numeric: tabular-nums; }
+.tropa-review-rating.is-again .tropa-review-rating-name { color: var(--tropa-danger); }
+.tropa-review-rating.is-easy .tropa-review-rating-name { color: var(--tropa-walked); }
+
+.tropa-review-queue .tropa-review-when { margin-inline-start: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); }
 
 /* Search rows */
 

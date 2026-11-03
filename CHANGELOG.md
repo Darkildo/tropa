@@ -9,6 +9,14 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
 - **Activity in the side panel:** concepts mastered, time with finished materials and reviews over the last 7 and 30 days, read from the journals of all devices. Files that change by sync are read again on their own.
 - **Settings → Learning journal** turns the journal off or moves its folder. The folder is never on the map and its files are not offered as materials.
 - The core keeps the merged history by concept, with reviews and when a mark was made, for reviews to come.
+- **Review of mastered concepts with FSRS** ([ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2, MIT, no dependencies).
+  - The schedule of each concept is replayed from the journal: it starts with the mastered mark (as Good) or the known mark (as Easy), and every `reviewed` or `checked` line after it is one FSRS step. Nothing else is stored, so reviews on other devices, Undo and a new target recall all count the same way.
+  - A concept is due when the chance to recall it falls below the target recall (90% by default; 80, 85 or 95% in the settings). It stays mastered and blocks nothing; the map shows a badge on it and in the legend, and **Review today** above the route lists the due concepts, the longest overdue first, in the side panel and in the map's panel, on a phone too.
+  - Four ratings, **Forgot**, **Hard**, **Recalled**, **Easy**, each with the interval it would give. Not due yet: **Review now**. A notice says when the concept comes back and offers Undo, which appends a `reviewed … undo` line.
+  - Marks with no date in the journal (made before it, or on a device without one) start on the day review is first on, spread over one week to two months, a few a day, so an old map is not due all at once.
+  - Commands **Review the next concept** and **Open the review queue**. The activity in the panel counts reviews.
+  - **Settings → Review** turns it off and sets the target recall. Review needs the journal and is off without it.
+  - A self-check feature can register questions for a concept; review then offers **Check yourself** before the ratings, and a check just before the mastered mark sets how well the memory starts.
 
 ## [0.3.2] - 2026-11-03
 

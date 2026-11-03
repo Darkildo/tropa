@@ -12,6 +12,8 @@ export const PANEL_VIEW = "tropa-panel";
 export class PanelView extends ItemView implements DetailHost {
   private body!: HTMLElement;
   private override: string | null = null;
+  /** Show the route and the review queue even when a concept note is open. */
+  private queue = false;
 
   constructor(leaf: WorkspaceLeaf, private readonly plugin: TropaPlugin) {
     super(leaf);
@@ -19,6 +21,10 @@ export class PanelView extends ItemView implements DetailHost {
 
   get store() {
     return this.plugin.store;
+  }
+
+  get reviews() {
+    return this.plugin.reviews;
   }
 
   get canGoBack() {
@@ -49,10 +55,11 @@ export class PanelView extends ItemView implements DetailHost {
       this.registerEvent(this.app.workspace.on("layout-change", place));
     }
     this.registerEvent(this.store.on("change", () => this.render()));
-    this.registerEvent(this.plugin.journal.on("change", () => this.render()));
+    this.registerEvent(this.plugin.reviews.on("change", () => this.render()));
     this.registerEvent(
       this.app.workspace.on("file-open", () => {
         this.override = null;
+        this.queue = false;
         this.render();
       }),
     );
@@ -61,7 +68,15 @@ export class PanelView extends ItemView implements DetailHost {
 
   select(id: string | null) {
     this.override = id;
+    this.queue = false;
     this.render();
+  }
+
+  showQueue() {
+    this.override = null;
+    this.queue = true;
+    this.render();
+    this.body.querySelector(".tropa-review-queue")?.scrollIntoView({ block: "start" });
   }
 
   openNote(id: string, newTab = false) {
@@ -75,13 +90,13 @@ export class PanelView extends ItemView implements DetailHost {
     body.empty();
 
     const file = this.app.workspace.getActiveFile();
-    const id = this.override ?? file?.path ?? null;
+    const id = this.override ?? (this.queue ? null : file?.path ?? null);
     const node = id ? store.graph.nodes.get(id) : null;
 
     if (node?.kind === "concept") renderConcept(body, this, node);
     else if (node) renderSource(body, this, node);
     else {
-      if (file?.extension === "md" && !store.isOwnFile(file.path)) this.renderOffMap(file);
+      if (!this.queue && file?.extension === "md" && !store.isOwnFile(file.path)) this.renderOffMap(file);
       renderRoute(body, this, () => attempt(this.plugin.showMap((map) => map.pickGoal()), "choose a goal"));
       this.renderStats();
     }

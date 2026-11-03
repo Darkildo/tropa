@@ -89,6 +89,7 @@ export class Component {
   unload() { this.cleanups.forEach((c) => c()); (this as any).onunload?.(); }
   register(cb: Callback) { this.cleanups.push(cb); }
   registerEvent(ref: any) { this.cleanups.push(() => ref.emitter.offref(ref)); }
+  registerInterval(id: number) { this.cleanups.push(() => window.clearInterval(id)); return id; }
   registerDomEvent(el: any, name: string, cb: any, options?: any) {
     el.addEventListener(name, cb, options);
     this.cleanups.push(() => el.removeEventListener(name, cb, options));
@@ -344,7 +345,7 @@ export class PluginSettingTab {
     await this.plugin.saveData(this.plugin.settings);
   }
 
-  // Renders what Tropa uses of the declarative API (1.13): groups, rows, toggles, text and textarea controls.
+  // Renders what Tropa uses of the declarative API (1.13): groups, rows, toggles, dropdowns, text and textarea controls.
   display() {
     const root = this.containerEl as any;
     root.empty();
@@ -359,6 +360,14 @@ export class PluginSettingTab {
         box.dataset.key = control.key;
         box.checked = this.getControlValue(control.key) === true;
         box.addEventListener("change", () => void this.setControlValue(control.key, box.checked));
+        return;
+      }
+      if (control?.type === "dropdown") {
+        const select = item.createDiv({ cls: "setting-item-control" }).createEl("select", { cls: "dropdown" }) as HTMLSelectElement;
+        select.dataset.key = control.key;
+        for (const [value, label] of Object.entries(control.options as Record<string, string>)) select.createEl("option", { text: label, attr: { value } });
+        select.value = String(this.getControlValue(control.key) ?? "");
+        select.addEventListener("change", () => void this.setControlValue(control.key, select.value));
         return;
       }
       if (control?.type !== "text" && control?.type !== "textarea") return;
