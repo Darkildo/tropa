@@ -39,6 +39,7 @@ export class AuditView extends ItemView {
     this.contentEl.addClass("tropa-host");
     this.body = this.contentEl.createDiv({ cls: "tropa-audit", attr: { dir: isRtl() ? "rtl" : "ltr" } });
     this.registerEvent(this.store.on("change", () => this.render()));
+    this.registerEvent(this.plugin.checks.on("change", () => this.render()));
     this.render();
   }
 
@@ -46,7 +47,7 @@ export class AuditView extends ItemView {
     if (!this.body) return;
     const scroll = this.body.scrollTop;
     this.body.empty();
-    const audit = auditGraph(this.store.graph);
+    const audit = auditGraph(this.store.graph, this.plugin.checks.forAudit);
     const count = auditCount(audit);
 
     this.body.createEl("h2", { cls: "tropa-title", text: t.audit.title });
@@ -65,6 +66,7 @@ export class AuditView extends ItemView {
     });
     this.section("no-materials", t.audit.noMaterials, t.audit.noMaterialsHint, audit.noMaterials, (list, id) => this.row(list, id));
     this.section("orphans", t.audit.orphans, t.audit.orphansHint, audit.orphans, (list, id) => this.row(list, id));
+    this.section("no-questions", t.check.auditTitle, t.check.auditHint, audit.noQuestions, (list, id) => this.row(list, id));
     this.body.scrollTop = scroll;
   }
 

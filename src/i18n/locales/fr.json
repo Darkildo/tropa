@@ -406,5 +406,40 @@
     "nothingDue": "Rien à réviser pour l’instant",
     "needsJournal": "La révision a besoin du journal d’apprentissage. Activez-le dans les paramètres.",
     "off": "La révision est désactivée dans les paramètres."
+  },
+  "check": {
+    "group": "Auto-évaluation",
+    "command": "S’évaluer sur le concept ouvert",
+    "callout": "Callout de question",
+    "calloutDesc": "Les questions sont des callouts de ce type dans la note d’un concept : le titre est la question, le contenu la réponse.",
+    "offer": "Proposer une auto-évaluation avant « maîtrisé »",
+    "offerDesc": "Si un concept a des questions, le marquer comme maîtrisé propose d’abord de s’évaluer. On peut toujours passer.",
+    "audit": "Concepts sans questions dans l’audit",
+    "auditDesc": "L’audit de la carte liste aussi les concepts sans questions d’auto-évaluation.",
+    "questions": {
+      "one": "{count} question d’auto-évaluation",
+      "many": "{count} questions d’auto-évaluation",
+      "other": "{count} questions d’auto-évaluation"
+    },
+    "title": "Auto-évaluation : {title}",
+    "progress": "Question {index} sur {count}",
+    "showAnswer": "Afficher la réponse",
+    "noAnswer": "Aucune réponse sous cette question.",
+    "gradePrompt": "Comment avez-vous répondu ?",
+    "right": "Juste",
+    "partly": "En partie",
+    "wrong": "Faux",
+    "summary": "{score} sur {count} justes",
+    "suggested": "D’après vos réponses : {rating}",
+    "masterPrompt": "Marquer le concept comme maîtrisé ?",
+    "notYet": "Pas encore",
+    "offerTitle": "S’évaluer d’abord ?",
+    "offerText": "{title} a des questions d’auto-évaluation. Y répondre d’abord donne plus de sens à la marque « maîtrisé ».",
+    "skip": "Marquer maîtrisé sans évaluation",
+    "dontAsk": "Ne plus proposer",
+    "saved": "Auto-évaluation de {title} enregistrée",
+    "keys": "Espace affiche la réponse, 1 à 3 la notent",
+    "auditTitle": "Concepts sans questions",
+    "auditHint": "Rien pour s’évaluer pour l’instant. Ajoutez un callout comme > [!question]- avec la réponse dedans."
   }
 }

@@ -13,9 +13,12 @@ export interface Audit {
   duplicates: string[][];
   /** Each dependency cycle as a chain: every concept requires the next, and the last requires the first. */
   cycles: string[][];
+  /** Concepts with a note but no self-check questions; empty unless the audit was asked to look. */
+  noQuestions: string[];
 }
 
-export function auditGraph(graph: LearningGraph): Audit {
+/** `questions` counts the self-check questions of a concept; without it the audit leaves them out. */
+export function auditGraph(graph: LearningGraph, questions?: (id: string) => number): Audit {
   const recommendedBy = new Map<string, Set<string>>();
   for (const node of graph.nodes.values()) {
     for (const id of node.recommends) {
@@ -29,6 +32,7 @@ export function auditGraph(graph: LearningGraph): Audit {
   const orphans: string[] = [];
   const noMaterials: string[] = [];
   const ghosts: Audit["ghosts"] = [];
+  const noQuestions: string[] = [];
   for (const node of graph.nodes.values()) {
     if (node.ghost) {
       const from = new Set([...node.requiredBy, ...node.taughtBy, ...(recommendedBy.get(node.id) ?? [])]);
@@ -39,6 +43,7 @@ export function auditGraph(graph: LearningGraph): Audit {
       node.requires.length || node.requiredBy.length || node.recommends.length || node.teaches.length || node.taughtBy.length || recommendedBy.has(node.id);
     if (!linked) orphans.push(node.id);
     else if (node.kind === "concept" && node.taughtBy.length === 0) noMaterials.push(node.id);
+    if (questions && node.kind === "concept" && !questions(node.id)) noQuestions.push(node.id);
   }
 
   const groups = new Map<string, string[]>();
@@ -59,12 +64,15 @@ export function auditGraph(graph: LearningGraph): Audit {
     ghosts,
     duplicates,
     cycles: graph.cycles.map((component) => cycleChain(graph, component)),
+    noQuestions: byTitle(noQuestions),
   };
 }
 
 /** How many findings the audit has, a cycle or a group of duplicates counting once. */
 export function auditCount(audit: Audit) {
-  return audit.noMaterials.length + audit.orphans.length + audit.ghosts.length + audit.duplicates.length + audit.cycles.length;
+  return (
+    audit.noMaterials.length + audit.orphans.length + audit.ghosts.length + audit.duplicates.length + audit.cycles.length + audit.noQuestions.length
+  );
 }
 
 /** A name for comparing: no case, no accents or other marks, single spaces. */

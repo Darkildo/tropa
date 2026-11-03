@@ -388,5 +388,39 @@
     "nothingDue": "Şu an tekrar edilecek bir şey yok",
     "needsJournal": "Tekrar için öğrenme günlüğü gerekir. Ayarlardan açın.",
     "off": "Tekrar ayarlardan kapatıldı."
+  },
+  "check": {
+    "group": "Kendini sınama",
+    "command": "Açık kavramda kendini sına",
+    "callout": "Soru callout'u",
+    "calloutDesc": "Sorular, kavram notundaki bu türden callout'lardır: başlık soru, içerik cevaptır.",
+    "offer": "“Öğrenildi” öncesinde kendini sınamayı öner",
+    "offerDesc": "Bir kavramın soruları varsa, öğrenildi olarak işaretlemek önce kendini sınamayı önerir. Her zaman atlanabilir.",
+    "audit": "Harita denetiminde sorusuz kavramlar",
+    "auditDesc": "Harita denetimi, kendini sınama sorusu olmayan kavramları da listeler.",
+    "questions": {
+      "one": "{count} kendini sınama sorusu",
+      "other": "{count} kendini sınama sorusu"
+    },
+    "title": "Kendini sına: {title}",
+    "progress": "Soru {index} / {count}",
+    "showAnswer": "Cevabı göster",
+    "noAnswer": "Bu sorunun altında cevap yok.",
+    "gradePrompt": "Nasıl cevap verdiniz?",
+    "right": "Doğru",
+    "partly": "Kısmen",
+    "wrong": "Yanlış",
+    "summary": "{count} sorudan {score} doğru",
+    "suggested": "Cevaplarınıza göre: {rating}",
+    "masterPrompt": "Kavram öğrenildi olarak işaretlensin mi?",
+    "notYet": "Henüz değil",
+    "offerTitle": "Önce kendini sınamak ister misiniz?",
+    "offerText": "{title} kavramının kendini sınama soruları var. Önce bunları cevaplarsanız “öğrenildi” işareti daha anlamlı olur.",
+    "skip": "Sınamadan öğrenildi işaretle",
+    "dontAsk": "Bir daha önerme",
+    "saved": "{title} için kendini sınama kaydedildi",
+    "keys": "Boşluk cevabı gösterir, 1–3 değerlendirir",
+    "auditTitle": "Sorusuz kavramlar",
+    "auditHint": "Henüz kendinizi sınayacak bir şey yok. > [!question]- gibi bir callout ekleyip cevabı içine yazın."
   }
 }

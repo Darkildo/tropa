@@ -56,6 +56,15 @@ describe("map audit", () => {
     expect([...groups.find((group) => group.includes("x/Ёлка.md"))!].sort()).toEqual(["ghost:ЕЛКА", "x/Ёлка.md", "y/елка.md"]);
   });
 
+  it("lists concepts without self-check questions only when asked", () => {
+    const graph = new LearningGraph([concept("a"), concept("b", ["a", "ghost:Missing"]), source("s", ["a"])]);
+    expect(auditGraph(graph).noQuestions).toEqual([]);
+    const audit = auditGraph(graph, (id) => (id === "a" ? 2 : 0));
+    // A ghost has no note to hold questions; a material is not asked for them.
+    expect(audit.noQuestions).toEqual(["b"]);
+    expect(auditCount(audit)).toBe(auditCount(auditGraph(graph)) + 1);
+  });
+
   it("normalizes names for comparison", () => {
     expect(normalizeTitle("  Ünïcode   Façade ")).toBe("unicode facade");
     expect(normalizeTitle("Ёж")).toBe(normalizeTitle("еж"));

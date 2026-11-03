@@ -388,5 +388,39 @@
     "nothingDue": "Ingenting å repetere nå",
     "needsJournal": "Repetisjon trenger læringsjournalen. Slå den på i innstillingene.",
     "off": "Repetisjon er slått av i innstillingene."
+  },
+  "check": {
+    "group": "Selvtest",
+    "command": "Test deg selv i det åpne begrepet",
+    "callout": "Callout for spørsmål",
+    "calloutDesc": "Spørsmål er callouts av denne typen i notatet til et begrep: tittelen er spørsmålet, innholdet svaret.",
+    "offer": "Tilby en selvtest før «mestret»",
+    "offerDesc": "Har et begrep spørsmål, tilbyr markering som mestret først en selvtest. Den kan alltid hoppes over.",
+    "audit": "Begreper uten spørsmål i kartsjekken",
+    "auditDesc": "Kartsjekken viser også begreper uten spørsmål til selvtest.",
+    "questions": {
+      "one": "{count} spørsmål til selvtest",
+      "other": "{count} spørsmål til selvtest"
+    },
+    "title": "Test deg selv: {title}",
+    "progress": "Spørsmål {index} av {count}",
+    "showAnswer": "Vis svar",
+    "noAnswer": "Det er ikke noe svar under dette spørsmålet.",
+    "gradePrompt": "Hvordan svarte du?",
+    "right": "Riktig",
+    "partly": "Delvis",
+    "wrong": "Feil",
+    "summary": "{score} av {count} riktige",
+    "suggested": "Ut fra svarene dine: {rating}",
+    "masterPrompt": "Markere begrepet som mestret?",
+    "notYet": "Ikke ennå",
+    "offerTitle": "Teste deg selv først?",
+    "offerText": "{title} har spørsmål til selvtest. Svarer du på dem først, betyr markeringen «mestret» mer.",
+    "skip": "Marker mestret uten test",
+    "dontAsk": "Ikke tilby igjen",
+    "saved": "Selvtest av {title} lagret",
+    "keys": "Mellomrom viser svaret, 1–3 vurderer det",
+    "auditTitle": "Begreper uten spørsmål",
+    "auditHint": "Ingenting å teste deg med ennå. Legg til en callout som > [!question]- med svaret inni."
   }
 }

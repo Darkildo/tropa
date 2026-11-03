@@ -132,6 +132,22 @@ describe("Self-check before the mastered mark", () => {
     expect(old.card.stability).toBeCloseTo(default_w[2], 4);
   });
 
+  it("undoing it, after the mark, gives the mark its own rating back", () => {
+    const entries = [
+      entry("checked", T0 - 60_000, { rating: "1" }),
+      entry("mastered", T0),
+      entry("reviewed", T0 + 1000, {}, ["undo"]),
+    ];
+    const schedule = scheduler.schedule("a.md", entries, null)!;
+    expect(schedule.card.stability).toBeCloseTo(default_w[2], 4);
+    expect(schedule.reviews).toBe(0);
+  });
+
+  it("undoing it before the mark leaves the mark's own rating", () => {
+    const entries = [entry("checked", T0 - 60_000, { rating: "4" }), entry("reviewed", T0 - 30_000, {}, ["undo"]), entry("mastered", T0)];
+    expect(scheduler.schedule("a.md", entries, null)!.card.stability).toBeCloseTo(default_w[2], 4);
+  });
+
   it("a self-check after the mark is a review", () => {
     const schedule = scheduler.schedule("a.md", [entry("mastered", T0), entry("checked", T0 + 3 * DAY, { rating: "3" })], null)!;
     expect(schedule.reviews).toBe(1);

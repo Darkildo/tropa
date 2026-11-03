@@ -1038,6 +1038,35 @@ button.tropa-add svg { width: 14px; height: 14px; }
 
 .tropa-review-queue .tropa-review-when { margin-inline-start: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); }
 
+/* Self-check: questions from the concept's note, one at a time */
+.tropa-check-block { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
+.tropa-check-count { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: var(--font-ui-small); }
+.tropa-check-icon { display: inline-flex; }
+.tropa-check-icon svg { width: 15px; height: 15px; }
+.tropa-review-queue .tropa-review-check { flex: none; }
+
+.tropa-check-modal .modal-content { display: flex; flex-direction: column; gap: 12px; }
+.tropa-check-progress { margin: 0; }
+.tropa-check-markdown > :first-child { margin-top: 0; }
+.tropa-check-markdown > :last-child { margin-bottom: 0; }
+.tropa-check-question { font-size: var(--font-ui-large); font-weight: var(--font-semibold); }
+.tropa-check-answer { padding: 10px 12px; border-inline-start: 3px solid var(--interactive-accent); border-radius: var(--radius-s); background: var(--background-secondary); }
+.tropa-check-buttons { display: flex; flex-direction: column; gap: 6px; }
+.tropa-check-prompt { color: var(--text-muted); font-size: var(--font-ui-small); }
+.tropa-check-grades,
+.tropa-check-ratings { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+.tropa-check-grades button,
+.tropa-check-ratings button { height: auto; min-height: 36px; white-space: normal; line-height: 1.2; }
+.tropa-check-grade.is-right { color: var(--tropa-walked); }
+.tropa-check-grade.is-wrong { color: var(--tropa-danger); }
+.tropa-check-summary { font-size: var(--font-ui-large); font-weight: var(--font-semibold); }
+.tropa-check-keys { margin: 0; color: var(--text-faint); }
+.tropa-check-dont-ask { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--text-muted); font-size: var(--font-ui-small); }
+
+.tropa-check-modal.is-phone button,
+.tropa-check-offer.is-phone button { min-height: 44px; }
+.tropa-check-offer.is-phone .modal-button-container { flex-direction: column; align-items: stretch; }
+
 /* Search rows */
 
 .tropa-pick { display: flex; align-items: center; gap: 10px; }

@@ -388,5 +388,39 @@
     "nothingDue": "Nu niets te herhalen",
     "needsJournal": "Herhalen heeft het leerjournaal nodig. Zet het aan in de instellingen.",
     "off": "Herhalen staat uit in de instellingen."
+  },
+  "check": {
+    "group": "Zelftoets",
+    "command": "Jezelf toetsen op het geopende concept",
+    "callout": "Callout voor vragen",
+    "calloutDesc": "Vragen zijn callouts van dit type in de notitie van een concept: de titel is de vraag, de inhoud het antwoord.",
+    "offer": "Een zelftoets aanbieden vóór ‘beheerst’",
+    "offerDesc": "Heeft een concept vragen, dan biedt markeren als beheerst eerst een zelftoets aan. Overslaan kan altijd.",
+    "audit": "Concepten zonder vragen in de controle",
+    "auditDesc": "De controle van de kaart toont ook concepten zonder vragen voor een zelftoets.",
+    "questions": {
+      "one": "{count} vraag voor een zelftoets",
+      "other": "{count} vragen voor een zelftoets"
+    },
+    "title": "Zelftoets: {title}",
+    "progress": "Vraag {index} van {count}",
+    "showAnswer": "Antwoord tonen",
+    "noAnswer": "Onder deze vraag staat geen antwoord.",
+    "gradePrompt": "Hoe heb je geantwoord?",
+    "right": "Goed",
+    "partly": "Deels",
+    "wrong": "Fout",
+    "summary": "{score} van {count} goed",
+    "suggested": "Op basis van je antwoorden: {rating}",
+    "masterPrompt": "Concept als beheerst markeren?",
+    "notYet": "Nog niet",
+    "offerTitle": "Eerst jezelf toetsen?",
+    "offerText": "{title} heeft vragen voor een zelftoets. Wie ze eerst beantwoordt, geeft het vinkje ‘beheerst’ meer waarde.",
+    "skip": "Zonder toets als beheerst markeren",
+    "dontAsk": "Niet meer aanbieden",
+    "saved": "Zelftoets van {title} opgeslagen",
+    "keys": "Spatie toont het antwoord, 1 tot 3 beoordelen het",
+    "auditTitle": "Concepten zonder vragen",
+    "auditHint": "Nog niets om jezelf mee te toetsen. Voeg een callout toe zoals > [!question]- met het antwoord erin."
   }
 }

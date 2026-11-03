@@ -29,6 +29,7 @@ export class Reviews extends Events {
   private checks: ReviewCheck[] = [];
   /** The review the open notice can take back. */
   private undoable: { id: string; count: number } | null = null;
+  private lastAction: "reviewed" | "checked" = "reviewed";
   /** Set once the vault and the journal have been read: until then there is nothing to schedule from. */
   ready = false;
 
@@ -116,10 +117,15 @@ export class Reviews extends Events {
     return this.engine.preview(schedule, now);
   }
 
-  /** Writes the review to the journal and offers to take it back. */
+  /**
+   * Writes the review to the journal and offers to take it back. A self-check is kept even before
+   * the concept is mastered, or with review off: marked mastered within a day, it sets how well
+   * the concept starts.
+   */
   rate(id: string, rating: ReviewRating, action: "reviewed" | "checked" = "reviewed") {
-    if (!this.enabled || !this.schedule(id)) return;
+    if (action === "checked" ? !this.settings().journal : !this.enabled || !this.schedule(id)) return;
     this.journal.record([{ action, id, fields: { rating: String(rating) } }]);
+    this.lastAction = action;
     const count = (this.undoable?.id === id ? this.undoable.count : 0) + 1;
     const token = { id, count };
     this.undoable = token;
@@ -130,7 +136,12 @@ export class Reviews extends Events {
   private announce(id: string, token: { id: string; count: number }) {
     const schedule = this.schedule(id);
     const title = this.store.graph.nodes.get(id)?.title ?? "";
-    const text = schedule ? t.review.recorded({ title, date: formatDate(new Date(schedule.due)) }) : t.review.recordedPlain({ title });
+    const text =
+      this.lastAction === "checked"
+        ? t.check.saved({ title })
+        : schedule
+          ? t.review.recorded({ title, date: formatDate(new Date(schedule.due)) })
+          : t.review.recordedPlain({ title });
     const content = createFragment((fragment) => {
       fragment.createSpan({ text });
       const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });

@@ -424,5 +424,41 @@
     "nothingDue": "Teď není co opakovat",
     "needsJournal": "Opakování potřebuje studijní deník. Zapněte ho v nastavení.",
     "off": "Opakování je v nastavení vypnuté."
+  },
+  "check": {
+    "group": "Sebekontrola",
+    "command": "Otestovat se z otevřeného pojmu",
+    "callout": "Callout s otázkou",
+    "calloutDesc": "Otázky jsou callouty tohoto typu v poznámce pojmu: nadpis je otázka, obsah odpověď.",
+    "offer": "Nabízet sebekontrolu před „zvládnuto“",
+    "offerDesc": "Má-li pojem otázky, označení jako zvládnutý nejprve nabídne otestovat se. Vždy to lze přeskočit.",
+    "audit": "Pojmy bez otázek v kontrole mapy",
+    "auditDesc": "Kontrola mapy ukáže i pojmy bez otázek pro sebekontrolu.",
+    "questions": {
+      "one": "{count} otázka pro sebekontrolu",
+      "few": "{count} otázky pro sebekontrolu",
+      "many": "{count} otázky pro sebekontrolu",
+      "other": "{count} otázek pro sebekontrolu"
+    },
+    "title": "Otestujte se: {title}",
+    "progress": "Otázka {index} z {count}",
+    "showAnswer": "Zobrazit odpověď",
+    "noAnswer": "Pod touto otázkou není odpověď.",
+    "gradePrompt": "Jak jste odpověděli?",
+    "right": "Správně",
+    "partly": "Částečně",
+    "wrong": "Špatně",
+    "summary": "Správně: {score} z {count}",
+    "suggested": "Podle vašich odpovědí: {rating}",
+    "masterPrompt": "Označit pojem jako zvládnutý?",
+    "notYet": "Zatím ne",
+    "offerTitle": "Nejdřív se otestovat?",
+    "offerText": "Pojem {title} má otázky pro sebekontrolu. Když je nejdřív zodpovíte, značka „zvládnuto“ bude mít větší váhu.",
+    "skip": "Označit jako zvládnuté bez testu",
+    "dontAsk": "Už nenabízet",
+    "saved": "Sebekontrola pojmu {title} uložena",
+    "keys": "Mezerník zobrazí odpověď, 1–3 ji ohodnotí",
+    "auditTitle": "Pojmy bez otázek",
+    "auditHint": "Zatím není čím se otestovat. Přidejte callout jako > [!question]- s odpovědí uvnitř."
   }
 }

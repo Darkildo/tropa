@@ -370,5 +370,38 @@
     "nothingDue": "Belum ada yang perlu diulang",
     "needsJournal": "Pengulangan memerlukan jurnal belajar. Aktifkan di pengaturan.",
     "off": "Pengulangan dimatikan di pengaturan."
+  },
+  "check": {
+    "group": "Uji diri",
+    "command": "Uji diri pada konsep yang terbuka",
+    "callout": "Callout pertanyaan",
+    "calloutDesc": "Pertanyaan adalah callout jenis ini di catatan konsep: judulnya pertanyaan, isinya jawaban.",
+    "offer": "Tawarkan uji diri sebelum “dikuasai”",
+    "offerDesc": "Jika konsep punya pertanyaan, menandainya dikuasai akan menawarkan uji diri lebih dulu. Selalu bisa dilewati.",
+    "audit": "Konsep tanpa pertanyaan di pemeriksaan peta",
+    "auditDesc": "Pemeriksaan peta juga menampilkan konsep tanpa pertanyaan uji diri.",
+    "questions": {
+      "other": "{count} pertanyaan uji diri"
+    },
+    "title": "Uji diri: {title}",
+    "progress": "Pertanyaan {index} dari {count}",
+    "showAnswer": "Tampilkan jawaban",
+    "noAnswer": "Tidak ada jawaban di bawah pertanyaan ini.",
+    "gradePrompt": "Bagaimana jawaban Anda?",
+    "right": "Benar",
+    "partly": "Sebagian",
+    "wrong": "Salah",
+    "summary": "{score} dari {count} benar",
+    "suggested": "Berdasarkan jawaban Anda: {rating}",
+    "masterPrompt": "Tandai konsep sebagai dikuasai?",
+    "notYet": "Belum",
+    "offerTitle": "Uji diri dulu?",
+    "offerText": "{title} punya pertanyaan uji diri. Menjawabnya lebih dulu membuat tanda “dikuasai” lebih bermakna.",
+    "skip": "Tandai dikuasai tanpa uji",
+    "dontAsk": "Jangan tawarkan lagi",
+    "saved": "Uji diri {title} disimpan",
+    "keys": "Spasi menampilkan jawaban, 1–3 menilainya",
+    "auditTitle": "Konsep tanpa pertanyaan",
+    "auditHint": "Belum ada bahan uji diri. Tambahkan callout seperti > [!question]- dengan jawaban di dalamnya."
   }
 }

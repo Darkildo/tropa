@@ -406,5 +406,40 @@
     "nothingDue": "Ahora no hay nada que repasar",
     "needsJournal": "El repaso necesita el diario de aprendizaje. Actívalo en los ajustes.",
     "off": "El repaso está desactivado en los ajustes."
+  },
+  "check": {
+    "group": "Autoevaluación",
+    "command": "Autoevaluarse en el concepto abierto",
+    "callout": "Callout de pregunta",
+    "calloutDesc": "Las preguntas son callouts de este tipo en la nota de un concepto: el título es la pregunta y el contenido, la respuesta.",
+    "offer": "Ofrecer una autoevaluación antes de «dominado»",
+    "offerDesc": "Si un concepto tiene preguntas, marcarlo como dominado ofrece primero autoevaluarse. Siempre se puede omitir.",
+    "audit": "Conceptos sin preguntas en la revisión",
+    "auditDesc": "La revisión del mapa también muestra los conceptos sin preguntas de autoevaluación.",
+    "questions": {
+      "one": "{count} pregunta de autoevaluación",
+      "many": "{count} preguntas de autoevaluación",
+      "other": "{count} preguntas de autoevaluación"
+    },
+    "title": "Autoevaluación: {title}",
+    "progress": "Pregunta {index} de {count}",
+    "showAnswer": "Mostrar respuesta",
+    "noAnswer": "No hay respuesta bajo esta pregunta.",
+    "gradePrompt": "¿Cómo respondiste?",
+    "right": "Bien",
+    "partly": "En parte",
+    "wrong": "Mal",
+    "summary": "{score} de {count} bien",
+    "suggested": "Según tus respuestas: {rating}",
+    "masterPrompt": "¿Marcar el concepto como dominado?",
+    "notYet": "Todavía no",
+    "offerTitle": "¿Autoevaluarse primero?",
+    "offerText": "{title} tiene preguntas de autoevaluación. Responderlas antes da más valor a la marca de dominado.",
+    "skip": "Marcar dominado sin evaluarse",
+    "dontAsk": "No volver a ofrecer",
+    "saved": "Autoevaluación de {title} guardada",
+    "keys": "Espacio muestra la respuesta, 1 a 3 la califican",
+    "auditTitle": "Conceptos sin preguntas",
+    "auditHint": "Aún no hay con qué autoevaluarse. Añade un callout como > [!question]- con la respuesta dentro."
   }
 }

@@ -406,5 +406,40 @@
     "nothingDue": "Niente da ripassare per ora",
     "needsJournal": "Il ripasso richiede il diario di studio. Attivalo nelle impostazioni.",
     "off": "Il ripasso è disattivato nelle impostazioni."
+  },
+  "check": {
+    "group": "Autoverifica",
+    "command": "Verificarsi sul concetto aperto",
+    "callout": "Callout delle domande",
+    "calloutDesc": "Le domande sono callout di questo tipo nella nota di un concetto: il titolo è la domanda, il contenuto la risposta.",
+    "offer": "Proporre un’autoverifica prima di «padroneggiato»",
+    "offerDesc": "Se un concetto ha domande, segnarlo come padroneggiato propone prima di verificarsi. Si può sempre saltare.",
+    "audit": "Concetti senza domande nella revisione",
+    "auditDesc": "La revisione della mappa elenca anche i concetti senza domande di autoverifica.",
+    "questions": {
+      "one": "{count} domanda di autoverifica",
+      "many": "{count} domande di autoverifica",
+      "other": "{count} domande di autoverifica"
+    },
+    "title": "Autoverifica: {title}",
+    "progress": "Domanda {index} di {count}",
+    "showAnswer": "Mostra risposta",
+    "noAnswer": "Sotto questa domanda non c’è risposta.",
+    "gradePrompt": "Come hai risposto?",
+    "right": "Giusto",
+    "partly": "In parte",
+    "wrong": "Sbagliato",
+    "summary": "{score} su {count} giuste",
+    "suggested": "In base alle risposte: {rating}",
+    "masterPrompt": "Segnare il concetto come padroneggiato?",
+    "notYet": "Non ancora",
+    "offerTitle": "Prima verificarsi?",
+    "offerText": "{title} ha domande di autoverifica. Rispondere prima dà più valore al segno «padroneggiato».",
+    "skip": "Segna padroneggiato senza verifica",
+    "dontAsk": "Non proporre più",
+    "saved": "Autoverifica di {title} salvata",
+    "keys": "Spazio mostra la risposta, da 1 a 3 la valutano",
+    "auditTitle": "Concetti senza domande",
+    "auditHint": "Ancora niente con cui verificarsi. Aggiungi un callout come > [!question]- con la risposta dentro."
   }
 }
