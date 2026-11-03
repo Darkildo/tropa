@@ -7,7 +7,6 @@
   "findConceptPrompt": "Vilket begrepp vill du se?",
   "markConcept": "Gör anteckningen till ett begrepp",
   "markSource": "Gör anteckningen till ett material",
-  "setGoal": "Gör anteckningen till målet",
   "toggleMastered": "Markera anteckningen som behärskad eller flytta tillbaka till studier",
   "toggleSkipped": "Hoppa över anteckningen eller lägg tillbaka den i rutten",
   "markKnownCommand": "Markera anteckningen och allt den kräver som känt",
@@ -253,6 +252,58 @@
     "other": "Här är {count} steg på rutten dolda"
   },
   "hiddenOnMap": "Dolt på kartan",
+  "goals": {
+    "all": "Alla mål",
+    "count": {
+      "one": "{count} mål",
+      "other": "{count} mål"
+    },
+    "more": "+{count}",
+    "menu": "Dina mål",
+    "add": "Lägg till som mål",
+    "addMore": "Lägg till ett mål till…",
+    "addPrompt": "Vilket mål vill du lägga till?",
+    "replace": "Byt mot ett annat mål…",
+    "remove": "Ta bort målet ”{title}”",
+    "until": "{title}, senast {date}",
+    "forGoals": "För: {goals}",
+    "sharedHint": "Steg utan målnamn behövs för alla målen.",
+    "stepsToGoals": {
+      "one": "{count} steg till dina mål",
+      "other": "{count} steg till dina mål"
+    },
+    "remainingLine": "{remaining}. Mål: {goals}.",
+    "reachedText": "Du behärskar allt som dina mål kräver. Lägg till ett nytt mål.",
+    "excluded": "Utanför kartan på grund av mapp- eller tagginställningarna, så rutten går utan dem: {titles}.",
+    "addCommand": "Lägg till anteckningen bland dina mål",
+    "removeCommand": "Ta bort anteckningen från dina mål"
+  },
+  "plan": {
+    "title": "Deadline och takt",
+    "menu": "Deadline och takt…",
+    "command": "Ange deadline och takt",
+    "intro": "Tropa summerar längden på materialen längs rutten och räknar ut när du är klar.",
+    "pace": "Timmar per vecka",
+    "paceDesc": "Hur mycket tid du tänker plugga. Lämna tomt om du inte vill ha en prognos.",
+    "paceInvalid": "Ange timmar per vecka som ett tal, till exempel 5 eller 2,5",
+    "deadline": "Deadline",
+    "deadlineFor": "Deadline för ”{title}”",
+    "deadlineDesc": "Valfritt. Lämna tomt om det inte finns någon deadline.",
+    "save": "Spara",
+    "set": "Ange en deadline eller takt",
+    "change": "Ändra deadline eller takt",
+    "finish": "Med {hours} tim per vecka: klar {date}.",
+    "needed": "För att bli klar senast {date}: {hours} tim per vecka.",
+    "onTrack": "I fas för {date}.",
+    "behind": "Efter: det behövs {hours} tim per vecka för att bli klar senast {date}.",
+    "overdue": "Deadline {date} har passerat.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Plus {count} steg utan tidsuppskattning.",
+      "other": "Plus {count} steg utan tidsuppskattning."
+    },
+    "noTime": "Materialen längs rutten har ingen längd än, så det finns inget att förutsäga."
+  },
   "audit": {
     "command": "Granska kartan",
     "title": "Granskning av kartan",

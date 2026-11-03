@@ -7,7 +7,6 @@
   "findConceptPrompt": "Ce concept vrei să vezi?",
   "markConcept": "Transformă nota în concept",
   "markSource": "Transformă nota în material",
-  "setGoal": "Transformă nota în obiectiv",
   "toggleMastered": "Marchează nota ca stăpânită sau readu-o la studiu",
   "toggleSkipped": "Sari peste notă sau readu-o în traseu",
   "markKnownCommand": "Marchează nota și tot ce îi trebuie ca știute",
@@ -266,6 +265,61 @@
     "other": "Aici sunt ascunși {count} de pași din traseu"
   },
   "hiddenOnMap": "Ascuns pe hartă",
+  "goals": {
+    "all": "Toate obiectivele",
+    "count": {
+      "one": "{count} obiectiv",
+      "few": "{count} obiective",
+      "other": "{count} de obiective"
+    },
+    "more": "+{count}",
+    "menu": "Obiectivele tale",
+    "add": "Adaugă ca obiectiv",
+    "addMore": "Adaugă încă un obiectiv…",
+    "addPrompt": "Ce obiectiv vrei să adaugi?",
+    "replace": "Înlocuiește cu alt obiectiv…",
+    "remove": "Elimină obiectivul „{title}”",
+    "until": "{title}, până la {date}",
+    "forGoals": "Pentru: {goals}",
+    "sharedHint": "Pașii fără numele unui obiectiv sunt necesari pentru toate.",
+    "stepsToGoals": {
+      "one": "{count} pas până la obiectivele tale",
+      "few": "{count} pași până la obiectivele tale",
+      "other": "{count} de pași până la obiectivele tale"
+    },
+    "remainingLine": "{remaining}. Obiective: {goals}.",
+    "reachedText": "Stăpânești tot ce cer obiectivele tale. Adaugă un obiectiv nou.",
+    "excluded": "Lăsate în afara hărții de setările de foldere sau etichete, așa că traseul merge fără ele: {titles}.",
+    "addCommand": "Adaugă nota la obiectivele tale",
+    "removeCommand": "Elimină nota din obiectivele tale"
+  },
+  "plan": {
+    "title": "Termen și ritm",
+    "menu": "Termen și ritm…",
+    "command": "Setează termenul și ritmul",
+    "intro": "Tropa adună durata materialelor de pe traseu și calculează când termini.",
+    "pace": "Ore pe săptămână",
+    "paceDesc": "Cât timp plănuiești să înveți. Lasă gol dacă nu vrei o estimare.",
+    "paceInvalid": "Introdu orele pe săptămână ca număr, de exemplu 5 sau 2,5",
+    "deadline": "Termen",
+    "deadlineFor": "Termen pentru „{title}”",
+    "deadlineDesc": "Opțional. Lasă gol dacă nu există termen.",
+    "save": "Salvează",
+    "set": "Setează un termen sau un ritm",
+    "change": "Schimbă termenul sau ritmul",
+    "finish": "La {hours} h pe săptămână: gata până la {date}.",
+    "needed": "Ca să termini până la {date}: {hours} h pe săptămână.",
+    "onTrack": "Ești în grafic pentru {date}.",
+    "behind": "Ești în urmă: ai nevoie de {hours} h pe săptămână ca să termini până la {date}.",
+    "overdue": "Termenul de {date} a trecut.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Plus {count} pas fără estimare de timp.",
+      "few": "Plus {count} pași fără estimare de timp.",
+      "other": "Plus {count} de pași fără estimare de timp."
+    },
+    "noTime": "Materialele de pe traseu nu au încă durată, așa că nu e nimic de estimat."
+  },
   "audit": {
     "command": "Verifică harta",
     "title": "Verificarea hărții",

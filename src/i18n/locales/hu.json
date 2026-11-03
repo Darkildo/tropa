@@ -7,7 +7,6 @@
   "findConceptPrompt": "Melyik fogalmat mutassuk?",
   "markConcept": "A jegyzet legyen fogalom",
   "markSource": "A jegyzet legyen tananyag",
-  "setGoal": "A jegyzet legyen a cél",
   "toggleMastered": "Jegyzet megjelölése elsajátítottként, vagy vissza a tanuláshoz",
   "toggleSkipped": "Jegyzet kihagyása vagy visszahelyezése az útvonalba",
   "markKnownCommand": "Jegyzet és minden előfeltétele megjelölése ismertként",
@@ -253,6 +252,58 @@
     "other": "Itt {count} útvonallépés rejtve van"
   },
   "hiddenOnMap": "Rejtve a térképen",
+  "goals": {
+    "all": "Minden cél",
+    "count": {
+      "one": "{count} cél",
+      "other": "{count} cél"
+    },
+    "more": "+{count}",
+    "menu": "Céljaid",
+    "add": "Hozzáadás célként",
+    "addMore": "Még egy cél hozzáadása…",
+    "addPrompt": "Melyik célt szeretnéd hozzáadni?",
+    "replace": "Csere másik célra…",
+    "remove": "A(z) „{title}” cél törlése",
+    "until": "{title}, határidő: {date}",
+    "forGoals": "Ehhez: {goals}",
+    "sharedHint": "A cél nélküli lépésekre minden célhoz szükség van.",
+    "stepsToGoals": {
+      "one": "{count} lépés a céljaidig",
+      "other": "{count} lépés a céljaidig"
+    },
+    "remainingLine": "{remaining}. Célok: {goals}.",
+    "reachedText": "Mindent tudsz, amit a céljaid megkívánnak. Adj hozzá új célt.",
+    "excluded": "A mappa- vagy címkebeállítások miatt nincsenek a térképen, ezért az útvonal nélkülük halad: {titles}.",
+    "addCommand": "A jegyzet hozzáadása a célokhoz",
+    "removeCommand": "A jegyzet eltávolítása a célok közül"
+  },
+  "plan": {
+    "title": "Határidő és tempó",
+    "menu": "Határidő és tempó…",
+    "command": "Határidő és tempó beállítása",
+    "intro": "A Tropa összeadja az útvonal anyagainak időtartamát, és kiszámolja, mikor végzel.",
+    "pace": "Óra hetente",
+    "paceDesc": "Mennyi időt szánsz tanulásra. Hagyd üresen, ha nem kérsz előrejelzést.",
+    "paceInvalid": "Add meg a heti órákat számként, például 5 vagy 2,5",
+    "deadline": "Határidő",
+    "deadlineFor": "Határidő: {title}",
+    "deadlineDesc": "Nem kötelező. Hagyd üresen, ha nincs határidő.",
+    "save": "Mentés",
+    "set": "Határidő vagy tempó beállítása",
+    "change": "Határidő vagy tempó módosítása",
+    "finish": "Heti {hours} órával: kész {date}.",
+    "needed": "Hogy {date}-ig végezz: heti {hours} óra.",
+    "onTrack": "Tartod a(z) {date} határidőt.",
+    "behind": "Lemaradásban: heti {hours} óra kell, hogy {date}-ig végezz.",
+    "overdue": "A(z) {date} határidő lejárt.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Plusz {count} lépés időbecslés nélkül.",
+      "other": "Plusz {count} lépés időbecslés nélkül."
+    },
+    "noTime": "Az útvonal anyagainak még nincs időtartama, így nincs mit előre jelezni."
+  },
   "audit": {
     "command": "Térkép ellenőrzése",
     "title": "Térkép ellenőrzése",

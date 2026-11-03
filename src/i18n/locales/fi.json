@@ -7,7 +7,6 @@
   "findConceptPrompt": "Mikä käsite näytetään?",
   "markConcept": "Tee muistiinpanosta käsite",
   "markSource": "Tee muistiinpanosta materiaali",
-  "setGoal": "Tee muistiinpanosta tavoite",
   "toggleMastered": "Merkitse muistiinpano hallituksi tai palauta se opiskeltavaksi",
   "toggleSkipped": "Ohita muistiinpano tai palauta se reitille",
   "markKnownCommand": "Merkitse muistiinpano ja kaikki sen vaatima osatuksi",
@@ -253,6 +252,58 @@
     "other": "Tähän on piilotettu {count} reitin vaihetta"
   },
   "hiddenOnMap": "Piilotettu kartalta",
+  "goals": {
+    "all": "Kaikki tavoitteet",
+    "count": {
+      "one": "{count} tavoite",
+      "other": "{count} tavoitetta"
+    },
+    "more": "+{count}",
+    "menu": "Tavoitteesi",
+    "add": "Lisää tavoitteeksi",
+    "addMore": "Lisää vielä yksi tavoite…",
+    "addPrompt": "Minkä tavoitteen haluat lisätä?",
+    "replace": "Korvaa toisella tavoitteella…",
+    "remove": "Poista tavoite ”{title}”",
+    "until": "{title}, viimeistään {date}",
+    "forGoals": "Tavoitteille: {goals}",
+    "sharedHint": "Vaiheet ilman tavoitteen nimeä tarvitaan kaikkiin tavoitteisiin.",
+    "stepsToGoals": {
+      "one": "{count} vaihe tavoitteisiisi",
+      "other": "{count} vaihetta tavoitteisiisi"
+    },
+    "remainingLine": "{remaining}. Tavoitteet: {goals}.",
+    "reachedText": "Hallitset kaiken, mitä tavoitteesi vaativat. Lisää uusi tavoite.",
+    "excluded": "Jätetty kartalta kansio- tai tunnisteasetusten vuoksi, joten reitti kulkee ilman niitä: {titles}.",
+    "addCommand": "Lisää muistiinpano tavoitteisiisi",
+    "removeCommand": "Poista muistiinpano tavoitteistasi"
+  },
+  "plan": {
+    "title": "Määräaika ja tahti",
+    "menu": "Määräaika ja tahti…",
+    "command": "Aseta määräaika ja tahti",
+    "intro": "Tropa laskee yhteen reitin materiaalien kestot ja arvioi, milloin olet valmis.",
+    "pace": "Tuntia viikossa",
+    "paceDesc": "Kuinka paljon aikaa aiot käyttää opiskeluun. Jätä tyhjäksi, jos et halua ennustetta.",
+    "paceInvalid": "Anna tunnit viikossa numerona, esimerkiksi 5 tai 2,5",
+    "deadline": "Määräaika",
+    "deadlineFor": "Määräaika: {title}",
+    "deadlineDesc": "Valinnainen. Jätä tyhjäksi, jos määräaikaa ei ole.",
+    "save": "Tallenna",
+    "set": "Aseta määräaika tai tahti",
+    "change": "Muuta määräaikaa tai tahtia",
+    "finish": "{hours} t viikossa: valmis {date}.",
+    "needed": "Jotta olet valmis {date} mennessä: {hours} t viikossa.",
+    "onTrack": "Aikataulussa: {date}.",
+    "behind": "Jäljessä: tarvitset {hours} t viikossa ollaksesi valmis {date} mennessä.",
+    "overdue": "Määräaika {date} on mennyt.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Lisäksi {count} vaihe ilman aika-arviota.",
+      "other": "Lisäksi {count} vaihetta ilman aika-arviota."
+    },
+    "noTime": "Reitin materiaaleilla ei ole vielä kestoa, joten ennustettavaa ei ole."
+  },
   "audit": {
     "command": "Tarkista kartta",
     "title": "Kartan tarkistus",

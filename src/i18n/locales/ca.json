@@ -7,7 +7,6 @@
   "findConceptPrompt": "Quin concepte vols veure?",
   "markConcept": "Converteix aquesta nota en concepte",
   "markSource": "Converteix aquesta nota en material",
-  "setGoal": "Converteix aquesta nota en objectiu",
   "toggleMastered": "Marca aquesta nota com a dominada o torna-la a l’estudi",
   "toggleSkipped": "Omet aquesta nota o torna-la a la ruta",
   "markKnownCommand": "Marca aquesta nota i tot el que requereix com a sabut",
@@ -266,6 +265,61 @@
     "other": "Aquí hi ha {count} passos de la ruta amagats"
   },
   "hiddenOnMap": "Amagat al mapa",
+  "goals": {
+    "all": "Tots els objectius",
+    "count": {
+      "one": "{count} objectiu",
+      "many": "{count} objectius",
+      "other": "{count} objectius"
+    },
+    "more": "+{count}",
+    "menu": "Els teus objectius",
+    "add": "Afegeix com a objectiu",
+    "addMore": "Afegeix un altre objectiu…",
+    "addPrompt": "Quin objectiu vols afegir?",
+    "replace": "Substitueix per un altre objectiu…",
+    "remove": "Treu l’objectiu «{title}»",
+    "until": "{title}, fins al {date}",
+    "forGoals": "Per a: {goals}",
+    "sharedHint": "Els passos sense nom d’objectiu calen per a tots.",
+    "stepsToGoals": {
+      "one": "{count} pas fins als teus objectius",
+      "many": "{count} passos fins als teus objectius",
+      "other": "{count} passos fins als teus objectius"
+    },
+    "remainingLine": "{remaining}. Objectius: {goals}.",
+    "reachedText": "Domines tot el que necessiten els teus objectius. Afegeix un objectiu nou.",
+    "excluded": "Fora del mapa per la configuració de carpetes o etiquetes, així que la ruta continua sense ells: {titles}.",
+    "addCommand": "Afegeix aquesta nota als teus objectius",
+    "removeCommand": "Treu aquesta nota dels teus objectius"
+  },
+  "plan": {
+    "title": "Termini i ritme",
+    "menu": "Termini i ritme…",
+    "command": "Fixa el termini i el ritme",
+    "intro": "Tropa suma la durada dels materials de la ruta i calcula quan acabaràs.",
+    "pace": "Hores per setmana",
+    "paceDesc": "Quant de temps penses dedicar a l’estudi. Deixa-ho buit si no vols previsió.",
+    "paceInvalid": "Escriu les hores per setmana com a número, per exemple 5 o 2,5",
+    "deadline": "Termini",
+    "deadlineFor": "Termini per a «{title}»",
+    "deadlineDesc": "Opcional. Deixa-ho buit si no hi ha termini.",
+    "save": "Desa",
+    "set": "Fixa un termini o un ritme",
+    "change": "Canvia el termini o el ritme",
+    "finish": "A {hours} h per setmana: acabes el {date}.",
+    "needed": "Per acabar abans del {date}: {hours} h per setmana.",
+    "onTrack": "Vas bé per al {date}.",
+    "behind": "Vas amb retard: calen {hours} h per setmana per acabar abans del {date}.",
+    "overdue": "El termini del {date} ja ha passat.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "I {count} pas sense estimació de temps.",
+      "many": "I {count} passos sense estimació de temps.",
+      "other": "I {count} passos sense estimació de temps."
+    },
+    "noTime": "Els materials de la ruta encara no tenen durada, així que no hi ha res a preveure."
+  },
   "audit": {
     "command": "Revisa el mapa",
     "title": "Revisió del mapa",

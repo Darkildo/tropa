@@ -7,7 +7,6 @@
   "findConceptPrompt": "Hangi kavram gösterilsin?",
   "markConcept": "Bu notu kavram yap",
   "markSource": "Bu notu kaynak yap",
-  "setGoal": "Bu notu hedef yap",
   "toggleMastered": "Bu notu öğrenildi olarak işaretle ya da öğrenmeye geri al",
   "toggleSkipped": "Bu notu atla ya da rotaya geri al",
   "markKnownCommand": "Bu notu ve gerektirdiği her şeyi biliniyor olarak işaretle",
@@ -253,6 +252,58 @@
     "other": "Burada rotanın {count} adımı gizli"
   },
   "hiddenOnMap": "Haritada gizli",
+  "goals": {
+    "all": "Tüm hedefler",
+    "count": {
+      "one": "{count} hedef",
+      "other": "{count} hedef"
+    },
+    "more": "+{count}",
+    "menu": "Hedeflerin",
+    "add": "Hedef olarak ekle",
+    "addMore": "Bir hedef daha ekle…",
+    "addPrompt": "Hangi hedefi eklemek istiyorsun?",
+    "replace": "Başka bir hedefle değiştir…",
+    "remove": "“{title}” hedefini kaldır",
+    "until": "{title}, {date} tarihine kadar",
+    "forGoals": "Şunlar için: {goals}",
+    "sharedHint": "Hedef adı olmayan adımlar tüm hedefler için gerekli.",
+    "stepsToGoals": {
+      "one": "Hedeflerine {count} adım",
+      "other": "Hedeflerine {count} adım"
+    },
+    "remainingLine": "{remaining}. Hedefler: {goals}.",
+    "reachedText": "Hedeflerinin gerektirdiği her şeyi öğrendin. Yeni bir hedef ekle.",
+    "excluded": "Klasör veya etiket ayarları nedeniyle haritada yok, bu yüzden rota onlarsız ilerliyor: {titles}.",
+    "addCommand": "Bu notu hedeflerine ekle",
+    "removeCommand": "Bu notu hedeflerinden çıkar"
+  },
+  "plan": {
+    "title": "Son tarih ve tempo",
+    "menu": "Son tarih ve tempo…",
+    "command": "Son tarih ve tempo belirle",
+    "intro": "Tropa rotadaki materyallerin sürelerini toplar ve ne zaman bitireceğini hesaplar.",
+    "pace": "Haftada saat",
+    "paceDesc": "Çalışmaya ne kadar zaman ayırmayı planladığın. Tahmin istemiyorsan boş bırak.",
+    "paceInvalid": "Haftalık saati sayı olarak gir, örneğin 5 veya 2,5",
+    "deadline": "Son tarih",
+    "deadlineFor": "“{title}” için son tarih",
+    "deadlineDesc": "İsteğe bağlı. Son tarih yoksa boş bırak.",
+    "save": "Kaydet",
+    "set": "Son tarih veya tempo belirle",
+    "change": "Son tarihi veya tempoyu değiştir",
+    "finish": "Haftada {hours} sa ile: {date} tarihinde biter.",
+    "needed": "{date} tarihine kadar bitirmek için: haftada {hours} sa.",
+    "onTrack": "{date} için yolundasın.",
+    "behind": "Geridesin: {date} tarihine kadar bitirmek için haftada {hours} sa gerekiyor.",
+    "overdue": "{date} son tarihi geçti.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Artı süre tahmini olmayan {count} adım.",
+      "other": "Artı süre tahmini olmayan {count} adım."
+    },
+    "noTime": "Rotadaki materyallerin henüz süresi yok, bu yüzden tahmin edilecek bir şey yok."
+  },
   "audit": {
     "command": "Haritayı denetle",
     "title": "Harita denetimi",
