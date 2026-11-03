@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Archives\nModèles",
     "excludeTags": "Tags exclus",
     "excludeTagsDesc": "Un tag par ligne. Les notes portant ces tags restent hors de la carte, tags imbriqués compris : #brouillon couvre aussi #brouillon/ancien.",
-    "excludeTagsPlaceholder": "#brouillon\n#privé"
+    "excludeTagsPlaceholder": "#brouillon\n#privé",
+    "journalGroup": "Journal d’apprentissage",
+    "journal": "Tenir un journal d’apprentissage",
+    "journalDesc": "Chaque changement de votre progression est ajouté comme une ligne dans un fichier par mois et par appareil. Les statistiques en sont tirées.",
+    "journalFolder": "Dossier du journal",
+    "journalFolderDesc": "Un fichier par mois et par appareil. Ce dossier n’apparaît jamais sur la carte."
   },
   "scope": {
     "excludedNote": "Cette note est exclue de la carte par les réglages de dossiers ou de tags.",
@@ -309,5 +314,14 @@
   "canvasSoftLabel": "recommandé",
   "moreActions": "Plus d’actions",
   "sheetHandle": "Taille du panneau : touchez ou faites glisser",
-  "linkNext": "Relier au concept suivant…"
+  "linkNext": "Relier au concept suivant…",
+  "journal": {
+    "fileText": "Tropa ajoute ici une ligne à chaque changement de progression sur cet appareil. Les statistiques sont lues dans ces lignes : gardez leur format.",
+    "title": "Activité",
+    "week": "7 jours",
+    "month": "30 jours",
+    "mastered": "Maîtrisés",
+    "time": "Temps avec les ressources",
+    "reviews": "Révisions"
+  }
 }

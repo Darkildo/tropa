@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Archiv\nVorlagen",
     "excludeTags": "Ausgeschlossene Tags",
     "excludeTagsDesc": "Ein Tag pro Zeile. Notizen mit diesen Tags erscheinen nicht auf der Karte, verschachtelte Tags eingeschlossen: #entwurf gilt auch für #entwurf/alt.",
-    "excludeTagsPlaceholder": "#entwurf\n#privat"
+    "excludeTagsPlaceholder": "#entwurf\n#privat",
+    "journalGroup": "Lernjournal",
+    "journal": "Lernjournal führen",
+    "journalDesc": "Jede Änderung deines Fortschritts wird als Zeile an eine Datei für den Monat und dieses Gerät angehängt. Daraus entsteht die Statistik.",
+    "journalFolder": "Journal-Ordner",
+    "journalFolderDesc": "Eine Datei pro Monat und Gerät. Dieser Ordner erscheint nie auf der Karte."
   },
   "scope": {
     "excludedNote": "Diese Notiz bleibt wegen der Ordner- oder Tag-Einstellungen außerhalb der Karte.",
@@ -294,5 +299,14 @@
   "canvasSoftLabel": "empfohlen",
   "moreActions": "Weitere Aktionen",
   "sheetHandle": "Panelgröße: tippen oder ziehen",
-  "linkNext": "Mit dem nächsten Konzept verbinden …"
+  "linkNext": "Mit dem nächsten Konzept verbinden …",
+  "journal": {
+    "fileText": "Tropa hängt hier für jede Änderung des Fortschritts auf diesem Gerät eine Zeile an. Die Statistik wird aus diesen Zeilen gelesen, behalte also ihr Format bei.",
+    "title": "Aktivität",
+    "week": "7 Tage",
+    "month": "30 Tage",
+    "mastered": "Beherrscht",
+    "time": "Zeit mit Materialien",
+    "reviews": "Wiederholungen"
+  }
 }

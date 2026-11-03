@@ -1,8 +1,9 @@
-import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath } from "obsidian";
+import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath, type TAbstractFile } from "obsidian";
 import { STATE_ICON } from "./core/format";
 import { attempt } from "./attempt";
 import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
+import { Journal } from "./journal";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -20,11 +21,14 @@ export default class TropaPlugin extends Plugin {
   settings!: TropaSettings;
   defaults!: TropaSettings;
   store!: Store;
+  journal!: Journal;
 
   async onload() {
     setLocale(getLanguage());
     await this.loadSettings();
     this.store = new Store(this.app, () => this.settings);
+    this.journal = new Journal(this.app, () => this.settings, this.store);
+    this.registerEvent(this.store.on("commit", (before, after, cause) => this.journal.recordProgress(before, after, cause)));
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
@@ -44,6 +48,7 @@ export default class TropaPlugin extends Plugin {
       );
       this.registerEvent(this.app.vault.on("delete", rebuild));
       this.registerEvent(this.app.vault.on("rename", rebuild));
+      this.watchJournal();
     });
 
     this.registerEvent(
@@ -76,6 +81,24 @@ export default class TropaPlugin extends Plugin {
     this.addCommands();
   }
 
+  /** Journal files come and change from other devices through sync; each is read again on its own. */
+  private watchJournal() {
+    const { vault } = this.app;
+    attempt(this.journal.load(), "read the learning journal");
+    const reread = (file: TAbstractFile) => {
+      if (this.journal.contains(file.path)) attempt(this.journal.reread(file), "read the learning journal");
+    };
+    this.registerEvent(vault.on("create", reread));
+    this.registerEvent(vault.on("modify", reread));
+    this.registerEvent(vault.on("delete", (file) => this.journal.forget(file.path)));
+    this.registerEvent(
+      vault.on("rename", (file, oldPath) => {
+        this.journal.forget(oldPath);
+        reread(file);
+      }),
+    );
+  }
+
   /** Saved settings win. On first launch the defaults follow the language and are saved, so paths stay put. */
   private async loadSettings() {
     const saved = (await this.loadData()) as Partial<TropaSettings> | null;
@@ -85,7 +108,11 @@ export default class TropaPlugin extends Plugin {
     // Hand-edited data can hold a string or stray `#`: the store expects clean lists.
     this.settings.excludeFolders = parseFolders(this.settings.excludeFolders);
     this.settings.excludeTags = parseTags(this.settings.excludeTags);
-    if (!saved) await this.saveSettings();
+    // Settings saved before the journal get its folder now, in the language of their progress file, so it stays put.
+    if (saved && !saved.journalFolder) {
+      this.settings.journalFolder = defaultSettings(saved.progressPath === LEGACY_PROGRESS ? "ru" : exampleLang()).journalFolder;
+    }
+    if (!saved || !saved.journalFolder) await this.saveSettings();
   }
 
   async saveSettings() {
@@ -231,7 +258,8 @@ export default class TropaPlugin extends Plugin {
     this.store.rebuild(true);
     if (!this.store.progress.goal) {
       example.mastered.forEach((path) => this.store.progress.mastered.add(`${path}.md`));
-      this.store.setGoal(`${example.goal}.md`);
+      // The example comes with a few concepts known already: the journal says so, not that they were mastered now.
+      this.store.setGoal(`${example.goal}.md`, "known");
     }
     await this.showMap();
   }

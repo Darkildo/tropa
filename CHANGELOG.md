@@ -2,6 +2,14 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
+## [Unreleased]
+
+### Added
+- **Learning journal.** Every change of progress made in Tropa is appended as a line to `Tropa/Journal/<YYYY-MM> <device>.md`: the local time with its offset, the action, the note as a link (or the URL of a material listed in a concept) and optional fields. One file per month and device, written only by that device, so a sync never has to merge them; the device name is kept outside the vault. Undo appends lines flagged `undo` instead of erasing any. Lines that do not parse are skipped.
+- **Activity in the side panel:** concepts mastered, time with finished materials and reviews over the last 7 and 30 days, read from the journals of all devices. Files that change by sync are read again on their own.
+- **Settings → Learning journal** turns the journal off or moves its folder. The folder is never on the map and its files are not offered as materials.
+- The core keeps the merged history by concept, with reviews and when a mark was made, for reviews to come.
+
 ## [0.3.2] - 2026-11-03
 
 ### Fixed

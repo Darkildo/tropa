@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Lưu trữ\nMẫu",
     "excludeTags": "Thẻ bị loại trừ",
     "excludeTagsDesc": "Mỗi dòng một thẻ. Ghi chú có các thẻ này không lên bản đồ, kể cả thẻ lồng nhau: #nháp cũng áp dụng cho #nháp/cũ.",
-    "excludeTagsPlaceholder": "#nháp\n#riêng"
+    "excludeTagsPlaceholder": "#nháp\n#riêng",
+    "journalGroup": "Nhật ký học tập",
+    "journal": "Ghi nhật ký học tập",
+    "journalDesc": "Mỗi thay đổi tiến độ được thêm thành một dòng vào tệp theo tháng và thiết bị này. Thống kê được tính từ đó.",
+    "journalFolder": "Thư mục nhật ký",
+    "journalFolderDesc": "Mỗi tháng và thiết bị một tệp. Thư mục này không bao giờ hiện trên bản đồ."
   },
   "scope": {
     "excludedNote": "Ghi chú này nằm ngoài bản đồ do cài đặt thư mục hoặc thẻ.",
@@ -279,5 +284,14 @@
   "canvasSoftLabel": "nên học",
   "moreActions": "Thao tác khác",
   "sheetHandle": "Kích thước bảng: chạm hoặc kéo",
-  "linkNext": "Liên kết với khái niệm tiếp theo…"
+  "linkNext": "Liên kết với khái niệm tiếp theo…",
+  "journal": {
+    "fileText": "Tropa thêm một dòng vào đây cho mỗi thay đổi tiến độ trên thiết bị này. Thống kê được đọc từ các dòng này, vì vậy hãy giữ nguyên định dạng.",
+    "title": "Hoạt động",
+    "week": "7 ngày",
+    "month": "30 ngày",
+    "mastered": "Đã nắm vững",
+    "time": "Thời gian với tài liệu",
+    "reviews": "Lần ôn tập"
+  }
 }
