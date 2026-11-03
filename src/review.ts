@@ -1,7 +1,7 @@
 import { Events, Notice, type EventRef } from "obsidian";
 import { baselineSpread, DEFAULT_RETENTION, Scheduler, type Baseline, type ReviewRating, type Schedule } from "./core/review";
 import { UNDO } from "./core/journal";
-import { formatDate } from "./ui/when";
+import { formatDate } from "./core/format";
 import { t } from "./i18n";
 import type { TropaSettings } from "./defaults";
 import type { Journal } from "./journal";
@@ -130,7 +130,7 @@ export class Reviews extends Events {
   private announce(id: string, token: { id: string; count: number }) {
     const schedule = this.schedule(id);
     const title = this.store.graph.nodes.get(id)?.title ?? "";
-    const text = schedule ? t.review.recorded({ title, date: formatDate(schedule.due) }) : t.review.recordedPlain({ title });
+    const text = schedule ? t.review.recorded({ title, date: formatDate(new Date(schedule.due)) }) : t.review.recordedPlain({ title });
     const content = createFragment((fragment) => {
       fragment.createSpan({ text });
       const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });

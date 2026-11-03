@@ -2,13 +2,6 @@ import { locale } from "../i18n";
 
 const DAY = 24 * 60 * 60 * 1000;
 
-/** "12 November", with the year when it is not this one. */
-export function formatDate(time: number, now = Date.now()) {
-  const date = new Date(time);
-  const sameYear = date.getFullYear() === new Date(now).getFullYear();
-  return new Intl.DateTimeFormat(locale(), { day: "numeric", month: "long", ...(sameYear ? {} : { year: "numeric" }) }).format(date);
-}
-
 /** "today", "in 3 days", "2 weeks ago": whole days, from the calendar day of `now`. */
 export function formatRelative(time: number, now = Date.now()) {
   const startOf = (value: number) => {

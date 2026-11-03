@@ -1,16 +1,18 @@
 import { setIcon, type App } from "obsidian";
-import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
-import { isGhostId, isPassed, knownCandidates, recommendMaterial, sourceState } from "../core/graph";
+import { FORMAT_ICON, STATE_ICON, formatDate, formatMinutes } from "../core/format";
+import { allGoalsOf, isGhostId, isGoal, isPassed, knownCandidates, recommendMaterial, sourceState } from "../core/graph";
+import { forecast, roundPace, type Forecast } from "../core/plan";
 import { ATTACHMENT_EXTENSIONS, fileFormat, materialId } from "../core/materials";
 import { CONFIDENCE_LEVELS } from "../core/progress";
-import type { GraphNode } from "../core/types";
+import type { GraphNode, Route } from "../core/types";
 import { attempt } from "../attempt";
 import { locale, t } from "../i18n";
 import type { Store } from "../store";
 import type { Reviews } from "../review";
 import { RATINGS, type ReviewRating } from "../core/review";
 import { KnownModal, PickModal, SourceModal, type PickItem } from "./pick";
-import { formatDate, formatInterval, formatPercent, formatRelative } from "./when";
+import { PlanModal } from "./plan";
+import { formatInterval, formatPercent, formatRelative } from "./when";
 
 export interface DetailHost {
   app: App;
@@ -239,7 +241,7 @@ function header(parent: HTMLElement, host: DetailHost, node: GraphNode) {
 export function renderConcept(parent: HTMLElement, host: DetailHost, node: GraphNode) {
   const { store } = host;
   const state = store.states.get(node.id) ?? "locked";
-  const isGoal = store.progress.goal === node.id;
+  const goal = isGoal(store.progress, node.id);
 
   header(parent, host, node);
 
@@ -247,10 +249,10 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   const status = statusRow.createDiv({ cls: `tropa-status state-${state}` });
   setIcon(status.createSpan(), STATE_ICON[state]);
   status.createSpan({ text: t.state[state] });
-  if (isGoal) {
-    const goal = statusRow.createDiv({ cls: "tropa-status is-goal" });
-    setIcon(goal.createSpan(), "flag");
-    goal.createSpan({ text: t.yourGoal });
+  if (goal) {
+    const badge = statusRow.createDiv({ cls: "tropa-status is-goal" });
+    setIcon(badge.createSpan(), "flag");
+    badge.createSpan({ text: t.yourGoal });
   }
 
   if (state === "mastered" || state === "learning") confidenceControl(parent, store, node.id);
@@ -296,8 +298,9 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     action(t.knowWithPrerequisites, false, () => openKnownModal(host.app, store, node.id));
   }
   // The goal is what the route leads to, so it cannot be skipped.
-  if (state !== "mastered" && state !== "skipped" && !isGoal) action(t.skip, false, () => store.setSkipped(node.id, true));
-  action(isGoal ? t.removeGoal : t.makeGoal, false, () => store.setGoal(isGoal ? null : node.id));
+  if (state !== "mastered" && state !== "skipped" && !goal) action(t.skip, false, () => store.setSkipped(node.id, true));
+  if (goal) action(t.removeGoal, false, () => store.removeGoal(node.id));
+  else action(store.progress.goal ? t.goals.add : t.makeGoal, false, () => store.addGoal(node.id));
 
   const blockers = node.requires.filter((id) => !isPassed(store.progress, id));
   if (state === "locked" && blockers.length) {
@@ -392,7 +395,9 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     for (const id of cycle) conceptRow(callout, host, id);
   }
 
-  if (store.excludedGoal) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
+  const excluded = store.progress.allGoals ? store.excludedGoals : [];
+  if (excluded.length) parent.createEl("p", { cls: "tropa-callout", text: t.goals.excluded({ titles: excluded.join(t.listSeparator) }) });
+  else if (store.excludedGoal && !store.progress.allGoals) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
   if (host.reviews?.enabled) reviewQueue(parent, host, host.reviews);
 
   if (!route) {
@@ -411,22 +416,32 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     return;
   }
 
-  const goal = graph.nodes.get(route.goal)!;
+  const several = route.goals.length > 1;
+  const titles = route.goals.map((id) => graph.nodes.get(id)!.title).join(t.listSeparator);
   if (route.steps.length === 0) {
     parent.createEl("h3", { cls: "tropa-title", text: t.goalReached });
-    parent.createEl("p", { cls: "tropa-hint", text: t.goalReachedText({ title: goal.title }) });
+    parent.createEl("p", { cls: "tropa-hint", text: several ? t.goals.reachedText : t.goalReachedText({ title: titles }) });
     const button = parent.createEl("button", { cls: "mod-cta tropa-wide", text: t.chooseGoal });
     button.addEventListener("click", pickGoal);
     return;
   }
 
   const left = route.steps.length;
-  parent.createEl("h3", { cls: "tropa-title", text: t.stepsToGoal({ count: left }) });
-  parent.createEl("p", { cls: "tropa-hint", text: t.remainingLine({ remaining: store.describeRemaining(), goal: goal.title }) });
+  const remaining = store.describeRemaining();
+  parent.createEl("h3", { cls: "tropa-title", text: several ? t.goals.stepsToGoals({ count: left }) : t.stepsToGoal({ count: left }) });
+  parent.createEl("p", {
+    cls: "tropa-hint",
+    text: several ? t.goals.remainingLine({ remaining, goals: titles }) : t.remainingLine({ remaining, goal: titles }),
+  });
+  renderPlan(parent, host, route);
   if (route.skippedCount) parent.createEl("p", { cls: "tropa-hint", text: t.skippedCount({ count: route.skippedCount }) });
 
   if (route.gaps.length) {
     parent.createEl("p", { cls: "tropa-hint is-warning", text: t.gaps({ count: route.gaps.length }) });
+  }
+
+  if (several && route.steps.some((step) => step.goals.length < route.goals.length)) {
+    parent.createEl("p", { cls: "tropa-hint", text: t.goals.sharedHint });
   }
 
   const list = parent.createEl("ol", { cls: "tropa-steps" });
@@ -458,6 +473,11 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
     } else if (!material && node.taughtBy.length === 0) {
       item.createDiv({ cls: "tropa-step-meta", text: t.noMaterials });
     }
+    // A step every goal needs goes unmarked; the others say which goals they are for.
+    if (several && step.goals.length < route.goals.length) {
+      const names = step.goals.map((id) => graph.nodes.get(id)!.title).join(t.listSeparator);
+      item.createDiv({ cls: "tropa-step-meta tropa-step-goals", text: t.goals.forGoals({ goals: names }) });
+    }
   });
 }
 
@@ -475,7 +495,7 @@ function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
   const box = parent.createDiv({ cls: `tropa-review${due ? " is-due" : ""}` });
   const head = box.createDiv({ cls: "tropa-review-head" });
   setIcon(head.createSpan({ cls: "tropa-review-icon" }), REVIEW_ICON);
-  head.createSpan({ text: due ? t.review.dueNow : t.review.nextOn({ date: formatDate(schedule.due, now), when: formatRelative(schedule.due, now) }) });
+  head.createSpan({ text: due ? t.review.dueNow : t.review.nextOn({ date: formatDate(new Date(schedule.due), new Date(now)), when: formatRelative(schedule.due, now) }) });
   box.createDiv({ cls: "tropa-hint", text: t.review.recall({ percent: formatPercent(reviews.retrievability(schedule, now)) }) });
 
   const body = box.createDiv({ cls: "tropa-review-body" });
@@ -551,4 +571,53 @@ function reviewQueue(parent: HTMLElement, host: DetailHost, reviews: Reviews) {
       list.replaceWith(...Array.from(fresh.childNodes));
     });
   }
+}
+
+/** What a deadline asks for, or nothing when there is no deadline or nothing to time. */
+function deadlineText(result: Forecast): string | null {
+  if (!result.deadline) return null;
+  const date = formatDate(result.deadline);
+  if (result.overdue) return t.plan.overdue({ date });
+  if (result.needed === null) return null;
+  const hours = roundPace(result.needed);
+  if (result.onTrack === true) return t.plan.onTrack({ date });
+  if (result.onTrack === false) return t.plan.behind({ hours, date });
+  return t.plan.needed({ hours, date });
+}
+
+/** The forecast under the time left: when the route is done at the planned pace, and what each deadline asks for. */
+function renderPlan(parent: HTMLElement, host: DetailHost, route: Route) {
+  const { store } = host;
+  const { progress, graph } = store;
+  const pace = progress.paceHours;
+  const deadlines = route.goals.filter((id) => progress.deadlines.has(id));
+  const lines: string[] = [];
+  if (pace || deadlines.length) {
+    const single = route.goals.length === 1;
+    const today = new Date();
+    const whole = forecast(route, pace, single ? progress.deadlines.get(route.goal) ?? null : null, today);
+    if (route.remainingMinutes === 0 && !whole.overdue) lines.push(t.plan.noTime);
+    else {
+      if (whole.finish && pace) lines.push(t.plan.finish({ hours: pace, date: formatDate(whole.finish) }));
+      if (single) {
+        const text = deadlineText(whole);
+        if (text) lines.push(text);
+      } else {
+        for (const id of deadlines) {
+          const own = store.routeTo(id);
+          const text = own && own.steps.length ? deadlineText(forecast(own, pace, progress.deadlines.get(id)!, today)) : null;
+          if (text) lines.push(t.plan.goalLine({ title: graph.nodes.get(id)!.title, text }));
+        }
+      }
+      if (whole.unestimated) lines.push(t.plan.unestimated({ count: whole.unestimated }));
+    }
+  }
+  const box = parent.createDiv({ cls: "tropa-plan-forecast" });
+  // A date such as "22 марта 2027 г." already ends with a period.
+  for (const line of lines) box.createEl("p", { cls: "tropa-hint", text: line.replace(/\.\.(?=\s|$)/g, ".") });
+  const set = !!pace || allGoalsOf(progress).some((id) => progress.deadlines.has(id));
+  const button = box.createEl("button", { cls: "tropa-add tropa-plan-button" });
+  setIcon(button.createSpan(), "calendar-clock");
+  button.createSpan({ text: set ? t.plan.change : t.plan.set });
+  button.addEventListener("click", () => new PlanModal(host.app, store).open());
 }

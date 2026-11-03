@@ -16,12 +16,27 @@ export const isGhostId = (id: string) => id.startsWith(GHOST_PREFIX);
 export const ghostId = (title: string) => GHOST_PREFIX + title;
 
 export function emptyProgress(): Progress {
-  return { goal: null, mastered: new Set(), learning: new Set(), done: new Set(), skipped: new Set(), confidence: new Map() };
+  return {
+    goal: null,
+    goals: [],
+    allGoals: false,
+    deadlines: new Map(),
+    paceHours: null,
+    mastered: new Set(),
+    learning: new Set(),
+    done: new Set(),
+    skipped: new Set(),
+    confidence: new Map(),
+  };
 }
 
 export function cloneProgress(progress: Progress): Progress {
   return {
     goal: progress.goal,
+    goals: [...progress.goals],
+    allGoals: progress.allGoals,
+    deadlines: new Map(progress.deadlines),
+    paceHours: progress.paceHours,
     mastered: new Set(progress.mastered),
     learning: new Set(progress.learning),
     done: new Set(progress.done),
@@ -33,15 +48,39 @@ export function cloneProgress(progress: Progress): Progress {
 /** The same marks, goal and confidence, whatever order the lists were read in. */
 export function sameProgress(a: Progress, b: Progress) {
   const sameSet = (x: Set<string>, y: Set<string>) => x.size === y.size && [...x].every((id) => y.has(id));
+  const sameMap = <V>(x: Map<string, V>, y: Map<string, V>) => x.size === y.size && [...x].every(([id, value]) => y.get(id) === value);
+  // A goal missing from the list is still a goal: files from before the list read that way.
+  const [goalsA, goalsB] = [allGoalsOf(a), allGoalsOf(b)];
   return (
     a.goal === b.goal &&
+    goalsA.length === goalsB.length &&
+    goalsA.every((id, index) => goalsB[index] === id) &&
+    a.allGoals === b.allGoals &&
+    a.paceHours === b.paceHours &&
+    sameMap(a.deadlines, b.deadlines) &&
     sameSet(a.mastered, b.mastered) &&
     sameSet(a.learning, b.learning) &&
     sameSet(a.done, b.done) &&
     sameSet(a.skipped, b.skipped) &&
-    a.confidence.size === b.confidence.size &&
-    [...a.confidence].every(([id, level]) => b.confidence.get(id) === level)
+    sameMap(a.confidence, b.confidence)
   );
+}
+
+/** Every goal kept, the active one included even when an older file or a hand edit left it out of the list. */
+export function allGoalsOf(progress: Progress): string[] {
+  const goals = [...progress.goals];
+  if (progress.goal && !goals.includes(progress.goal)) goals.push(progress.goal);
+  return goals;
+}
+
+export function isGoal(progress: Progress, id: string) {
+  return progress.goal === id || progress.goals.includes(id);
+}
+
+/** What the route leads to: the active goal, or every goal when the route goes to all of them. */
+export function routeTargets(progress: Progress): string[] {
+  if (progress.allGoals) return allGoalsOf(progress);
+  return progress.goal ? [progress.goal] : [];
 }
 
 /** A concept no longer stands in the way: mastered, or skipped on purpose. */
@@ -306,12 +345,24 @@ export function computeRoute(
   graph: LearningGraph,
   progress: Progress,
   states: Map<string, ConceptState>,
+  targets: string[] = routeTargets(progress),
 ): Route | null {
-  const goal = progress.goal;
-  if (!goal || graph.nodes.get(goal)?.kind !== "concept") return null;
+  const deadline = (id: string) => progress.deadlines.get(id) ?? "\uffff";
+  // The goal due first gets its steps first; without deadlines the goals keep their order.
+  const goals = targets
+    .filter((id, index) => graph.nodes.get(id)?.kind === "concept" && targets.indexOf(id) === index)
+    .map((id, index) => ({ id, index }))
+    .sort((a, b) => deadline(a.id).localeCompare(deadline(b.id)) || a.index - b.index)
+    .map(({ id }) => id);
+  if (goals.length === 0) return null;
 
-  const closure = new Set([goal, ...graph.ancestors(goal)]);
-  for (const id of [...closure]) if (graph.nodes.get(id)?.kind !== "concept") closure.delete(id);
+  const closures = new Map<string, Set<string>>();
+  for (const goal of goals) {
+    const own = new Set([goal, ...graph.ancestors(goal)]);
+    for (const id of [...own]) if (graph.nodes.get(id)?.kind !== "concept") own.delete(id);
+    closures.set(goal, own);
+  }
+  const closure = new Set(goals.flatMap((goal) => [...closures.get(goal)!]));
 
   const byPriority = (a: string, b: string) => {
     const started = Number(states.get(b) === "learning") - Number(states.get(a) === "learning");
@@ -330,7 +381,7 @@ export function computeRoute(
     for (const prerequisite of [...prerequisites].sort(byPriority)) visit(prerequisite);
     order.push(id);
   };
-  visit(goal);
+  for (const goal of goals) visit(goal);
 
   // Prefer a material the route already uses: one book covering three steps is one book to read.
   const chosen = new Set<string>();
@@ -339,7 +390,7 @@ export function computeRoute(
       graph.nodes.get(id)!.taughtBy.find((source) => chosen.has(source) && !progress.done.has(source)) ??
       recommendMaterial(graph, progress, id);
     if (material) chosen.add(material);
-    return { id, state: states.get(id) ?? "locked", material };
+    return { id, state: states.get(id) ?? "locked", material, goals: goals.filter((goal) => closures.get(goal)!.has(id)) };
   });
 
   let remainingMinutes = 0;
@@ -356,7 +407,8 @@ export function computeRoute(
   }
 
   return {
-    goal,
+    goal: goals[0],
+    goals,
     closure,
     steps,
     next: steps.find((step) => step.state === "learning" || step.state === "available")?.id ?? null,

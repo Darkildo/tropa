@@ -4,11 +4,16 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
 
 ## [Unreleased]
 
+The new strings are machine translations into all 33 languages.
+
 ### Added
 - **Learning journal.** Every change of progress made in Tropa is appended as a line to `Tropa/Journal/<YYYY-MM> <device>.md`: the local time with its offset, the action, the note as a link (or the URL of a material listed in a concept) and optional fields. One file per month and device, written only by that device, so a sync never has to merge them; the device name is kept outside the vault. Undo appends lines flagged `undo` instead of erasing any. Lines that do not parse are skipped.
 - **Activity in the side panel:** concepts mastered, time with finished materials and reviews over the last 7 and 30 days, read from the journals of all devices. Files that change by sync are read again on their own.
 - **Settings → Learning journal** turns the journal off or moves its folder. The folder is never on the map and its files are not offered as materials.
 - The core keeps the merged history by concept, with reviews and when a mark was made, for reviews to come.
+- **Several goals.** The goal button lists your goals: switch between them, route to all of them at once, add one more, replace or remove the active one. A route to several goals takes each prerequisite once, starts with the goal due first, and a step only some of the goals need names them. **Add as goal** in a concept's details and menu, and the commands **Add this note to your goals** (the former "Make this note the goal", same hotkey) and **Remove this note from your goals**.
+- **Deadline and pace.** Hours of study a week and a deadline for each goal, from the route panel, the goal button or the command **Set deadline and pace**. The route then says when you finish at that pace, the hours a week each deadline needs or whether you are on track, and how many steps have no time estimate.
+- The progress file gains `goals`, `all-goals`, `deadline-YYYY-MM-DD` lists of goals and `pace-hours`, written only when used. `goal` stays the goal the route leads to, so older versions read the file as before. The journal adds `goal-added`, `goal-removed`, `deadline` and `pace` lines; `goal` still names the goal the route leads to, and routing to all goals is not written.
 - **Review of mastered concepts with FSRS** ([ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2, MIT, no dependencies).
   - The schedule of each concept is replayed from the journal: it starts with the mastered mark (as Good) or the known mark (as Easy), and every `reviewed` or `checked` line after it is one FSRS step. Nothing else is stored, so reviews on other devices, Undo and a new target recall all count the same way.
   - A concept is due when the chance to recall it falls below the target recall (90% by default; 80, 85 or 95% in the settings). It stays mastered and blocks nothing; the map shows a badge on it and in the legend, and **Review today** above the route lists the due concepts, the longest overdue first, in the side panel and in the map's panel, on a phone too.
@@ -17,6 +22,9 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
   - Commands **Review the next concept** and **Open the review queue**. The activity in the panel counts reviews.
   - **Settings → Review** turns it off and sets the target recall. Review needs the journal and is off without it.
   - A self-check feature can register questions for a concept; review then offers **Check yourself** before the ratings, and a check just before the mastered mark sets how well the memory starts.
+
+### Changed
+- **Set as goal** on a concept, when there is a goal already, is now **Add as goal**: the earlier goal is kept. Choosing a goal from the goal button still replaces the active one.
 
 ## [0.3.2] - 2026-11-03
 

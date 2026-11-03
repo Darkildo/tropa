@@ -63,8 +63,10 @@ const { open, stop } = await start();
   ok("materials shown", sources === 13, String(sources));
   await page.screenshot({ path: SHOTS + "14-materials.png" });
   await page.click(".tropa-toggle-sources"); await wait(page, 300);
-  // goal change
+  // goal change: the goal button lists the goals, and replacing one works as choosing a goal always did
   await page.click(".tropa-goal"); await wait(page, 100);
+  ok("goal button opens the goal menu", (await page.locator('.menu-item:text-is("Transformer")').getAttribute("aria-checked")) === "true");
+  await page.click('.menu-item:text-is("Replace with another goal…")'); await wait(page, 100);
   await page.keyboard.type("Convol"); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 1500);
   ok("goal switched", (await page.locator(".tropa-goal-label").innerText()) === "Convolutional networks");
   await wait(page, 300);
@@ -588,6 +590,7 @@ for (const [lang, wholeMap] of [["de", "Ganze Karte"], ["ja", "マップ全体"]
     });
     for (const [name, pass] of Object.entries(bidi)) ok(`ar: note text direction (${name})`, pass);
     await page.click('.tropa-goal'); await wait(page, 150);
+    await page.click('.menu-item:text-is("استبداله بهدف آخر…")'); await wait(page, 150);
     ok("ar: picker items take their own direction", await page.evaluate(() =>
       [...document.querySelectorAll(".modal .tropa-pick-text > div[dir=auto]")].length > 0
       && [...document.querySelectorAll(".modal .tropa-pick-text > div[dir=auto]")].every((el) => getComputedStyle(el).direction === "ltr")));
@@ -1536,6 +1539,138 @@ async function undoChecks(page, label) {
   await page.close();
 }
 
+// --- several goals, a deadline and a pace
+async function goalChecks(page, label, words) {
+  const pick = async (title) => page.evaluate((id) => tropa.app.workspace.center.view.select(id), await conceptPath(page, title));
+  const side = (text) => page.locator(`.tropa-side button:text-is("${text}")`);
+  const menuItem = (text) => page.locator(`.menu-item:text-is("${text}")`);
+  const progressFile = () => page.evaluate("tropa.app.vault.contents.get(tropa.plugin.settings.progressPath)");
+  const goalMenu = async () => { await page.click(".tropa-goal"); await wait(page, 150); };
+  const journal = async () => {
+    await page.evaluate(() => tropa.plugin.journal.settled());
+    return page.evaluate(() => {
+      const folder = tropa.plugin.settings.journalFolder + "/";
+      return [...tropa.app.vault.contents].filter(([path]) => path.startsWith(folder)).map(([, text]) => text).join("\n");
+    });
+  };
+  const lines = async (action) => (await journal()).split("\n").filter((line) => line.split(" ")[2] === action);
+
+  // A mark with its undo, then a goal added another way: the undo goes, both changes stay and are written.
+  await page.evaluate(async (id) => tropa.plugin.store.setMastered(id, true), await conceptPath(page, words.markFirst)); await wait(page, 300);
+  const toastsBefore = await page.locator("#center .tropa-toast").count();
+  await pick(words.second); await wait(page, 150);
+  await side(words.add).click(); await wait(page, 400);
+  ok(`${label}: adding a goal takes a pending undo away`, toastsBefore === 1 && (await page.locator("#center .tropa-toast").count()) === 0, JSON.stringify({ toastsBefore }));
+  ok(`${label}: the journal has the mark and the new active goal`, (await lines("mastered")).length >= 1 && (await lines("goal")).some((line) => line.includes(`[[${words.second}]]`)) && (await lines("goal-added")).length === 0, await journal());
+  ok(`${label}: adding a goal makes it the active one`, (await page.locator(".tropa-goal-label").innerText()) === words.second);
+  ok(`${label}: the bar counts the other goal`, (await page.locator(".tropa-goal-more").innerText()) === "+1");
+  const saved = await progressFile();
+  ok(`${label}: both goals are saved, the active one in goal`, /^goals:/m.test(saved) && saved.includes(`[[${words.first}]]`) && /^goal: .*Convolutional|^goal: .*Свёрточные/m.test(saved), saved.slice(0, 400));
+  ok(`${label}: a goal cannot be skipped`, (await side(words.skip).count()) === 0);
+
+  await goalMenu();
+  ok(`${label}: the menu lists both goals and all of them`, (await menuItem(words.first).count()) === 1 && (await menuItem(words.all).count()) === 1);
+  const goalLines = (await lines("goal")).length;
+  await menuItem(words.all).click(); await wait(page, 1200);
+  ok(`${label}: all goals in the bar`, (await page.locator(".tropa-goal-label").innerText()) === words.count2, await page.locator(".tropa-goal-label").innerText());
+  ok(`${label}: both goals marked on the map`, (await state(page, words.first)).includes("is-goal") && (await state(page, words.second)).includes("is-goal"));
+  ok(`${label}: the route counts the steps to both`, (await page.locator(".tropa-side .tropa-title").innerText()).includes(words.stepsToGoals));
+  const named = await page.locator("#center .tropa-step-goals").allInnerTexts();
+  const steps = await page.locator("#center .tropa-step").count();
+  // Steps both goals need stay unmarked, the others name their goal.
+  ok(`${label}: a step one goal needs names it, the shared ones do not`,
+    named.length > 0 && named.length < steps && named.every((text) => text.includes(words.first) !== text.includes(words.second)), JSON.stringify({ named, steps }));
+  ok(`${label}: the route to all is saved`, (await progressFile()).includes("all-goals: true"));
+  ok(`${label}: routing to all goals writes no journal line`, (await lines("goal")).length === goalLines, await journal());
+
+  // Deadline and pace from the route panel.
+  await page.locator("#center .tropa-plan-button").click(); await wait(page, 150);
+  ok(`${label}: plan modal has a pace and a deadline per goal`, (await page.locator(".modal .tropa-plan-pace").count()) === 1 && (await page.locator(".modal .tropa-plan-deadline").count()) === 2);
+  await page.locator(".modal .tropa-plan-pace").fill("abc");
+  await page.locator(`.modal button:text-is("${words.save}")`).click(); await wait(page, 150);
+  ok(`${label}: a bad pace is refused`, (await page.locator(".modal .tropa-plan-pace").count()) === 1 && (await page.evaluate("tropa.notices")).some((text) => text.includes(words.paceInvalid)));
+  await page.locator(".modal .tropa-plan-pace").fill(words.pace);
+  const deadline = await page.evaluate(() => { const d = new Date(); d.setDate(d.getDate() + 6); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; });
+  await page.locator(`.modal .tropa-plan-deadline[data-goal$="${words.first}.md"]`).fill(deadline);
+  await page.locator(`.modal button:text-is("${words.save}")`).click(); await wait(page, 500);
+  const file = await progressFile();
+  const planned = { deadline: await lines("deadline"), pace: await lines("pace") };
+  ok(`${label}: the journal has the deadline and the pace`,
+    planned.deadline.length === 1 && planned.deadline[0].includes(`[[${words.first}]] date=${deadline}`) && planned.pace.length === 1 && planned.pace[0].endsWith(`pace - hours=${words.paceSaved}`), JSON.stringify(planned));
+  ok(`${label}: pace and deadline are saved as plain properties`, file.includes(`pace-hours: ${words.paceSaved}`) && file.includes(`deadline-${deadline}:`), file.slice(0, 600));
+  const forecast = await page.locator("#center .tropa-plan-forecast .tropa-hint").allInnerTexts();
+  ok(`${label}: the forecast gives a finish date at the pace`, forecast.some((line) => line.startsWith(words.finish)), JSON.stringify(forecast));
+  ok(`${label}: and what the deadline asks for, by goal`, forecast.some((line) => line.startsWith(`${words.first}${words.goalLineSep}`)), JSON.stringify(forecast));
+  await page.screenshot({ path: `${SHOTS}63-${label.replace(/\s+/g, "-")}-all.png` });
+  const unestimated = await page.evaluate("tropa.plugin.store.route.unestimated");
+  ok(`${label}: and says what has no estimate, when something has none`, forecast.some((line) => line.includes(words.unestimated)) === unestimated > 0, JSON.stringify({ forecast, unestimated }));
+  await goalMenu();
+  ok(`${label}: the menu shows the deadline`, (await page.locator(".menu-item").allInnerTexts()).some((text) => text.startsWith(`${words.first}, `)));
+  await page.keyboard.press("Escape"); await page.mouse.click(5, 300); await wait(page, 150);
+
+  // Back to one goal, then remove the other one.
+  await goalMenu();
+  // With its deadline the goal reads "Transformer, until …".
+  await page.locator(".menu-item").filter({ hasText: new RegExp(`^${words.first}, `) }).click(); await wait(page, 800);
+  ok(`${label}: one goal again`, (await page.locator(".tropa-goal-label").innerText()) === words.first && (await page.evaluate("tropa.plugin.store.route.goals.length")) === 1);
+  ok(`${label}: its own deadline is in the forecast`, (await page.locator("#center .tropa-plan-forecast .tropa-hint").allInnerTexts()).some((line) => line.startsWith(words.deadlineStart)));
+  await goalMenu();
+  await menuItem(words.remove).click(); await wait(page, 800);
+  ok(`${label}: removing the active goal shows the other one`, (await page.locator(".tropa-goal-label").innerText()) === words.second);
+  const left = await progressFile();
+  ok(`${label}: with one goal left the lists go`, !/^goals:/m.test(left) && !left.includes("all-goals") && !left.includes(`deadline-${deadline}`), left.slice(0, 400));
+  ok(`${label}: the pace stays`, left.includes(`pace-hours: ${words.paceSaved}`));
+  const removed = await lines("goal-removed");
+  ok(`${label}: the journal has the removed goal, and no line for its deadline`,
+    removed.length === 1 && removed[0].includes(`[[${words.first}]]`) && (await lines("deadline")).length === 1, await journal());
+}
+const EN_GOALS = {
+  first: "Transformer", second: "Convolutional networks", add: "Add as goal", skip: "Skip", all: "All goals", count2: "2 goals",
+  stepsToGoals: "to your goals", save: "Save", paceInvalid: "Enter hours a week", pace: "5", paceSaved: "5",
+  finish: "At 5 h a week: done by", goalLineSep: ": ", unestimated: "without a time estimate", deadlineStart: "Behind:",
+  remove: "Remove goal “Transformer”", markFirst: "Gradient",
+};
+{
+  const { page, errors } = await open();
+  await goalChecks(page, "goals", EN_GOALS);
+  const ids = await page.evaluate("tropa.plugin.commands.map((c) => c.id)");
+  ok("goals: commands to add and remove a goal and to plan", ["set-goal", "remove-goal", "plan"].every((id) => ids.includes(id)), JSON.stringify(ids));
+  ok("no console errors (goals)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ru" });
+  await goalChecks(page, "ru goals", {
+    first: "Трансформер", second: "Свёрточные сети", add: "Добавить в цели", skip: "Пропустить", all: "Все цели", count2: "2 цели",
+    stepsToGoals: "до ваших целей", save: "Сохранить", paceInvalid: "Введите часы в неделю", pace: "2,5", paceSaved: "2.5",
+    finish: "При 2,5 ч в неделю — к", goalLineSep: ": ", unestimated: "без оценки времени", deadlineStart: "Не успеваете:",
+    remove: "Убрать цель «Трансформер»", markFirst: "Градиент",
+  });
+  ok("no console errors (ru goals)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar" });
+  await page.click(".tropa-goal"); await wait(page, 150);
+  ok("ar goals: the goal menu opens", (await page.locator('.menu-item:text-is("إضافة هدف آخر…")').count()) === 1);
+  await page.click('.menu-item:text-is("الموعد النهائي والوتيرة…")'); await wait(page, 150);
+  ok("ar goals: the plan modal is right to left", (await page.locator(".modal").getAttribute("dir")) === "rtl" && (await page.locator(".modal .tropa-plan-deadline").count()) === 1);
+  await page.locator(".modal .tropa-plan-pace").fill("3");
+  await page.locator('.modal button:text-is("حفظ")').click(); await wait(page, 400);
+  const lines = await page.locator("#center .tropa-plan-forecast .tropa-hint").allInnerTexts();
+  ok("ar goals: the forecast is translated", lines.some((line) => line.startsWith("بمعدل ") && line.includes("س في الأسبوع")), JSON.stringify(lines));
+  await page.screenshot({ path: SHOTS + "64-ar-plan.png" });
+  ok("no console errors (ar goals)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await phone("");
+  await goalChecks(page, "phone goals", EN_GOALS);
+  await page.screenshot({ path: SHOTS + "75-phone-goals.png" });
+  ok("phone goals: the bar stays one row with the goal count", (await box(page, "#center .tropa-bar")).height <= 56);
+  ok("no console errors (phone goals)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
 // --- learning journal: a line per change, one file per month and device, read back from every device
 const journalFiles = (page, folder = "Tropa/Journal") =>
   page.evaluate((f) => [...tropa.app.vault.files.keys()].filter((path) => path.startsWith(f + "/")), folder);
@@ -1777,6 +1912,32 @@ const lastNotice = (page) => page.evaluate(() => tropa.notices.at(-1) ?? "");
   await runCommand(page, "review-next"); await wait(page, 50);
   ok("review: command says the journal is needed", (await lastNotice(page)).startsWith("Review needs the learning journal"), await lastNotice(page));
   ok("review: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // Several goals and the route to all of them: review stays the same, on top of it.
+  const { page, errors } = await open({ query: "?panel=1" });
+  await seedOldMark(page);
+  await page.evaluate(() => {
+    const store = tropa.plugin.store;
+    const id = (title) => [...store.graph.nodes.values()].find((n) => n.title === title).id;
+    store.addGoal(id("Convolutional networks"));
+    store.setAllGoals(true);
+    store.setPlan(5, new Map([[id("Transformer"), "2027-03-01"]]));
+  });
+  await settled(page); await wait(page, 600);
+  ok("review goals: route to all goals", await page.evaluate(() => tropa.plugin.store.route?.goals.length === 2));
+  ok("review goals: the due mark stays", (await state(page, "Derivatives")).includes("is-due"));
+  ok("review goals: queue above the route to all goals", (await page.locator("#right .tropa-review-queue .tropa-review-item").allInnerTexts()).join("|").includes("Derivatives"));
+  const journal = (await journalFiles(page)).find((path) => !path.includes("phone-beef"));
+  const lines = await note(page, journal);
+  ok("review goals: goal and plan lines are in the journal", lines.includes("goal [[Convolutional networks]]") && lines.includes("pace - hours=5"), lines);
+  await page.locator("#right .tropa-review-queue .tropa-review-item").first().click(); await wait(page, 150);
+  await page.locator('#right .tropa-review button[data-rating="2"]').click();
+  await settled(page); await wait(page, 200);
+  ok("review goals: rating works", !(await state(page, "Derivatives")).includes("is-due") && /reviewed \[\[Derivatives\]\] rating=2\n$/.test(await note(page, journal)));
+  ok("review goals: the goals are untouched", await page.evaluate(() => tropa.plugin.store.progress.allGoals && tropa.plugin.store.route?.goals.length === 2));
+  ok("review goals: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 for (const [lang, queueTitle, ratings, dir] of [

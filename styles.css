@@ -55,6 +55,17 @@ button.tropa-goal {
 .tropa-goal-icon svg { width: 15px; height: 15px; }
 button.tropa-goal.has-goal .tropa-goal-icon { color: var(--tropa-route); }
 .tropa-goal-label { overflow: hidden; text-overflow: ellipsis; }
+/* The other goals kept besides the active one. */
+.tropa-goal-more {
+  flex: none;
+  padding: 0 6px;
+  border-radius: var(--radius-s);
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-normal);
+}
+.tropa-goal-more.is-hidden { display: none; }
 
 .tropa-progress {
   display: flex;
@@ -954,6 +965,12 @@ button.tropa-add svg { width: 14px; height: 14px; }
 .tropa-step.is-next .tropa-step-title { font-weight: var(--font-semibold); }
 .tropa-step.state-locked .tropa-step-title { color: var(--text-muted); }
 .tropa-step-meta { margin-top: 2px; color: var(--text-muted); font-size: 12px; line-height: 1.35; }
+.tropa-step-goals { color: var(--tropa-route); }
+
+/* The forecast under the time left, and the way to set a pace or deadlines. */
+.tropa-plan-forecast { margin: 4px 0 8px; }
+.tropa-plan-forecast .tropa-hint { margin: 2px 0; }
+.tropa-plan input[type="date"] { min-width: 150px; }
 .tropa-step.is-hidden-on-map { padding-inline-end: 30px; }
 .tropa-step.is-hidden-on-map .tropa-step-title { color: var(--text-muted); }
 

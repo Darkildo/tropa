@@ -7,7 +7,6 @@
   "findConceptPrompt": "어떤 개념을 보여 드릴까요?",
   "markConcept": "이 노트를 개념으로 만들기",
   "markSource": "이 노트를 자료로 만들기",
-  "setGoal": "이 노트를 목표로 정하기",
   "toggleMastered": "이 노트를 익힘으로 표시하거나 학습 중으로 되돌리기",
   "toggleSkipped": "이 노트를 건너뛰거나 경로로 되돌리기",
   "markKnownCommand": "이 노트와 필요한 선행 개념을 모두 아는 것으로 표시",
@@ -245,6 +244,55 @@
     "other": "여기에 경로 {count}단계가 숨겨져 있음"
   },
   "hiddenOnMap": "지도에서 숨김",
+  "goals": {
+    "all": "모든 목표",
+    "count": {
+      "other": "목표 {count}개"
+    },
+    "more": "+{count}",
+    "menu": "내 목표",
+    "add": "목표에 추가",
+    "addMore": "목표 하나 더 추가…",
+    "addPrompt": "어떤 목표를 추가할까요?",
+    "replace": "다른 목표로 바꾸기…",
+    "remove": "‘{title}’ 목표 해제",
+    "until": "{title}, {date}까지",
+    "forGoals": "대상: {goals}",
+    "sharedHint": "목표 이름이 없는 단계는 모든 목표에 필요합니다.",
+    "stepsToGoals": {
+      "other": "목표까지 {count}단계"
+    },
+    "remainingLine": "{remaining}. 목표: {goals}.",
+    "reachedText": "목표에 필요한 것을 모두 익혔습니다. 새 목표를 추가하세요.",
+    "excluded": "폴더나 태그 설정으로 지도에서 빠져 있어 경로는 이들 없이 이어집니다: {titles}.",
+    "addCommand": "이 노트를 목표에 추가",
+    "removeCommand": "이 노트를 목표에서 빼기"
+  },
+  "plan": {
+    "title": "마감일과 속도",
+    "menu": "마감일과 속도…",
+    "command": "마감일과 속도 설정",
+    "intro": "Tropa는 경로에 있는 자료의 시간을 더해 언제 끝날지 계산합니다.",
+    "pace": "주당 시간",
+    "paceDesc": "공부에 쓸 계획인 시간입니다. 예측이 필요 없으면 비워 두세요.",
+    "paceInvalid": "주당 시간을 숫자로 입력하세요. 예: 5 또는 2.5",
+    "deadline": "마감일",
+    "deadlineFor": "‘{title}’ 마감일",
+    "deadlineDesc": "선택 사항입니다. 마감일이 없으면 비워 두세요.",
+    "save": "저장",
+    "set": "마감일이나 속도 설정",
+    "change": "마감일이나 속도 변경",
+    "finish": "주 {hours}시간이면 {date}까지 완료.",
+    "needed": "{date}까지 끝내려면 주 {hours}시간.",
+    "onTrack": "{date}에 맞출 수 있습니다.",
+    "behind": "뒤처짐: {date}까지 끝내려면 주 {hours}시간이 필요합니다.",
+    "overdue": "마감일 {date}이(가) 지났습니다.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "other": "시간 추정이 없는 단계 {count}개가 더 있습니다."
+    },
+    "noTime": "경로의 자료에 아직 시간이 없어 예측할 수 없습니다."
+  },
   "audit": {
     "command": "지도 점검",
     "title": "지도 점검",

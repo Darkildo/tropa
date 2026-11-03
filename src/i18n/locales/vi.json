@@ -7,7 +7,6 @@
   "findConceptPrompt": "Hiển thị khái niệm nào?",
   "markConcept": "Biến ghi chú này thành khái niệm",
   "markSource": "Biến ghi chú này thành tài liệu",
-  "setGoal": "Đặt ghi chú này làm mục tiêu",
   "toggleMastered": "Đánh dấu ghi chú này đã nắm vững hoặc đưa về đang học",
   "toggleSkipped": "Bỏ qua ghi chú này hoặc đưa nó về lộ trình",
   "markKnownCommand": "Đánh dấu ghi chú này và mọi thứ nó cần là đã biết",
@@ -245,6 +244,55 @@
     "other": "Có {count} bước của lộ trình bị ẩn ở đây"
   },
   "hiddenOnMap": "Bị ẩn trên bản đồ",
+  "goals": {
+    "all": "Tất cả mục tiêu",
+    "count": {
+      "other": "{count} mục tiêu"
+    },
+    "more": "+{count}",
+    "menu": "Mục tiêu của bạn",
+    "add": "Thêm làm mục tiêu",
+    "addMore": "Thêm một mục tiêu nữa…",
+    "addPrompt": "Bạn muốn thêm mục tiêu nào?",
+    "replace": "Thay bằng mục tiêu khác…",
+    "remove": "Bỏ mục tiêu “{title}”",
+    "until": "{title}, hạn {date}",
+    "forGoals": "Cho: {goals}",
+    "sharedHint": "Các bước không ghi tên mục tiêu là cần cho mọi mục tiêu.",
+    "stepsToGoals": {
+      "other": "Còn {count} bước tới các mục tiêu của bạn"
+    },
+    "remainingLine": "{remaining}. Mục tiêu: {goals}.",
+    "reachedText": "Bạn đã nắm vững mọi thứ các mục tiêu cần. Hãy thêm mục tiêu mới.",
+    "excluded": "Bị loại khỏi bản đồ do cài đặt thư mục hoặc thẻ, nên lộ trình đi tiếp mà không có chúng: {titles}.",
+    "addCommand": "Thêm ghi chú này vào mục tiêu",
+    "removeCommand": "Bỏ ghi chú này khỏi mục tiêu"
+  },
+  "plan": {
+    "title": "Hạn chót và nhịp độ",
+    "menu": "Hạn chót và nhịp độ…",
+    "command": "Đặt hạn chót và nhịp độ",
+    "intro": "Tropa cộng thời lượng các tài liệu trên lộ trình và tính khi nào bạn học xong.",
+    "pace": "Giờ mỗi tuần",
+    "paceDesc": "Bạn dự định học bao nhiêu thời gian. Để trống nếu không cần dự báo.",
+    "paceInvalid": "Nhập số giờ mỗi tuần bằng số, ví dụ 5 hoặc 2,5",
+    "deadline": "Hạn chót",
+    "deadlineFor": "Hạn chót cho “{title}”",
+    "deadlineDesc": "Không bắt buộc. Để trống nếu không có hạn chót.",
+    "save": "Lưu",
+    "set": "Đặt hạn chót hoặc nhịp độ",
+    "change": "Đổi hạn chót hoặc nhịp độ",
+    "finish": "Với {hours} giờ mỗi tuần: xong vào {date}.",
+    "needed": "Để xong trước {date}: {hours} giờ mỗi tuần.",
+    "onTrack": "Kịp tiến độ cho {date}.",
+    "behind": "Chậm tiến độ: cần {hours} giờ mỗi tuần để xong trước {date}.",
+    "overdue": "Hạn chót {date} đã qua.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "other": "Thêm {count} bước chưa có ước lượng thời gian."
+    },
+    "noTime": "Tài liệu trên lộ trình chưa có thời lượng, nên chưa có gì để dự báo."
+  },
   "audit": {
     "command": "Kiểm tra bản đồ",
     "title": "Kiểm tra bản đồ",

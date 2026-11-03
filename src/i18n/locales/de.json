@@ -7,7 +7,6 @@
   "findConceptPrompt": "Welches Konzept soll angezeigt werden?",
   "markConcept": "Notiz zum Konzept machen",
   "markSource": "Notiz zum Material machen",
-  "setGoal": "Notiz als Ziel festlegen",
   "toggleMastered": "Notiz als beherrscht markieren oder zurück zum Lernen",
   "toggleSkipped": "Notiz überspringen oder zurück in die Route",
   "markKnownCommand": "Notiz und alles, was sie voraussetzt, als bekannt markieren",
@@ -258,6 +257,58 @@
     "other": "Hier sind {count} Schritte der Route ausgeblendet"
   },
   "hiddenOnMap": "Auf der Karte ausgeblendet",
+  "goals": {
+    "all": "Alle Ziele",
+    "count": {
+      "one": "{count} Ziel",
+      "other": "{count} Ziele"
+    },
+    "more": "+{count}",
+    "menu": "Deine Ziele",
+    "add": "Als Ziel hinzufügen",
+    "addMore": "Noch ein Ziel hinzufügen…",
+    "addPrompt": "Welches Ziel möchtest du hinzufügen?",
+    "replace": "Durch ein anderes Ziel ersetzen…",
+    "remove": "Ziel „{title}“ entfernen",
+    "until": "{title}, bis {date}",
+    "forGoals": "Für: {goals}",
+    "sharedHint": "Schritte ohne Zielangabe braucht jedes deiner Ziele.",
+    "stepsToGoals": {
+      "one": "{count} Schritt bis zu deinen Zielen",
+      "other": "{count} Schritte bis zu deinen Zielen"
+    },
+    "remainingLine": "{remaining}. Ziele: {goals}.",
+    "reachedText": "Du beherrschst alles, was deine Ziele brauchen. Füge ein neues Ziel hinzu.",
+    "excluded": "Durch die Ordner- oder Tag-Einstellungen nicht auf der Karte, daher führt die Route ohne sie: {titles}.",
+    "addCommand": "Diese Notiz zu deinen Zielen hinzufügen",
+    "removeCommand": "Diese Notiz aus deinen Zielen entfernen"
+  },
+  "plan": {
+    "title": "Frist und Tempo",
+    "menu": "Frist und Tempo…",
+    "command": "Frist und Tempo festlegen",
+    "intro": "Tropa addiert die Dauer der Materialien auf der Route und berechnet, wann du fertig bist.",
+    "pace": "Stunden pro Woche",
+    "paceDesc": "Wie viel Zeit du zum Lernen einplanst. Leer lassen, wenn du keine Prognose brauchst.",
+    "paceInvalid": "Gib die Stunden pro Woche als Zahl ein, etwa 5 oder 2,5",
+    "deadline": "Frist",
+    "deadlineFor": "Frist für „{title}“",
+    "deadlineDesc": "Optional. Leer lassen, wenn es keine Frist gibt.",
+    "save": "Speichern",
+    "set": "Frist oder Tempo festlegen",
+    "change": "Frist oder Tempo ändern",
+    "finish": "Bei {hours} Std. pro Woche: fertig bis {date}.",
+    "needed": "Um bis {date} fertig zu sein: {hours} Std. pro Woche.",
+    "onTrack": "Im Plan für {date}.",
+    "behind": "Im Verzug: Für {date} sind {hours} Std. pro Woche nötig.",
+    "overdue": "Die Frist {date} ist vorbei.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Dazu {count} Schritt ohne Zeitangabe.",
+      "other": "Dazu {count} Schritte ohne Zeitangabe."
+    },
+    "noTime": "Die Materialien auf der Route haben noch keine Dauer, daher gibt es nichts vorherzusagen."
+  },
   "audit": {
     "command": "Karte prüfen",
     "title": "Kartenprüfung",

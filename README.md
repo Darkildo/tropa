@@ -25,6 +25,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Progress you can see.** Mark concepts as learning or mastered and materials as done. Mastering a concept unlocks the ones that depend on it. Every action can be undone.
 - **Start from what you know.** **I know this and what it needs** marks a concept together with its unmastered prerequisites in one step; untick anything you are unsure of. **Skip** leaves a concept out: it opens what depends on it but never counts as mastered. An optional confidence from 1 to 5 can be set on mastered and learning concepts.
 - **Time estimate.** Material durations add up to the time left on the route.
+- **Several goals, a deadline and a pace.** Keep more than one goal and switch between them with the goal button, or route to all of them at once: a step only some goals need names them. Set how many hours a week you study and a deadline for each goal under **Deadline and pace…**, and the route says when you finish at that pace, what each deadline asks for, and how many steps have no time estimate yet.
 - **Focus and fold.** **Focus** (or F) shows only what is near the selected concept: what it needs, what it opens and soft links, one to three steps around, with their materials when **Materials** is on. Esc or the cross brings back the map as it was. The badge under a concept folds away everything that needs it and then shows how many concepts it hides; a highlighted badge means route steps are among them, and the route list marks them. Picking such a step unfolds its branch. Focus and folds belong to the map view: they are kept with Obsidian's workspace layout, never in notes or progress.
 - **Export.** The download button in the bar, or the commands **Export map to Canvas** and **Export map as SVG**, save the map as it is drawn now: route or whole map, with materials, focus and folds. The canvas keeps the positions and points at your notes, so it opens in Obsidian Canvas; coloring it by your progress is optional, so a map can be shared without it. JSON Canvas has no dashed lines, so soft links are orange with a label and material links cyan. The SVG takes the colors and fonts of the current theme. An existing file is never replaced without asking.
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
@@ -77,7 +78,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 
 1. Open the map with the route icon in the left ribbon or the command **Tropa: Learning map**.
 2. In an empty vault, choose **Show example** to add an example map, or **Create first concept**.
-3. Choose a goal in the top left corner. The panel on the right lists the steps and what to study first.
+3. Choose a goal in the top left corner. The panel on the right lists the steps and what to study first. The same button later adds more goals, switches between them, shows the route to all of them and opens **Deadline and pace…**.
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
 6. On a big map, select a concept and press **Focus** to see only what is near it, or fold the branches you do not need with the badge under a concept.
@@ -90,7 +91,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 - The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
 - The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
 
-Other commands: review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept, a material or the goal, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -124,7 +125,11 @@ Your goal and marks are stored in `Tropa/Progress.md`:
 ```yaml
 ---
 type: learning-progress
-goal: "[[Transformer]]"
+goal: "[[Transformer]]"                          # the goal the route leads to
+goals: ["[[Transformer]]", "[[Fine-tuning]]"]   # optional, every goal once there is more than one
+all-goals: true                                  # optional, route to all goals at once
+deadline-2026-12-31: ["[[Transformer]]"]         # optional, goals due that day
+pace-hours: 5                                    # optional, hours of study a week
 mastered: ["[[Derivatives]]", "[[Vectors and matrices]]"]
 learning: ["[[Gradient]]"]
 done: ["[[3Blue1Brown, Essence of calculus]]"]   # finished materials
@@ -138,7 +143,9 @@ done-materials:                                   # finished materials listed in
 
 A material in a concept's `materials` list is a URL, a link to an attachment or a note, a Markdown link `[title](url)`, or an object with `url` or `file` and optional `title`, `format` and `minutes`. Without a title a link is named by its address and an attachment by its file name; without a format it is guessed from the address or the file extension. The same link in several concepts is one material that teaches all of them. A link that is already a material note, by the note itself or by its `url`, is shown as that note. Such materials count in the route time like any other, and the map shows them with the other materials. Finished ones go to `done-materials`: URLs as they are, attachments as links, so renaming the file keeps the mark.
 
-`skipped`, `done-materials` and the `confidence-N` lists are written only when they hold something and removed when they become empty, so a file from an earlier version reads as it is and stays unchanged until you use them. Marks are links, so renaming a note keeps them. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
+`goal` always holds the goal the route leads to, so an older version of Tropa reads such a file as it did and routes to that goal; a goal it sets there is added to `goals`. Deadlines are grouped by date as plain links, so renaming a note keeps them and the Properties editor shows them as an ordinary list. The forecast counts the durations of the materials on the route, from today, with the deadline day as a day of study.
+
+`goals`, `all-goals`, the `deadline-…` lists, `pace-hours`, `skipped`, `done-materials` and the `confidence-N` lists are written only when they hold something and removed when they become empty, so a file from an earlier version reads as it is and stays unchanged until you use them. Marks are links, so renaming a note keeps them. A link to a note that does not exist yet becomes a placeholder concept, and you can create the note with one button. Property names, folders and the progress file can be changed in the settings. Default paths follow Obsidian's language on first launch and are saved, so they do not move later.
 
 ### Map scope
 
@@ -161,7 +168,7 @@ Excluded notes leave the map completely: a `requires`, `recommends` or `teaches`
 - 2026-11-03T15:10:00+03:00 done https://en.wikipedia.org/wiki/Gradient
 ```
 
-- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal`, `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`, `reviewed` and `checked` (a review and a self-check, with `rating=1`…`4`, see [Review](#review)).
+- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`, `reviewed` and `checked` (a review and a self-check, with `rating=1`…`4`, see [Review](#review)).
 - Undo appends lines flagged `undo` that put things back, instead of erasing lines: the files only grow, so a sync never has to merge two versions of one.
 - The device name, like `desktop-3f9a` or `phone-07c1`, is kept by Obsidian on the device and is not synced. Each device writes only its own file and reads all of them, so the activity in the panel covers every device.
 - Links follow renames like any other links. Lines that do not parse, such as notes you add between them, are skipped.

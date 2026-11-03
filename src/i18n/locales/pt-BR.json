@@ -7,7 +7,6 @@
   "findConceptPrompt": "Qual conceito você quer ver?",
   "markConcept": "Transformar esta nota em conceito",
   "markSource": "Transformar esta nota em material",
-  "setGoal": "Transformar esta nota em objetivo",
   "toggleMastered": "Marcar esta nota como dominada ou voltar a estudá-la",
   "toggleSkipped": "Pular esta nota ou devolvê-la à rota",
   "markKnownCommand": "Marcar esta nota e tudo o que ela exige como conhecido",
@@ -271,6 +270,61 @@
     "other": "Aqui estão ocultos {count} passos da rota"
   },
   "hiddenOnMap": "Oculto no mapa",
+  "goals": {
+    "all": "Todos os objetivos",
+    "count": {
+      "one": "{count} objetivo",
+      "many": "{count} objetivos",
+      "other": "{count} objetivos"
+    },
+    "more": "+{count}",
+    "menu": "Seus objetivos",
+    "add": "Adicionar como objetivo",
+    "addMore": "Adicionar mais um objetivo…",
+    "addPrompt": "Qual objetivo você quer adicionar?",
+    "replace": "Trocar por outro objetivo…",
+    "remove": "Remover o objetivo “{title}”",
+    "until": "{title}, até {date}",
+    "forGoals": "Para: {goals}",
+    "sharedHint": "Os passos sem nome de objetivo são necessários para todos.",
+    "stepsToGoals": {
+      "one": "{count} passo até seus objetivos",
+      "many": "{count} passos até seus objetivos",
+      "other": "{count} passos até seus objetivos"
+    },
+    "remainingLine": "{remaining}. Objetivos: {goals}.",
+    "reachedText": "Você domina tudo o que seus objetivos exigem. Adicione um novo objetivo.",
+    "excluded": "Fora do mapa pelas configurações de pastas ou tags, então a rota segue sem eles: {titles}.",
+    "addCommand": "Adicionar esta nota aos seus objetivos",
+    "removeCommand": "Remover esta nota dos seus objetivos"
+  },
+  "plan": {
+    "title": "Prazo e ritmo",
+    "menu": "Prazo e ritmo…",
+    "command": "Definir prazo e ritmo",
+    "intro": "O Tropa soma a duração dos materiais da rota e calcula quando você vai terminar.",
+    "pace": "Horas por semana",
+    "paceDesc": "Quanto tempo você planeja estudar. Deixe vazio se não quiser previsão.",
+    "paceInvalid": "Digite as horas por semana como número, por exemplo 5 ou 2,5",
+    "deadline": "Prazo",
+    "deadlineFor": "Prazo para “{title}”",
+    "deadlineDesc": "Opcional. Deixe vazio se não houver prazo.",
+    "save": "Salvar",
+    "set": "Definir um prazo ou ritmo",
+    "change": "Alterar prazo ou ritmo",
+    "finish": "Com {hours} h por semana: termina em {date}.",
+    "needed": "Para terminar até {date}: {hours} h por semana.",
+    "onTrack": "No prazo para {date}.",
+    "behind": "Atrasado: são necessárias {hours} h por semana para terminar até {date}.",
+    "overdue": "O prazo de {date} já passou.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Mais {count} passo sem estimativa de tempo.",
+      "many": "Mais {count} passos sem estimativa de tempo.",
+      "other": "Mais {count} passos sem estimativa de tempo."
+    },
+    "noTime": "Os materiais da rota ainda não têm duração, então não há nada para prever."
+  },
   "audit": {
     "command": "Verificar o mapa",
     "title": "Verificação do mapa",

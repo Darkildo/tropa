@@ -85,6 +85,24 @@ describe("FSRS schedule from the journal", () => {
   });
 });
 
+describe("Other lines of the journal", () => {
+  it("goals, deadlines and pace do not change the schedule", () => {
+    const plain = [entry("mastered", T0), entry("reviewed", T0 + 3 * DAY, { rating: "3" })];
+    const mixed = [
+      entry("goal", T0 - DAY),
+      entry("mastered", T0),
+      entry("goal-added", T0 + DAY),
+      entry("deadline", T0 + DAY, { date: "2026-12-31" }),
+      entry("pace", T0 + DAY, { hours: "5" }),
+      entry("confidence", T0 + 2 * DAY, { level: "4" }),
+      entry("reviewed", T0 + 3 * DAY, { rating: "3" }),
+      entry("goal-removed", T0 + 4 * DAY),
+      entry("some-future-action", T0 + 5 * DAY, { x: "1" }),
+    ];
+    expect(scheduler.schedule("a.md", mixed, null)).toEqual(scheduler.schedule("a.md", plain, null));
+  });
+});
+
 describe("Undo", () => {
   const base = [entry("mastered", T0), entry("reviewed", T0 + 3 * DAY, { rating: "3" })];
 

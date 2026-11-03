@@ -7,7 +7,6 @@
   "findConceptPrompt": "どの概念を表示しますか？",
   "markConcept": "このノートを概念にする",
   "markSource": "このノートを教材にする",
-  "setGoal": "このノートを目標にする",
   "toggleMastered": "このノートを習得済みにする／学習中に戻す",
   "toggleSkipped": "このノートをスキップ／ルートに戻す",
   "markKnownCommand": "このノートと必要な前提をすべて既知にする",
@@ -245,6 +244,55 @@
     "other": "ここにルートの{count}ステップが隠れています"
   },
   "hiddenOnMap": "マップ上で非表示",
+  "goals": {
+    "all": "すべての目標",
+    "count": {
+      "other": "{count}個の目標"
+    },
+    "more": "+{count}",
+    "menu": "あなたの目標",
+    "add": "目標に追加",
+    "addMore": "目標をもう1つ追加…",
+    "addPrompt": "どの目標を追加しますか？",
+    "replace": "別の目標に置き換える…",
+    "remove": "目標「{title}」を外す",
+    "until": "{title}（期限 {date}）",
+    "forGoals": "対象：{goals}",
+    "sharedHint": "目標名のないステップはすべての目標に必要です。",
+    "stepsToGoals": {
+      "other": "目標まであと{count}ステップ"
+    },
+    "remainingLine": "{remaining}。目標：{goals}。",
+    "reachedText": "目標に必要なことはすべて習得しました。新しい目標を追加しましょう。",
+    "excluded": "フォルダーやタグの設定でマップから外れているため、ルートはこれらを除いて進みます：{titles}。",
+    "addCommand": "このノートを目標に追加",
+    "removeCommand": "このノートを目標から外す"
+  },
+  "plan": {
+    "title": "期限とペース",
+    "menu": "期限とペース…",
+    "command": "期限とペースを設定",
+    "intro": "Tropaはルート上の教材の所要時間を合計し、いつ終わるかを計算します。",
+    "pace": "週あたりの時間",
+    "paceDesc": "学習にかける予定の時間です。予測が不要なら空欄のままにします。",
+    "paceInvalid": "週あたりの時間を数字で入力してください（例：5、2.5）",
+    "deadline": "期限",
+    "deadlineFor": "「{title}」の期限",
+    "deadlineDesc": "任意です。期限がなければ空欄のままにします。",
+    "save": "保存",
+    "set": "期限かペースを設定",
+    "change": "期限やペースを変更",
+    "finish": "週{hours}時間なら{date}までに完了。",
+    "needed": "{date}までに終えるには週{hours}時間。",
+    "onTrack": "{date}に間に合います。",
+    "behind": "遅れています：{date}までに終えるには週{hours}時間必要です。",
+    "overdue": "期限の{date}を過ぎました。",
+    "goalLine": "{title}：{text}",
+    "unestimated": {
+      "other": "ほかに所要時間のないステップが{count}個あります。"
+    },
+    "noTime": "ルート上の教材にまだ所要時間がないため、予測できません。"
+  },
   "audit": {
     "command": "マップを点検",
     "title": "マップの点検",

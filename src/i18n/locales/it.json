@@ -7,7 +7,6 @@
   "findConceptPrompt": "Quale concetto vuoi vedere?",
   "markConcept": "Rendi questa nota un concetto",
   "markSource": "Rendi questa nota un materiale",
-  "setGoal": "Rendi questa nota l’obiettivo",
   "toggleMastered": "Segna questa nota come padroneggiata o rimettila in studio",
   "toggleSkipped": "Salta questa nota o rimettila nel percorso",
   "markKnownCommand": "Segna questa nota e tutto ciò che richiede come già noti",
@@ -271,6 +270,61 @@
     "other": "Qui sono nascosti {count} passi del percorso"
   },
   "hiddenOnMap": "Nascosto sulla mappa",
+  "goals": {
+    "all": "Tutti gli obiettivi",
+    "count": {
+      "one": "{count} obiettivo",
+      "many": "{count} obiettivi",
+      "other": "{count} obiettivi"
+    },
+    "more": "+{count}",
+    "menu": "I tuoi obiettivi",
+    "add": "Aggiungi come obiettivo",
+    "addMore": "Aggiungi un altro obiettivo…",
+    "addPrompt": "Quale obiettivo vuoi aggiungere?",
+    "replace": "Sostituisci con un altro obiettivo…",
+    "remove": "Rimuovi l’obiettivo «{title}»",
+    "until": "{title}, entro il {date}",
+    "forGoals": "Per: {goals}",
+    "sharedHint": "I passi senza nome di obiettivo servono a tutti gli obiettivi.",
+    "stepsToGoals": {
+      "one": "{count} passo ai tuoi obiettivi",
+      "many": "{count} passi ai tuoi obiettivi",
+      "other": "{count} passi ai tuoi obiettivi"
+    },
+    "remainingLine": "{remaining}. Obiettivi: {goals}.",
+    "reachedText": "Hai padroneggiato tutto ciò che serve ai tuoi obiettivi. Aggiungi un nuovo obiettivo.",
+    "excluded": "Esclusi dalla mappa dalle impostazioni di cartelle o tag, quindi il percorso procede senza di loro: {titles}.",
+    "addCommand": "Aggiungi questa nota ai tuoi obiettivi",
+    "removeCommand": "Rimuovi questa nota dai tuoi obiettivi"
+  },
+  "plan": {
+    "title": "Scadenza e ritmo",
+    "menu": "Scadenza e ritmo…",
+    "command": "Imposta scadenza e ritmo",
+    "intro": "Tropa somma la durata dei materiali del percorso e calcola quando finirai.",
+    "pace": "Ore a settimana",
+    "paceDesc": "Quanto tempo pensi di dedicare allo studio. Lascia vuoto se non vuoi una previsione.",
+    "paceInvalid": "Inserisci le ore a settimana come numero, ad esempio 5 o 2,5",
+    "deadline": "Scadenza",
+    "deadlineFor": "Scadenza per «{title}»",
+    "deadlineDesc": "Facoltativo. Lascia vuoto se non c’è una scadenza.",
+    "save": "Salva",
+    "set": "Imposta una scadenza o un ritmo",
+    "change": "Modifica scadenza o ritmo",
+    "finish": "A {hours} h a settimana: finito entro il {date}.",
+    "needed": "Per finire entro il {date}: {hours} h a settimana.",
+    "onTrack": "In linea per il {date}.",
+    "behind": "In ritardo: servono {hours} h a settimana per finire entro il {date}.",
+    "overdue": "La scadenza del {date} è passata.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Più {count} passo senza stima di tempo.",
+      "many": "Più {count} passi senza stima di tempo.",
+      "other": "Più {count} passi senza stima di tempo."
+    },
+    "noTime": "I materiali del percorso non hanno ancora una durata, quindi non c’è nulla da prevedere."
+  },
   "audit": {
     "command": "Controlla la mappa",
     "title": "Controllo della mappa",

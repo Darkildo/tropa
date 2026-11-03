@@ -1,10 +1,10 @@
 import { ItemView, Menu, Notice, Platform, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
-import { FORMAT_ICON, STATE_ICON, formatMinutes } from "../core/format";
+import { FORMAT_ICON, STATE_ICON, formatDate, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
 import layoutWorker from "tropa:layout-worker";
 import { auditCount, auditGraph, type Audit } from "../core/audit";
-import { isPassed, knownCandidates, sourceState, type LearningGraph } from "../core/graph";
+import { allGoalsOf, isGoal, isPassed, knownCandidates, sourceState, type LearningGraph } from "../core/graph";
 import { MAX_FOCUS_DEPTH, fold, foldersOf, neighborhood } from "../core/neighborhood";
 import type { GraphNode } from "../core/types";
 import { attempt } from "../attempt";
@@ -13,6 +13,9 @@ import type TropaPlugin from "../main";
 import type { Undo } from "../store";
 import { REVIEW_ICON, openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
+import { PlanModal } from "./plan";
+import { parseDate } from "../core/plan";
+import { basename } from "../core/links";
 import { navbarOverlap } from "./phone";
 import { ExportModal } from "./export";
 import { fileName } from "../core/export-path";
@@ -328,18 +331,75 @@ export class MapView extends ItemView implements DetailHost {
     this.nodeEls.get(id)?.focus({ preventScroll: true });
   }
 
-  pickGoal = () => {
+  /** Picks a goal in place of the active one, the way choosing a goal always worked. */
+  pickGoal = () => this.pickConcept(t.goalPrompt, new Set(), (id) => this.chooseGoal(id));
+
+  private pickConcept(prompt: string, except: Set<string>, run: (id: string) => void) {
     const items = this.store.graph.concepts
+      .filter((node) => !except.has(node.id))
       .sort((a, b) => a.title.localeCompare(b.title, "ru"))
       .map((node) => ({ id: node.id, title: node.title, icon: STATE_ICON[this.store.states.get(node.id) ?? "locked"] }));
-    new PickModal(this.app, items, t.goalPrompt, (item) => this.chooseGoal(item.id)).open();
-  };
+    new PickModal(this.app, items, prompt, (item) => run(item.id)).open();
+  }
 
-  private chooseGoal(id: string) {
+  /** Every change of what the route leads to starts with a fresh view of it. */
+  private changeGoals(run: () => void) {
     this.needsFit = true;
     this.selected = null;
     this.drawTrail();
-    this.store.setGoal(id);
+    run();
+  }
+
+  private chooseGoal(id: string) {
+    this.changeGoals(() => this.store.setGoal(id));
+  }
+
+  private goalTitle(id: string) {
+    return this.store.graph.nodes.get(id)?.title ?? basename(id).replace(/\.md$/, "");
+  }
+
+  /** The goal button: with no goal it picks one, otherwise it lists the goals and what can be done with them. */
+  private openGoalMenu(anchor: HTMLElement) {
+    const { store } = this;
+    const { progress } = store;
+    const goals = allGoalsOf(progress);
+    if (goals.length === 0) {
+      this.pickGoal();
+      return;
+    }
+    const menu = new Menu();
+    for (const id of goals) {
+      const deadline = progress.deadlines.get(id);
+      const title = deadline ? t.goals.until({ title: this.goalTitle(id), date: formatDate(parseDate(deadline)) }) : this.goalTitle(id);
+      menu.addItem((item) =>
+        item
+          .setTitle(title)
+          .setIcon("flag")
+          .setChecked(!progress.allGoals && progress.goal === id)
+          .onClick(() => this.changeGoals(() => store.setActiveGoal(id))),
+      );
+    }
+    if (goals.length > 1) {
+      menu.addItem((item) =>
+        item.setTitle(t.goals.all).setIcon("flag-triangle-right").setChecked(progress.allGoals).onClick(() => this.changeGoals(() => store.setAllGoals(true))),
+      );
+    }
+    menu.addSeparator();
+    menu.addItem((item) => item.setTitle(t.goals.replace).setIcon("replace").onClick(this.pickGoal));
+    menu.addItem((item) =>
+      item.setTitle(t.goals.addMore).setIcon("plus").onClick(() =>
+        this.pickConcept(t.goals.addPrompt, new Set(goals), (id) => this.changeGoals(() => store.addGoal(id))),
+      ),
+    );
+    menu.addItem((item) => item.setTitle(t.plan.menu).setIcon("calendar-clock").onClick(() => new PlanModal(this.app, store).open()));
+    const active = progress.allGoals ? null : progress.goal;
+    if (active) {
+      menu.addItem((item) =>
+        item.setTitle(t.goals.remove({ title: this.goalTitle(active) })).setIcon("x").onClick(() => this.changeGoals(() => store.removeGoal(active))),
+      );
+    }
+    const box = anchor.getBoundingClientRect();
+    menu.showAtPosition({ x: isRtl() ? box.right : box.left, y: box.bottom });
   }
 
   // Rendering
@@ -544,11 +604,11 @@ export class MapView extends ItemView implements DetailHost {
       }
 
       const state = store.states.get(id) ?? "locked";
-      const isGoal = route?.goal === id;
+      const goal = route?.goals.includes(id) ?? false;
       const isNext = route?.next === id;
       const classes = ["tropa-node", "is-concept", `state-${state}`];
       if (isSelected) classes.push("is-selected");
-      if (isGoal) classes.push("is-goal");
+      if (goal) classes.push("is-goal");
       if (isNext) classes.push("is-next");
       if (node.ghost) classes.push("is-ghost");
       if (route?.closure.has(id)) classes.push("is-on-route");
@@ -560,7 +620,7 @@ export class MapView extends ItemView implements DetailHost {
       setGlyph(glyph, STATE_ICON[state]);
       setText(meta, this.nodeMeta(node));
       this.paintFold(el, id, isFolded);
-      const label = `${node.title}. ${t.state[state]}${isDue ? t.review.dueSuffix : ""}${isGoal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`;
+      const label = `${node.title}. ${t.state[state]}${isDue ? t.review.dueSuffix : ""}${goal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`;
       el.setAttribute("aria-label", isFolded ? `${label}. ${t.folded({ count: this.foldCounts.get(id) ?? 0 })}` : label);
     }
     this.paintEdgeRoute();
@@ -725,7 +785,12 @@ export class MapView extends ItemView implements DetailHost {
     const label = goalButton.querySelector<HTMLElement>(".tropa-goal-label")!;
     const { route, graph } = this.store;
     const goal = route ? graph.nodes.get(route.goal) : null;
-    label.textContent = goal ? goal.title : t.chooseGoal;
+    const kept = allGoalsOf(this.store.progress).length;
+    const all = !!route && route.goals.length > 1;
+    label.textContent = all ? t.goals.count({ count: route.goals.length }) : goal ? goal.title : t.chooseGoal;
+    const others = goalButton.querySelector<HTMLElement>(".tropa-goal-more")!;
+    others.textContent = !all && kept > 1 ? t.goals.more({ count: kept - 1 }) : "";
+    others.toggleClass("is-hidden", all || kept < 2);
     goalButton.toggleClass("has-goal", !!goal);
     goalButton.toggleClass("mod-cta", !goal);
 
@@ -994,7 +1059,9 @@ export class MapView extends ItemView implements DetailHost {
     const goal = this.bar.createEl("button", { cls: "tropa-goal", attr: { "aria-label": t.goalButton } });
     setIcon(goal.createSpan({ cls: "tropa-goal-icon" }), "flag");
     goal.createSpan({ cls: "tropa-goal-label", attr: { dir: "auto" } });
-    goal.addEventListener("click", this.pickGoal);
+    goal.createSpan({ cls: "tropa-goal-more is-hidden" });
+    goal.setAttr("aria-haspopup", "menu");
+    goal.addEventListener("click", () => this.openGoalMenu(goal));
 
     const progress = this.bar.createDiv({ cls: "tropa-progress" });
     progress.createSpan({ cls: "tropa-progress-text" });
@@ -1145,7 +1212,7 @@ export class MapView extends ItemView implements DetailHost {
   /** Next to the progress file, named after the goal of the route or the map, and dated. */
   private exportPath(extension: string) {
     const { route, graph } = this.store;
-    const goal = this.effectiveMode() === "route" && route ? graph.nodes.get(route.goal)?.title : null;
+    const goal = this.effectiveMode() === "route" && route ? (route.goals.length > 1 ? t.goals.all : graph.nodes.get(route.goal)?.title) : null;
     const folder = this.plugin.settings.progressPath.split("/").slice(0, -1).join("/");
     const name = `${fileName(`${goal ?? t.mapTitle} ${today()}`)}.${extension}`;
     return folder ? `${folder}/${name}` : name;
@@ -1163,7 +1230,7 @@ export class MapView extends ItemView implements DetailHost {
     if (!withProgress) return out;
     if (node.kind === "source") {
       if (store.progress.done.has(node.id)) out.color = CANVAS_COLOR.mastered;
-    } else if (store.route?.goal === node.id && !store.progress.mastered.has(node.id)) {
+    } else if (store.route?.goals.includes(node.id) && !store.progress.mastered.has(node.id)) {
       out.color = CANVAS_COLOR.goal;
     } else {
       const state = store.states.get(node.id);
@@ -1246,7 +1313,7 @@ export class MapView extends ItemView implements DetailHost {
       });
 
       const { route, graph } = this.store;
-      const goal = route ? graph.nodes.get(route.goal)?.title : null;
+      const goal = route ? route.goals.map((id) => graph.nodes.get(id)?.title ?? "").join(t.listSeparator) : null;
       return {
         title: goal ? `${t.mapTitle}: ${goal}` : t.mapTitle,
         width: layout.width,
@@ -1625,7 +1692,7 @@ export class MapView extends ItemView implements DetailHost {
 
     if (node.kind === "concept") {
       const mastered = store.progress.mastered.has(id);
-      const isGoal = store.progress.goal === id;
+      const goal = isGoal(store.progress, id);
       const skipped = store.progress.skipped.has(id);
       menu.addItem((item) =>
         item.setTitle(mastered ? t.clearMastered : t.markMastered).setIcon("check").onClick(() => store.setMastered(id, !mastered)),
@@ -1634,10 +1701,12 @@ export class MapView extends ItemView implements DetailHost {
         menu.addItem((item) => item.setTitle(t.knowWithPrerequisites).setIcon("list-checks").onClick(() => openKnownModal(this.app, store, id)));
       }
       if (skipped) menu.addItem((item) => item.setTitle(t.unskip).setIcon("undo-2").onClick(() => store.setSkipped(id, false)));
-      else if (!mastered && !isGoal) menu.addItem((item) => item.setTitle(t.skip).setIcon("skip-forward").onClick(() => store.setSkipped(id, true)));
-      menu.addItem((item) =>
-        item.setTitle(isGoal ? t.removeGoal : t.makeGoal).setIcon("flag").onClick(() => (isGoal ? store.setGoal(null) : this.chooseGoal(id))),
-      );
+      else if (!mastered && !goal) menu.addItem((item) => item.setTitle(t.skip).setIcon("skip-forward").onClick(() => store.setSkipped(id, true)));
+      if (goal) menu.addItem((item) => item.setTitle(t.removeGoal).setIcon("flag").onClick(() => this.changeGoals(() => store.removeGoal(id))));
+      else {
+        const title = store.progress.goal ? t.goals.add : t.makeGoal;
+        menu.addItem((item) => item.setTitle(title).setIcon("flag").onClick(() => this.changeGoals(() => store.addGoal(id))));
+      }
       // On a phone there is no dot to drag a link from.
       menu.addItem((item) => item.setTitle(t.linkNext).setIcon("git-branch-plus").onClick(() => pickUnlock(this, node)));
     } else {
