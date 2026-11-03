@@ -1,5 +1,6 @@
 import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath, type TAbstractFile } from "obsidian";
 import { STATE_ICON } from "./core/format";
+import { isGoal } from "./core/graph";
 import { attempt } from "./attempt";
 import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
@@ -13,6 +14,7 @@ import { AUDIT_VIEW, AuditView } from "./ui/audit-view";
 import { PANEL_VIEW, PanelView } from "./ui/panel-view";
 import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
+import { PlanModal } from "./ui/plan";
 
 /** How long a notice with an undo button stays. */
 const NOTICE_MS = 6000;
@@ -168,7 +170,27 @@ export default class TropaPlugin extends Plugin {
           return true;
         },
       });
-    onActiveConcept("set-goal", t.setGoal, (id) => this.store.setGoal(id));
+    // The id stays as it was, so hotkeys set before goals became a list keep working.
+    onActiveConcept("set-goal", t.goals.addCommand, (id) => this.store.addGoal(id));
+    this.addCommand({
+      id: "remove-goal",
+      name: t.goals.removeCommand,
+      checkCallback: (checking) => {
+        const file = this.app.workspace.getActiveFile();
+        if (!file || !isGoal(this.store.progress, file.path)) return false;
+        if (!checking) this.store.removeGoal(file.path);
+        return true;
+      },
+    });
+    this.addCommand({
+      id: "plan",
+      name: t.plan.command,
+      checkCallback: (checking) => {
+        if (!this.store.progress.goal) return false;
+        if (!checking) new PlanModal(this.app, this.store).open();
+        return true;
+      },
+    });
     onActiveConcept("toggle-mastered", t.toggleMastered, (id) =>
       this.store.setMastered(id, !this.store.progress.mastered.has(id)),
     );

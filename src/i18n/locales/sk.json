@@ -7,7 +7,6 @@
   "findConceptPrompt": "Ktorý pojem zobraziť?",
   "markConcept": "Urobiť z poznámky pojem",
   "markSource": "Urobiť z poznámky materiál",
-  "setGoal": "Nastaviť poznámku ako cieľ",
   "toggleMastered": "Označiť poznámku ako zvládnutú alebo ju vrátiť k štúdiu",
   "toggleSkipped": "Preskočiť poznámku alebo ju vrátiť do trasy",
   "markKnownCommand": "Označiť poznámku a všetko, čo vyžaduje, ako známe",
@@ -284,6 +283,64 @@
     "other": "Skryté kroky trasy: {count}"
   },
   "hiddenOnMap": "Skryté na mape",
+  "goals": {
+    "all": "Všetky ciele",
+    "count": {
+      "one": "{count} cieľ",
+      "few": "{count} ciele",
+      "many": "{count} cieľa",
+      "other": "{count} cieľov"
+    },
+    "more": "+{count}",
+    "menu": "Vaše ciele",
+    "add": "Pridať ako cieľ",
+    "addMore": "Pridať ďalší cieľ…",
+    "addPrompt": "Aký cieľ chcete pridať?",
+    "replace": "Nahradiť iným cieľom…",
+    "remove": "Odstrániť cieľ „{title}“",
+    "until": "{title}, do {date}",
+    "forGoals": "Pre: {goals}",
+    "sharedHint": "Kroky bez názvu cieľa potrebujú všetky ciele.",
+    "stepsToGoals": {
+      "one": "{count} krok k vašim cieľom",
+      "few": "{count} kroky k vašim cieľom",
+      "many": "{count} kroku k vašim cieľom",
+      "other": "{count} krokov k vašim cieľom"
+    },
+    "remainingLine": "{remaining}. Ciele: {goals}.",
+    "reachedText": "Ovládate všetko, čo vaše ciele vyžadujú. Pridajte nový cieľ.",
+    "excluded": "Mimo mapy pre nastavenia priečinkov alebo štítkov, takže trasa vedie bez nich: {titles}.",
+    "addCommand": "Pridať poznámku medzi ciele",
+    "removeCommand": "Odstrániť poznámku z cieľov"
+  },
+  "plan": {
+    "title": "Termín a tempo",
+    "menu": "Termín a tempo…",
+    "command": "Nastaviť termín a tempo",
+    "intro": "Tropa sčíta dĺžku materiálov na trase a vypočíta, kedy budete hotoví.",
+    "pace": "Hodín týždenne",
+    "paceDesc": "Koľko času plánujete venovať štúdiu. Nechajte prázdne, ak prognózu nechcete.",
+    "paceInvalid": "Zadajte hodiny týždenne ako číslo, napríklad 5 alebo 2,5",
+    "deadline": "Termín",
+    "deadlineFor": "Termín pre „{title}“",
+    "deadlineDesc": "Nepovinné. Nechajte prázdne, ak termín nie je.",
+    "save": "Uložiť",
+    "set": "Nastaviť termín alebo tempo",
+    "change": "Zmeniť termín alebo tempo",
+    "finish": "Pri {hours} h týždenne: hotovo do {date}.",
+    "needed": "Aby ste stihli {date}: {hours} h týždenne.",
+    "onTrack": "Stíhate do {date}.",
+    "behind": "Nestíhate: na dokončenie do {date} treba {hours} h týždenne.",
+    "overdue": "Termín {date} už uplynul.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "K tomu {count} krok bez odhadu času.",
+      "few": "K tomu {count} kroky bez odhadu času.",
+      "many": "K tomu {count} kroku bez odhadu času.",
+      "other": "K tomu {count} krokov bez odhadu času."
+    },
+    "noTime": "Materiály na trase zatiaľ nemajú dĺžku, takže nie je čo predpovedať."
+  },
   "audit": {
     "command": "Skontrolovať mapu",
     "title": "Kontrola mapy",

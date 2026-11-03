@@ -1,12 +1,14 @@
 import { Events, Notice, TFile, getAllTags, normalizePath, type App, type EventRef } from "obsidian";
 import { formatMinutes, parseFormat, safeFileName } from "./core/format";
 import {
+  allGoalsOf,
   cloneProgress,
   computeRoute,
   computeStates,
   emptyProgress,
   ghostId,
   isGhostId,
+  isGoal,
   LearningGraph,
   newlyAvailable,
   sameProgress,
@@ -59,8 +61,8 @@ export class Store extends Events {
 
   private signature = "";
   private scope: Scope = { folders: [], tags: [] };
-  /** The excluded goal already announced, so the notice comes once per change. */
-  private announcedGoal: string | null = null;
+  /** Excluded goals already announced, so the notice comes once per change. */
+  private announcedGoals = new Set<string>();
   private pendingWrites = 0;
   /** Progress as last read or committed: a commit reports what changed since, for the journal. */
   private recorded: Progress = emptyProgress();
@@ -162,6 +164,11 @@ export class Store extends Events {
     return goal ? this.excludedNote(goal)?.basename ?? null : null;
   }
 
+  /** Titles of every goal the scope settings leave out. The route leads to the others. */
+  get excludedGoals(): string[] {
+    return allGoalsOf(this.progress).flatMap((id) => this.excludedNote(id)?.basename ?? []);
+  }
+
   /** The note behind an id when the scope settings leave it out. Progress keeps such ids untouched. */
   private excludedNote(id: string) {
     if (isGhostId(id)) return null;
@@ -170,9 +177,11 @@ export class Store extends Events {
   }
 
   private announceExcludedGoal() {
-    const title = this.excludedGoal;
-    if (title && this.progress.goal !== this.announcedGoal) new Notice(t.scope.goalExcluded({ title }));
-    this.announcedGoal = title ? this.progress.goal : null;
+    const excluded = new Set(allGoalsOf(this.progress).filter((id) => this.excludedNote(id)));
+    for (const id of excluded) {
+      if (!this.announcedGoals.has(id)) new Notice(t.scope.goalExcluded({ title: this.excludedNote(id)!.basename }));
+    }
+    this.announcedGoals = excluded;
   }
 
   private classify(frontmatter: Record<string, unknown>): "concept" | "source" | null {
@@ -303,11 +312,82 @@ export class Store extends Events {
     }
   }
 
-  /** A skipped concept chosen as the goal is wanted after all, so it returns to the map. */
+  /**
+   * Puts `id` in place of the active goal, or makes it the active one if it already is a goal.
+   * `null` removes the active goal. A skipped concept chosen as a goal is wanted after all, so it returns to the map.
+   */
   setGoal(id: string | null, cause?: ChangeCause) {
-    this.progress.goal = id;
-    if (id) this.progress.skipped.delete(id);
+    const { progress } = this;
+    if (id === null) {
+      if (progress.goal) this.removeGoal(progress.goal, cause);
+      return;
+    }
+    const goals = allGoalsOf(progress);
+    if (!goals.includes(id)) {
+      const index = progress.goal ? goals.indexOf(progress.goal) : -1;
+      if (index >= 0) {
+        progress.deadlines.delete(goals[index]);
+        goals[index] = id;
+      } else goals.push(id);
+    }
+    progress.goals = goals;
+    progress.goal = id;
+    progress.skipped.delete(id);
     this.commit(cause);
+  }
+
+  /** Keeps the goals there are and adds `id`, which becomes the active one. */
+  addGoal(id: string) {
+    const { progress } = this;
+    const goals = allGoalsOf(progress);
+    if (!goals.includes(id)) goals.push(id);
+    progress.goals = goals;
+    progress.goal = id;
+    progress.skipped.delete(id);
+    this.commit();
+  }
+
+  /** Drops a goal with its deadline. The next goal becomes the active one. */
+  removeGoal(id: string, cause?: ChangeCause) {
+    const { progress } = this;
+    const goals = allGoalsOf(progress);
+    const index = goals.indexOf(id);
+    if (index < 0) return;
+    goals.splice(index, 1);
+    progress.goals = goals;
+    progress.deadlines.delete(id);
+    if (progress.goal === id) progress.goal = goals[Math.min(index, goals.length - 1)] ?? null;
+    if (goals.length < 2) progress.allGoals = false;
+    this.commit(cause);
+  }
+
+  /** Shows the route to one goal. */
+  setActiveGoal(id: string) {
+    const { progress } = this;
+    if (!allGoalsOf(progress).includes(id)) return this.addGoal(id);
+    progress.goal = id;
+    progress.allGoals = false;
+    this.commit();
+  }
+
+  /** Shows the route to every goal at once. */
+  setAllGoals(all: boolean) {
+    this.progress.goals = allGoalsOf(this.progress);
+    this.progress.allGoals = all && this.progress.goals.length > 1;
+    this.commit();
+  }
+
+  /** The pace in hours a week and the deadlines by goal. Missing values clear them. */
+  setPlan(paceHours: number | null, deadlines: Map<string, string>) {
+    const goals = allGoalsOf(this.progress);
+    this.progress.paceHours = paceHours && paceHours > 0 ? paceHours : null;
+    this.progress.deadlines = new Map([...deadlines].filter(([id]) => goals.includes(id)));
+    this.commit();
+  }
+
+  /** The route to one goal alone, for its own deadline. */
+  routeTo(goal: string) {
+    return computeRoute(this.graph, this.progress, this.states, [goal]);
   }
 
   startLearning(id: string) {
@@ -332,7 +412,7 @@ export class Store extends Events {
 
   /** Skipping opens what depends on the concept without counting it as mastered. The goal cannot be skipped. */
   setSkipped(id: string, skipped: boolean) {
-    if (skipped && id === this.progress.goal) {
+    if (skipped && isGoal(this.progress, id)) {
       new Notice(t.goalNotSkipped);
       return;
     }

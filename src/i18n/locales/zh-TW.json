@@ -7,7 +7,6 @@
   "findConceptPrompt": "要顯示哪個概念？",
   "markConcept": "將此筆記設為概念",
   "markSource": "將此筆記設為教材",
-  "setGoal": "將此筆記設為目標",
   "toggleMastered": "將此筆記標記為已掌握，或退回學習中",
   "toggleSkipped": "跳過此筆記，或將其放回路線",
   "markKnownCommand": "將此筆記及其全部前置標記為已會",
@@ -245,6 +244,55 @@
     "other": "這裡隱藏了路線中的 {count} 步"
   },
   "hiddenOnMap": "在地圖上已隱藏",
+  "goals": {
+    "all": "所有目標",
+    "count": {
+      "other": "{count} 個目標"
+    },
+    "more": "+{count}",
+    "menu": "你的目標",
+    "add": "新增為目標",
+    "addMore": "再新增一個目標…",
+    "addPrompt": "要新增哪個目標？",
+    "replace": "換成另一個目標…",
+    "remove": "取消目標「{title}」",
+    "until": "{title}，期限 {date}",
+    "forGoals": "用於：{goals}",
+    "sharedHint": "未標註目標的步驟是所有目標都需要的。",
+    "stepsToGoals": {
+      "other": "距離你的目標還有 {count} 步"
+    },
+    "remainingLine": "{remaining}。目標：{goals}。",
+    "reachedText": "你已掌握目標所需的全部內容。新增一個新目標吧。",
+    "excluded": "因資料夾或標籤設定不在地圖上，路線將不包含它們：{titles}。",
+    "addCommand": "將此筆記新增到目標",
+    "removeCommand": "將此筆記從目標中移除"
+  },
+  "plan": {
+    "title": "期限與步調",
+    "menu": "期限與步調…",
+    "command": "設定期限與步調",
+    "intro": "Tropa 會加總路線上教材的時長，並算出你何時完成。",
+    "pace": "每週時數",
+    "paceDesc": "你打算用來學習的時間。不需要預測可留空。",
+    "paceInvalid": "請以數字輸入每週時數，例如 5 或 2.5",
+    "deadline": "期限",
+    "deadlineFor": "「{title}」的期限",
+    "deadlineDesc": "選填。沒有期限可留空。",
+    "save": "儲存",
+    "set": "設定期限或步調",
+    "change": "變更期限或步調",
+    "finish": "每週 {hours} 小時：{date} 前完成。",
+    "needed": "要在 {date} 前完成：每週 {hours} 小時。",
+    "onTrack": "能趕上 {date}。",
+    "behind": "進度落後：要在 {date} 前完成，每週需要 {hours} 小時。",
+    "overdue": "期限 {date} 已過。",
+    "goalLine": "{title}：{text}",
+    "unestimated": {
+      "other": "另有 {count} 步沒有時長估計。"
+    },
+    "noTime": "路線上的教材還沒有時長，暫時無法預測。"
+  },
   "audit": {
     "command": "檢查導圖",
     "title": "導圖檢查",

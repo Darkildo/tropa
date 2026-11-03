@@ -1,3 +1,4 @@
+import { allGoalsOf } from "./graph";
 import type { Progress } from "./types";
 
 /*
@@ -18,7 +19,15 @@ import type { Progress } from "./types";
 
 /** Actions written today. Readers keep unknown ones, so a newer version's lines survive in an older one. */
 export type JournalAction =
+  /** The goal the route leads to now, `-` for none. */
   | "goal"
+  /** One more goal kept besides the one the route leads to. */
+  | "goal-added"
+  | "goal-removed"
+  /** A goal's deadline: `date=2026-12-31`, or `date=none` when cleared. */
+  | "deadline"
+  /** Hours of study a week, for no note: `hours=5`, or `hours=none`. */
+  | "pace"
   | "started"
   | "stopped"
   | "mastered"
@@ -153,7 +162,17 @@ export function progressEvents(before: Progress, after: Progress, cause?: Change
   const push = (action: JournalAction, id: string | null, fields?: Record<string, string>) =>
     events.push({ action, id, ...(fields ? { fields } : {}), ...(flags ? { flags: [...flags] } : {}) });
 
+  // `goal` names the goal the route now leads to; a goal added with it needs no line of its own.
   if (before.goal !== after.goal) push("goal", after.goal);
+  const [goalsBefore, goalsAfter] = [allGoalsOf(before), allGoalsOf(after)];
+  for (const id of goalsAfter) if (!goalsBefore.includes(id) && id !== after.goal) push("goal-added", id);
+  for (const id of goalsBefore) if (!goalsAfter.includes(id)) push("goal-removed", id);
+  // A deadline that goes with its goal needs no line either. Routing to all goals is a view, not written.
+  for (const [id, date] of after.deadlines) if (before.deadlines.get(id) !== date) push("deadline", id, { date });
+  for (const id of before.deadlines.keys()) {
+    if (!after.deadlines.has(id) && goalsAfter.includes(id)) push("deadline", id, { date: "none" });
+  }
+  if (before.paceHours !== after.paceHours) push("pace", null, { hours: after.paceHours === null ? "none" : String(after.paceHours) });
 
   const ids = new Set([...before.mastered, ...after.mastered, ...before.skipped, ...after.skipped, ...before.learning, ...after.learning]);
   for (const id of ids) {

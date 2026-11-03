@@ -7,7 +7,6 @@
   "findConceptPrompt": "Que conceito quer ver?",
   "markConcept": "Tornar esta nota um conceito",
   "markSource": "Tornar esta nota um material",
-  "setGoal": "Tornar esta nota o objetivo",
   "toggleMastered": "Marcar esta nota como dominada ou voltar a estudá-la",
   "toggleSkipped": "Saltar esta nota ou devolvê-la ao percurso",
   "markKnownCommand": "Marcar esta nota e tudo o que ela exige como conhecido",
@@ -271,6 +270,61 @@
     "other": "Aqui estão ocultos {count} passos do percurso"
   },
   "hiddenOnMap": "Oculto no mapa",
+  "goals": {
+    "all": "Todos os objetivos",
+    "count": {
+      "one": "{count} objetivo",
+      "many": "{count} objetivos",
+      "other": "{count} objetivos"
+    },
+    "more": "+{count}",
+    "menu": "Os seus objetivos",
+    "add": "Adicionar como objetivo",
+    "addMore": "Adicionar mais um objetivo…",
+    "addPrompt": "Que objetivo quer adicionar?",
+    "replace": "Substituir por outro objetivo…",
+    "remove": "Remover o objetivo «{title}»",
+    "until": "{title}, até {date}",
+    "forGoals": "Para: {goals}",
+    "sharedHint": "Os passos sem nome de objetivo são precisos para todos.",
+    "stepsToGoals": {
+      "one": "{count} passo até aos seus objetivos",
+      "many": "{count} passos até aos seus objetivos",
+      "other": "{count} passos até aos seus objetivos"
+    },
+    "remainingLine": "{remaining}. Objetivos: {goals}.",
+    "reachedText": "Domina tudo o que os seus objetivos exigem. Adicione um novo objetivo.",
+    "excluded": "Fora do mapa pelas definições de pastas ou etiquetas, por isso o percurso segue sem eles: {titles}.",
+    "addCommand": "Adicionar esta nota aos seus objetivos",
+    "removeCommand": "Remover esta nota dos seus objetivos"
+  },
+  "plan": {
+    "title": "Prazo e ritmo",
+    "menu": "Prazo e ritmo…",
+    "command": "Definir prazo e ritmo",
+    "intro": "O Tropa soma a duração dos materiais do percurso e calcula quando vai terminar.",
+    "pace": "Horas por semana",
+    "paceDesc": "Quanto tempo planeia dedicar ao estudo. Deixe vazio se não quiser previsão.",
+    "paceInvalid": "Introduza as horas por semana como número, por exemplo 5 ou 2,5",
+    "deadline": "Prazo",
+    "deadlineFor": "Prazo para «{title}»",
+    "deadlineDesc": "Opcional. Deixe vazio se não houver prazo.",
+    "save": "Guardar",
+    "set": "Definir um prazo ou ritmo",
+    "change": "Alterar prazo ou ritmo",
+    "finish": "A {hours} h por semana: termina a {date}.",
+    "needed": "Para terminar até {date}: {hours} h por semana.",
+    "onTrack": "Dentro do prazo para {date}.",
+    "behind": "Atrasado: são precisas {hours} h por semana para terminar até {date}.",
+    "overdue": "O prazo de {date} já passou.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Mais {count} passo sem estimativa de tempo.",
+      "many": "Mais {count} passos sem estimativa de tempo.",
+      "other": "Mais {count} passos sem estimativa de tempo."
+    },
+    "noTime": "Os materiais do percurso ainda não têm duração, por isso não há nada a prever."
+  },
   "audit": {
     "command": "Verificar o mapa",
     "title": "Verificação do mapa",

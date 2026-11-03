@@ -7,7 +7,6 @@
   "findConceptPrompt": "Hvilket begreb vil du se?",
   "markConcept": "Gør noten til et begreb",
   "markSource": "Gør noten til et materiale",
-  "setGoal": "Gør noten til målet",
   "toggleMastered": "Markér noten som mestret eller sæt den tilbage til læring",
   "toggleSkipped": "Spring noten over eller sæt den tilbage på ruten",
   "markKnownCommand": "Markér noten og alt, den kræver, som kendt",
@@ -258,6 +257,58 @@
     "other": "Her er {count} trin på ruten skjult"
   },
   "hiddenOnMap": "Skjult på kortet",
+  "goals": {
+    "all": "Alle mål",
+    "count": {
+      "one": "{count} mål",
+      "other": "{count} mål"
+    },
+    "more": "+{count}",
+    "menu": "Dine mål",
+    "add": "Tilføj som mål",
+    "addMore": "Tilføj et mål mere…",
+    "addPrompt": "Hvilket mål vil du tilføje?",
+    "replace": "Erstat med et andet mål…",
+    "remove": "Fjern målet “{title}”",
+    "until": "{title}, senest {date}",
+    "forGoals": "Til: {goals}",
+    "sharedHint": "Trin uden et målnavn skal bruges til alle målene.",
+    "stepsToGoals": {
+      "one": "{count} trin til dine mål",
+      "other": "{count} trin til dine mål"
+    },
+    "remainingLine": "{remaining}. Mål: {goals}.",
+    "reachedText": "Du mestrer alt, hvad dine mål kræver. Tilføj et nyt mål.",
+    "excluded": "Udeladt af kortet af mappe- eller tagindstillingerne, så ruten går uden dem: {titles}.",
+    "addCommand": "Tilføj noten til dine mål",
+    "removeCommand": "Fjern noten fra dine mål"
+  },
+  "plan": {
+    "title": "Frist og tempo",
+    "menu": "Frist og tempo…",
+    "command": "Sæt frist og tempo",
+    "intro": "Tropa lægger varigheden af materialerne på ruten sammen og regner ud, hvornår du er færdig.",
+    "pace": "Timer om ugen",
+    "paceDesc": "Hvor meget tid du vil bruge på at lære. Lad feltet stå tomt, hvis du ikke vil have en prognose.",
+    "paceInvalid": "Skriv timer om ugen som et tal, fx 5 eller 2,5",
+    "deadline": "Frist",
+    "deadlineFor": "Frist for “{title}”",
+    "deadlineDesc": "Valgfri. Lad feltet stå tomt, hvis der ikke er nogen frist.",
+    "save": "Gem",
+    "set": "Sæt en frist eller et tempo",
+    "change": "Skift frist eller tempo",
+    "finish": "Med {hours} t. om ugen: færdig {date}.",
+    "needed": "For at blive færdig senest {date}: {hours} t. om ugen.",
+    "onTrack": "Du når det til {date}.",
+    "behind": "Bagud: der skal {hours} t. om ugen til for at blive færdig senest {date}.",
+    "overdue": "Fristen {date} er overskredet.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Plus {count} trin uden tidsestimat.",
+      "other": "Plus {count} trin uden tidsestimat."
+    },
+    "noTime": "Materialerne på ruten har endnu ingen varighed, så der er intet at forudsige."
+  },
   "audit": {
     "command": "Gennemgå kortet",
     "title": "Gennemgang af kortet",

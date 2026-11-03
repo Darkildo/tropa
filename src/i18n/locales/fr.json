@@ -7,7 +7,6 @@
   "findConceptPrompt": "Quel concept afficher ?",
   "markConcept": "Faire de cette note un concept",
   "markSource": "Faire de cette note une ressource",
-  "setGoal": "Faire de cette note l’objectif",
   "toggleMastered": "Marquer cette note comme maîtrisée ou la remettre en apprentissage",
   "toggleSkipped": "Passer cette note ou la remettre dans le parcours",
   "markKnownCommand": "Marquer cette note et tout ce qu’elle requiert comme connus",
@@ -271,6 +270,61 @@
     "other": "{count} étapes de la route sont masquées ici"
   },
   "hiddenOnMap": "Masqué sur la carte",
+  "goals": {
+    "all": "Tous les objectifs",
+    "count": {
+      "one": "{count} objectif",
+      "many": "{count} objectifs",
+      "other": "{count} objectifs"
+    },
+    "more": "+{count}",
+    "menu": "Vos objectifs",
+    "add": "Ajouter comme objectif",
+    "addMore": "Ajouter un autre objectif…",
+    "addPrompt": "Quel objectif voulez-vous ajouter ?",
+    "replace": "Remplacer par un autre objectif…",
+    "remove": "Retirer l’objectif « {title} »",
+    "until": "{title}, d’ici le {date}",
+    "forGoals": "Pour : {goals}",
+    "sharedHint": "Les étapes sans nom d’objectif servent à tous vos objectifs.",
+    "stepsToGoals": {
+      "one": "{count} étape jusqu’à vos objectifs",
+      "many": "{count} étapes jusqu’à vos objectifs",
+      "other": "{count} étapes jusqu’à vos objectifs"
+    },
+    "remainingLine": "{remaining}. Objectifs : {goals}.",
+    "reachedText": "Vous maîtrisez tout ce dont vos objectifs ont besoin. Ajoutez un nouvel objectif.",
+    "excluded": "Exclus de la carte par les réglages de dossiers ou d’étiquettes, le parcours se fait donc sans eux : {titles}.",
+    "addCommand": "Ajouter cette note à vos objectifs",
+    "removeCommand": "Retirer cette note de vos objectifs"
+  },
+  "plan": {
+    "title": "Échéance et rythme",
+    "menu": "Échéance et rythme…",
+    "command": "Définir l’échéance et le rythme",
+    "intro": "Tropa additionne la durée des ressources du parcours et calcule quand vous aurez fini.",
+    "pace": "Heures par semaine",
+    "paceDesc": "Le temps que vous comptez consacrer à l’étude. Laissez vide pour ne pas avoir de prévision.",
+    "paceInvalid": "Saisissez les heures par semaine sous forme de nombre, par exemple 5 ou 2,5",
+    "deadline": "Échéance",
+    "deadlineFor": "Échéance pour « {title} »",
+    "deadlineDesc": "Facultatif. Laissez vide s’il n’y a pas d’échéance.",
+    "save": "Enregistrer",
+    "set": "Définir une échéance ou un rythme",
+    "change": "Modifier l’échéance ou le rythme",
+    "finish": "À {hours} h par semaine : terminé le {date}.",
+    "needed": "Pour finir d’ici le {date} : {hours} h par semaine.",
+    "onTrack": "Dans les temps pour le {date}.",
+    "behind": "En retard : il faut {hours} h par semaine pour finir d’ici le {date}.",
+    "overdue": "L’échéance du {date} est passée.",
+    "goalLine": "{title} : {text}",
+    "unestimated": {
+      "one": "Plus {count} étape sans estimation de durée.",
+      "many": "Plus {count} étapes sans estimation de durée.",
+      "other": "Plus {count} étapes sans estimation de durée."
+    },
+    "noTime": "Les ressources du parcours n’ont pas encore de durée, il n’y a donc rien à prévoir."
+  },
   "audit": {
     "command": "Vérifier la carte",
     "title": "Vérification de la carte",

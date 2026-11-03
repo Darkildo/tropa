@@ -7,7 +7,6 @@
   "findConceptPrompt": "Konsep mana yang ingin ditampilkan?",
   "markConcept": "Jadikan catatan ini konsep",
   "markSource": "Jadikan catatan ini materi",
-  "setGoal": "Jadikan catatan ini tujuan",
   "toggleMastered": "Tandai catatan ini sudah dikuasai atau kembalikan ke tahap belajar",
   "toggleSkipped": "Lewati catatan ini atau kembalikan ke rute",
   "markKnownCommand": "Tandai catatan ini dan semua prasyaratnya sudah diketahui",
@@ -245,6 +244,55 @@
     "other": "{count} langkah rute tersembunyi di sini"
   },
   "hiddenOnMap": "Tersembunyi di peta",
+  "goals": {
+    "all": "Semua tujuan",
+    "count": {
+      "other": "{count} tujuan"
+    },
+    "more": "+{count}",
+    "menu": "Tujuan Anda",
+    "add": "Tambahkan sebagai tujuan",
+    "addMore": "Tambahkan satu tujuan lagi…",
+    "addPrompt": "Tujuan mana yang ingin ditambahkan?",
+    "replace": "Ganti dengan tujuan lain…",
+    "remove": "Hapus tujuan “{title}”",
+    "until": "{title}, hingga {date}",
+    "forGoals": "Untuk: {goals}",
+    "sharedHint": "Langkah tanpa nama tujuan diperlukan untuk semua tujuan.",
+    "stepsToGoals": {
+      "other": "{count} langkah menuju tujuan Anda"
+    },
+    "remainingLine": "{remaining}. Tujuan: {goals}.",
+    "reachedText": "Anda sudah menguasai semua yang dibutuhkan tujuan Anda. Tambahkan tujuan baru.",
+    "excluded": "Tidak ada di peta karena pengaturan folder atau tag, jadi rute berjalan tanpanya: {titles}.",
+    "addCommand": "Tambahkan catatan ini ke tujuan Anda",
+    "removeCommand": "Hapus catatan ini dari tujuan Anda"
+  },
+  "plan": {
+    "title": "Tenggat dan laju",
+    "menu": "Tenggat dan laju…",
+    "command": "Atur tenggat dan laju",
+    "intro": "Tropa menjumlahkan durasi materi di rute dan menghitung kapan Anda selesai.",
+    "pace": "Jam per minggu",
+    "paceDesc": "Berapa lama Anda berencana belajar. Biarkan kosong jika tidak perlu perkiraan.",
+    "paceInvalid": "Masukkan jam per minggu sebagai angka, misalnya 5 atau 2,5",
+    "deadline": "Tenggat",
+    "deadlineFor": "Tenggat untuk “{title}”",
+    "deadlineDesc": "Opsional. Biarkan kosong jika tidak ada tenggat.",
+    "save": "Simpan",
+    "set": "Atur tenggat atau laju",
+    "change": "Ubah tenggat atau laju",
+    "finish": "Dengan {hours} jam per minggu: selesai pada {date}.",
+    "needed": "Agar selesai pada {date}: {hours} jam per minggu.",
+    "onTrack": "Sesuai jadwal untuk {date}.",
+    "behind": "Tertinggal: perlu {hours} jam per minggu agar selesai pada {date}.",
+    "overdue": "Tenggat {date} sudah lewat.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "other": "Ditambah {count} langkah tanpa perkiraan waktu."
+    },
+    "noTime": "Materi di rute belum punya durasi, jadi belum ada yang bisa diperkirakan."
+  },
   "audit": {
     "command": "Periksa peta",
     "title": "Pemeriksaan peta",

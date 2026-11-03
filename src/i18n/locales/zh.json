@@ -7,7 +7,6 @@
   "findConceptPrompt": "要显示哪个概念？",
   "markConcept": "将此笔记设为概念",
   "markSource": "将此笔记设为资料",
-  "setGoal": "将此笔记设为目标",
   "toggleMastered": "将此笔记标记为已掌握，或退回学习中",
   "toggleSkipped": "跳过此笔记，或将其放回路线",
   "markKnownCommand": "将此笔记及其全部前置标记为已会",
@@ -245,6 +244,55 @@
     "other": "这里隐藏了路线中的 {count} 步"
   },
   "hiddenOnMap": "在地图上已隐藏",
+  "goals": {
+    "all": "所有目标",
+    "count": {
+      "other": "{count} 个目标"
+    },
+    "more": "+{count}",
+    "menu": "你的目标",
+    "add": "添加为目标",
+    "addMore": "再添加一个目标…",
+    "addPrompt": "要添加哪个目标？",
+    "replace": "换成另一个目标…",
+    "remove": "取消目标“{title}”",
+    "until": "{title}，截止 {date}",
+    "forGoals": "用于：{goals}",
+    "sharedHint": "未标注目标的步骤是所有目标都需要的。",
+    "stepsToGoals": {
+      "other": "距离你的目标还有 {count} 步"
+    },
+    "remainingLine": "{remaining}。目标：{goals}。",
+    "reachedText": "你已掌握目标所需的全部内容。添加一个新目标吧。",
+    "excluded": "因文件夹或标签设置不在地图上，路线将不包含它们：{titles}。",
+    "addCommand": "将此笔记添加到目标",
+    "removeCommand": "将此笔记从目标中移除"
+  },
+  "plan": {
+    "title": "截止日期与节奏",
+    "menu": "截止日期与节奏…",
+    "command": "设置截止日期与节奏",
+    "intro": "Tropa 会累加路线上资料的时长，并算出你何时完成。",
+    "pace": "每周小时数",
+    "paceDesc": "你计划用于学习的时间。不需要预测可留空。",
+    "paceInvalid": "请用数字输入每周小时数，例如 5 或 2.5",
+    "deadline": "截止日期",
+    "deadlineFor": "“{title}”的截止日期",
+    "deadlineDesc": "可选。没有截止日期可留空。",
+    "save": "保存",
+    "set": "设置截止日期或节奏",
+    "change": "更改截止日期或节奏",
+    "finish": "每周 {hours} 小时：{date} 前完成。",
+    "needed": "要在 {date} 前完成：每周 {hours} 小时。",
+    "onTrack": "能赶上 {date}。",
+    "behind": "进度落后：要在 {date} 前完成，每周需要 {hours} 小时。",
+    "overdue": "截止日期 {date} 已过。",
+    "goalLine": "{title}：{text}",
+    "unestimated": {
+      "other": "另有 {count} 步没有时长估计。"
+    },
+    "noTime": "路线上的资料还没有时长，暂时无法预测。"
+  },
   "audit": {
     "command": "检查导图",
     "title": "导图检查",

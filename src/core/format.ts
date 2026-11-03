@@ -1,4 +1,4 @@
-import { t } from "../i18n";
+import { locale, t } from "../i18n";
 import type { ConceptState, SourceFormat } from "./types";
 
 export function formatMinutes(minutes: number) {
@@ -6,6 +6,13 @@ export function formatMinutes(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const rest = Math.round(minutes - hours * 60);
   return rest ? t.hoursMinutes({ hours, minutes: rest }) : t.hours({ hours });
+}
+
+/** "12 December", with the year only when it is not this year. */
+export function formatDate(date: Date, today = new Date()) {
+  const options: Intl.DateTimeFormatOptions = { day: "numeric", month: "long" };
+  if (date.getFullYear() !== today.getFullYear()) options.year = "numeric";
+  return new Intl.DateTimeFormat(locale(), options).format(date);
 }
 
 export const STATE_ICON: Record<ConceptState, string> = {

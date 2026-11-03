@@ -7,7 +7,6 @@
   "findConceptPrompt": "Hvilket begrep vil du se?",
   "markConcept": "Gjør notatet til et begrep",
   "markSource": "Gjør notatet til et læremiddel",
-  "setGoal": "Gjør notatet til målet",
   "toggleMastered": "Merk notatet som mestret eller sett det tilbake til læring",
   "toggleSkipped": "Hopp over notatet eller sett det tilbake i ruten",
   "markKnownCommand": "Merk notatet og alt det krever som kjent",
@@ -258,6 +257,58 @@
     "other": "Her er {count} steg på ruten skjult"
   },
   "hiddenOnMap": "Skjult på kartet",
+  "goals": {
+    "all": "Alle mål",
+    "count": {
+      "one": "{count} mål",
+      "other": "{count} mål"
+    },
+    "more": "+{count}",
+    "menu": "Dine mål",
+    "add": "Legg til som mål",
+    "addMore": "Legg til ett mål til…",
+    "addPrompt": "Hvilket mål vil du legge til?",
+    "replace": "Bytt ut med et annet mål…",
+    "remove": "Fjern målet «{title}»",
+    "until": "{title}, innen {date}",
+    "forGoals": "For: {goals}",
+    "sharedHint": "Steg uten målnavn trengs for alle målene.",
+    "stepsToGoals": {
+      "one": "{count} steg til målene dine",
+      "other": "{count} steg til målene dine"
+    },
+    "remainingLine": "{remaining}. Mål: {goals}.",
+    "reachedText": "Du mestrer alt målene dine krever. Legg til et nytt mål.",
+    "excluded": "Utelatt fra kartet av mappe- eller tagginnstillingene, så ruten går uten dem: {titles}.",
+    "addCommand": "Legg notatet til målene dine",
+    "removeCommand": "Fjern notatet fra målene dine"
+  },
+  "plan": {
+    "title": "Frist og tempo",
+    "menu": "Frist og tempo…",
+    "command": "Angi frist og tempo",
+    "intro": "Tropa legger sammen varigheten av materialene på ruten og regner ut når du er ferdig.",
+    "pace": "Timer i uken",
+    "paceDesc": "Hvor mye tid du har tenkt å studere. La stå tomt hvis du ikke vil ha en prognose.",
+    "paceInvalid": "Skriv inn timer i uken som et tall, for eksempel 5 eller 2,5",
+    "deadline": "Frist",
+    "deadlineFor": "Frist for «{title}»",
+    "deadlineDesc": "Valgfritt. La stå tomt hvis det ikke er noen frist.",
+    "save": "Lagre",
+    "set": "Angi en frist eller et tempo",
+    "change": "Endre frist eller tempo",
+    "finish": "Med {hours} t i uken: ferdig {date}.",
+    "needed": "For å bli ferdig innen {date}: {hours} t i uken.",
+    "onTrack": "I rute til {date}.",
+    "behind": "På etterskudd: det trengs {hours} t i uken for å bli ferdig innen {date}.",
+    "overdue": "Fristen {date} er passert.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Pluss {count} steg uten tidsanslag.",
+      "other": "Pluss {count} steg uten tidsanslag."
+    },
+    "noTime": "Materialene på ruten har ingen varighet ennå, så det er ingenting å anslå."
+  },
   "audit": {
     "command": "Gå gjennom kartet",
     "title": "Gjennomgang av kartet",

@@ -7,7 +7,6 @@
   "findConceptPrompt": "Które pojęcie pokazać?",
   "markConcept": "Zrób z notatki pojęcie",
   "markSource": "Zrób z notatki materiał",
-  "setGoal": "Ustaw notatkę jako cel",
   "toggleMastered": "Oznacz notatkę jako opanowaną lub przywróć do nauki",
   "toggleSkipped": "Pomiń notatkę lub przywróć ją do trasy",
   "markKnownCommand": "Oznacz notatkę i wszystko, czego wymaga, jako znane",
@@ -284,6 +283,64 @@
     "other": "Tu ukryto {count} kroku trasy"
   },
   "hiddenOnMap": "Ukryte na mapie",
+  "goals": {
+    "all": "Wszystkie cele",
+    "count": {
+      "one": "{count} cel",
+      "few": "{count} cele",
+      "many": "{count} celów",
+      "other": "{count} celu"
+    },
+    "more": "+{count}",
+    "menu": "Twoje cele",
+    "add": "Dodaj jako cel",
+    "addMore": "Dodaj jeszcze jeden cel…",
+    "addPrompt": "Jaki cel chcesz dodać?",
+    "replace": "Zastąp innym celem…",
+    "remove": "Usuń cel „{title}”",
+    "until": "{title}, do {date}",
+    "forGoals": "Dla: {goals}",
+    "sharedHint": "Kroki bez nazwy celu są potrzebne do wszystkich celów.",
+    "stepsToGoals": {
+      "one": "{count} krok do Twoich celów",
+      "few": "{count} kroki do Twoich celów",
+      "many": "{count} kroków do Twoich celów",
+      "other": "{count} kroku do Twoich celów"
+    },
+    "remainingLine": "{remaining}. Cele: {goals}.",
+    "reachedText": "Opanowujesz wszystko, czego wymagają Twoje cele. Dodaj nowy cel.",
+    "excluded": "Poza mapą z powodu ustawień folderów lub tagów, więc trasa prowadzi bez nich: {titles}.",
+    "addCommand": "Dodaj tę notatkę do celów",
+    "removeCommand": "Usuń tę notatkę z celów"
+  },
+  "plan": {
+    "title": "Termin i tempo",
+    "menu": "Termin i tempo…",
+    "command": "Ustaw termin i tempo",
+    "intro": "Tropa sumuje czas trwania materiałów na trasie i oblicza, kiedy skończysz.",
+    "pace": "Godzin w tygodniu",
+    "paceDesc": "Ile czasu planujesz poświęcić na naukę. Zostaw puste, jeśli nie chcesz prognozy.",
+    "paceInvalid": "Wpisz godziny w tygodniu jako liczbę, na przykład 5 lub 2,5",
+    "deadline": "Termin",
+    "deadlineFor": "Termin dla „{title}”",
+    "deadlineDesc": "Opcjonalnie. Zostaw puste, jeśli nie ma terminu.",
+    "save": "Zapisz",
+    "set": "Ustaw termin lub tempo",
+    "change": "Zmień termin lub tempo",
+    "finish": "Przy {hours} godz. w tygodniu: koniec do {date}.",
+    "needed": "Aby skończyć do {date}: {hours} godz. w tygodniu.",
+    "onTrack": "Zgodnie z planem na {date}.",
+    "behind": "Opóźnienie: aby skończyć do {date}, potrzeba {hours} godz. w tygodniu.",
+    "overdue": "Termin {date} minął.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Do tego {count} krok bez szacunku czasu.",
+      "few": "Do tego {count} kroki bez szacunku czasu.",
+      "many": "Do tego {count} kroków bez szacunku czasu.",
+      "other": "Do tego {count} kroku bez szacunku czasu."
+    },
+    "noTime": "Materiały na trasie nie mają jeszcze czasu trwania, więc nie ma czego prognozować."
+  },
   "audit": {
     "command": "Sprawdź mapę",
     "title": "Przegląd mapy",

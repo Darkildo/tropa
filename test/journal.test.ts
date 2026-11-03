@@ -125,6 +125,37 @@ describe("progress events", () => {
     expect(progressEvents(before, unmastered)).toEqual([{ action: "unmastered", id: "a" }]);
   });
 
+  it("follow the goals: the active one, the ones added beside it and the ones removed", () => {
+    const one = progress({ goal: "x", goals: ["x"] });
+    expect(progressEvents(progress(), one)).toEqual([{ action: "goal", id: "x" }]);
+    const added = progress({ goal: "z", goals: ["x", "z"] });
+    expect(progressEvents(one, added)).toEqual([{ action: "goal", id: "z" }]);
+    // Replacing the active goal says what went.
+    expect(progressEvents(one, progress({ goal: "y", goals: ["y"] }))).toEqual([{ action: "goal", id: "y" }, { action: "goal-removed", id: "x" }]);
+    // Removing a goal the route does not lead to, and putting it back with Undo.
+    const removed = progress({ goal: "z", goals: ["z"] });
+    expect(progressEvents(added, removed)).toEqual([{ action: "goal-removed", id: "x" }]);
+    expect(progressEvents(removed, added, "undo")).toEqual([{ action: "goal-added", id: "x", flags: ["undo"] }]);
+    expect(progressEvents(removed, progress())).toEqual([{ action: "goal", id: null }, { action: "goal-removed", id: "z" }]);
+    // Routing to all goals is a view and writes nothing.
+    expect(progressEvents(added, { ...added, allGoals: true })).toEqual([]);
+  });
+
+  it("write deadlines and the pace, but not a deadline that goes with its goal", () => {
+    const plain = progress({ goal: "x", goals: ["x", "y"] });
+    const planned = progress({ goal: "x", goals: ["x", "y"], deadlines: new Map([["y", "2026-12-31"]]), paceHours: 2.5 });
+    expect(progressEvents(plain, planned)).toEqual([
+      { action: "deadline", id: "y", fields: { date: "2026-12-31" } },
+      { action: "pace", id: null, fields: { hours: "2.5" } },
+    ]);
+    expect(progressEvents(planned, plain)).toEqual([
+      { action: "deadline", id: "y", fields: { date: "none" } },
+      { action: "pace", id: null, fields: { hours: "none" } },
+    ]);
+    const withoutY = progress({ goal: "x", goals: ["x"], paceHours: 2.5 });
+    expect(progressEvents(planned, withoutY)).toEqual([{ action: "goal-removed", id: "y" }]);
+  });
+
   it("are empty when nothing changed", () => {
     const same = progress({ goal: "g", mastered: new Set(["a"]) });
     expect(progressEvents(same, progress({ goal: "g", mastered: new Set(["a"]) }))).toEqual([]);

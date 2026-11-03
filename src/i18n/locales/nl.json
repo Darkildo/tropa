@@ -7,7 +7,6 @@
   "findConceptPrompt": "Welk concept wil je zien?",
   "markConcept": "Deze notitie een concept maken",
   "markSource": "Deze notitie een leermiddel maken",
-  "setGoal": "Deze notitie het doel maken",
   "toggleMastered": "Deze notitie als beheerst markeren of terugzetten naar leren",
   "toggleSkipped": "Deze notitie overslaan of terugzetten in de route",
   "markKnownCommand": "Deze notitie en alles wat ze vereist als bekend markeren",
@@ -258,6 +257,58 @@
     "other": "Hier zijn {count} stappen van de route verborgen"
   },
   "hiddenOnMap": "Verborgen op de kaart",
+  "goals": {
+    "all": "Alle doelen",
+    "count": {
+      "one": "{count} doel",
+      "other": "{count} doelen"
+    },
+    "more": "+{count}",
+    "menu": "Je doelen",
+    "add": "Als doel toevoegen",
+    "addMore": "Nog een doel toevoegen…",
+    "addPrompt": "Welk doel wil je toevoegen?",
+    "replace": "Vervangen door een ander doel…",
+    "remove": "Doel ‘{title}’ verwijderen",
+    "until": "{title}, uiterlijk {date}",
+    "forGoals": "Voor: {goals}",
+    "sharedHint": "Stappen zonder doelnaam zijn voor al je doelen nodig.",
+    "stepsToGoals": {
+      "one": "{count} stap tot je doelen",
+      "other": "{count} stappen tot je doelen"
+    },
+    "remainingLine": "{remaining}. Doelen: {goals}.",
+    "reachedText": "Je beheerst alles wat je doelen nodig hebben. Voeg een nieuw doel toe.",
+    "excluded": "Door de map- of tag-instellingen niet op de kaart, dus de route gaat zonder ze verder: {titles}.",
+    "addCommand": "Deze notitie aan je doelen toevoegen",
+    "removeCommand": "Deze notitie uit je doelen verwijderen"
+  },
+  "plan": {
+    "title": "Deadline en tempo",
+    "menu": "Deadline en tempo…",
+    "command": "Deadline en tempo instellen",
+    "intro": "Tropa telt de duur van de materialen op de route op en berekent wanneer je klaar bent.",
+    "pace": "Uur per week",
+    "paceDesc": "Hoeveel tijd je wilt studeren. Laat leeg als je geen voorspelling wilt.",
+    "paceInvalid": "Voer de uren per week in als getal, bijvoorbeeld 5 of 2,5",
+    "deadline": "Deadline",
+    "deadlineFor": "Deadline voor ‘{title}’",
+    "deadlineDesc": "Optioneel. Laat leeg als er geen deadline is.",
+    "save": "Opslaan",
+    "set": "Deadline of tempo instellen",
+    "change": "Deadline of tempo wijzigen",
+    "finish": "Bij {hours} u per week: klaar op {date}.",
+    "needed": "Om op {date} klaar te zijn: {hours} u per week.",
+    "onTrack": "Op schema voor {date}.",
+    "behind": "Achter op schema: er is {hours} u per week nodig om op {date} klaar te zijn.",
+    "overdue": "De deadline {date} is voorbij.",
+    "goalLine": "{title}: {text}",
+    "unestimated": {
+      "one": "Plus {count} stap zonder tijdsinschatting.",
+      "other": "Plus {count} stappen zonder tijdsinschatting."
+    },
+    "noTime": "De materialen op de route hebben nog geen duur, dus er valt niets te voorspellen."
+  },
   "audit": {
     "command": "Kaart controleren",
     "title": "Kaartcontrole",
