@@ -24,6 +24,7 @@ The new strings are machine translations into all 33 languages.
   - A self-check feature can register questions for a concept; review then offers **Check yourself** before the ratings, and a check just before the mastered mark sets how well the memory starts.
 
 ### Changed
+- **Translations in `main.js` no longer repeat their keys:** each language is a JSON array of its values in the order of the English keys, and only the active one is parsed at startup, as before. The 32 translations take 457 KB instead of 590 KB, and `main.js` 803 KB instead of 936 KB. The files in `src/i18n/locales` stay ordinary JSON.
 - **Set as goal** on a concept, when there is a goal already, is now **Add as goal**: the earlier goal is kept. Choosing a goal from the goal button still replaces the active one.
 
 ## [0.3.2] - 2026-11-03
