@@ -14,6 +14,9 @@ import { PANEL_VIEW, PanelView } from "./ui/panel-view";
 import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
 
+/** How long a notice with an undo button stays. */
+const NOTICE_MS = 6000;
+
 export default class TropaPlugin extends Plugin {
   settings!: TropaSettings;
   defaults!: TropaSettings;
@@ -62,9 +65,16 @@ export default class TropaPlugin extends Plugin {
         const content = createFragment((fragment) => {
           fragment.createSpan({ text: message });
           const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });
-          button.addEventListener("click", () => this.store.restore(undo));
+          button.addEventListener("click", () => this.store.undo(undo));
         });
-        new Notice(content, 6000);
+        const notice = new Notice(content, NOTICE_MS);
+        // Another change to the progress makes this undo stale: it would revert that change too.
+        const watch = this.store.on("change", () => {
+          if (this.store.canUndo(undo)) return;
+          notice.hide();
+          this.store.offref(watch);
+        });
+        window.setTimeout(() => this.store.offref(watch), NOTICE_MS);
       }),
     );
 

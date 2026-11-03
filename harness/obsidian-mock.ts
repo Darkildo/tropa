@@ -387,12 +387,17 @@ export class PluginSettingTab {
 export const notices: string[] = [];
 
 export class Notice {
+  noticeEl: HTMLElement;
   constructor(message: string | DocumentFragment, duration = 3000) {
     notices.push(typeof message === "string" ? message : message.textContent ?? "");
     const el = (document.body as any).createDiv({ cls: "notice" });
     if (typeof message === "string") el.textContent = message;
     else el.appendChild(message);
-    window.setTimeout(() => el.remove(), duration);
+    this.noticeEl = el;
+    window.setTimeout(() => this.hide(), duration);
+  }
+  hide() {
+    this.noticeEl.remove();
   }
 }
 

@@ -10,6 +10,11 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
 - **Settings → Learning journal** turns the journal off or moves its folder. The folder is never on the map and its files are not offered as materials.
 - The core keeps the merged history by concept, with reviews and when a mark was made, for reviews to come.
 
+## [0.3.2] - 2026-11-03
+
+### Fixed
+- **Undo** reverts only its own change. Before, it brought back the whole progress from before that change, so anything changed after it was lost too: a concept started from a command or the side panel, or an edit synced from another device. Now the toast on the map and the notice outside it close as soon as the progress changes in any other way. Reading back Tropa's own save does not count as a change, so the offer stays for its usual six seconds.
+
 ## [0.3.1] - 2026-11-02
 
 Phone fixes, after trying 0.3.0 on Android. The three new strings are machine translations into all 33 languages.
@@ -112,6 +117,8 @@ Requires Obsidian 1.13.0 or later. The strings added in this release are machine
 - First release: a graph of concepts and materials built from note properties, a personal route to any goal, progress kept in `Tropa/Progress.md`.
 - English and Russian interface, example map and demo vaults in both languages.
 
+[0.3.2]: https://github.com/Darkildo/tropa/compare/0.3.1...0.3.2
+[0.3.1]: https://github.com/Darkildo/tropa/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/Darkildo/tropa/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/Darkildo/tropa/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/Darkildo/tropa/compare/0.1.0...0.1.1

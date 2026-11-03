@@ -1459,6 +1459,80 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   await page.close();
 }
 
+// --- undo belongs to its change: anything else that changes the progress takes the offer away
+async function undoChecks(page, label) {
+  const side = (text) => page.locator(`.tropa-side button:text-is("${text}")`);
+  const toasts = () => page.locator(".tropa-toast").count();
+  // Picked through the view: on a phone the concept may start off screen.
+  const pick = async (title) => page.evaluate((id) => tropa.app.workspace.center.view.select(id), await conceptPath(page, title));
+  const chain = await conceptPath(page, "Chain rule");
+  await page.evaluate(() => {
+    window.undos = [];
+    tropa.plugin.store.on("mastered", (_id, _unlocked, undo) => window.undos.push(undo));
+  });
+  const staleUndo = () => page.evaluate(() => tropa.plugin.store.undo(window.undos.at(-1)));
+
+  await pick("Gradient"); await wait(page, 150);
+  await side("I already know this").click(); await wait(page, 500);
+  ok(`${label}: the toast outlives its own save`, (await toasts()) === 1 && (await page.evaluate(PROG)).includes("[[Gradient]]"));
+  await page.click(".tropa-toast button"); await wait(page, 300);
+  ok(`${label}: undo after the save still works`, !(await state(page, "Gradient")).includes("state-mastered"));
+
+  await pick("Gradient"); await wait(page, 150);
+  await side("I already know this").click(); await wait(page, 300);
+  // Another way in, as from a command or the side panel: the map's toast is not replaced.
+  await page.evaluate((id) => tropa.plugin.store.startLearning(id), chain); await wait(page, 300);
+  ok(`${label}: another change takes the undo away`, (await toasts()) === 0);
+  ok(`${label}: a stale undo does nothing`, (await staleUndo()) === false);
+  ok(`${label}: and keeps both changes`, (await state(page, "Gradient")).includes("state-mastered") && (await state(page, "Chain rule")).includes("state-learning"));
+
+  // A change from another device arrives through the progress file.
+  await pick("Chain rule"); await wait(page, 150);
+  await side("Mark as mastered").click(); await wait(page, 500);
+  ok(`${label}: toast for the next change`, (await toasts()) === 1);
+  await page.evaluate(() => {
+    const file = tropa.app.vault.getAbstractFileByPath("Tropa/Progress.md");
+    return tropa.app.vault.modify(file, tropa.app.vault.contents.get(file.path).replace(/^goal:.*$/m, 'goal: "[[Attention]]"'));
+  });
+  await wait(page, 300);
+  ok(`${label}: a synced change takes the undo away`, (await toasts()) === 0 && (await staleUndo()) === false);
+  ok(`${label}: and the synced change stays`, (await state(page, "Chain rule")).includes("state-mastered") && (await page.evaluate("tropa.plugin.store.progress.goal")).endsWith("Attention.md"));
+}
+{
+  const { page, errors } = await open();
+  await undoChecks(page, "undo");
+  ok("no console errors (undo)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+{
+  const { page, errors } = await phone("");
+  await undoChecks(page, "phone undo");
+  ok("no console errors (phone undo)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+// Without the map open the undo comes as a notice, and the same rule holds.
+{
+  const { page, errors } = await open();
+  await page.evaluate(() => {
+    const leaves = tropa.app.workspace.getLeavesOfType.bind(tropa.app.workspace);
+    tropa.app.workspace.getLeavesOfType = (type) => (type === "tropa-map" ? [] : leaves(type));
+  });
+  const skip = (title) => page.evaluate(async (t) => {
+    const id = [...tropa.app.vault.files.keys()].find((p) => p.endsWith(`/${t}.md`));
+    tropa.plugin.store.setSkipped(id, true);
+  }, title);
+  const undoNotices = () => page.locator(".notice:has(.tropa-notice-undo)");
+  await skip("Probability"); await wait(page, 400);
+  ok("notice undo: offered", (await undoNotices().count()) === 1);
+  await skip("Tokenization"); await wait(page, 300);
+  const left = await undoNotices().allInnerTexts();
+  ok("notice undo: the older notice goes when the progress changes again", left.length === 1 && left[0].includes("Tokenization"), JSON.stringify(left));
+  await undoNotices().locator("button").click(); await wait(page, 300);
+  ok("notice undo: undoes only its own change", (await state(page, "Probability")).includes("state-skipped") && !(await state(page, "Tokenization")).includes("state-skipped"));
+  ok("no console errors (notice undo)", errors.length === 0, JSON.stringify(errors));
+  await page.close();
+}
+
 // --- learning journal: a line per change, one file per month and device, read back from every device
 const journalFiles = (page, folder = "Tropa/Journal") =>
   page.evaluate((f) => [...tropa.app.vault.files.keys()].filter((path) => path.startsWith(f + "/")), folder);

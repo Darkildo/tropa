@@ -7,6 +7,7 @@ import {
   knownCandidates,
   LearningGraph,
   newlyAvailable,
+  sameProgress,
   sourceState,
 } from "../src/core/graph";
 import { readProgress, writeProgress } from "../src/core/progress";
@@ -145,5 +146,47 @@ done: []
 
   it("treats a missing file as empty progress", () => {
     expect(readProgress(undefined, resolve)).toEqual(emptyProgress());
+  });
+});
+
+describe("telling whether the progress changed", () => {
+  const base = () =>
+    progress({
+      goal: "goal",
+      mastered: new Set(["a", "b"]),
+      learning: new Set(["c"]),
+      done: new Set(["s"]),
+      skipped: new Set(["d"]),
+      confidence: new Map([["a", 4]]),
+    });
+
+  it("ignores the order the lists were read in", () => {
+    const other = base();
+    other.mastered = new Set(["b", "a"]);
+    expect(sameProgress(base(), other)).toBe(true);
+  });
+
+  it("sees a change in any mark, the goal or a confidence", () => {
+    const changes: ((p: Progress) => void)[] = [
+      (p) => (p.goal = null),
+      (p) => p.mastered.add("e"),
+      (p) => p.learning.delete("c"),
+      (p) => p.done.add("t"),
+      (p) => p.skipped.clear(),
+      (p) => p.confidence.set("a", 3),
+      (p) => p.confidence.set("c", 4),
+    ];
+    for (const change of changes) {
+      const other = base();
+      change(other);
+      expect(sameProgress(base(), other)).toBe(false);
+    }
+  });
+
+  // Reading back a saved file must not look like a change, or undo would vanish after every save.
+  it("finds nothing changed after a save is read back", () => {
+    const frontmatter: Record<string, unknown> = { type: "learning-progress" };
+    writeProgress(frontmatter, base(), link);
+    expect(sameProgress(readProgress(roundTrip(frontmatter), resolve), base())).toBe(true);
   });
 });
