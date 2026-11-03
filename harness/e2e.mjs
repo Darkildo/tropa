@@ -161,11 +161,14 @@ const { open, stop } = await start();
     document.getElementById("note").dataset.open = "";
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
-  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal", headings.join("|"));
+  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal|Review", headings.join("|"));
   ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
   ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 10);
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 11);
+  ok("review is on by default", await page.locator('#settings input[data-key="review"]').isChecked());
+  ok("target recall is a choice, 90% by default", (await page.locator('#settings select[data-key="retention"]').inputValue()) === "0.9" &&
+    (await page.locator('#settings select[data-key="retention"] option').allInnerTexts()).join("|") === "80%|85%|90%|95%");
   ok("journal is on by default", await page.locator('#settings input[data-key="journal"]').isChecked());
   ok("journal folder follows the language", (await field("journalFolder").inputValue()) === "Tropa/Journal");
   ok("materials key setting", (await page.locator('#settings input[data-key="materialsKey"]').inputValue()) === "materials");
@@ -270,7 +273,7 @@ for (const [lang, callout, heading] of [["ru", "Эта заметка не по�
 {
   const { page, errors } = await open();
   const side = (label) => page.locator(`.tropa-side button:text-is("${label}")`);
-  const legend = await page.locator(".tropa-legend-item").allInnerTexts();
+  const legend = await page.locator(".tropa-legend-item:not(.is-review)").allInnerTexts();
   ok("legend shows skipped", legend.length === 5 && legend.at(-1) === "Skipped", legend.join("|"));
 
   await node(page, "Transformer").click(); await wait(page, 150);
@@ -1815,6 +1818,168 @@ for (const [lang, folder, heading, row, column, dir] of [
   ok("journal phone: activity fits the screen", box && box.width <= 390 && box.x >= 0 && (await stats.isVisible()), JSON.stringify(box));
   await page.screenshot({ path: SHOTS + "90-journal-phone.png" });
   ok("journal phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- review: mastered concepts come back (FSRS), from the journal of every device
+// A line from `days` days ago, as another device would have written it.
+const pastLine = (page, days, action, target, extra = "") =>
+  page.evaluate(([d, a, t, e]) => `- ${new Date(Date.now() - d * 86400000).toISOString().replace(/\.\d+Z$/, "Z")} ${a} ${t}${e}`, [days, action, target, extra]);
+const seedOldMark = async (page, title = "Derivatives", days = 40) => {
+  await page.evaluate(([path, content]) => tropa.app.vault.create(path, content),
+    ["Tropa/Journal/2026-09 phone-beef.md", `---\ntype: learning-journal\n---\n\n${await pastLine(page, days, "mastered", `[[${title}]]`)}\n`]);
+  await wait(page, 200);
+};
+const panelSelect = (page, title) => page.evaluate((t) => {
+  const id = [...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === t).id;
+  tropa.app.workspace.right.view.select(id);
+}, title);
+const lastNotice = (page) => page.evaluate(() => tropa.notices.at(-1) ?? "");
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  const settings = await page.evaluate(() => ({ ...tropa.plugin.settings }));
+  ok("review: old marks start today, spread over a week or more", typeof settings.reviewSince === "string" && settings.reviewSpread >= 7, JSON.stringify(settings));
+  ok("review: nothing due on the first day", (await page.locator(".tropa-node.is-due").count()) === 0 && (await page.locator("#right .tropa-review-queue").count()) === 0);
+  ok("review: nothing written to the journal for it", (await journalFiles(page)).length === 0);
+  ok("review: legend shows the review mark", (await page.locator(".tropa-legend-item.is-review").innerText()) === "To review" && (await page.locator(".tropa-legend-item.is-review").isVisible()));
+
+  await seedOldMark(page);
+  ok("review: a mark from 40 days ago is due", (await state(page, "Derivatives")).includes("is-due"), await state(page, "Derivatives"));
+  ok("review: the due mark is an icon on the node", await node(page, "Derivatives").locator(".tropa-due svg").isVisible());
+  ok("review: other mastered concepts are not due", !(await state(page, "Vectors and matrices")).includes("is-due"));
+  ok("review: the label says so", (await node(page, "Derivatives").getAttribute("aria-label")).includes("Time to review"));
+  ok("review: still mastered, the route is unchanged", (await state(page, "Derivatives")).includes("state-mastered"));
+  const queue = page.locator("#right .tropa-review-queue");
+  ok("review: queue above the route", (await queue.locator(".tropa-section-head").innerText()).startsWith("Review today") && (await queue.locator(".tropa-review-item").allInnerTexts()).join("|").includes("Derivatives"));
+  await page.screenshot({ path: SHOTS + "95-review-queue.png" });
+
+  await queue.locator(".tropa-review-item").first().click(); await wait(page, 150);
+  const box = page.locator("#right .tropa-review.is-due");
+  ok("review: the concept shows it is time", (await box.locator(".tropa-review-head").innerText()) === "Time to review");
+  ok("review: chance to recall in percent", /Chance to recall now: \d+%/.test(await box.locator(".tropa-hint").innerText()));
+  const names = await box.locator(".tropa-review-rating-name").allInnerTexts();
+  const intervals = await box.locator(".tropa-review-rating-interval").allInnerTexts();
+  ok("review: four ratings with their next interval", names.join("|") === "Forgot|Hard|Recalled|Easy" && intervals.every((text) => /\d/.test(text)), `${names} ${intervals}`);
+  await page.screenshot({ path: SHOTS + "96-review-ratings.png" });
+  await box.locator('button[data-rating="3"]').click();
+  await settled(page); await wait(page, 200);
+  const own = (await journalFiles(page)).find((path) => !path.includes("phone-beef"));
+  ok("review: written to this device's journal", own && /\n- \S+ reviewed \[\[Derivatives\]\] rating=3\n$/.test(await note(page, own)), own);
+  ok("review: no longer due", !(await state(page, "Derivatives")).includes("is-due") && (await page.locator("#right .tropa-review-queue").count()) === 0);
+  ok("review: says when it comes back", (await lastNotice(page)).startsWith("Review of Derivatives saved. Next one"), await lastNotice(page));
+  ok("review: the next review is shown", (await page.locator("#right .tropa-review .tropa-review-head").innerText()).startsWith("Next review"));
+  await page.evaluate(() => tropa.app.workspace.right.view.select(null)); await wait(page, 100);
+  ok("review: counted in the activity", (await statsCell(page, "is-reviews")) === "1");
+
+  await page.locator(".notice .tropa-notice-undo").last().click();
+  await settled(page); await wait(page, 200);
+  ok("review: Undo adds a line that takes it back", /reviewed \[\[Derivatives\]\] rating=3\n- \S+ reviewed \[\[Derivatives\]\] undo\n$/.test(await note(page, own)), await note(page, own));
+  ok("review: due again after Undo", (await state(page, "Derivatives")).includes("is-due"));
+  ok("review: an undone review does not count", (await statsCell(page, "is-reviews")) === "0");
+
+  // Not due yet: the ratings wait behind "Review now".
+  await panelSelect(page, "Vectors and matrices"); await wait(page, 100);
+  const early = page.locator("#right .tropa-review");
+  ok("review: not due shows the next date", (await early.locator(".tropa-review-head").innerText()).startsWith("Next review") && (await early.locator(".tropa-review-rating").count()) === 0);
+  await early.locator("button.tropa-review-early").click(); await wait(page, 50);
+  ok("review: Review now shows the ratings", (await early.locator(".tropa-review-rating").count()) === 4);
+  ok("review: not on a concept that is not mastered", await page.evaluate(() => {
+    const view = tropa.app.workspace.right.view;
+    const id = [...tropa.plugin.store.states].find(([, s]) => s === "available")[0];
+    view.select(id);
+    return document.querySelectorAll("#right .tropa-review").length === 0;
+  }));
+
+  // Commands: the next review, and the queue.
+  await runCommand(page, "review-next"); await wait(page, 200);
+  ok("review: command opens the next review", (await page.locator("#right .tropa-title").first().innerText()) === "Derivatives" && (await page.locator("#right .tropa-review.is-due").count()) === 1);
+  await runCommand(page, "review-queue"); await wait(page, 200);
+  ok("review: command opens the queue", await page.locator("#right .tropa-review-queue").isVisible());
+
+  // A higher target recall makes more concepts due; off removes it all.
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("retention", "0.95")); await wait(page, 150);
+  ok("review: target recall is saved", await page.evaluate(() => tropa.plugin.settings.retention === 0.95));
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("review", false)); await wait(page, 150);
+  ok("review: off clears marks, queue and legend", (await page.locator(".tropa-node.is-due").count()) === 0 && (await page.locator("#right .tropa-review-queue").count()) === 0 &&
+    !(await page.locator(".tropa-legend-item.is-review").isVisible()));
+  await runCommand(page, "review-next"); await wait(page, 50);
+  ok("review: command says it is off", (await lastNotice(page)) === "Review is turned off in the settings.", await lastNotice(page));
+  await page.evaluate(async () => {
+    await tropa.plugin.settingTab.setControlValue("review", true);
+    await tropa.plugin.settingTab.setControlValue("journal", false);
+  }); await wait(page, 150);
+  ok("review: needs the journal", (await page.locator(".tropa-node.is-due").count()) === 0);
+  await runCommand(page, "review-next"); await wait(page, 50);
+  ok("review: command says the journal is needed", (await lastNotice(page)).startsWith("Review needs the learning journal"), await lastNotice(page));
+  ok("review: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // Several goals and the route to all of them: review stays the same, on top of it.
+  const { page, errors } = await open({ query: "?panel=1" });
+  await seedOldMark(page);
+  await page.evaluate(() => {
+    const store = tropa.plugin.store;
+    const id = (title) => [...store.graph.nodes.values()].find((n) => n.title === title).id;
+    store.addGoal(id("Convolutional networks"));
+    store.setAllGoals(true);
+    store.setPlan(5, new Map([[id("Transformer"), "2027-03-01"]]));
+  });
+  await settled(page); await wait(page, 600);
+  ok("review goals: route to all goals", await page.evaluate(() => tropa.plugin.store.route?.goals.length === 2));
+  ok("review goals: the due mark stays", (await state(page, "Derivatives")).includes("is-due"));
+  ok("review goals: queue above the route to all goals", (await page.locator("#right .tropa-review-queue .tropa-review-item").allInnerTexts()).join("|").includes("Derivatives"));
+  const journal = (await journalFiles(page)).find((path) => !path.includes("phone-beef"));
+  const lines = await note(page, journal);
+  ok("review goals: goal and plan lines are in the journal", lines.includes("goal [[Convolutional networks]]") && lines.includes("pace - hours=5"), lines);
+  await page.locator("#right .tropa-review-queue .tropa-review-item").first().click(); await wait(page, 150);
+  await page.locator('#right .tropa-review button[data-rating="2"]').click();
+  await settled(page); await wait(page, 200);
+  ok("review goals: rating works", !(await state(page, "Derivatives")).includes("is-due") && /reviewed \[\[Derivatives\]\] rating=2\n$/.test(await note(page, journal)));
+  ok("review goals: the goals are untouched", await page.evaluate(() => tropa.plugin.store.progress.allGoals && tropa.plugin.store.route?.goals.length === 2));
+  ok("review goals: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, queueTitle, ratings, dir] of [
+  ["ru", "Повторить сегодня", "Не вспомнил|С трудом|Вспомнил|Легко", "ltr"],
+  ["ar", "للمراجعة اليوم", "نسيته|بصعوبة|تذكّرته|بسهولة", "rtl"],
+]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  const title = await page.evaluate(() => tropa.plugin.store.graph.nodes.get([...tropa.plugin.store.progress.mastered][0]).title);
+  await page.evaluate(async (t) => {
+    const now = new Date(Date.now() - 40 * 86400000).toISOString().replace(/\.\d+Z$/, "Z");
+    await tropa.app.vault.create(`${tropa.plugin.settings.journalFolder}/2026-09 phone-beef.md`, `- ${now} mastered [[${t}]]\n`);
+  }, title); await wait(page, 200);
+  const queue = page.locator("#right .tropa-review-queue");
+  ok(`review ${lang}: queue translated`, (await queue.locator(".tropa-section-head").innerText()).startsWith(queueTitle), await queue.locator(".tropa-section-head").innerText());
+  await queue.locator(".tropa-review-item").first().click(); await wait(page, 150);
+  ok(`review ${lang}: ratings translated`, (await page.locator("#right .tropa-review-rating-name").allInnerTexts()).join("|") === ratings);
+  ok(`review ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector("#right .tropa-review")).direction)) === dir);
+  if (dir === "rtl") {
+    const order = await page.evaluate(() => [...document.querySelectorAll("#right .tropa-review-rating")].map((b) => b.getBoundingClientRect().left));
+    ok("review ar: ratings run right to left", order[0] > order[3], JSON.stringify(order));
+  }
+  await page.screenshot({ path: SHOTS + `97-review-${lang}.png` });
+  ok(`review ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?phone" });
+  await seedOldMark(page);
+  await runCommand(page, "review-next"); await wait(page, 600);
+  const ratings = page.locator("#center .tropa-review-ratings");
+  await ratings.scrollIntoViewIfNeeded();
+  const box = await ratings.boundingBox();
+  const buttons = await page.locator("#center .tropa-review-rating").evaluateAll((els) => els.map((el) => { const r = el.getBoundingClientRect(); return { w: r.width, h: r.height }; }));
+  ok("review phone: the next review opens on the map's sheet", (await page.locator("#center .tropa-side .tropa-review.is-due").count()) === 1);
+  ok("review phone: ratings fit the screen", box && box.x >= 0 && box.x + box.width <= 390, JSON.stringify(box));
+  ok("review phone: ratings are finger-sized", buttons.length === 4 && buttons.every((b) => b.h >= 44 && b.w >= 60), JSON.stringify(buttons));
+  ok("review phone: the due mark on the node", (await state(page, "Derivatives")).includes("is-due"));
+  await page.screenshot({ path: SHOTS + "98-review-phone.png" });
+  await page.locator('#center .tropa-review-rating[data-rating="4"]').tap();
+  await page.evaluate(() => tropa.plugin.journal.settled()); await wait(page, 200);
+  ok("review phone: a tap rates it", !(await state(page, "Derivatives")).includes("is-due"));
+  ok("review phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

@@ -8,8 +8,11 @@ import type { GraphNode, Route } from "../core/types";
 import { attempt } from "../attempt";
 import { locale, t } from "../i18n";
 import type { Store } from "../store";
+import type { Reviews } from "../review";
+import { RATINGS, type ReviewRating } from "../core/review";
 import { KnownModal, PickModal, SourceModal, type PickItem } from "./pick";
 import { PlanModal } from "./plan";
+import { formatInterval, formatPercent, formatRelative } from "./when";
 
 export interface DetailHost {
   app: App;
@@ -20,6 +23,8 @@ export interface DetailHost {
   isHidden?(id: string): boolean;
   /** Called when the person leaves the details of a selected item. */
   canGoBack: boolean;
+  /** Review of mastered concepts, when the host shows it. */
+  reviews?: Reviews;
 }
 
 function row(parent: HTMLElement, cls = "") {
@@ -251,6 +256,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   }
 
   if (state === "mastered" || state === "learning") confidenceControl(parent, store, node.id);
+  if (state === "mastered" && host.reviews?.enabled) reviewBlock(parent, host.reviews, node);
 
   if (node.summary) parent.createEl("p", { cls: "tropa-summary", text: node.summary, attr: { dir: "auto" } });
 
@@ -392,6 +398,7 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
   const excluded = store.progress.allGoals ? store.excludedGoals : [];
   if (excluded.length) parent.createEl("p", { cls: "tropa-callout", text: t.goals.excluded({ titles: excluded.join(t.listSeparator) }) });
   else if (store.excludedGoal && !store.progress.allGoals) parent.createEl("p", { cls: "tropa-callout", text: t.scope.goalExcludedHint });
+  if (host.reviews?.enabled) reviewQueue(parent, host, host.reviews);
 
   if (!route) {
     const available = graph.concepts.filter((node) => store.states.get(node.id) === "available");
@@ -472,6 +479,98 @@ export function renderRoute(parent: HTMLElement, host: DetailHost, pickGoal: () 
       item.createDiv({ cls: "tropa-step-meta tropa-step-goals", text: t.goals.forGoals({ goals: names }) });
     }
   });
+}
+
+const RATING_NAME: Record<ReviewRating, "again" | "hard" | "good" | "easy"> = { 1: "again", 2: "hard", 3: "good", 4: "easy" };
+
+/**
+ * When the concept comes back, and the four ratings. Shown at once when it is due; before that
+ * behind "Review now", so a look at a mastered concept does not invite a review by accident.
+ */
+function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
+  const schedule = reviews.schedule(node.id);
+  if (!schedule) return;
+  const now = Date.now();
+  const due = schedule.due <= now;
+  const box = parent.createDiv({ cls: `tropa-review${due ? " is-due" : ""}` });
+  const head = box.createDiv({ cls: "tropa-review-head" });
+  setIcon(head.createSpan({ cls: "tropa-review-icon" }), REVIEW_ICON);
+  head.createSpan({ text: due ? t.review.dueNow : t.review.nextOn({ date: formatDate(new Date(schedule.due), new Date(now)), when: formatRelative(schedule.due, now) }) });
+  box.createDiv({ cls: "tropa-hint", text: t.review.recall({ percent: formatPercent(reviews.retrievability(schedule, now)) }) });
+
+  const body = box.createDiv({ cls: "tropa-review-body" });
+  const showRatings = () => {
+    body.empty();
+    const check = reviews.checkFor(node.id);
+    if (check) {
+      const button = body.createEl("button", { cls: "mod-cta tropa-review-check", text: t.review.check });
+      button.addEventListener("click", () => {
+        attempt(
+          check().then((rating) => {
+            if (rating) reviews.rate(node.id, rating, "checked");
+          }),
+          `check ${node.title}`,
+        );
+      });
+    }
+    body.createDiv({ cls: "tropa-review-prompt", text: t.review.howWell });
+    const ratings = body.createDiv({ cls: "tropa-review-ratings", attr: { role: "group", "aria-label": t.review.howWell } });
+    const preview = reviews.preview(schedule, Date.now());
+    for (const rating of RATINGS) {
+      const interval = formatInterval(preview[rating]);
+      const button = ratings.createEl("button", {
+        cls: `tropa-review-rating is-${RATING_NAME[rating]}`,
+        attr: { "data-rating": String(rating), "aria-label": `${t.review[RATING_NAME[rating]]}, ${t.review.nextIn({ interval })}` },
+      });
+      button.createSpan({ cls: "tropa-review-rating-name", text: t.review[RATING_NAME[rating]] });
+      button.createSpan({ cls: "tropa-review-rating-interval tropa-nowrap", text: interval });
+      button.addEventListener("click", () => reviews.rate(node.id, rating));
+    }
+  };
+  if (due) showRatings();
+  else {
+    const early = body.createEl("button", { cls: "tropa-review-early", text: t.review.early });
+    early.addEventListener("click", showRatings);
+  }
+}
+
+export const REVIEW_ICON = "rotate-ccw";
+const QUEUE_PREVIEW = 5;
+/** The queue stays open once "show all" was pressed, until the plugin reloads. */
+let queueOpen = false;
+
+/** Concepts due for review, above the route: the longest overdue first. */
+function reviewQueue(parent: HTMLElement, host: DetailHost, reviews: Reviews) {
+  const now = Date.now();
+  const due = reviews.due(now);
+  if (due.length === 0) return;
+  const list = section(parent, t.review.queue, due.length);
+  list.addClass("tropa-review-queue");
+  const shown = queueOpen ? due : due.slice(0, QUEUE_PREVIEW);
+  for (const schedule of shown) {
+    const node = host.store.graph.nodes.get(schedule.id);
+    if (!node) continue;
+    const el = row(list, "is-link tropa-review-item");
+    el.tabIndex = 0;
+    el.setAttr("role", "button");
+    el.dataset.id = node.id;
+    setIcon(el.createSpan({ cls: "tropa-glyph is-small is-due" }), REVIEW_ICON);
+    el.createSpan({ cls: "tropa-row-title", text: node.title, attr: { dir: "auto" } });
+    el.createSpan({ cls: "tropa-review-when tropa-nowrap", text: formatRelative(schedule.due, now) });
+    el.addEventListener("click", () => host.select(node.id));
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") host.select(node.id);
+    });
+  }
+  if (shown.length < due.length) {
+    const more = list.createEl("button", { cls: "tropa-add tropa-review-more", text: t.review.showAll({ count: due.length }) });
+    more.addEventListener("click", () => {
+      queueOpen = true;
+      const fresh = createDiv();
+      reviewQueue(fresh, host, reviews);
+      list.replaceWith(...Array.from(fresh.childNodes));
+    });
+  }
 }
 
 /** What a deadline asks for, or nothing when there is no deadline or nothing to time. */

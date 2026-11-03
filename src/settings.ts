@@ -1,5 +1,7 @@
 import { Notice, PluginSettingTab, type App, type SettingDefinitionItem, type SettingGroupItem } from "obsidian";
 import { inFolders, parseFolders, parseTags } from "./core/scope";
+import { DEFAULT_RETENTION, RETENTIONS } from "./core/review";
+import { formatPercent } from "./ui/when";
 import { t } from "./i18n";
 import type TropaPlugin from "./main";
 
@@ -8,7 +10,7 @@ const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey", "ma
 const SCOPE = ["excludeFolders", "excludeTags"] as const;
 type TextSetting = (typeof FILES)[number] | (typeof PROPERTIES)[number] | "journalFolder";
 type ScopeSetting = (typeof SCOPE)[number];
-type Key = TextSetting | ScopeSetting | "journal";
+type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention";
 
 const TEXT_SETTINGS: readonly string[] = [...FILES, ...PROPERTIES, "journalFolder"];
 const isTextSetting = (key: string): key is TextSetting => TEXT_SETTINGS.includes(key);
@@ -37,20 +39,46 @@ export class TropaSettingTab extends PluginSettingTab {
           this.text("journalFolder"),
         ],
       },
+      {
+        type: "group",
+        heading: t.review.group,
+        items: [
+          { name: t.review.enabled, desc: t.review.enabledDesc, control: { type: "toggle", key: "review" } },
+          {
+            name: t.review.retention,
+            desc: t.review.retentionDesc,
+            control: {
+              type: "dropdown",
+              key: "retention",
+              options: Object.fromEntries(RETENTIONS.map((value) => [String(value), formatPercent(value)])),
+            },
+          },
+        ],
+      },
     ];
   }
 
   getControlValue(key: string): unknown {
     if (key === "journal") return this.plugin.settings.journal;
+    if (key === "review") return this.plugin.settings.review;
+    if (key === "retention") return String(this.plugin.settings.retention);
     if (isScopeSetting(key)) return this.plugin.settings[key].map((value) => (key === "excludeTags" ? `#${value}` : value)).join("\n");
     return isTextSetting(key) ? this.plugin.settings[key] : undefined;
   }
 
   /** An empty field falls back to the default. Names, paths and scope change what counts as the graph, so it is read again. */
   async setControlValue(key: string, value: unknown) {
-    if (key === "journal") {
-      this.plugin.settings.journal = value === true || value === "true";
+    if (key === "journal" || key === "review") {
+      this.plugin.settings[key] = value === true || value === "true";
       await this.plugin.saveSettings();
+      this.plugin.reviews.refresh();
+      return;
+    }
+    if (key === "retention") {
+      const retention = Number(value);
+      this.plugin.settings.retention = (RETENTIONS as readonly number[]).includes(retention) ? retention : DEFAULT_RETENTION;
+      await this.plugin.saveSettings();
+      this.plugin.reviews.refresh();
       return;
     }
     if (isScopeSetting(key)) this.plugin.settings[key] = key === "excludeTags" ? parseTags(value) : parseFolders(value);
