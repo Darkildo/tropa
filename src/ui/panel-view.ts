@@ -27,6 +27,10 @@ export class PanelView extends ItemView implements DetailHost {
     return this.plugin.reviews;
   }
 
+  get checks() {
+    return this.plugin.checks;
+  }
+
   get canGoBack() {
     return this.override !== null;
   }
@@ -56,6 +60,7 @@ export class PanelView extends ItemView implements DetailHost {
     }
     this.registerEvent(this.store.on("change", () => this.render()));
     this.registerEvent(this.plugin.reviews.on("change", () => this.render()));
+    this.registerEvent(this.plugin.checks.on("change", () => this.render()));
     this.registerEvent(
       this.app.workspace.on("file-open", () => {
         this.override = null;

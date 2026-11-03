@@ -161,11 +161,13 @@ const { open, stop } = await start();
     document.getElementById("note").dataset.open = "";
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
-  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal|Review", headings.join("|"));
+  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal|Review|Self-check", headings.join("|"));
   ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
   ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 11);
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 14);
+  ok("self-check settings: offered by default, audit off", await page.locator('#settings input[data-key="offerCheck"]').isChecked() &&
+    !(await page.locator('#settings input[data-key="auditQuestions"]').isChecked()) && (await field("checkCallout").inputValue()) === "question");
   ok("review is on by default", await page.locator('#settings input[data-key="review"]').isChecked());
   ok("target recall is a choice, 90% by default", (await page.locator('#settings select[data-key="retention"]').inputValue()) === "0.9" &&
     (await page.locator('#settings select[data-key="retention"] option').allInnerTexts()).join("|") === "80%|85%|90%|95%");
@@ -1980,6 +1982,166 @@ for (const [lang, queueTitle, ratings, dir] of [
   await page.evaluate(() => tropa.plugin.journal.settled()); await wait(page, 200);
   ok("review phone: a tap rates it", !(await state(page, "Derivatives")).includes("is-due"));
   ok("review phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- self-check: questions as callouts in the concept's note, before mastering and as a review
+const checkModal = (page) => page.locator(".modal.tropa-check-modal");
+const offerModal = (page) => page.locator(".modal.tropa-check-offer");
+const mapSelect = (page, title) => page.evaluate((t) => {
+  const id = [...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === t).id;
+  tropa.app.workspace.center.view.select(id);
+}, title);
+const ownJournal = async (page) => {
+  await settled(page);
+  const path = (await journalFiles(page)).find((p) => !p.includes("phone-beef"));
+  return path ? note(page, path) : "";
+};
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  await page.waitForFunction(() => tropa.plugin.checks.count([...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "Probability").id) === 1);
+  await mapSelect(page, "Probability"); await wait(page, 150);
+  ok("check: the details count the questions", (await page.locator(".tropa-side .tropa-check-count").innerText()) === "1 question to check yourself");
+  ok("check: no count where there are none", await page.evaluate(() => {
+    const id = [...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "Gradient").id;
+    return tropa.plugin.checks.count(id) === 0;
+  }));
+  await page.click('.tropa-side button:text-is("Start learning")'); await wait(page, 150);
+  await page.click('.tropa-side button:text-is("Mark as mastered")'); await wait(page, 150);
+  ok("check: marking mastered offers a check first", await offerModal(page).isVisible());
+  ok("check: the offer says why", (await offerModal(page).innerText()).includes("Probability has questions to check yourself"));
+  await page.screenshot({ path: SHOTS + "99-check-offer.png" });
+  await offerModal(page).locator("button.tropa-check-start").click(); await wait(page, 150);
+  const modal = checkModal(page);
+  ok("check: one question at a time", (await modal.locator(".tropa-check-progress").innerText()) === "Question 1 of 1" &&
+    (await modal.locator(".tropa-check-question").innerText()) === "What is P(A | B)?");
+  ok("check: the answer is hidden first", (await modal.locator(".tropa-check-answer").count()) === 0);
+  await page.keyboard.press("Space"); await wait(page, 100);
+  ok("check: Space shows the answer, rendered", (await modal.locator(".tropa-check-answer p").innerText()).startsWith("The probability of A once B"));
+  ok("check: three grades", (await modal.locator(".tropa-check-grade").allInnerTexts()).join("|") === "Right|Partly|Wrong");
+  await page.screenshot({ path: SHOTS + "99-check-answer.png" });
+  await page.keyboard.press("1"); await wait(page, 100);
+  ok("check: summary of the answers", (await modal.locator(".tropa-check-summary").innerText()) === "1 of 1 right" &&
+    (await modal.locator(".tropa-check-suggested").innerText()) === "Suggested from your answers: Recalled");
+  ok("check: offers to mark it mastered", (await modal.locator("button.tropa-check-master").getAttribute("class")).includes("mod-cta"));
+  await page.screenshot({ path: SHOTS + "99-check-summary.png" });
+  await page.keyboard.press("Enter"); await wait(page, 300);
+  ok("check: the window closes", (await modal.count()) === 0);
+  ok("check: mastered after the check", (await state(page, "Probability")).includes("state-mastered"));
+  let journal = await ownJournal(page);
+  ok("check: the result goes to the journal before the mark", /checked \[\[Probability\]\] rating=3\n- \S+ mastered \[\[Probability\]\]\n$/.test(journal), journal);
+  ok("check: the note is not changed", (await note(page, `${CONCEPTS}/Probability.md`)).includes("> [!question]- What is P(A | B)?"));
+  ok("check: a notice with undo", (await lastNotice(page)).startsWith("Self-check of Probability saved"), await lastNotice(page));
+  await page.locator(".notice .tropa-notice-undo").last().click(); await wait(page, 100);
+  journal = await ownJournal(page);
+  ok("check: Undo takes the result back", /reviewed \[\[Probability\]\] undo\n$/.test(journal) && (await state(page, "Probability")).includes("state-mastered"), journal);
+
+  // Left halfway: nothing is saved.
+  await mapSelect(page, "Probability"); await wait(page, 150);
+  ok("check: under review, the check sits with the ratings", (await page.locator(".tropa-side button.tropa-check-start").count()) === 0 &&
+    (await page.locator(".tropa-side .tropa-check-count").innerText()) === "1 question to check yourself");
+  await page.click(".tropa-side button.tropa-review-early"); await wait(page, 50);
+  await page.click(".tropa-side button.tropa-review-check"); await wait(page, 150);
+  ok("check: a mastered concept checks itself as a review", await checkModal(page).isVisible());
+  const before = await ownJournal(page);
+  await page.keyboard.press("Escape"); await wait(page, 150);
+  ok("check: closing saves nothing", (await checkModal(page).count()) === 0 && (await ownJournal(page)) === before);
+
+  // M on the map offers it too; "do not offer again" sticks.
+  await node(page, "Attention").focus(); await page.keyboard.press("m"); await wait(page, 150);
+  ok("check: M offers a check", await offerModal(page).isVisible());
+  await offerModal(page).locator(".tropa-check-dont-ask input").check();
+  await offerModal(page).locator("button.tropa-check-skip").click(); await wait(page, 250);
+  ok("check: skipping marks it at once", (await state(page, "Attention")).includes("state-mastered") && !/checked \[\[Attention\]\]/.test(await ownJournal(page)));
+  ok("check: do not offer again is saved", await page.evaluate(() => tropa.plugin.settings.offerCheck === false));
+  await node(page, "Attention").focus(); await page.keyboard.press("m"); await wait(page, 200);
+  await node(page, "Attention").focus(); await page.keyboard.press("m"); await wait(page, 200);
+  ok("check: no offer once turned off", (await offerModal(page).count()) === 0 && (await state(page, "Attention")).includes("state-mastered"));
+
+  // A changed note is read again; another callout type finds other questions.
+  await page.evaluate((path) => {
+    const file = tropa.app.vault.getAbstractFileByPath(path);
+    return tropa.app.vault.modify(file, tropa.app.vault.contents.get(path) + "\n> [!question]- Bayes' rule?\n> P(A|B) = P(B|A) P(A) / P(B)\n");
+  }, `${CONCEPTS}/Probability.md`); await wait(page, 400);
+  await mapSelect(page, "Probability"); await wait(page, 150);
+  ok("check: a new question is counted", (await page.locator(".tropa-side .tropa-check-count").innerText()) === "2 questions to check yourself");
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("checkCallout", "[!FAQ]")); await wait(page, 300);
+  ok("check: callout type is saved clean", await page.evaluate(() => tropa.plugin.settings.checkCallout === "faq"));
+  ok("check: another type, no questions", (await page.locator(".tropa-side .tropa-check-count").count()) === 0);
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("checkCallout", "")); await wait(page, 300);
+  ok("check: an empty type is the default", (await page.locator(".tropa-side .tropa-check-count").innerText()) === "2 questions to check yourself");
+
+  // The audit lists concepts without questions only when asked to.
+  await runCommand(page, "audit-map"); await wait(page, 300);
+  ok("check audit: off by default", (await page.locator(".tropa-audit-section.is-no-questions").count()) === 0);
+  const plain = await page.evaluate(() => tropa.plugin.store.graph.concepts.filter((n) => !n.ghost).length);
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("auditQuestions", true)); await wait(page, 300);
+  ok("check audit: lists concepts without questions", (await auditCount(page, "no-questions")) === String(plain - 4), await auditCount(page, "no-questions"));
+  ok("check audit: hint says how to add one", (await page.locator(".tropa-audit-section.is-no-questions .tropa-audit-hint").innerText()).includes("> [!question]-"));
+  ok("check: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // Review: a due concept with questions checks itself from the queue; the grades suggest, the person picks.
+  const { page, errors } = await open({ query: "?panel=1" });
+  await seedOldMark(page);
+  await page.waitForFunction(() => document.querySelector("#right .tropa-review-queue .tropa-review-check"));
+  await page.locator("#right .tropa-review-queue .tropa-review-check").first().click(); await wait(page, 150);
+  const modal = checkModal(page);
+  ok("check review: from the queue", (await modal.locator(".tropa-check-progress").innerText()) === "Question 1 of 2");
+  await modal.locator("button.tropa-check-reveal").click(); await modal.locator('button[data-grade="right"]').click();
+  await modal.locator("button.tropa-check-reveal").click(); await modal.locator('button[data-grade="partly"]').click(); await wait(page, 100);
+  ok("check review: a partly right answer counts half", (await modal.locator(".tropa-check-summary").innerText()) === "1.5 of 2 right");
+  ok("check review: four ratings, the suggested one first in line", (await modal.locator(".tropa-check-rating").allInnerTexts()).join("|") === "Forgot|Hard|Recalled|Easy" &&
+    (await modal.locator(".tropa-check-rating.mod-cta").innerText()) === "Recalled");
+  await modal.locator('button[data-rating="2"]').click(); await wait(page, 300);
+  const journal = await ownJournal(page);
+  ok("check review: the picked rating is saved as a check", /checked \[\[Derivatives\]\] rating=2\n$/.test(journal), journal);
+  ok("check review: no longer due", !(await state(page, "Derivatives")).includes("is-due"));
+  await page.evaluate(() => tropa.app.workspace.right.view.select(null)); await wait(page, 100);
+  ok("check review: counted as a review", (await statsCell(page, "is-reviews")) === "1");
+  ok("check review: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, title, reveal, grades, dir] of [
+  ["ru", "Вероятность", "Показать ответ", "Верно|Частично|Неверно", "ltr"],
+  ["ar", null, "إظهار الإجابة", "صحيح|جزئيًا|خطأ", "rtl"],
+]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  const id = await page.evaluate(async (t) => {
+    const nodes = [...tropa.plugin.store.graph.nodes.values()];
+    const node = t ? nodes.find((n) => n.title === t) : nodes.find((n) => n.title === "Probability");
+    for (let i = 0; i < 50 && !tropa.plugin.checks.count(node.id); i++) await new Promise((r) => setTimeout(r, 50));
+    return node.id;
+  }, title);
+  await page.evaluate((i) => { void tropa.plugin.checks.checkNow(i); }, id); await wait(page, 200);
+  const modal = checkModal(page);
+  ok(`check ${lang}: the window is translated`, (await modal.locator("button.tropa-check-reveal").innerText()) === reveal);
+  await modal.locator("button.tropa-check-reveal").click(); await wait(page, 50);
+  ok(`check ${lang}: grades translated`, (await modal.locator(".tropa-check-grade").allInnerTexts()).join("|") === grades, (await modal.locator(".tropa-check-grade").allInnerTexts()).join("|"));
+  ok(`check ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector(".modal.tropa-check-modal")).direction)) === dir);
+  if (lang === "ru") ok("check ru: the example map has Russian questions", (await modal.locator(".tropa-check-question").innerText()) === "Что такое P(A | B)?");
+  await page.screenshot({ path: SHOTS + `99-check-${lang}.png` });
+  ok(`check ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?phone" });
+  await page.waitForFunction(() => tropa.plugin.checks.count([...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "Probability").id) === 1);
+  await mapSelect(page, "Probability"); await wait(page, 400);
+  const start = page.locator("#center .tropa-side button.tropa-check-start");
+  await start.scrollIntoViewIfNeeded();
+  await start.tap(); await wait(page, 200);
+  const modal = checkModal(page);
+  await modal.locator("button.tropa-check-reveal").tap(); await wait(page, 100);
+  const sizes = await modal.locator(".tropa-check-grade").evaluateAll((els) => els.map((el) => { const r = el.getBoundingClientRect(); return { h: r.height, left: r.left, right: r.right }; }));
+  ok("check phone: grades are finger-sized and on screen", sizes.length === 3 && sizes.every((b) => b.h >= 44 && b.left >= 0 && b.right <= 390), JSON.stringify(sizes));
+  await page.screenshot({ path: SHOTS + "99-check-phone.png" });
+  await modal.locator('button[data-grade="wrong"]').tap(); await wait(page, 100);
+  ok("check phone: forgot, so not yet is the first choice", (await modal.locator("button.tropa-check-later").getAttribute("class")).includes("mod-cta"));
+  await modal.locator("button.tropa-check-later").tap(); await wait(page, 300);
+  ok("check phone: not mastered, the result kept", !(await state(page, "Probability")).includes("state-mastered") && /checked \[\[Probability\]\] rating=1\n$/.test(await ownJournal(page)));
+  ok("check phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

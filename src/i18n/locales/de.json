@@ -388,5 +388,39 @@
     "nothingDue": "Gerade gibt es nichts zu wiederholen",
     "needsJournal": "Die Wiederholung braucht das Lernjournal. Schalten Sie es in den Einstellungen ein.",
     "off": "Die Wiederholung ist in den Einstellungen ausgeschaltet."
+  },
+  "check": {
+    "group": "Selbsttest",
+    "command": "Sich zum geöffneten Konzept selbst testen",
+    "callout": "Callout für Fragen",
+    "calloutDesc": "Fragen sind Callouts dieses Typs in der Notiz eines Konzepts: der Titel ist die Frage, der Inhalt die Antwort.",
+    "offer": "Vor „gemeistert“ einen Selbsttest anbieten",
+    "offerDesc": "Hat ein Konzept Fragen, bietet das Markieren als gemeistert zuerst einen Selbsttest an. Er lässt sich immer überspringen.",
+    "audit": "Konzepte ohne Fragen in der Kartenprüfung",
+    "auditDesc": "Die Kartenprüfung listet auch Konzepte ohne Fragen zum Selbsttest.",
+    "questions": {
+      "one": "{count} Frage zum Selbsttest",
+      "other": "{count} Fragen zum Selbsttest"
+    },
+    "title": "Selbsttest: {title}",
+    "progress": "Frage {index} von {count}",
+    "showAnswer": "Antwort zeigen",
+    "noAnswer": "Unter dieser Frage steht keine Antwort.",
+    "gradePrompt": "Wie haben Sie geantwortet?",
+    "right": "Richtig",
+    "partly": "Teilweise",
+    "wrong": "Falsch",
+    "summary": "{score} von {count} richtig",
+    "suggested": "Nach Ihren Antworten: {rating}",
+    "masterPrompt": "Konzept als gemeistert markieren?",
+    "notYet": "Noch nicht",
+    "offerTitle": "Zuerst selbst testen?",
+    "offerText": "{title} hat Fragen zum Selbsttest. Wer sie zuerst beantwortet, gibt der Markierung „gemeistert“ mehr Gewicht.",
+    "skip": "Ohne Test als gemeistert markieren",
+    "dontAsk": "Nicht mehr anbieten",
+    "saved": "Selbsttest zu {title} gespeichert",
+    "keys": "Leertaste zeigt die Antwort, 1 bis 3 bewerten sie",
+    "auditTitle": "Konzepte ohne Fragen",
+    "auditHint": "Noch nichts zum Selbsttest. Fügen Sie ein Callout wie > [!question]- mit der Antwort darin hinzu."
   }
 }

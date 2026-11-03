@@ -388,5 +388,39 @@
     "nothingDue": "Inget att repetera just nu",
     "needsJournal": "Repetition kräver inlärningsjournalen. Slå på den i inställningarna.",
     "off": "Repetition är avstängd i inställningarna."
+  },
+  "check": {
+    "group": "Självtest",
+    "command": "Testa dig själv på det öppna begreppet",
+    "callout": "Callout för frågor",
+    "calloutDesc": "Frågor är callouts av den här typen i ett begrepps anteckning: rubriken är frågan, innehållet svaret.",
+    "offer": "Erbjud ett självtest före ”behärskat”",
+    "offerDesc": "Har ett begrepp frågor erbjuder markeringen som behärskat först ett självtest. Det går alltid att hoppa över.",
+    "audit": "Begrepp utan frågor i kartgranskningen",
+    "auditDesc": "Kartgranskningen visar också begrepp utan frågor för självtest.",
+    "questions": {
+      "one": "{count} fråga för självtest",
+      "other": "{count} frågor för självtest"
+    },
+    "title": "Testa dig själv: {title}",
+    "progress": "Fråga {index} av {count}",
+    "showAnswer": "Visa svar",
+    "noAnswer": "Det finns inget svar under den här frågan.",
+    "gradePrompt": "Hur svarade du?",
+    "right": "Rätt",
+    "partly": "Delvis",
+    "wrong": "Fel",
+    "summary": "{score} av {count} rätt",
+    "suggested": "Utifrån dina svar: {rating}",
+    "masterPrompt": "Markera begreppet som behärskat?",
+    "notYet": "Inte än",
+    "offerTitle": "Testa dig själv först?",
+    "offerText": "{title} har frågor för självtest. Om du svarar på dem först betyder markeringen ”behärskat” mer.",
+    "skip": "Markera behärskat utan test",
+    "dontAsk": "Erbjud inte igen",
+    "saved": "Självtest av {title} sparat",
+    "keys": "Mellanslag visar svaret, 1–3 bedömer det",
+    "auditTitle": "Begrepp utan frågor",
+    "auditHint": "Inget att testa dig med ännu. Lägg till en callout som > [!question]- med svaret inuti."
   }
 }

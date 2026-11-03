@@ -388,5 +388,39 @@
     "nothingDue": "Most nincs mit ismételni",
     "needsJournal": "Az ismétléshez kell a tanulási napló. Kapcsold be a beállításokban.",
     "off": "Az ismétlés ki van kapcsolva a beállításokban."
+  },
+  "check": {
+    "group": "Önellenőrzés",
+    "command": "Önellenőrzés a megnyitott fogalomból",
+    "callout": "Kérdés callout",
+    "calloutDesc": "A kérdések ilyen típusú callout-ok a fogalom jegyzetében: a cím a kérdés, a tartalom a válasz.",
+    "offer": "Önellenőrzés felajánlása az „elsajátítva” előtt",
+    "offerDesc": "Ha egy fogalomnak vannak kérdései, az elsajátítottnak jelölés előbb önellenőrzést ajánl. Mindig kihagyható.",
+    "audit": "Kérdés nélküli fogalmak a térkép ellenőrzésében",
+    "auditDesc": "A térkép ellenőrzése azokat a fogalmakat is listázza, amelyeknek nincs önellenőrző kérdése.",
+    "questions": {
+      "one": "{count} önellenőrző kérdés",
+      "other": "{count} önellenőrző kérdés"
+    },
+    "title": "Önellenőrzés: {title}",
+    "progress": "{index}. kérdés / {count}",
+    "showAnswer": "Válasz mutatása",
+    "noAnswer": "Ez alatt a kérdés alatt nincs válasz.",
+    "gradePrompt": "Hogyan válaszoltál?",
+    "right": "Jó",
+    "partly": "Részben",
+    "wrong": "Rossz",
+    "summary": "{count} kérdésből {score} jó",
+    "suggested": "A válaszaid alapján: {rating}",
+    "masterPrompt": "Elsajátítottnak jelölöd a fogalmat?",
+    "notYet": "Még nem",
+    "offerTitle": "Előbb önellenőrzés?",
+    "offerText": "A(z) {title} fogalomnak vannak önellenőrző kérdései. Ha előbb megválaszolod őket, az „elsajátítva” jelölés többet ér.",
+    "skip": "Elsajátítva jelölés ellenőrzés nélkül",
+    "dontAsk": "Ne ajánlja fel többé",
+    "saved": "{title} önellenőrzése mentve",
+    "keys": "Szóköz mutatja a választ, 1–3 értékeli",
+    "auditTitle": "Kérdés nélküli fogalmak",
+    "auditHint": "Még nincs mivel ellenőrizni magad. Adj hozzá egy callout-ot, például > [!question]-, benne a válasszal."
   }
 }

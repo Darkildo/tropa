@@ -388,5 +388,39 @@
     "nothingDue": "Nyt ei ole kerrattavaa",
     "needsJournal": "Kertaus tarvitsee oppimispäiväkirjan. Ota se käyttöön asetuksista.",
     "off": "Kertaus on poistettu käytöstä asetuksista."
+  },
+  "check": {
+    "group": "Itsearviointi",
+    "command": "Testaa itsesi avatusta käsitteestä",
+    "callout": "Kysymys-callout",
+    "calloutDesc": "Kysymykset ovat tämäntyyppisiä callouteja käsitteen muistiinpanossa: otsikko on kysymys, sisältö vastaus.",
+    "offer": "Tarjoa itsearviointia ennen ”hallittu”-merkintää",
+    "offerDesc": "Jos käsitteellä on kysymyksiä, hallituksi merkitseminen tarjoaa ensin itsearviointia. Sen voi aina ohittaa.",
+    "audit": "Käsitteet ilman kysymyksiä kartan tarkistuksessa",
+    "auditDesc": "Kartan tarkistus näyttää myös käsitteet, joilla ei ole itsearviointikysymyksiä.",
+    "questions": {
+      "one": "{count} itsearviointikysymys",
+      "other": "{count} itsearviointikysymystä"
+    },
+    "title": "Testaa itsesi: {title}",
+    "progress": "Kysymys {index}/{count}",
+    "showAnswer": "Näytä vastaus",
+    "noAnswer": "Tämän kysymyksen alla ei ole vastausta.",
+    "gradePrompt": "Miten vastasit?",
+    "right": "Oikein",
+    "partly": "Osittain",
+    "wrong": "Väärin",
+    "summary": "Oikein {score}/{count}",
+    "suggested": "Vastaustesi perusteella: {rating}",
+    "masterPrompt": "Merkitäänkö käsite hallituksi?",
+    "notYet": "Ei vielä",
+    "offerTitle": "Testaatko ensin itsesi?",
+    "offerText": "Käsitteellä {title} on itsearviointikysymyksiä. Kun vastaat niihin ensin, hallittu-merkintä kertoo enemmän.",
+    "skip": "Merkitse hallituksi ilman testiä",
+    "dontAsk": "Älä tarjoa enää",
+    "saved": "Käsitteen {title} itsearviointi tallennettu",
+    "keys": "Välilyönti näyttää vastauksen, 1–3 arvioi sen",
+    "auditTitle": "Käsitteet ilman kysymyksiä",
+    "auditHint": "Ei vielä mitään, millä testata itseään. Lisää callout, kuten > [!question]-, ja vastaus sen sisään."
   }
 }

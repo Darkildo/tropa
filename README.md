@@ -33,12 +33,14 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
 - **Review.** Mastered concepts come back when you are about to forget them, scheduled by [FSRS](https://github.com/open-spaced-repetition/ts-fsrs) from the journal. A concept that is due keeps its mark and blocks nothing; it gets a badge on the map and a place in **Review today** above the route. Rate how well you recalled it (**Forgot**, **Hard**, **Recalled**, **Easy**), and each button says when it would come back. See [Review](#review).
+- **Self-check.** Write questions in a concept's note as callouts, `> [!question]- Question` with the answer inside. **Check yourself** asks them one at a time, shows the answer on a press and lets you grade your own answer; the grades suggest how well you know the concept. Marking a concept with questions mastered offers the check first, and a check is a review once the concept is mastered. See [Self-check](#self-check).
 - **Map audit.** The command **Tropa: Audit the map** opens one list of what needs a look:
   - dependency cycles, shown as a chain back to where they start;
   - links to missing notes, with how many notes point to each and a button to create it;
   - possible duplicates, names that differ only in case or accents;
   - concepts without materials;
-  - notes with no links at all.
+  - notes with no links at all;
+  - concepts without self-check questions, when turned on in the settings.
 
   Each row opens its note or shows it on the map, and the list updates as you fix things. When there is something to look at, a button in the map's bar shows how many, in red if there is a cycle, and opens the audit.
 - **Keyboard.** Arrow keys move between concepts, Enter opens details, Shift+Enter opens the note, M toggles mastered, F focuses on the concept or leaves the focus, 1–3 set the steps around, C folds or unfolds what the concept opens, Esc leaves the focus and then returns to the route.
@@ -91,7 +93,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 - The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
 - The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
 
-Other commands: review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: check yourself on the open concept, review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -190,6 +192,22 @@ Review is scheduled by FSRS ([ts-fsrs](https://github.com/open-spaced-repetition
 - Marks made before the journal, or on a device without one, have no date. They start on the day review is first on and come due a few a day over one week to two months, so an old map does not come due all at once. The day and the spread are saved in the settings.
 - Commands: **Review the next concept** and **Open the review queue**.
 - Review needs the journal: it is where reviews are kept and how they reach your other devices. With the journal off, review is off too.
+
+### Self-check
+
+Questions are callouts in the body of a concept's note. The title is the question, the inside is the answer, folded or not:
+
+```markdown
+> [!question]- Where does the gradient point?
+> Towards the fastest growth of the function.
+```
+
+- **Check yourself**, in a concept's details, on a row of **Review today** or with the command, asks the questions one at a time. Space or **Show answer** opens the answer, and you grade your own answer: **Right**, **Partly** or **Wrong** (keys 1 to 3).
+- The grades suggest a rating: all right is **Recalled**, and **Easy** with at least three questions; three quarters right is **Recalled** too, about half **Hard**, less **Forgot**. A partly right answer counts as half.
+- On a concept that is not mastered yet, the check ends with **Mark as mastered** or **Not yet**. Either way the result goes to the journal as `checked … rating=N`, and a mastered mark within a day starts its memory at that rating. Marking a concept with questions mastered offers the check first; skip it, or turn the offer off in the settings.
+- On a mastered concept the check is a review: pick one of the four ratings, the suggested one first in line.
+- Closing the window saves nothing. Undo in the notice after a check appends a `reviewed … undo` line.
+- Tropa only reads the note, never changes it. **Settings → Tropa → Self-check** sets the callout type (`question` by default), turns the offer off, and adds concepts without questions to the map audit.
 
 ## Demo vault (optional)
 

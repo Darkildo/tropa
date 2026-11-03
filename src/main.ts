@@ -6,6 +6,7 @@ import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
 import { Journal } from "./journal";
 import { Reviews } from "./review";
+import { SelfChecks } from "./self-check";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -28,6 +29,7 @@ export default class TropaPlugin extends Plugin {
   store!: Store;
   journal!: Journal;
   reviews!: Reviews;
+  checks!: SelfChecks;
 
   async onload() {
     setLocale(getLanguage());
@@ -39,6 +41,9 @@ export default class TropaPlugin extends Plugin {
     this.registerEvent(this.journal.on("change", () => this.reviews.refresh()));
     this.registerEvent(this.store.on("change", () => this.reviews.tick()));
     this.registerInterval(window.setInterval(() => this.reviews.tick(), REVIEW_TICK_MS));
+    this.checks = new SelfChecks(this.app, () => this.settings, () => this.saveSettings(), this.store, this.reviews);
+    this.register(this.reviews.registerCheck((id) => this.checks.reviewCheck(id)));
+    this.registerEvent(this.store.on("change", () => attempt(this.checks.sync(), "read self-check questions")));
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
@@ -54,6 +59,8 @@ export default class TropaPlugin extends Plugin {
         this.app.metadataCache.on("changed", (file) => {
           if (file.path === normalizePath(this.settings.progressPath)) this.store.onProgressFileChanged();
           else rebuild();
+          // Questions live in the body, which does not change the graph: read them again here.
+          if (this.store.graph.nodes.get(file.path)?.kind === "concept") attempt(this.checks.sync(), "read self-check questions");
         }),
       );
       this.registerEvent(this.app.vault.on("delete", rebuild));
@@ -205,9 +212,17 @@ export default class TropaPlugin extends Plugin {
         return true;
       },
     });
-    onActiveConcept("toggle-mastered", t.toggleMastered, (id) =>
-      this.store.setMastered(id, !this.store.progress.mastered.has(id)),
-    );
+    onActiveConcept("toggle-mastered", t.toggleMastered, (id) => this.checks.toggle(id));
+    this.addCommand({
+      id: "self-check",
+      name: t.check.command,
+      checkCallback: (checking) => {
+        const file = this.app.workspace.getActiveFile();
+        if (!file || this.store.graph.nodes.get(file.path)?.kind !== "concept" || !this.checks.count(file.path)) return false;
+        if (!checking) attempt(this.checks.checkNow(file.path), "check yourself");
+        return true;
+      },
+    });
     onActiveConcept("toggle-skipped", t.toggleSkipped, (id) =>
       this.store.setSkipped(id, !this.store.progress.skipped.has(id)),
     );

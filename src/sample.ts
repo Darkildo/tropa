@@ -10,6 +10,8 @@ interface SampleConcept {
   summary: Text;
   /** Materials listed in the concept itself, as YAML entries of its `materials` property. */
   materials?: Partial<Record<Lang, string[]>>;
+  /** Self-check questions with their answers, written as `> [!question]-` callouts. */
+  questions?: Record<Lang, [string, string][]>;
 }
 
 interface SampleSource {
@@ -31,10 +33,24 @@ const concepts: Record<string, SampleConcept> = {
   derivative: {
     title: { en: "Derivatives", ru: "Производная" },
     summary: { en: "How fast a function changes when its input changes a little.", ru: "Как быстро меняется функция при малом изменении входа." },
+    questions: {
+      en: [
+        ["What is the derivative of x²?", "2x: the slope of the parabola grows in proportion to x."],
+        ["What does a derivative of zero at a point say?", "The function is flat there: a minimum, a maximum or a plateau."],
+      ],
+      ru: [
+        ["Чему равна производная x²?", "2x: наклон параболы растёт пропорционально x."],
+        ["Что значит нулевая производная в точке?", "Функция там не растёт и не убывает: минимум, максимум или плато."],
+      ],
+    },
   },
   probability: {
     title: { en: "Probability", ru: "Вероятность" },
     summary: { en: "Distributions, conditional probability and expectation.", ru: "Распределения, условная вероятность и ожидание." },
+    questions: {
+      en: [["What is P(A | B)?", "The probability of A once B is known to have happened: P(A and B) / P(B)."]],
+      ru: [["Что такое P(A | B)?", "Вероятность A, если известно, что B произошло: P(A и B) / P(B)."]],
+    },
   },
   numpy: {
     title: { en: "Python and NumPy", ru: "Python и NumPy" },
@@ -54,6 +70,10 @@ const concepts: Record<string, SampleConcept> = {
     title: { en: "Gradient descent", ru: "Градиентный спуск" },
     requires: ["gradient"],
     summary: { en: "Training as walking downhill on the loss function.", ru: "Обучение как движение вниз по функции потерь." },
+    questions: {
+      en: [["What happens when the learning rate is too large?", "The steps overshoot the minimum, and the loss jumps around or grows."]],
+      ru: [["Что будет, если шаг обучения слишком большой?", "Шаги перескакивают минимум, и потери скачут или растут."]],
+    },
   },
   loss: {
     title: { en: "Loss function", ru: "Функция потерь" },
@@ -107,6 +127,16 @@ const concepts: Record<string, SampleConcept> = {
     requires: ["embeddings", "vectors"],
     recommends: ["rnn"],
     summary: { en: "How a model chooses which parts of the input to look at.", ru: "Как модель выбирает, на какие части входа смотреть." },
+    questions: {
+      en: [
+        ["What does attention compute for each token?", "A weighted mix of the values of all tokens, weighted by how well their keys match the token's query."],
+        ["Why is attention divided by √d?", "Without it the dot products grow with the dimension and softmax saturates, so the gradients vanish."],
+      ],
+      ru: [
+        ["Что внимание вычисляет для каждого токена?", "Взвешенную сумму значений всех токенов: вес тем больше, чем лучше их ключ совпадает с запросом токена."],
+        ["Зачем внимание делят на √d?", "Иначе скалярные произведения растут с размерностью, softmax насыщается и градиенты пропадают."],
+      ],
+    },
   },
   transformer: {
     title: { en: "Transformer", ru: "Трансформер" },
@@ -162,9 +192,10 @@ export function sample(language: Lang) {
   const files = Object.values(concepts).map((concept) => {
     const listed = concept.materials?.[language];
     const materials = listed ? `materials:\n${listed.map((entry) => `  - ${entry}`).join("\n")}\n` : "";
+    const questions = (concept.questions?.[language] ?? []).map(([question, answer]) => `\n> [!question]- ${question}\n> ${answer}\n`).join("");
     return {
       path: `${folders.root}/${folders.concepts}/${concept.title[language]}.md`,
-      content: `---\ntype: concept\n${list("requires", concept.requires)}${concept.recommends ? list("recommends", concept.recommends) : ""}${materials}summary: ${concept.summary[language]}\n---\n\n${concept.summary[language]}\n`,
+      content: `---\ntype: concept\n${list("requires", concept.requires)}${concept.recommends ? list("recommends", concept.recommends) : ""}${materials}summary: ${concept.summary[language]}\n---\n\n${concept.summary[language]}\n${questions}`,
     };
   });
   for (const source of Object.values(sources)) {

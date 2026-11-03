@@ -370,5 +370,38 @@
     "nothingDue": "지금은 복습할 것이 없습니다",
     "needsJournal": "복습에는 학습 일지가 필요합니다. 설정에서 켜세요.",
     "off": "복습이 설정에서 꺼져 있습니다."
+  },
+  "check": {
+    "group": "자기 점검",
+    "command": "열린 개념으로 자기 점검",
+    "callout": "질문 콜아웃",
+    "calloutDesc": "질문은 개념 노트에 있는 이 유형의 콜아웃입니다. 제목이 질문이고 내용이 답입니다.",
+    "offer": "‘숙달’로 표시하기 전에 자기 점검 제안",
+    "offerDesc": "개념에 질문이 있으면 숙달로 표시할 때 먼저 자기 점검을 제안합니다. 언제든 건너뛸 수 있습니다.",
+    "audit": "지도 점검에 질문 없는 개념 표시",
+    "auditDesc": "지도 점검에 자기 점검 질문이 없는 개념도 표시합니다.",
+    "questions": {
+      "other": "자기 점검 질문 {count}개"
+    },
+    "title": "자기 점검: {title}",
+    "progress": "질문 {index}/{count}",
+    "showAnswer": "답 보기",
+    "noAnswer": "이 질문 아래에 답이 없습니다.",
+    "gradePrompt": "어떻게 답했나요?",
+    "right": "맞음",
+    "partly": "부분적으로",
+    "wrong": "틀림",
+    "summary": "{count}개 중 {score}개 맞음",
+    "suggested": "답변에 따른 제안: {rating}",
+    "masterPrompt": "이 개념을 숙달로 표시할까요?",
+    "notYet": "아직",
+    "offerTitle": "먼저 자기 점검을 할까요?",
+    "offerText": "{title}에는 자기 점검 질문이 있습니다. 먼저 답하면 숙달 표시가 더 의미 있어집니다.",
+    "skip": "점검 없이 숙달로 표시",
+    "dontAsk": "다시 제안하지 않기",
+    "saved": "{title} 자기 점검을 저장했습니다",
+    "keys": "스페이스로 답 보기, 1–3으로 평가",
+    "auditTitle": "질문 없는 개념",
+    "auditHint": "아직 자기 점검할 내용이 없습니다. > [!question]- 같은 콜아웃을 추가하고 안에 답을 적으세요."
   }
 }

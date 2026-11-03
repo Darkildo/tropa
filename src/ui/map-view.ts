@@ -101,7 +101,7 @@ export class MapView extends ItemView implements DetailHost {
   /** The layout the nodes and edges were last placed by: an unchanged one only needs repainting. */
   private drawnLayout: Layout | null = null;
   /** The audit of the current graph, kept until the graph changes. */
-  private audited: { graph: LearningGraph; audit: Audit } | null = null;
+  private audited: { graph: LearningGraph; questions: number; audit: Audit } | null = null;
   /** Callers of `layoutReady` waiting for the layout in the worker. */
   private readonly layoutWaiters: (() => void)[] = [];
   private selected: string | null = null;
@@ -160,6 +160,10 @@ export class MapView extends ItemView implements DetailHost {
     return this.plugin.reviews;
   }
 
+  get checks() {
+    return this.plugin.checks;
+  }
+
   getViewType() {
     return MAP_VIEW;
   }
@@ -216,6 +220,14 @@ export class MapView extends ItemView implements DetailHost {
       this.reviews.on("change", () => {
         if (!this.layout || this.store.isEmpty) return;
         this.paintNodes();
+        this.renderSide(this.side.scrollTop);
+      }),
+    );
+    // Questions change the details and the audit count, never the layout.
+    this.registerEvent(
+      this.plugin.checks.on("change", () => {
+        if (!this.layout || this.store.isEmpty) return;
+        this.renderAuditButton();
         this.renderSide(this.side.scrollTop);
       }),
     );
@@ -760,7 +772,11 @@ export class MapView extends ItemView implements DetailHost {
   private renderAuditButton() {
     const button = this.bar.querySelector<HTMLElement>(".tropa-audit-button")!;
     const { graph } = this.store;
-    if (this.audited?.graph !== graph) this.audited = { graph, audit: auditGraph(graph) };
+    const checks = this.plugin.checks;
+    const questions = checks.forAudit ? checks.version : -1;
+    if (this.audited?.graph !== graph || this.audited.questions !== questions) {
+      this.audited = { graph, questions, audit: auditGraph(graph, checks.forAudit) };
+    }
     const { audit } = this.audited;
     const count = auditCount(audit);
     const cycles = audit.cycles.length > 0;
@@ -1639,7 +1655,7 @@ export class MapView extends ItemView implements DetailHost {
       if (event.shiftKey) this.openNote(id);
       else this.select(id);
     } else if (event.key.toLowerCase() === "m" || event.key.toLowerCase() === "ь") {
-      if (this.store.graph.nodes.get(id)?.kind === "concept") this.store.setMastered(id, !this.store.progress.mastered.has(id));
+      if (this.store.graph.nodes.get(id)?.kind === "concept") this.plugin.checks.toggle(id);
     } else if (directions[event.key]) {
       event.preventDefault();
       this.moveFocus(id, directions[event.key]);
@@ -1695,7 +1711,7 @@ export class MapView extends ItemView implements DetailHost {
       const goal = isGoal(store.progress, id);
       const skipped = store.progress.skipped.has(id);
       menu.addItem((item) =>
-        item.setTitle(mastered ? t.clearMastered : t.markMastered).setIcon("check").onClick(() => store.setMastered(id, !mastered)),
+        item.setTitle(mastered ? t.clearMastered : t.markMastered).setIcon("check").onClick(() => this.plugin.checks.toggle(id)),
       );
       if (!mastered && knownCandidates(store.graph, store.progress, id).length > 1) {
         menu.addItem((item) => item.setTitle(t.knowWithPrerequisites).setIcon("list-checks").onClick(() => openKnownModal(this.app, store, id)));

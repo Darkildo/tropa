@@ -406,5 +406,40 @@
     "nothingDue": "Nimic de recapitulat acum",
     "needsJournal": "Recapitularea are nevoie de jurnalul de învățare. Activează-l din setări.",
     "off": "Recapitularea este dezactivată din setări."
+  },
+  "check": {
+    "group": "Autoverificare",
+    "command": "Verifică-te la conceptul deschis",
+    "callout": "Callout pentru întrebări",
+    "calloutDesc": "Întrebările sunt callout-uri de acest tip în nota unui concept: titlul este întrebarea, conținutul este răspunsul.",
+    "offer": "Propune o autoverificare înainte de „stăpânit”",
+    "offerDesc": "Dacă un concept are întrebări, marcarea lui ca stăpânit propune mai întâi o autoverificare. O poți sări oricând.",
+    "audit": "Concepte fără întrebări în verificarea hărții",
+    "auditDesc": "Verificarea hărții arată și conceptele fără întrebări de autoverificare.",
+    "questions": {
+      "one": "{count} întrebare de autoverificare",
+      "few": "{count} întrebări de autoverificare",
+      "other": "{count} de întrebări de autoverificare"
+    },
+    "title": "Verifică-te: {title}",
+    "progress": "Întrebarea {index} din {count}",
+    "showAnswer": "Arată răspunsul",
+    "noAnswer": "Sub această întrebare nu există răspuns.",
+    "gradePrompt": "Cum ai răspuns?",
+    "right": "Corect",
+    "partly": "Parțial",
+    "wrong": "Greșit",
+    "summary": "Corecte: {score} din {count}",
+    "suggested": "După răspunsurile tale: {rating}",
+    "masterPrompt": "Marchezi conceptul ca stăpânit?",
+    "notYet": "Încă nu",
+    "offerTitle": "Te verifici întâi?",
+    "offerText": "{title} are întrebări de autoverificare. Dacă răspunzi întâi la ele, marcajul „stăpânit” spune mai mult.",
+    "skip": "Marchează stăpânit fără verificare",
+    "dontAsk": "Nu mai propune",
+    "saved": "Autoverificarea pentru {title} a fost salvată",
+    "keys": "Spațiu arată răspunsul, 1–3 îl notează",
+    "auditTitle": "Concepte fără întrebări",
+    "auditHint": "Încă nu ai cu ce să te verifici. Adaugă un callout precum > [!question]- cu răspunsul înăuntru."
   }
 }

@@ -406,5 +406,40 @@
     "nothingDue": "Ara no hi ha res per repassar",
     "needsJournal": "El repàs necessita el diari d’aprenentatge. Activa’l a la configuració.",
     "off": "El repàs està desactivat a la configuració."
+  },
+  "check": {
+    "group": "Autoavaluació",
+    "command": "Autoavaluar-se en el concepte obert",
+    "callout": "Callout de pregunta",
+    "calloutDesc": "Les preguntes són callouts d’aquest tipus a la nota d’un concepte: el títol és la pregunta i el contingut, la resposta.",
+    "offer": "Oferir una autoavaluació abans de «dominat»",
+    "offerDesc": "Si un concepte té preguntes, marcar-lo com a dominat ofereix primer autoavaluar-se. Sempre es pot ometre.",
+    "audit": "Conceptes sense preguntes a la revisió",
+    "auditDesc": "La revisió del mapa també mostra els conceptes sense preguntes d’autoavaluació.",
+    "questions": {
+      "one": "{count} pregunta d’autoavaluació",
+      "many": "{count} preguntes d’autoavaluació",
+      "other": "{count} preguntes d’autoavaluació"
+    },
+    "title": "Autoavaluació: {title}",
+    "progress": "Pregunta {index} de {count}",
+    "showAnswer": "Mostra la resposta",
+    "noAnswer": "No hi ha resposta sota aquesta pregunta.",
+    "gradePrompt": "Com has respost?",
+    "right": "Bé",
+    "partly": "En part",
+    "wrong": "Malament",
+    "summary": "{score} de {count} bé",
+    "suggested": "Segons les teves respostes: {rating}",
+    "masterPrompt": "Marcar el concepte com a dominat?",
+    "notYet": "Encara no",
+    "offerTitle": "Autoavaluar-se primer?",
+    "offerText": "{title} té preguntes d’autoavaluació. Respondre-les abans dona més valor a la marca de dominat.",
+    "skip": "Marca dominat sense avaluar-te",
+    "dontAsk": "No ho tornis a oferir",
+    "saved": "Autoavaluació de {title} desada",
+    "keys": "L’espai mostra la resposta, de l’1 al 3 la valoren",
+    "auditTitle": "Conceptes sense preguntes",
+    "auditHint": "Encara no hi ha amb què autoavaluar-se. Afegeix un callout com > [!question]- amb la resposta a dins."
   }
 }

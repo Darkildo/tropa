@@ -406,5 +406,40 @@
     "nothingDue": "Nada para revisar agora",
     "needsJournal": "A revisão precisa do diário de aprendizado. Ative-o nas configurações.",
     "off": "A revisão está desativada nas configurações."
+  },
+  "check": {
+    "group": "Autoavaliação",
+    "command": "Autoavaliar-se no conceito aberto",
+    "callout": "Callout de pergunta",
+    "calloutDesc": "As perguntas são callouts deste tipo na nota de um conceito: o título é a pergunta, o conteúdo é a resposta.",
+    "offer": "Sugerir uma autoavaliação antes de “dominado”",
+    "offerDesc": "Se um conceito tiver perguntas, marcá-lo como dominado sugere primeiro uma autoavaliação. Você sempre pode pular.",
+    "audit": "Conceitos sem perguntas na revisão",
+    "auditDesc": "A revisão do mapa também lista os conceitos sem perguntas de autoavaliação.",
+    "questions": {
+      "one": "{count} pergunta de autoavaliação",
+      "many": "{count} perguntas de autoavaliação",
+      "other": "{count} perguntas de autoavaliação"
+    },
+    "title": "Autoavaliação: {title}",
+    "progress": "Pergunta {index} de {count}",
+    "showAnswer": "Mostrar resposta",
+    "noAnswer": "Não há resposta sob esta pergunta.",
+    "gradePrompt": "Como você respondeu?",
+    "right": "Certo",
+    "partly": "Em parte",
+    "wrong": "Errado",
+    "summary": "{score} de {count} certas",
+    "suggested": "Pelas suas respostas: {rating}",
+    "masterPrompt": "Marcar o conceito como dominado?",
+    "notYet": "Ainda não",
+    "offerTitle": "Autoavaliar-se primeiro?",
+    "offerText": "{title} tem perguntas de autoavaliação. Responder antes dá mais significado à marca de dominado.",
+    "skip": "Marcar dominado sem avaliação",
+    "dontAsk": "Não sugerir de novo",
+    "saved": "Autoavaliação de {title} salva",
+    "keys": "Espaço mostra a resposta, 1 a 3 avaliam",
+    "auditTitle": "Conceitos sem perguntas",
+    "auditHint": "Ainda não há como se autoavaliar. Adicione um callout como > [!question]- com a resposta dentro."
   }
 }

@@ -9,6 +9,7 @@ import { attempt } from "../attempt";
 import { locale, t } from "../i18n";
 import type { Store } from "../store";
 import type { Reviews } from "../review";
+import type { SelfChecks } from "../self-check";
 import { RATINGS, type ReviewRating } from "../core/review";
 import { KnownModal, PickModal, SourceModal, type PickItem } from "./pick";
 import { PlanModal } from "./plan";
@@ -25,6 +26,14 @@ export interface DetailHost {
   canGoBack: boolean;
   /** Review of mastered concepts, when the host shows it. */
   reviews?: Reviews;
+  /** Self-check questions from the concepts' notes. */
+  checks?: SelfChecks;
+}
+
+/** Marking mastered offers a self-check first, where the host has them. */
+function markMastered(host: DetailHost, id: string) {
+  if (host.checks) attempt(host.checks.master(id), "mark a concept mastered");
+  else host.store.setMastered(id, true);
 }
 
 function row(parent: HTMLElement, cls = "") {
@@ -285,7 +294,7 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
     action(t.startLearning, true, () => store.startLearning(node.id));
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
   } else if (state === "learning") {
-    action(t.markMastered, true, () => store.setMastered(node.id, true));
+    action(t.markMastered, true, () => markMastered(host, node.id));
   } else if (state === "locked" || state === "cycle") {
     action(t.alreadyKnow, false, () => store.setMastered(node.id, true));
   } else if (state === "skipped") {
@@ -301,6 +310,8 @@ export function renderConcept(parent: HTMLElement, host: DetailHost, node: Graph
   if (state !== "mastered" && state !== "skipped" && !goal) action(t.skip, false, () => store.setSkipped(node.id, true));
   if (goal) action(t.removeGoal, false, () => store.removeGoal(node.id));
   else action(store.progress.goal ? t.goals.add : t.makeGoal, false, () => store.addGoal(node.id));
+
+  if (host.checks) checkBlock(parent, host, host.checks, node, state === "mastered" && !!host.reviews?.enabled);
 
   const blockers = node.requires.filter((id) => !isPassed(store.progress, id));
   if (state === "locked" && blockers.length) {
@@ -534,6 +545,23 @@ function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
   }
 }
 
+/**
+ * How many questions the note has, and a way to answer them. A mastered concept under review
+ * checks itself from the review block, where the result is the review.
+ */
+function checkBlock(parent: HTMLElement, host: DetailHost, checks: SelfChecks, node: GraphNode, inReview: boolean) {
+  const count = checks.count(node.id);
+  if (!count) return;
+  const box = parent.createDiv({ cls: "tropa-check-block" });
+  const line = box.createDiv({ cls: "tropa-check-count" });
+  setIcon(line.createSpan({ cls: "tropa-check-icon" }), CHECK_ICON);
+  line.createSpan({ text: t.check.questions({ count }) });
+  if (inReview) return;
+  const button = box.createEl("button", { cls: "tropa-check-start", text: t.review.check });
+  button.addEventListener("click", () => attempt(checks.checkNow(node.id), `check ${node.title}`));
+}
+
+export const CHECK_ICON = "list-checks";
 export const REVIEW_ICON = "rotate-ccw";
 const QUEUE_PREVIEW = 5;
 /** The queue stays open once "show all" was pressed, until the plugin reloads. */
@@ -557,6 +585,12 @@ function reviewQueue(parent: HTMLElement, host: DetailHost, reviews: Reviews) {
     setIcon(el.createSpan({ cls: "tropa-glyph is-small is-due" }), REVIEW_ICON);
     el.createSpan({ cls: "tropa-row-title", text: node.title, attr: { dir: "auto" } });
     el.createSpan({ cls: "tropa-review-when tropa-nowrap", text: formatRelative(schedule.due, now) });
+    const checks = host.checks;
+    if (checks?.count(node.id)) {
+      iconButton(el, CHECK_ICON, t.check.title({ title: node.title }), () => attempt(checks.checkNow(node.id), `check ${node.title}`)).addClass(
+        "tropa-review-check",
+      );
+    }
     el.addEventListener("click", () => host.select(node.id));
     el.addEventListener("keydown", (event) => {
       if (event.key === "Enter") host.select(node.id);

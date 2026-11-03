@@ -26,6 +26,12 @@ export interface TropaSettings {
   /** Where marks with no date in the journal start, set once when review is first on. */
   reviewSince?: string;
   reviewSpread?: number;
+  /** Self-check questions are callouts of this type in a concept's note. */
+  checkCallout: string;
+  /** Marking a concept with questions mastered first offers a self-check. */
+  offerCheck: boolean;
+  /** The map audit also lists concepts without questions. */
+  auditQuestions: boolean;
   mapMode: MapMode;
   showSources: boolean;
 }
@@ -51,6 +57,9 @@ export function defaultSettings(language: Lang): TropaSettings {
     journal: true,
     review: true,
     retention: 0.9,
+    checkCallout: "question",
+    offerCheck: true,
+    auditQuestions: false,
     mapMode: "route",
     showSources: false,
   };

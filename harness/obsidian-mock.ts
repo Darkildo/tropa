@@ -410,6 +410,18 @@ export class Notice {
   }
 }
 
+/** Paragraphs as plain text: enough to see that a question or an answer was rendered where it belongs. */
+export const MarkdownRenderer = {
+  async render(_app: any, markdown: string, el: HTMLElement, _sourcePath: string, _component: any) {
+    for (const block of markdown.split(/\n\s*\n/)) {
+      if (!block.trim()) continue;
+      const p = document.createElement("p");
+      p.textContent = block.trim();
+      el.appendChild(p);
+    }
+  },
+};
+
 export class Modal {
   app = app;
   containerEl = document.createElement("div");

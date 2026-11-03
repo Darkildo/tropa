@@ -424,5 +424,41 @@
     "nothingDue": "Teraz nie ma nic do powtórki",
     "needsJournal": "Powtórki wymagają dziennika nauki. Włącz go w ustawieniach.",
     "off": "Powtórki są wyłączone w ustawieniach."
+  },
+  "check": {
+    "group": "Samosprawdzenie",
+    "command": "Sprawdź się z otwartego pojęcia",
+    "callout": "Callout z pytaniem",
+    "calloutDesc": "Pytania to callouty tego typu w notatce pojęcia: tytuł to pytanie, treść to odpowiedź.",
+    "offer": "Proponuj samosprawdzenie przed „opanowane”",
+    "offerDesc": "Jeśli pojęcie ma pytania, oznaczenie go jako opanowane najpierw zaproponuje sprawdzenie się. Zawsze można to pominąć.",
+    "audit": "Pojęcia bez pytań w przeglądzie mapy",
+    "auditDesc": "Przegląd mapy pokaże też pojęcia bez pytań do samosprawdzenia.",
+    "questions": {
+      "one": "{count} pytanie do samosprawdzenia",
+      "few": "{count} pytania do samosprawdzenia",
+      "many": "{count} pytań do samosprawdzenia",
+      "other": "{count} pytania do samosprawdzenia"
+    },
+    "title": "Sprawdź się: {title}",
+    "progress": "Pytanie {index} z {count}",
+    "showAnswer": "Pokaż odpowiedź",
+    "noAnswer": "Pod tym pytaniem nie ma odpowiedzi.",
+    "gradePrompt": "Jak odpowiedziałeś?",
+    "right": "Dobrze",
+    "partly": "Częściowo",
+    "wrong": "Źle",
+    "summary": "Dobrze: {score} z {count}",
+    "suggested": "Według twoich odpowiedzi: {rating}",
+    "masterPrompt": "Oznaczyć pojęcie jako opanowane?",
+    "notYet": "Jeszcze nie",
+    "offerTitle": "Najpierw się sprawdzić?",
+    "offerText": "Pojęcie {title} ma pytania do samosprawdzenia. Odpowiedź na nie nada znaczniku „opanowane” większą wagę.",
+    "skip": "Oznacz jako opanowane bez sprawdzania",
+    "dontAsk": "Nie proponuj więcej",
+    "saved": "Zapisano samosprawdzenie: {title}",
+    "keys": "Spacja pokazuje odpowiedź, 1–3 ją oceniają",
+    "auditTitle": "Pojęcia bez pytań",
+    "auditHint": "Na razie nie ma czym się sprawdzić. Dodaj callout, np. > [!question]-, z odpowiedzią w środku."
   }
 }

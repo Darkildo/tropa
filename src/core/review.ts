@@ -76,6 +76,8 @@ interface Anchor {
   rating: ReviewRating;
   /** Days to the first review for a baseline, instead of FSRS's first interval. */
   days?: number;
+  /** The rating without the self-check that set this one, so undoing the check gives it back. */
+  plain?: ReviewRating;
 }
 
 const SEED = "tropaSeed";
@@ -126,10 +128,11 @@ export class Scheduler {
             lost = null;
             break;
           }
-          anchor = {
-            time: entry.time,
-            rating: check && entry.time - check.time <= CHECK_BEFORE_MASTERED ? check.rating : entry.action === "known" ? EASY : GOOD,
-          };
+          {
+            const plain = entry.action === "known" ? EASY : GOOD;
+            const checked = check && entry.time - check.time <= CHECK_BEFORE_MASTERED ? check.rating : null;
+            anchor = checked ? { time: entry.time, rating: checked, plain } : { time: entry.time, rating: plain };
+          }
           reviews = [];
           undated = [];
           check = null;
@@ -144,7 +147,9 @@ export class Scheduler {
         case "reviewed":
         case "checked": {
           if (undo) {
-            if (anchor) reviews.pop();
+            // Undoing the self-check that started the memory gives the mark its own rating back.
+            if (anchor && reviews.length === 0 && anchor.plain) anchor = { time: anchor.time, rating: anchor.plain };
+            else if (anchor) reviews.pop();
             else {
               undated.pop();
               check = null;

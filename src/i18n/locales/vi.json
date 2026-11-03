@@ -370,5 +370,38 @@
     "nothingDue": "Hiện chưa có gì cần ôn",
     "needsJournal": "Ôn tập cần nhật ký học tập. Hãy bật nó trong cài đặt.",
     "off": "Ôn tập đã tắt trong cài đặt."
+  },
+  "check": {
+    "group": "Tự kiểm tra",
+    "command": "Tự kiểm tra khái niệm đang mở",
+    "callout": "Callout câu hỏi",
+    "calloutDesc": "Câu hỏi là các callout loại này trong ghi chú của khái niệm: tiêu đề là câu hỏi, nội dung là câu trả lời.",
+    "offer": "Gợi ý tự kiểm tra trước khi đánh dấu “đã nắm”",
+    "offerDesc": "Nếu khái niệm có câu hỏi, việc đánh dấu đã nắm sẽ gợi ý tự kiểm tra trước. Bạn luôn có thể bỏ qua.",
+    "audit": "Khái niệm chưa có câu hỏi trong kiểm tra bản đồ",
+    "auditDesc": "Kiểm tra bản đồ cũng liệt kê các khái niệm chưa có câu hỏi tự kiểm tra.",
+    "questions": {
+      "other": "{count} câu hỏi tự kiểm tra"
+    },
+    "title": "Tự kiểm tra: {title}",
+    "progress": "Câu hỏi {index}/{count}",
+    "showAnswer": "Hiện câu trả lời",
+    "noAnswer": "Câu hỏi này chưa có câu trả lời.",
+    "gradePrompt": "Bạn đã trả lời thế nào?",
+    "right": "Đúng",
+    "partly": "Một phần",
+    "wrong": "Sai",
+    "summary": "Đúng {score}/{count}",
+    "suggested": "Theo câu trả lời của bạn: {rating}",
+    "masterPrompt": "Đánh dấu khái niệm là đã nắm?",
+    "notYet": "Chưa",
+    "offerTitle": "Tự kiểm tra trước?",
+    "offerText": "{title} có câu hỏi tự kiểm tra. Trả lời chúng trước sẽ làm dấu “đã nắm” có ý nghĩa hơn.",
+    "skip": "Đánh dấu đã nắm mà không kiểm tra",
+    "dontAsk": "Không gợi ý nữa",
+    "saved": "Đã lưu lần tự kiểm tra {title}",
+    "keys": "Phím cách hiện câu trả lời, 1–3 để chấm",
+    "auditTitle": "Khái niệm chưa có câu hỏi",
+    "auditHint": "Chưa có gì để tự kiểm tra. Thêm một callout như > [!question]- kèm câu trả lời bên trong."
   }
 }

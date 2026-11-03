@@ -1,6 +1,7 @@
 import { Notice, PluginSettingTab, type App, type SettingDefinitionItem, type SettingGroupItem } from "obsidian";
 import { inFolders, parseFolders, parseTags } from "./core/scope";
 import { DEFAULT_RETENTION, RETENTIONS } from "./core/review";
+import { DEFAULT_CALLOUT, calloutType } from "./core/questions";
 import { formatPercent } from "./ui/when";
 import { t } from "./i18n";
 import type TropaPlugin from "./main";
@@ -10,7 +11,7 @@ const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey", "ma
 const SCOPE = ["excludeFolders", "excludeTags"] as const;
 type TextSetting = (typeof FILES)[number] | (typeof PROPERTIES)[number] | "journalFolder";
 type ScopeSetting = (typeof SCOPE)[number];
-type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention";
+type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention" | "checkCallout" | "offerCheck" | "auditQuestions";
 
 const TEXT_SETTINGS: readonly string[] = [...FILES, ...PROPERTIES, "journalFolder"];
 const isTextSetting = (key: string): key is TextSetting => TEXT_SETTINGS.includes(key);
@@ -55,6 +56,15 @@ export class TropaSettingTab extends PluginSettingTab {
           },
         ],
       },
+      {
+        type: "group",
+        heading: t.check.group,
+        items: [
+          { name: t.check.callout, desc: t.check.calloutDesc, control: { type: "text", key: "checkCallout", placeholder: DEFAULT_CALLOUT } },
+          { name: t.check.offer, desc: t.check.offerDesc, control: { type: "toggle", key: "offerCheck" } },
+          { name: t.check.audit, desc: t.check.auditDesc, control: { type: "toggle", key: "auditQuestions" } },
+        ],
+      },
     ];
   }
 
@@ -62,6 +72,7 @@ export class TropaSettingTab extends PluginSettingTab {
     if (key === "journal") return this.plugin.settings.journal;
     if (key === "review") return this.plugin.settings.review;
     if (key === "retention") return String(this.plugin.settings.retention);
+    if (key === "checkCallout" || key === "offerCheck" || key === "auditQuestions") return this.plugin.settings[key];
     if (isScopeSetting(key)) return this.plugin.settings[key].map((value) => (key === "excludeTags" ? `#${value}` : value)).join("\n");
     return isTextSetting(key) ? this.plugin.settings[key] : undefined;
   }
@@ -72,6 +83,18 @@ export class TropaSettingTab extends PluginSettingTab {
       this.plugin.settings[key] = value === true || value === "true";
       await this.plugin.saveSettings();
       this.plugin.reviews.refresh();
+      return;
+    }
+    if (key === "checkCallout") {
+      this.plugin.settings.checkCallout = calloutType(typeof value === "string" ? value : "");
+      await this.plugin.saveSettings();
+      await this.plugin.checks.reset();
+      return;
+    }
+    if (key === "offerCheck" || key === "auditQuestions") {
+      this.plugin.settings[key] = value === true || value === "true";
+      await this.plugin.saveSettings();
+      if (key === "auditQuestions") this.plugin.checks.touch();
       return;
     }
     if (key === "retention") {

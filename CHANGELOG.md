@@ -22,6 +22,13 @@ The new strings are machine translations into all 33 languages.
   - Commands **Review the next concept** and **Open the review queue**. The activity in the panel counts reviews.
   - **Settings → Review** turns it off and sets the target recall. Review needs the journal and is off without it.
   - A self-check feature can register questions for a concept; review then offers **Check yourself** before the ratings, and a check just before the mastered mark sets how well the memory starts.
+- **Self-check.** Questions are `> [!question]-` callouts in a concept's note, the answer inside; Tropa reads them and never changes the note.
+  - **Check yourself** in a concept's details, on a row of **Review today** and as a command asks them one at a time: the answer opens on a press (Space), and you grade your own answer **Right**, **Partly** or **Wrong** (1 to 3). On a phone the buttons are finger-sized; right-to-left languages are mirrored.
+  - The grades suggest a rating: all right is **Recalled**, or **Easy** with three questions or more; three quarters right **Recalled**, about half **Hard**, less **Forgot**. On a mastered concept the check is a review with the four ratings, the suggested one first in line. On one not mastered yet it ends with **Mark as mastered** or **Not yet**, and the result starts the memory when the mark follows within a day.
+  - Results go to the journal as `checked … rating=N`, before the mastered mark too and with review off; Undo appends `reviewed … undo`, and undoing a check right before the mark gives the mark its own rating back. Closing the window saves nothing.
+  - **Mark as mastered**, the M key, the node menu and the command offer a check first on a concept with questions, with **Mark mastered without a check** and **Do not offer again**.
+  - The details count a concept's questions. **Settings → Self-check** sets the callout type, turns the offer off, and adds **Concepts without questions** to the map audit (off by default).
+  - The example map and the demo vaults have questions on a few concepts.
 
 ### Changed
 - **Translations in `main.js` no longer repeat their keys:** each language is a JSON array of its values in the order of the English keys, and only the active one is parsed at startup, as before. The 32 translations take 457 KB instead of 590 KB, and `main.js` 803 KB instead of 936 KB. The files in `src/i18n/locales` stay ordinary JSON.
