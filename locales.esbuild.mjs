@@ -1,11 +1,10 @@
 import esbuild from "esbuild";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { deflateRawSync } from "node:zlib";
 
-// Translation files go into the bundle packed: only the values, in the order of the English keys
-// (so the keys are not repeated 32 times), as JSON compressed with raw DEFLATE and written as base64.
-// src/i18n/pack.ts unpacks the active one at runtime; the files in src/i18n/locales stay plain JSON.
+// Translation files go into the bundle as JSON text of their values in the order of the English keys,
+// so the keys are not repeated in every language. src/i18n/pack.ts turns the active one back into
+// nested objects at runtime; the files in src/i18n/locales stay ordinary JSON.
 
 export const EN_PATH = resolve("src/i18n/en.ts");
 const CATEGORIES = new Set(["zero", "one", "two", "few", "many", "other"]);
@@ -30,7 +29,7 @@ export function flattenLocale(local, base) {
 }
 
 export function packLocale(json, en) {
-  return deflateRawSync(Buffer.from(JSON.stringify(flattenLocale(JSON.parse(json), en))), { level: 9 }).toString("base64");
+  return JSON.stringify(flattenLocale(JSON.parse(json), en));
 }
 
 export const localesAsText = {

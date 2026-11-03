@@ -61,7 +61,7 @@ function baseOf(code: string) {
   return code.split(/[-_]/)[0].toLowerCase();
 }
 
-/** Only the active language is unpacked. Anything missing or malformed falls back to English. */
+/** Only the active language is parsed. Anything missing or malformed falls back to English. */
 function compile(code: string): Strings {
   const packed = code === "en" ? null : LOCALES[code];
   let own: unknown = null;

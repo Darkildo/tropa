@@ -226,7 +226,6 @@ npm run e2e          # UI checks in Chromium (Playwright)
 npm run screenshots  # README images in docs/screenshots
 npm run bench        # layout time and drawing quality against the 0.1 layout (dagre)
 npm run bench:chromium  # the same in Chromium, plus how long the interface freezes
-npm run locales:check   # the translations in main.js are exactly src/i18n/locales (after build)
 ```
 
 `npm run e2e` and `npm run screenshots` need a Chromium for Playwright: `npx playwright install chromium`, or set `CHROMIUM_PATH` to an installed one.
@@ -252,13 +251,11 @@ The WebAssembly is built from source and is not kept in git:
 
 `npm run build:wasm -- --verify` builds it a second time from scratch and fails unless both builds match byte for byte. CI runs that check on every pull request.
 
-Translations are packed on the way into `main.js` (`locales.esbuild.mjs`): only the values, in the order of the English keys, as JSON compressed with raw DEFLATE and written as base64. That makes them about a third of their size as plain JSON. At startup `src/i18n/pack.ts` unpacks only the active language, synchronously, in well under a millisecond. The files you edit stay plain JSON in `src/i18n/locales`.
+Translations go into `main.js` as JSON text without their keys (`locales.esbuild.mjs`): each language is an array of its values in the order of the English keys in `src/i18n/en.ts`, so the keys are written once instead of in every language. At startup `src/i18n/pack.ts` parses only the active language and puts the keys back. The files you edit stay ordinary JSON in `src/i18n/locales`, and `npm test` checks that every language comes out of the bundle exactly as its file.
 
 ### For reviewers of the community catalog
 
-Two kinds of base64 strings are in `main.js`. The translations (see above) are text: `npm run build && npm run locales:check` unpacks every one of them and checks that it is exactly a file in `src/i18n/locales`; CI runs it on every pull request.
-
-The only binary is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. The release workflow builds it from `crates/tropa-layout` (no dependencies), prints its sha256 in the log and adds it to the release notes.
+The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. The release workflow builds it from `crates/tropa-layout` (no dependencies), prints its sha256 in the log and adds it to the release notes.
 
 To check a release:
 1. Check out its tag and run `npm ci && npm run build:wasm`.

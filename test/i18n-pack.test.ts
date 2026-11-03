@@ -1,10 +1,9 @@
 import { readFileSync, readdirSync } from "node:fs";
-import { deflateRawSync } from "node:zlib";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale, t } from "../src/i18n";
 import { en } from "../src/i18n/en";
 import { LOCALES } from "../src/i18n/locales";
-import { inflateRaw, isPlural, unpackLocale } from "../src/i18n/pack";
+import { isPlural, unpackLocale } from "../src/i18n/pack";
 
 const DIR = "src/i18n/locales";
 const files = readdirSync(DIR).filter((name) => name.endsWith(".json"));
@@ -64,33 +63,16 @@ describe("packed translations", () => {
     });
   });
 
-  it("are much smaller than the files", () => {
+  it("are smaller than the files and stay readable text", () => {
     const plain = files.reduce((sum, name) => sum + Buffer.byteLength(JSON.stringify(JSON.parse(readFileSync(`${DIR}/${name}`, "utf8")))), 0);
-    const packed = Object.values(LOCALES).reduce((sum, text) => sum + text.length, 0);
-    expect(packed).toBeLessThan(plain / 2);
-  });
-});
-
-describe("inflate", () => {
-  const sample = Buffer.from(readFileSync(`${DIR}/ru.json`, "utf8").repeat(3));
-
-  it.each([0, 1, 6, 9])("reads what zlib writes at level %i", (level) => {
-    expect(Buffer.from(inflateRaw(deflateRawSync(sample, { level })))).toEqual(sample);
+    const packed = Object.values(LOCALES).reduce((sum, text) => sum + Buffer.byteLength(text), 0);
+    expect(packed).toBeLessThan(plain * 0.85);
+    expect(LOCALES.ru).toContain("Карта обучения");
   });
 
-  it("reads fixed Huffman blocks and empty input", () => {
-    expect(Buffer.from(inflateRaw(deflateRawSync(Buffer.from("abcabcabc"), { strategy: 4 })))).toEqual(Buffer.from("abcabcabc"));
-    expect(inflateRaw(deflateRawSync(Buffer.alloc(0))).length).toBe(0);
-  });
-
-  it("refuses broken data instead of returning garbage", () => {
-    const packed = deflateRawSync(sample);
-    expect(() => inflateRaw(packed.subarray(0, packed.length >> 1))).toThrow();
-  });
-
-  it("falls back to English when a packed file is broken", () => {
+  it("fall back to English when a packed file is broken", () => {
     const saved = LOCALES.de;
-    LOCALES.de = "not base64!";
+    LOCALES.de = "{not json";
     try {
       setLocale("de");
       expect(t.mapTitle).toBe(en.mapTitle);

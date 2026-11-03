@@ -31,8 +31,6 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
-      # The translations in main.js unpack to exactly the files in src/i18n/locales.
-      - run: npm run locales:check
 
   # Layout time and drawing quality against the 0.1 layout (dagre). Informational: the table goes to
   # the job summary, and a failed quality check shows up without blocking the pull request.
