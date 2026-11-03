@@ -11,7 +11,7 @@ import { attempt } from "../attempt";
 import { isRtl, locale, t } from "../i18n";
 import type TropaPlugin from "../main";
 import type { Undo } from "../store";
-import { openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
+import { REVIEW_ICON, openKnownModal, pickUnlock, renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { PickModal } from "./pick";
 import { PlanModal } from "./plan";
 import { parseDate } from "../core/plan";
@@ -156,6 +156,10 @@ export class MapView extends ItemView implements DetailHost {
     return this.plugin.store;
   }
 
+  get reviews() {
+    return this.plugin.reviews;
+  }
+
   getViewType() {
     return MAP_VIEW;
   }
@@ -205,6 +209,14 @@ export class MapView extends ItemView implements DetailHost {
       this.store.on("change", () => {
         this.dropStaleUndo();
         this.render();
+      }),
+    );
+    // Reviews change the badges and the queue, never the layout.
+    this.registerEvent(
+      this.reviews.on("change", () => {
+        if (!this.layout || this.store.isEmpty) return;
+        this.paintNodes();
+        this.renderSide(this.side.scrollTop);
       }),
     );
     this.registerEvent(this.store.on("mastered", (id, unlocked, undo) => this.celebrate(id, unlocked, undo)));
@@ -543,6 +555,8 @@ export class MapView extends ItemView implements DetailHost {
     text.createSpan({ cls: "tropa-node-meta" });
     if (node.kind === "concept") {
       el.createSpan({ cls: "tropa-port", attr: { "aria-hidden": "true", title: t.portTitle } });
+      // Shown by the is-due class: a mastered concept that is time to review. An icon, not only a color.
+      setIcon(el.createSpan({ cls: "tropa-due", attr: { "aria-hidden": "true", title: t.review.dueNow } }), REVIEW_ICON);
       // The node itself is the keyboard target (C folds), so the badge stays out of the tab order.
       const toggle = el.createEl("button", { cls: "tropa-fold", attr: { tabindex: "-1" } });
       toggle.addEventListener("pointerdown", (event) => event.stopPropagation());
@@ -570,6 +584,9 @@ export class MapView extends ItemView implements DetailHost {
   private paintNodes() {
     const { store } = this;
     const route = store.route;
+    const reviews = this.reviews.enabled ? this.reviews : null;
+    const now = Date.now();
+    this.root.toggleClass("has-review", reviews !== null);
     for (const [id, el] of this.nodeEls) {
       const node = store.graph.nodes.get(id);
       if (!node) continue;
@@ -597,11 +614,13 @@ export class MapView extends ItemView implements DetailHost {
       if (route?.closure.has(id)) classes.push("is-on-route");
       const isFolded = this.foldable.has(id) && this.folded.has(id);
       if (isFolded) classes.push("is-folded");
+      const isDue = state === "mastered" && reviews !== null && reviews.isDue(id, now);
+      if (isDue) classes.push("is-due");
       setClass(el, classes.join(" "));
       setGlyph(glyph, STATE_ICON[state]);
       setText(meta, this.nodeMeta(node));
       this.paintFold(el, id, isFolded);
-      const label = `${node.title}. ${t.state[state]}${goal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`;
+      const label = `${node.title}. ${t.state[state]}${isDue ? t.review.dueSuffix : ""}${goal ? t.goalSuffix : ""}${isNext ? t.nextSuffix : ""}`;
       el.setAttribute("aria-label", isFolded ? `${label}. ${t.folded({ count: this.foldCounts.get(id) ?? 0 })}` : label);
     }
     this.paintEdgeRoute();
@@ -1139,6 +1158,10 @@ export class MapView extends ItemView implements DetailHost {
       setGlyph(item.createSpan({ cls: `tropa-glyph is-small state-${state}` }), STATE_ICON[state]);
       item.createSpan({ text: t.state[state] });
     }
+    // Only while review is on: the map's root carries has-review then.
+    const due = legend.createDiv({ cls: "tropa-legend-item is-review" });
+    setGlyph(due.createSpan({ cls: "tropa-glyph is-small is-due" }), REVIEW_ICON);
+    due.createSpan({ text: t.review.legend });
   }
 
   // Export: the map as it is drawn now, with its mode, materials, focus and folds

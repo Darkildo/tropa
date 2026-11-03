@@ -1,10 +1,11 @@
-import { Notice, Plugin, TFile, debounce, getLanguage, normalizePath, type TAbstractFile } from "obsidian";
+import { Notice, Platform, Plugin, TFile, debounce, getLanguage, normalizePath, type TAbstractFile } from "obsidian";
 import { STATE_ICON } from "./core/format";
 import { isGoal } from "./core/graph";
 import { attempt } from "./attempt";
 import { exampleLang, setLocale, t } from "./i18n";
 import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults";
 import { Journal } from "./journal";
+import { Reviews } from "./review";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -18,12 +19,15 @@ import { PlanModal } from "./ui/plan";
 
 /** How long a notice with an undo button stays. */
 const NOTICE_MS = 6000;
+/** Concepts come due as time passes: the views are told every few minutes when the set changes. */
+const REVIEW_TICK_MS = 5 * 60 * 1000;
 
 export default class TropaPlugin extends Plugin {
   settings!: TropaSettings;
   defaults!: TropaSettings;
   store!: Store;
   journal!: Journal;
+  reviews!: Reviews;
 
   async onload() {
     setLocale(getLanguage());
@@ -31,6 +35,10 @@ export default class TropaPlugin extends Plugin {
     this.store = new Store(this.app, () => this.settings);
     this.journal = new Journal(this.app, () => this.settings, this.store);
     this.registerEvent(this.store.on("commit", (before, after, cause) => this.journal.recordProgress(before, after, cause)));
+    this.reviews = new Reviews(() => this.settings, () => this.saveSettings(), this.store, this.journal);
+    this.registerEvent(this.journal.on("change", () => this.reviews.refresh()));
+    this.registerEvent(this.store.on("change", () => this.reviews.tick()));
+    this.registerInterval(window.setInterval(() => this.reviews.tick(), REVIEW_TICK_MS));
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
@@ -86,7 +94,13 @@ export default class TropaPlugin extends Plugin {
   /** Journal files come and change from other devices through sync; each is read again on its own. */
   private watchJournal() {
     const { vault } = this.app;
-    attempt(this.journal.load(), "read the learning journal");
+    attempt(
+      this.journal.load().then(() => {
+        this.reviews.ready = true;
+        this.reviews.refresh();
+      }),
+      "read the learning journal",
+    );
     const reread = (file: TAbstractFile) => {
       if (this.journal.contains(file.path)) attempt(this.journal.reread(file), "read the learning journal");
     };
@@ -198,6 +212,42 @@ export default class TropaPlugin extends Plugin {
       this.store.setSkipped(id, !this.store.progress.skipped.has(id)),
     );
     onActiveConcept("mark-known", t.markKnownCommand, (id) => openKnownModal(this.app, this.store, id));
+
+    this.addCommand({ id: "review-next", name: t.review.nextCommand, callback: () => attempt(this.reviewNext(), "open the next review") });
+    this.addCommand({ id: "review-queue", name: t.review.queueCommand, callback: () => attempt(this.showReviewQueue(), "open the review queue") });
+  }
+
+  /** The longest overdue concept, in the panel; on a phone, on the map, whose sheet is the panel there. */
+  async reviewNext() {
+    if (!this.reviews.enabled) {
+      new Notice(this.settings.journal ? t.review.off : t.review.needsJournal);
+      return;
+    }
+    const id = this.reviews.next();
+    if (!id) {
+      new Notice(t.review.nothingDue);
+      return;
+    }
+    if (Platform.isPhone) await this.showMap((map) => map.focusNode(id));
+    else {
+      await this.showPanel();
+      const panel = this.app.workspace.getLeavesOfType(PANEL_VIEW)[0]?.view;
+      if (panel instanceof PanelView) panel.select(id);
+    }
+  }
+
+  /** The queue heads the route, in the panel or, on a phone, in the map's sheet. */
+  async showReviewQueue() {
+    if (!this.reviews.enabled) {
+      new Notice(this.settings.journal ? t.review.off : t.review.needsJournal);
+      return;
+    }
+    if (Platform.isPhone) await this.showMap((map) => map.select(null));
+    else {
+      await this.showPanel();
+      const panel = this.app.workspace.getLeavesOfType(PANEL_VIEW)[0]?.view;
+      if (panel instanceof PanelView) panel.showQueue();
+    }
   }
 
   async showMap(then?: (map: MapView) => unknown) {

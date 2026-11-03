@@ -19,6 +19,13 @@ export interface TropaSettings {
   journal: boolean;
   /** One file per month and device goes here. */
   journalFolder: string;
+  /** Bring mastered concepts back for review (FSRS). Works only with the journal. */
+  review: boolean;
+  /** Target recall: a concept is due when the chance to recall it falls below this. */
+  retention: number;
+  /** Where marks with no date in the journal start, set once when review is first on. */
+  reviewSince?: string;
+  reviewSpread?: number;
   mapMode: MapMode;
   showSources: boolean;
 }
@@ -42,6 +49,8 @@ export function defaultSettings(language: Lang): TropaSettings {
     excludeFolders: [],
     excludeTags: [],
     journal: true,
+    review: true,
+    retention: 0.9,
     mapMode: "route",
     showSources: false,
   };

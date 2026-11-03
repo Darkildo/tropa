@@ -32,6 +32,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
+- **Review.** Mastered concepts come back when you are about to forget them, scheduled by [FSRS](https://github.com/open-spaced-repetition/ts-fsrs) from the journal. A concept that is due keeps its mark and blocks nothing; it gets a badge on the map and a place in **Review today** above the route. Rate how well you recalled it (**Forgot**, **Hard**, **Recalled**, **Easy**), and each button says when it would come back. See [Review](#review).
 - **Map audit.** The command **Tropa: Audit the map** opens one list of what needs a look:
   - dependency cycles, shown as a chain back to where they start;
   - links to missing notes, with how many notes point to each and a button to create it;
@@ -90,7 +91,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 - The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
 - The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
 
-Other commands: audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -167,12 +168,28 @@ Excluded notes leave the map completely: a `requires`, `recommends` or `teaches`
 - 2026-11-03T15:10:00+03:00 done https://en.wikipedia.org/wiki/Gradient
 ```
 
-- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`; `reviewed` and `checked` are reserved for reviews and self-checks.
+- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`, `reviewed` and `checked` (a review and a self-check, with `rating=1`…`4`, see [Review](#review)).
 - Undo appends lines flagged `undo` that put things back, instead of erasing lines: the files only grow, so a sync never has to merge two versions of one.
 - The device name, like `desktop-3f9a` or `phone-07c1`, is kept by Obsidian on the device and is not synced. Each device writes only its own file and reads all of them, so the activity in the panel covers every device.
 - Links follow renames like any other links. Lines that do not parse, such as notes you add between them, are skipped.
 - Only changes made in Tropa are written. A progress file edited by hand or changed by a sync from another device is not, since that device writes its own lines.
 - **Settings → Tropa → Learning journal** turns it off or moves the folder. The folder is never on the map. Vaults without a journal work as before; the panel shows activity once there is something to show.
+
+### Review
+
+Review is scheduled by FSRS ([ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs), MIT) and nothing about it is stored but the journal. The state of each concept is replayed from its lines, so a review on another device, an Undo or a new target recall are taken into account the same way:
+
+```markdown
+- 2026-11-03T14:31:40+03:00 mastered [[Gradient]]
+- 2026-11-06T09:12:03+03:00 reviewed [[Gradient]] rating=3
+```
+
+- The memory of a concept starts when it is marked mastered (as a **Recalled** answer) or known with **I know this** (as **Easy**), and every review after that is one more FSRS step. A self-check just before the mark sets how well it starts.
+- A concept is due when the chance to recall it falls below the target recall, 90% by default (**Settings → Tropa → Review**). It stays mastered and opens what it opened: review never blocks the route. The map marks it with a badge, and **Review today** in the panel lists the due concepts, the longest overdue first. On a phone they are in the panel at the bottom of the map.
+- Ratings: **Forgot**, **Hard**, **Recalled**, **Easy**, as FSRS's 1 to 4. A concept that is not due can be reviewed early with **Review now**. Undo after a rating appends a `reviewed … undo` line.
+- Marks made before the journal, or on a device without one, have no date. They start on the day review is first on and come due a few a day over one week to two months, so an old map does not come due all at once. The day and the spread are saved in the settings.
+- Commands: **Review the next concept** and **Open the review queue**.
+- Review needs the journal: it is where reviews are kept and how they reach your other devices. With the journal off, review is off too.
 
 ## Demo vault (optional)
 
