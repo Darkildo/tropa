@@ -16,6 +16,7 @@ The new strings are machine translations into all 33 languages.
 - The progress file gains `goals`, `all-goals`, `deadline-YYYY-MM-DD` lists of goals and `pace-hours`, written only when used. `goal` stays the goal the route leads to, so older versions read the file as before. The journal adds `goal-added`, `goal-removed`, `deadline` and `pace` lines; `goal` still names the goal the route leads to, and routing to all goals is not written.
 
 ### Changed
+- **Translations are packed in `main.js`:** only the values, in the order of the English keys, compressed with raw DEFLATE as base64, and only the active language is unpacked at startup (well under a millisecond). `main.js` goes from 857 KB to 486 KB; the 32 translations take 171 KB instead of 545 KB. The files in `src/i18n/locales` stay plain JSON, and `npm run locales:check` shows that the bundle holds exactly them.
 - **Set as goal** on a concept, when there is a goal already, is now **Add as goal**: the earlier goal is kept. Choosing a goal from the goal button still replaces the active one.
 
 ## [0.3.2] - 2026-11-03

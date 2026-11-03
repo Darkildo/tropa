@@ -1,5 +1,8 @@
 import { en } from "./en";
 import { LOCALES } from "./locales";
+import { isPlural, isRecord, unpackLocale } from "./pack";
+
+export { isPlural };
 
 /** Languages of the example map and default paths. Other interface languages use the English ones. */
 export type Lang = "en" | "ru";
@@ -20,7 +23,6 @@ type Compiled<M> = M extends string
 export type Strings = Compiled<typeof en>;
 
 const RTL = new Set(["ar", "fa", "he", "ur", "dv"]);
-const CATEGORIES = new Set<string>(["zero", "one", "two", "few", "many", "other"]);
 const PLACEHOLDER = /\{(\w+)\}/g;
 
 let current = "en";
@@ -59,21 +61,12 @@ function baseOf(code: string) {
   return code.split(/[-_]/)[0].toLowerCase();
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/** Plural forms: only CLDR category keys, `other` included. Groups such as `format` have other keys too. */
-export function isPlural(value: unknown): value is Record<string, string> {
-  return isRecord(value) && typeof value.other === "string" && Object.keys(value).every((key) => CATEGORIES.has(key));
-}
-
-/** Only the active language is parsed. Anything missing or malformed falls back to English. */
+/** Only the active language is unpacked. Anything missing or malformed falls back to English. */
 function compile(code: string): Strings {
-  const raw = code === "en" ? null : LOCALES[code];
+  const packed = code === "en" ? null : LOCALES[code];
   let own: unknown = null;
   try {
-    own = raw ? JSON.parse(raw) : null;
+    own = packed ? unpackLocale(packed, en) : null;
   } catch (error) {
     console.error(`Tropa: broken translation file ${code}.json`, error);
   }
