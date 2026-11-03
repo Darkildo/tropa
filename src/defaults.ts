@@ -15,13 +15,19 @@ export interface TropaSettings {
   excludeFolders: string[];
   /** Tags left out of the map, nested tags included. Stored without `#`, in lower case. */
   excludeTags: string[];
+  /** Append every change of progress to the learning journal. */
+  journal: boolean;
+  /** One file per month and device goes here. */
+  journalFolder: string;
   mapMode: MapMode;
   showSources: boolean;
 }
 
-const FOLDERS: Record<Lang, Pick<TropaSettings, "progressPath" | "conceptsFolder" | "sourcesFolder">> = {
-  en: { progressPath: "Tropa/Progress.md", conceptsFolder: "Tropa/Concepts", sourcesFolder: "Tropa/Materials" },
-  ru: { progressPath: "Tropa/Прогресс.md", conceptsFolder: "Tropa/Концепты", sourcesFolder: "Tropa/Материалы" },
+type Paths = "progressPath" | "conceptsFolder" | "sourcesFolder" | "journalFolder";
+
+const FOLDERS: Record<Lang, Pick<TropaSettings, Paths>> = {
+  en: { progressPath: "Tropa/Progress.md", conceptsFolder: "Tropa/Concepts", sourcesFolder: "Tropa/Materials", journalFolder: "Tropa/Journal" },
+  ru: { progressPath: "Tropa/Прогресс.md", conceptsFolder: "Tropa/Концепты", sourcesFolder: "Tropa/Материалы", journalFolder: "Tropa/Журнал" },
 };
 
 /** Paths depend on the language, so they are fixed in the saved settings on first launch. */
@@ -35,6 +41,7 @@ export function defaultSettings(language: Lang): TropaSettings {
     ...FOLDERS[language],
     excludeFolders: [],
     excludeTags: [],
+    journal: true,
     mapMode: "route",
     showSources: false,
   };

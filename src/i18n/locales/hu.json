@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Archívum\nSablonok",
     "excludeTags": "Kizárt címkék",
     "excludeTagsDesc": "Soronként egy címke. Az ilyen címkéjű jegyzetek nem kerülnek a térképre, a beágyazott címkékkel együtt: a #vázlat a #vázlat/régi címkét is lefedi.",
-    "excludeTagsPlaceholder": "#vázlat\n#privát"
+    "excludeTagsPlaceholder": "#vázlat\n#privát",
+    "journalGroup": "Tanulási napló",
+    "journal": "Tanulási napló vezetése",
+    "journalDesc": "A haladás minden változása egy sorként kerül a hónap és az eszköz fájljába. Ebből készül a statisztika.",
+    "journalFolder": "A napló mappája",
+    "journalFolderDesc": "Hónaponként és eszközönként egy fájl. Ez a mappa sosem kerül a térképre."
   },
   "scope": {
     "excludedNote": "Ez a jegyzet a mappa- vagy címkebeállítások miatt kimarad a térképről.",
@@ -294,5 +299,14 @@
   "canvasSoftLabel": "ajánlott",
   "moreActions": "További műveletek",
   "sheetHandle": "Panel mérete: koppints vagy húzd",
-  "linkNext": "Összekapcsolás a következő fogalommal…"
+  "linkNext": "Összekapcsolás a következő fogalommal…",
+  "journal": {
+    "fileText": "A Tropa itt minden haladásváltozásnál hozzáad egy sort ezen az eszközön. A statisztika ezekből a sorokból olvasható ki, ezért őrizd meg a formátumukat.",
+    "title": "Tevékenység",
+    "week": "7 nap",
+    "month": "30 nap",
+    "mastered": "Elsajátítva",
+    "time": "Idő a tananyagokkal",
+    "reviews": "Ismétlések"
+  }
 }

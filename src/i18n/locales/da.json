@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Arkiv\nSkabeloner",
     "excludeTags": "Udelukkede tags",
     "excludeTagsDesc": "Ét tag pr. linje. Noter med disse tags kommer ikke på kortet, indlejrede tags medregnet: #kladde dækker også #kladde/gammel.",
-    "excludeTagsPlaceholder": "#kladde\n#privat"
+    "excludeTagsPlaceholder": "#kladde\n#privat",
+    "journalGroup": "Læringsjournal",
+    "journal": "Før en læringsjournal",
+    "journalDesc": "Hver ændring af dine fremskridt tilføjes som en linje i en fil pr. måned og enhed. Statistikken bygges ud fra den.",
+    "journalFolder": "Journalmappe",
+    "journalFolderDesc": "Én fil pr. måned og enhed. Mappen kommer aldrig på kortet."
   },
   "scope": {
     "excludedNote": "Noten holdes uden for kortet af indstillingerne for mapper eller tags.",
@@ -294,5 +299,14 @@
   "canvasSoftLabel": "anbefalet",
   "moreActions": "Flere handlinger",
   "sheetHandle": "Panelets størrelse: tryk eller træk",
-  "linkNext": "Forbind med det næste begreb …"
+  "linkNext": "Forbind med det næste begreb …",
+  "journal": {
+    "fileText": "Tropa tilføjer her en linje for hver ændring af fremskridt på denne enhed. Statistikken læses fra linjerne, så bevar deres format.",
+    "title": "Aktivitet",
+    "week": "7 dage",
+    "month": "30 dage",
+    "mastered": "Mestret",
+    "time": "Tid med materialer",
+    "reviews": "Repetitioner"
+  }
 }

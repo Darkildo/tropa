@@ -1,6 +1,7 @@
 import { ItemView, Platform, setIcon, type TFile, type WorkspaceLeaf } from "obsidian";
 import type TropaPlugin from "../main";
 import { attempt } from "../attempt";
+import { formatMinutes } from "../core/format";
 import { isRtl, t } from "../i18n";
 import { renderConcept, renderRoute, renderSource, type DetailHost } from "./detail";
 import { navbarOverlap } from "./phone";
@@ -48,6 +49,7 @@ export class PanelView extends ItemView implements DetailHost {
       this.registerEvent(this.app.workspace.on("layout-change", place));
     }
     this.registerEvent(this.store.on("change", () => this.render()));
+    this.registerEvent(this.plugin.journal.on("change", () => this.render()));
     this.registerEvent(
       this.app.workspace.on("file-open", () => {
         this.override = null;
@@ -79,10 +81,39 @@ export class PanelView extends ItemView implements DetailHost {
     if (node?.kind === "concept") renderConcept(body, this, node);
     else if (node) renderSource(body, this, node);
     else {
-      if (file?.extension === "md" && file.path !== this.plugin.settings.progressPath) this.renderOffMap(file);
+      if (file?.extension === "md" && !store.isOwnFile(file.path)) this.renderOffMap(file);
       renderRoute(body, this, () => attempt(this.plugin.showMap((map) => map.pickGoal()), "choose a goal"));
+      this.renderStats();
     }
     body.scrollTop = scroll;
+  }
+
+  /** What the journal says about the last week and month, when there is a journal to read. */
+  private renderStats() {
+    const { journal, settings } = this.plugin;
+    if (!settings.journal) return;
+    const history = journal.entries;
+    if (history.entries.length === 0) return;
+    const now = Date.now();
+    const minutesOf = (id: string) => this.store.graph.nodes.get(id)?.minutes;
+    const periods = [
+      { name: t.journal.week, stats: history.stats(now, 7, minutesOf) },
+      { name: t.journal.month, stats: history.stats(now, 30, minutesOf) },
+    ];
+    const block = this.body.createDiv({ cls: "tropa-stats" });
+    block.createDiv({ cls: "tropa-section-head", text: t.journal.title });
+    const table = block.createEl("table");
+    const head = table.createEl("tr");
+    head.createEl("th");
+    for (const period of periods) head.createEl("th", { text: period.name, attr: { scope: "col" } });
+    const row = (name: string, cls: string, value: (stats: (typeof periods)[number]["stats"]) => string) => {
+      const tr = table.createEl("tr", { cls });
+      tr.createEl("th", { text: name, attr: { scope: "row" } });
+      for (const period of periods) tr.createEl("td", { cls: "tropa-nowrap", text: value(period.stats) });
+    };
+    row(t.journal.mastered, "is-mastered", (stats) => String(stats.mastered));
+    row(t.journal.time, "is-time", (stats) => (stats.minutes ? formatMinutes(stats.minutes) : "—"));
+    row(t.journal.reviews, "is-reviews", (stats) => String(stats.reviews));
   }
 
   private renderOffMap(file: TFile) {

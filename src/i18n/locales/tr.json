@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Arşiv\nŞablonlar",
     "excludeTags": "Hariç tutulan etiketler",
     "excludeTagsDesc": "Her satıra bir etiket. Bu etiketleri taşıyan notlar haritaya girmez, iç içe etiketler de: #taslak, #taslak/eski etiketini de kapsar.",
-    "excludeTagsPlaceholder": "#taslak\n#özel"
+    "excludeTagsPlaceholder": "#taslak\n#özel",
+    "journalGroup": "Öğrenme günlüğü",
+    "journal": "Öğrenme günlüğü tut",
+    "journalDesc": "İlerlemendeki her değişiklik, ay ve bu cihaz için bir dosyaya satır olarak eklenir. İstatistikler bundan oluşturulur.",
+    "journalFolder": "Günlük klasörü",
+    "journalFolderDesc": "Her ay ve cihaz için bir dosya. Bu klasör haritada asla görünmez."
   },
   "scope": {
     "excludedNote": "Bu not, klasör veya etiket ayarları yüzünden harita dışında.",
@@ -294,5 +299,14 @@
   "canvasSoftLabel": "önerilen",
   "moreActions": "Diğer işlemler",
   "sheetHandle": "Panel boyutu: dokun ya da sürükle",
-  "linkNext": "Sonraki kavrama bağla…"
+  "linkNext": "Sonraki kavrama bağla…",
+  "journal": {
+    "fileText": "Tropa bu cihazdaki her ilerleme değişikliği için buraya bir satır ekler. İstatistikler bu satırlardan okunur, bu yüzden biçimlerini koru.",
+    "title": "Etkinlik",
+    "week": "7 gün",
+    "month": "30 gün",
+    "mastered": "Öğrenildi",
+    "time": "Kaynaklarla geçen süre",
+    "reviews": "Tekrarlar"
+  }
 }

@@ -49,7 +49,12 @@
     "excludeFoldersPlaceholder": "Archief\nSjablonen",
     "excludeTags": "Uitgesloten tags",
     "excludeTagsDesc": "Eén tag per regel. Notities met deze tags komen niet op de kaart, geneste tags inbegrepen: #concept geldt ook voor #concept/oud.",
-    "excludeTagsPlaceholder": "#concept\n#privé"
+    "excludeTagsPlaceholder": "#concept\n#privé",
+    "journalGroup": "Leerjournaal",
+    "journal": "Een leerjournaal bijhouden",
+    "journalDesc": "Elke wijziging in je voortgang wordt als regel toegevoegd aan een bestand per maand en per apparaat. De statistieken komen daaruit.",
+    "journalFolder": "Map van het journaal",
+    "journalFolderDesc": "Eén bestand per maand en apparaat. Deze map staat nooit op de kaart."
   },
   "scope": {
     "excludedNote": "Deze notitie blijft buiten de kaart door de instellingen voor mappen of tags.",
@@ -294,5 +299,14 @@
   "canvasSoftLabel": "aanbevolen",
   "moreActions": "Meer acties",
   "sheetHandle": "Paneelgrootte: tik of sleep",
-  "linkNext": "Koppelen aan het volgende concept…"
+  "linkNext": "Koppelen aan het volgende concept…",
+  "journal": {
+    "fileText": "Tropa voegt hier een regel toe bij elke wijziging van de voortgang op dit apparaat. De statistieken worden uit deze regels gelezen, dus houd hun opmaak intact.",
+    "title": "Activiteit",
+    "week": "7 dagen",
+    "month": "30 dagen",
+    "mastered": "Beheerst",
+    "time": "Tijd met leermiddelen",
+    "reviews": "Herhalingen"
+  }
 }
