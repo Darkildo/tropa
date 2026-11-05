@@ -511,6 +511,8 @@
     "more": "지도에 더 있음: {count}",
     "nextNone": "지금은 경로에서 시작할 수 있는 것이 없습니다.",
     "master": "{title} 숙달로 표시",
-    "review": "{title} 복습"
+    "review": "{title} 복습",
+    "waitingGoal": "이 목표로 가는 길에서 다음 날로 미뤄진 것: {count}",
+    "nothingGoal": "지금은 이 목표로 가는 길에 복습할 것이 없습니다"
   }
 }

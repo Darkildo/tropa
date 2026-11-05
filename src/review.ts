@@ -24,6 +24,8 @@ export interface ReviewDay {
   queue: Schedule[];
   /** Due but over today's limit: they wait for the next days. */
   waiting: number;
+  /** Those that wait, in queue order. */
+  held: Schedule[];
   /** Reviews already done today, which count against the limit. */
   done: number;
   /** Reviews a day, 0 for no limit. */
@@ -167,14 +169,14 @@ export class Reviews extends Events {
     if (cached && key.every((part, index) => part === cached.key[index])) return cached;
 
     const done = reviewsOn(history.entries, now, (id) => schedules.has(id));
-    const { queue, waiting, paused } = dayQueue(schedules.values(), now, {
+    const { queue, held, waiting, paused } = dayQueue(schedules.values(), now, {
       limit,
       done,
       pause: this.pause,
       recall: (schedule) => this.retrievability(schedule, now),
       needed: this.neededByGoals(),
     });
-    const day: ReviewDay = { queue, waiting, done, limit, paused };
+    const day: ReviewDay = { queue, held, waiting, done, limit, paused };
     this.dayCache = { key, day, due: new Set(queue.map((schedule) => schedule.id)) };
     return this.dayCache;
   }

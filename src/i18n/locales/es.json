@@ -549,6 +549,8 @@
     "more": "Más en el mapa: {count}",
     "nextNone": "Ahora mismo no se puede empezar nada de la ruta.",
     "master": "Marcar {title} como dominado",
-    "review": "Repasar {title}"
+    "review": "Repasar {title}",
+    "waitingGoal": "Esperan a los próximos días, en el camino a esta meta: {count}",
+    "nothingGoal": "Ahora no hay nada que repasar en el camino a esta meta"
   }
 }

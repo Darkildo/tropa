@@ -277,10 +277,12 @@ limit: 5
 ````
 
 - `show` is `route` (the default): the steps to the goal in order, with the time left and the material to start with on the next step; `review`: today's review queue, within the daily limit; or `next`: the next step alone.
-- `goal` is a link or the name of a concept; without it, the goal (or goals) the map routes to.
+- `goal` is a link or the name of a concept; without it, the goal (or goals) the map routes to. With `show: review` it narrows today's queue to the goal and what it requires, all the way down; without it the block shows the whole queue.
 - `limit` is how many rows to show, 1 to 100, 10 by default. What does not fit is counted, with a button to the map or the queue.
 
 Each row is a link to its note: it opens on a click, in a new tab with Ctrl or Cmd, and shows a preview on hover. The box of a step marks it mastered, offering a self-check first like **Mark as mastered**; the box of a review asks how well you recalled the concept, with the same four ratings as its details. A notice offers **Undo** when the map is not in sight. The block follows your progress and the queue as they change, on every device. A mistake in the block, such as an unknown option or a goal that is not a concept, is said in the block itself.
+
+The daily limit is one for all reviews, wherever they are done. So a review block with a goal shows the concepts of today's queue that lie on the way to the goal, in the queue's order, and counts those of the goal that are over today's limit as waiting for the next days ("Review today: 1 of 3", "Waiting for the next days, on the way to this goal: 2") instead of listing them: reviewing them today would go past the limit.
 
 The status bar at the bottom of the window shows **To review: 3 · Next: Derivatives**, or the day a paused review comes back. A click opens today's queue, or the next step when nothing is due. It hides when there is nothing to say; **Settings → Status bar** turns it off. Obsidian has no status bar on phones and tablets.
 

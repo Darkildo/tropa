@@ -511,6 +511,8 @@
     "more": "地圖上還有：{count}",
     "nextNone": "路線上暫時沒有可以開始的步驟。",
     "master": "將 {title} 標記為已掌握",
-    "review": "複習 {title}"
+    "review": "複習 {title}",
+    "waitingGoal": "通往此目標的路上，留待之後幾天的：{count}",
+    "nothingGoal": "通往此目標的路上暫時沒有要複習的"
   }
 }

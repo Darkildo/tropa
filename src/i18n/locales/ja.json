@@ -511,6 +511,8 @@
     "more": "マップにさらに {count} 件",
     "nextNone": "今ルート上で始められるものはありません。",
     "master": "{title} を習得済みにする",
-    "review": "{title} を復習"
+    "review": "{title} を復習",
+    "waitingGoal": "この目標への道で、次の日以降に回るもの: {count}",
+    "nothingGoal": "今はこの目標への道で復習するものはありません"
   }
 }

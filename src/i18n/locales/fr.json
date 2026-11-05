@@ -549,6 +549,8 @@
     "more": "Autres sur la carte : {count}",
     "nextNone": "Rien sur le parcours ne peut être commencé pour l'instant.",
     "master": "Marquer {title} comme maîtrisé",
-    "review": "Réviser {title}"
+    "review": "Réviser {title}",
+    "waitingGoal": "En attente des jours suivants, sur le chemin de cet objectif : {count}",
+    "nothingGoal": "Rien à réviser sur le chemin de cet objectif pour l'instant"
   }
 }

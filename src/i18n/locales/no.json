@@ -530,6 +530,8 @@
     "more": "Flere på kartet: {count}",
     "nextNone": "Ingenting på ruten kan påbegynnes akkurat nå.",
     "master": "Merk {title} som mestret",
-    "review": "Repeter {title}"
+    "review": "Repeter {title}",
+    "waitingGoal": "Venter på de neste dagene, på veien mot dette målet: {count}",
+    "nothingGoal": "Ingenting å repetere på veien mot dette målet akkurat nå"
   }
 }

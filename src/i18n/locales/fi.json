@@ -530,6 +530,8 @@
     "more": "Lisää kartalla: {count}",
     "nextNone": "Reitillä ei voi juuri nyt aloittaa mitään.",
     "master": "Merkitse {title} hallituksi",
-    "review": "Kertaa {title}"
+    "review": "Kertaa {title}",
+    "waitingGoal": "Odottaa seuraavia päiviä, matkalla tähän tavoitteeseen: {count}",
+    "nothingGoal": "Matkalla tähän tavoitteeseen ei ole nyt kerrattavaa"
   }
 }

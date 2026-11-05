@@ -530,6 +530,8 @@
     "more": "Weitere auf der Karte: {count}",
     "nextNone": "Auf der Route lässt sich gerade nichts beginnen.",
     "master": "{title} als beherrscht markieren",
-    "review": "{title} wiederholen"
+    "review": "{title} wiederholen",
+    "waitingGoal": "Warten auf die nächsten Tage, auf dem Weg zu diesem Ziel: {count}",
+    "nothingGoal": "Auf dem Weg zu diesem Ziel gibt es gerade nichts zu wiederholen"
   }
 }

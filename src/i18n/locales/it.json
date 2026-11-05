@@ -549,6 +549,8 @@
     "more": "Altri sulla mappa: {count}",
     "nextNone": "Al momento non si può iniziare nulla del percorso.",
     "master": "Segna {title} come padroneggiato",
-    "review": "Ripassa {title}"
+    "review": "Ripassa {title}",
+    "waitingGoal": "In attesa dei prossimi giorni, sulla strada per questo obiettivo: {count}",
+    "nothingGoal": "Al momento non c'è nulla da ripassare sulla strada per questo obiettivo"
   }
 }

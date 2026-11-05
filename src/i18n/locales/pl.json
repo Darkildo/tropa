@@ -568,6 +568,8 @@
     "more": "Więcej na mapie: {count}",
     "nextNone": "Teraz nic na trasie nie da się zacząć.",
     "master": "Oznacz {title} jako opanowane",
-    "review": "Powtórz {title}"
+    "review": "Powtórz {title}",
+    "waitingGoal": "Czekają na kolejne dni, w drodze do tego celu: {count}",
+    "nothingGoal": "W drodze do tego celu nie ma teraz nic do powtórki"
   }
 }

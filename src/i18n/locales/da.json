@@ -530,6 +530,8 @@
     "more": "Flere på kortet: {count}",
     "nextNone": "Intet på ruten kan påbegyndes lige nu.",
     "master": "Markér {title} som mestret",
-    "review": "Gentag {title}"
+    "review": "Gentag {title}",
+    "waitingGoal": "Venter på de næste dage, på vejen mod dette mål: {count}",
+    "nothingGoal": "Der er intet at gentage på vejen mod dette mål lige nu"
   }
 }

@@ -549,6 +549,8 @@
     "more": "Mais no mapa: {count}",
     "nextNone": "Neste momento não é possível começar nada no percurso.",
     "master": "Marcar {title} como dominado",
-    "review": "Rever {title}"
+    "review": "Rever {title}",
+    "waitingGoal": "À espera dos próximos dias, no caminho para este objetivo: {count}",
+    "nothingGoal": "Neste momento não há nada para rever no caminho para este objetivo"
   }
 }

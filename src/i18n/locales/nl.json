@@ -530,6 +530,8 @@
     "more": "Meer op de kaart: {count}",
     "nextNone": "Op de route kan nu niets worden begonnen.",
     "master": "{title} als beheerst markeren",
-    "review": "{title} herhalen"
+    "review": "{title} herhalen",
+    "waitingGoal": "Wachten op de volgende dagen, op weg naar dit doel: {count}",
+    "nothingGoal": "Op weg naar dit doel is er nu niets te herhalen"
   }
 }

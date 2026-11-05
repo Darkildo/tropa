@@ -530,6 +530,8 @@
     "more": "Továbbiak a térképen: {count}",
     "nextNone": "Az útvonalon most semmi sem kezdhető el.",
     "master": "{title} megjelölése elsajátítottként",
-    "review": "{title} ismétlése"
+    "review": "{title} ismétlése",
+    "waitingGoal": "A következő napokra vár, a cél felé vezető úton: {count}",
+    "nothingGoal": "A cél felé vezető úton most nincs mit ismételni"
   }
 }

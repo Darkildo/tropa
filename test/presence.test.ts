@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { BLOCK_LIMIT_MAX, blockErrorText, linkText, parseBlockOptions, statusLine } from "../src/core/presence";
+import { BLOCK_LIMIT_MAX, blockErrorText, linkText, onTheWayTo, parseBlockOptions, statusLine } from "../src/core/presence";
+import { dayQueue } from "../src/core/load";
+import { LearningGraph } from "../src/core/graph";
+import type { NoteInput } from "../src/core/types";
 import { setLocale } from "../src/i18n";
 
 afterEach(() => setLocale("en"));
@@ -72,5 +75,53 @@ describe("status bar line", () => {
   it("follows the interface language", () => {
     setLocale("ru");
     expect(statusLine({ due: 2, pausedUntil: null, next: "Производные" }, today)?.text).toBe("К повторению: 2 · Дальше: Производные");
+  });
+});
+
+describe("review block on the way to a goal", () => {
+  // Goal needs B, B needs A; Other stands apart.
+  const concept = (id: string, requires: string[] = []): NoteInput => ({
+    id,
+    title: id,
+    kind: "concept",
+    requires: requires.map((r) => ({ id: r, title: r })),
+    recommends: [],
+    teaches: [],
+  });
+  const graph = new LearningGraph([concept("Goal", ["B"]), concept("B", ["A"]), concept("A"), concept("Other")]);
+  const path = new Set(["Goal", ...graph.ancestors("Goal")]);
+  const now = Date.UTC(2026, 10, 5, 12);
+  // Due, easiest to forget first: Other, A, Goal, B.
+  const items = [
+    { id: "Other", due: now - 1, last: now - 864000000, recall: 0.5 },
+    { id: "A", due: now - 1, last: now - 864000000, recall: 0.6 },
+    { id: "Goal", due: now - 1, last: now - 864000000, recall: 0.7 },
+    { id: "B", due: now - 1, last: now - 864000000, recall: 0.8 },
+  ];
+  const day = (limit: number) =>
+    dayQueue(items, now, { limit, done: 0, pause: null, recall: (item) => item.recall, needed: new Set() });
+
+  it("takes the goal and what it requires, transitively", () => {
+    expect([...path].sort()).toEqual(["A", "B", "Goal"]);
+  });
+
+  it("keeps the queue's order and leaves out what is off the way", () => {
+    const { queue, waiting } = onTheWayTo(day(0), path);
+    expect(queue.map((item) => item.id)).toEqual(["A", "Goal", "B"]);
+    expect(waiting).toBe(0);
+  });
+
+  it("filters the queue as today's limit left it, and counts what of the goal waits", () => {
+    const limited = day(2);
+    expect(limited.queue.map((item) => item.id)).toEqual(["Other", "A"]);
+    expect(limited.held.map((item) => item.id)).toEqual(["Goal", "B"]);
+    const { queue, waiting } = onTheWayTo(limited, path);
+    expect(queue.map((item) => item.id)).toEqual(["A"]);
+    expect(waiting).toBe(2);
+  });
+
+  it("is empty while review is paused", () => {
+    const paused = dayQueue(items, now, { limit: 0, done: 0, pause: { start: now - 1000, end: now + 1000 * 86400000, until: "2099-01-01" }, recall: (item) => item.recall, needed: new Set() });
+    expect(onTheWayTo(paused, path)).toEqual({ queue: [], waiting: 0 });
   });
 });

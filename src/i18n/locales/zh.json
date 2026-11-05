@@ -511,6 +511,8 @@
     "more": "地图上还有：{count}",
     "nextNone": "路线上暂时没有可以开始的步骤。",
     "master": "将 {title} 标记为已掌握",
-    "review": "复习 {title}"
+    "review": "复习 {title}",
+    "waitingGoal": "通往此目标的路上，留待之后几天的：{count}",
+    "nothingGoal": "通往此目标的路上暂时没有要复习的"
   }
 }

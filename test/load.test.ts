@@ -193,13 +193,14 @@ describe("today's queue", () => {
     const limited = dayQueue(items, T0, { ...options, limit: 3, done: 1, recall: (item) => item.r });
     expect(limited.queue.map((item) => item.id)).toEqual(["b", "a"]);
     expect(limited.waiting).toBe(1);
+    expect(limited.held.map((item) => item.id)).toEqual(["c"]);
     expect(dayQueue(items, T0, { ...options, limit: 0, recall: (item) => item.r }).queue).toHaveLength(3);
   });
 
   it("is empty while paused", () => {
     const pause = { start: T0 - DAY, end: T0 + DAY, until: dateKey(T0 + DAY) };
     const day = dayQueue([{ id: "a", due: T0 - DAY, last: T0 - 9 * DAY }], T0, { ...options, pause });
-    expect(day).toEqual({ queue: [], waiting: 0, paused: pause });
+    expect(day).toEqual({ queue: [], held: [], waiting: 0, paused: pause });
   });
 
   it("counts today's reviews of scheduled concepts, an undo taking one back", () => {

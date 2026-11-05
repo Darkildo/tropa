@@ -2630,6 +2630,53 @@ const listeners = (page) => page.evaluate(() => ["store", "reviews"].map((name) 
   ok("presence: no goal, no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
+// The review block with a goal: today's queue, only what lies on the way to the goal.
+const goalQueue = (page, title) => page.evaluate((t) => {
+  const { store, reviews } = tropa.plugin;
+  const goal = [...store.graph.nodes.values()].find((n) => n.title === t).id;
+  const path = new Set([goal, ...store.graph.ancestors(goal)]);
+  const day = reviews.day();
+  const name = (s) => store.graph.nodes.get(s.id).title;
+  return { queue: day.queue.filter((s) => path.has(s.id)).map(name), waiting: day.held.filter((s) => path.has(s.id)).length };
+}, title);
+const blockTitles = (el) => el.locator(".tropa-block-item a.internal-link").allInnerTexts();
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  await seedOldMarks(page);
+  const gradient = await renderBlock(page, "show: review\ngoal: [[Gradient]]");
+  const all = await renderBlock(page, "show: review");
+  ok("review by goal: the block names the goal", (await gradient.locator(".tropa-block-goal").innerText()) === "Goal: Gradient");
+  ok("review by goal: only what the goal requires, in queue order", JSON.stringify(await blockTitles(gradient)) === JSON.stringify((await goalQueue(page, "Gradient")).queue) &&
+    (await blockTitles(gradient)).sort().join("|") === "Derivatives|Vectors and matrices", (await blockTitles(gradient)).join("|"));
+  ok("review by goal: the count is of the filtered queue", (await gradient.locator(".tropa-block-count").innerText()) === "Review today: 2");
+  ok("review by goal: without a goal the whole queue", (await all.locator(".tropa-block-item").count()) === 3);
+  const apart = await renderBlock(page, "show: review\ngoal: [[Probability]]");
+  ok("review by goal: nothing on the way says so", (await apart.innerText()) === "Goal: Probability\nNothing on the way to this goal to review right now", await apart.innerText());
+  // One review a day: the filter takes the queue as the limit left it, and counts what of the goal waits.
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const expected = await goalQueue(page, "Gradient");
+  ok("review by goal: the limit applies first, the filter keeps what is left", JSON.stringify(await blockTitles(gradient)) === JSON.stringify(expected.queue), `${await blockTitles(gradient)} vs ${expected.queue}`);
+  const waitLine = `Waiting for the next days, on the way to this goal: ${expected.waiting}`;
+  ok("review by goal: what of the goal waits is counted", expected.queue.length
+    ? (await gradient.locator(".tropa-block-count").innerText()) === `Review today: ${expected.queue.length} of ${expected.queue.length + expected.waiting}` && (await gradient.locator(".tropa-block-waiting").innerText()) === waitLine
+    : (await gradient.innerText()).endsWith(`Today's reviews are done. ${waitLine}`), await gradient.innerText());
+  ok("review by goal: the whole queue keeps to the limit", (await all.locator(".tropa-block-item").count()) === 1 && (await all.locator(".tropa-block-waiting").innerText()) === "Waiting for the next days: 2");
+  await page.screenshot({ path: SHOTS + "80-presence-review-goal.png" });
+  ok("review by goal: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar&panel=1" });
+  await seedOldMarks(page);
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const el = await renderBlock(page, "show: review\ngoal: [[Gradient]]");
+  // Names are isolated from the right-to-left text around them.
+  const text = (await el.innerText()).replace(/[\u2066-\u2069]/g, "");
+  ok("review by goal ar: translated, the goal named, no raw placeholders", text.startsWith("الهدف: Gradient") && text.includes("في الطريق إلى هذا الهدف") && !/[{}]/.test(text), text);
+  ok("review by goal ar: right to left", (await el.evaluate((e) => getComputedStyle(e).direction)) === "rtl");
+  ok("review by goal ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
 for (const [lang, goal, next, dir] of [
   ["ru", "Цель: ", "Дальше: ", "ltr"],
   ["ar", "الهدف: ", "التالي: ", "rtl"],

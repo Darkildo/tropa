@@ -530,6 +530,8 @@
     "more": "Fler på kartan: {count}",
     "nextNone": "Inget på rutten kan påbörjas just nu.",
     "master": "Markera {title} som behärskad",
-    "review": "Repetera {title}"
+    "review": "Repetera {title}",
+    "waitingGoal": "Väntar på kommande dagar, på vägen mot det här målet: {count}",
+    "nothingGoal": "Inget att repetera på vägen mot det här målet just nu"
   }
 }

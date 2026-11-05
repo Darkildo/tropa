@@ -68,6 +68,18 @@ export function blockErrorText(error: BlockError) {
   return t.presence.errLimit({ max: BLOCK_LIMIT_MAX });
 }
 
+/**
+ * Today's queue narrowed to the concepts on the way to one goal: the goal and what it requires,
+ * transitively. The daily limit is shared by every review, so the filter takes the queue as the
+ * limit left it, in its order; what this goal has among the reviews over the limit is counted as
+ * waiting, not shown, as reviewing it today would go past the limit.
+ */
+export function onTheWayTo<T extends { id: string }>(day: { queue: readonly T[]; held: readonly T[] }, path: ReadonlySet<string>) {
+  const queue = day.queue.filter((item) => path.has(item.id));
+  const waiting = day.held.filter((item) => path.has(item.id)).length;
+  return { queue, waiting };
+}
+
 export interface StatusInput {
   /** Concepts in today's review queue, within the daily limit. */
   due: number;

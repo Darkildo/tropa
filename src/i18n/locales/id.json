@@ -511,6 +511,8 @@
     "more": "Lainnya di peta: {count}",
     "nextNone": "Saat ini tidak ada yang bisa dimulai di rute.",
     "master": "Tandai {title} sudah dikuasai",
-    "review": "Ulas {title}"
+    "review": "Ulas {title}",
+    "waitingGoal": "Menunggu hari berikutnya, di jalan menuju tujuan ini: {count}",
+    "nothingGoal": "Saat ini tidak ada yang perlu diulas di jalan menuju tujuan ini"
   }
 }

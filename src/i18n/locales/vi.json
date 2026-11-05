@@ -511,6 +511,8 @@
     "more": "Thêm trên bản đồ: {count}",
     "nextNone": "Hiện chưa thể bắt đầu bước nào trên lộ trình.",
     "master": "Đánh dấu {title} đã thành thạo",
-    "review": "Ôn {title}"
+    "review": "Ôn {title}",
+    "waitingGoal": "Chờ những ngày tới, trên đường đến mục tiêu này: {count}",
+    "nothingGoal": "Hiện không có gì cần ôn trên đường đến mục tiêu này"
   }
 }

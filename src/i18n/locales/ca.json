@@ -549,6 +549,8 @@
     "more": "Més al mapa: {count}",
     "nextNone": "Ara mateix no es pot començar res de la ruta.",
     "master": "Marca {title} com a dominat",
-    "review": "Repassa {title}"
+    "review": "Repassa {title}",
+    "waitingGoal": "Esperen els dies següents, en el camí cap a aquest objectiu: {count}",
+    "nothingGoal": "Ara no hi ha res per repassar en el camí cap a aquest objectiu"
   }
 }

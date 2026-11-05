@@ -549,6 +549,8 @@
     "more": "Altele pe hartă: {count}",
     "nextNone": "Acum nu se poate începe nimic de pe traseu.",
     "master": "Marchează {title} ca stăpânit",
-    "review": "Recapitulează {title}"
+    "review": "Recapitulează {title}",
+    "waitingGoal": "Așteaptă zilele următoare, pe drumul spre această țintă: {count}",
+    "nothingGoal": "Acum nu e nimic de recapitulat pe drumul spre această țintă"
   }
 }

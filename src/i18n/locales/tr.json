@@ -530,6 +530,8 @@
     "more": "Haritada daha fazlası: {count}",
     "nextNone": "Rotada şu anda başlanabilecek bir şey yok.",
     "master": "{title} öğrenildi olarak işaretle",
-    "review": "{title} tekrar et"
+    "review": "{title} tekrar et",
+    "waitingGoal": "Sonraki günleri bekleyen, bu hedefin yolunda: {count}",
+    "nothingGoal": "Bu hedefin yolunda şu anda tekrar edilecek bir şey yok"
   }
 }

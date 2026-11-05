@@ -496,5 +496,7 @@ export const en = {
     nextNone: "Nothing on the route can be started right now.",
     master: "Mark {title} as mastered",
     review: "Review {title}",
+    waitingGoal: "Waiting for the next days, on the way to this goal: {count}",
+    nothingGoal: "Nothing on the way to this goal to review right now",
   },
 } as const;

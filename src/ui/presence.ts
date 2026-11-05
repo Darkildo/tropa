@@ -3,7 +3,7 @@ import type TropaPlugin from "../main";
 import { attempt } from "../attempt";
 import { formatDate, formatMinutes } from "../core/format";
 import { parseDate } from "../core/plan";
-import { BLOCK_LIMIT_DEFAULT, blockErrorText, parseBlockOptions, statusLine, type BlockOptions, type StatusAction } from "../core/presence";
+import { BLOCK_LIMIT_DEFAULT, blockErrorText, onTheWayTo, parseBlockOptions, statusLine, type BlockOptions, type StatusAction } from "../core/presence";
 import type { GraphNode, Route } from "../core/types";
 import { isRtl, t } from "../i18n";
 import type { Reviews } from "../review";
@@ -112,10 +112,6 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
     // Until the vault has been read there is no map to look goals up in.
     if (!this.store.loaded) return;
     const { options } = parsed;
-    if (options.show === "review") {
-      this.renderReview(options);
-      return;
-    }
     let goal: string | null = null;
     if (options.goal) {
       const file = this.plugin.app.metadataCache.getFirstLinkpathDest(options.goal, this.sourcePath);
@@ -125,6 +121,10 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
       }
       goal = file.path;
     }
+    if (options.show === "review") {
+      this.renderReview(options, goal);
+      return;
+    }
     const route = goal ? this.store.routeTo(goal) : this.store.route;
     if (!route) {
       const line = root.createDiv({ cls: "tropa-block-hint" });
@@ -132,7 +132,7 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
       this.mapButton(line, t.presence.openMap);
       return;
     }
-    this.goalLine(route);
+    this.goalLine(route.goals);
     if (route.steps.length === 0) {
       root.createDiv({ cls: "tropa-block-hint", text: t.goalReached });
       return;
@@ -146,11 +146,11 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
   }
 
   /** "Goal: X", the title a link to the note; several goals each a link. */
-  private goalLine(route: Route) {
+  private goalLine(goals: readonly string[]) {
     const line = this.containerEl.createDiv({ cls: "tropa-block-goal" });
     const [before, after = ""] = t.presence.goal({ title: "\u0000" }).split("\u0000");
     line.createSpan({ text: before });
-    route.goals.forEach((id, index) => {
+    goals.forEach((id, index) => {
       if (index > 0) line.createSpan({ text: t.listSeparator });
       this.link(line, id);
     });
@@ -202,7 +202,8 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
     }
   }
 
-  private renderReview(options: BlockOptions) {
+  /** Today's queue; with a goal, only what lies on the way to it (see `onTheWayTo`). */
+  private renderReview(options: BlockOptions, goal: string | null) {
     const root = this.containerEl;
     const { reviews, settings } = this.plugin;
     if (!reviews.enabled) {
@@ -211,25 +212,28 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
     }
     const now = Date.now();
     const day = reviews.day(now);
+    if (goal) this.goalLine([goal]);
     if (day.paused) {
       root.createDiv({ cls: "tropa-block-hint", text: t.presence.statusPaused({ date: formatDate(parseDate(day.paused.until), new Date(now)) }) });
       return;
     }
-    if (day.queue.length === 0) {
+    const { queue, waiting } = goal ? onTheWayTo(day, new Set([goal, ...this.store.graph.ancestors(goal)])) : day;
+    const waitingText = waiting > 0 ? (goal ? t.presence.waitingGoal({ count: waiting }) : t.review.waiting({ count: waiting })) : "";
+    if (queue.length === 0) {
       root.createDiv({
         cls: "tropa-block-hint",
-        text: day.waiting > 0 ? `${t.review.limitDone} ${t.review.waiting({ count: day.waiting })}` : t.review.nothingDue,
+        text: waiting > 0 ? `${t.review.limitDone} ${waitingText}` : goal ? t.presence.nothingGoal : t.review.nothingDue,
       });
       return;
     }
-    const total = day.queue.length + day.waiting;
+    const total = queue.length + waiting;
     root.createDiv({
       cls: "tropa-block-count",
-      text: `${t.review.queue}: ${day.queue.length < total ? t.review.queueCount({ shown: day.queue.length, total }) : day.queue.length}`,
+      text: `${t.review.queue}: ${queue.length < total ? t.review.queueCount({ shown: queue.length, total }) : queue.length}`,
     });
     const limit = options.limit ?? BLOCK_LIMIT_DEFAULT;
     const list = root.createEl("ul", { cls: "tropa-block-list contains-task-list" });
-    for (const schedule of day.queue.slice(0, limit)) {
+    for (const schedule of queue.slice(0, limit)) {
       const node = this.store.graph.nodes.get(schedule.id);
       if (!node) continue;
       const item = list.createEl("li", { cls: "task-list-item tropa-block-item is-due" });
@@ -241,10 +245,11 @@ export class TropaBlock extends MarkdownRenderChild implements HoverParent {
       this.link(item, node.id);
       item.createSpan({ cls: "tropa-block-when tropa-nowrap", text: formatRelative(schedule.due, now) });
     }
-    if (day.queue.length > limit) {
+    if (queue.length > limit) {
       const more = root.createDiv({ cls: "tropa-block-more" });
-      this.button(more, t.presence.more({ count: day.queue.length - limit }), () => attempt(this.plugin.showReviewQueue(), "open the review queue"));
+      this.button(more, t.presence.more({ count: queue.length - limit }), () => attempt(this.plugin.showReviewQueue(), "open the review queue"));
     }
+    if (waitingText) root.createDiv({ cls: "tropa-block-hint tropa-block-waiting", text: waitingText });
   }
 
   private checkbox(item: HTMLElement, label: string) {

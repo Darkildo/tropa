@@ -568,6 +568,8 @@
     "more": "Další na mapě: {count}",
     "nextNone": "Na trase teď nelze nic začít.",
     "master": "Označit {title} jako zvládnuté",
-    "review": "Zopakovat {title}"
+    "review": "Zopakovat {title}",
+    "waitingGoal": "Čekají na další dny, na cestě k tomuto cíli: {count}",
+    "nothingGoal": "Na cestě k tomuto cíli teď není co opakovat"
   }
 }
