@@ -7,8 +7,8 @@ mkdirSync(OUT, { recursive: true });
 const { open, stop } = await start();
 
 for (const theme of ["light", "dark"]) {
-  const shot = async (name, prepare) => {
-    const { page, errors } = await open({ scale: 2, query: `?theme=${theme}` });
+  const shot = async (name, prepare, query = "") => {
+    const { page, errors } = await open({ scale: 2, query: `?theme=${theme}${query}` });
     await prepare?.(page);
     await page.mouse.move(0, 0);
     await page.waitForTimeout(400);
@@ -71,6 +71,33 @@ for (const theme of ["light", "dark"]) {
     await page.waitForTimeout(800);
     await page.click(".tropa-goal");
     await page.waitForTimeout(200);
+  });
+  // Links suggested from a course outline and the notes' own links, in the preview before they are added.
+  await shot("links", async (page) => {
+    await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "suggest-links").callback());
+    await page.waitForTimeout(200);
+    await page.keyboard.type("Course");
+    await page.waitForTimeout(100);
+    await page.keyboard.press("Enter");
+    await page.waitForSelector(".tropa-batch-modal");
+    await page.evaluate(() => document.querySelectorAll(".tropa-batch-modal, .tropa-batch-modal *").forEach((el) => { el.scrollTop = 0; }));
+    await page.waitForTimeout(300);
+  }, "&scenario=links");
+  // A pasted outline turned into notes and links, in the preview.
+  await shot("outline", async (page) => {
+    await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "map-from-list").callback());
+    await page.waitForTimeout(200);
+    await page.fill(".tropa-outline-text", ["- Machine learning", "  - Linear algebra", "  - Probability", "    - Bayes' theorem", "  - Calculus", "  - Statistics"].join("\n"));
+    await page.waitForTimeout(100);
+    await page.click(".tropa-outline-preview");
+    await page.waitForSelector(".tropa-batch-modal");
+    await page.evaluate(() => document.querySelectorAll(".tropa-batch-modal, .tropa-batch-modal *").forEach((el) => { el.scrollTop = 0; }));
+    await page.waitForTimeout(300);
+  }, "&scenario=outline");
+  // The tropa block in a daily note: the route with the next step's material, and the status bar.
+  await shot("block", async (page) => {
+    await page.evaluate(() => tropa.renderBlock("show: route\nlimit: 5"));
+    await page.waitForTimeout(400);
   });
 }
 

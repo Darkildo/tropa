@@ -2,7 +2,9 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
-## [Unreleased]
+## [0.5.0] - 2026-11-05
+
+Tropa starts on a vault you already have and keeps review in check: links suggested from your notes, a map from a pasted list, a daily limit and a pause for reviews, a `tropa` block for any note, the status bar and page previews of the map's nodes. Requires Obsidian 1.13.0 or later, as before. Update Tropa on every device that shares the vault: a device still on 0.4 does not see a pause and ignores the moves that spread reviews, so its review dates may differ by up to three days until it is updated. The new strings are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. No new dependencies.
 
 ### Added
 - **Suggested links.** The command **Suggest links from your notes**, a button on the empty map and an item in the file menu of a folder or a note read the links your notes already have and offer them as `requires` and `recommends`: consecutive items of a list of at least three linked notes (each needs the one before it, ticked), a link in the text that is not returned (the linked note is needed first) and links both ways (recommended). Pairs the map already links, materials, notes with another `type`, notes out of the map's scope and embeds are left out.
@@ -181,7 +183,7 @@ Requires Obsidian 1.13.0 or later. The strings added in this release are machine
 - First release: a graph of concepts and materials built from note properties, a personal route to any goal, progress kept in `Tropa/Progress.md`.
 - English and Russian interface, example map and demo vaults in both languages.
 
-[Unreleased]: https://github.com/Darkildo/tropa/compare/0.4.1...HEAD
+[0.5.0]: https://github.com/Darkildo/tropa/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/Darkildo/tropa/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/Darkildo/tropa/compare/0.3.2...0.4.0
 [0.3.2]: https://github.com/Darkildo/tropa/compare/0.3.1...0.3.2

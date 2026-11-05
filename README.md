@@ -6,15 +6,15 @@ Tropa turns ordinary notes into a graph of concepts and learning materials, and 
 
 ![Learning route, light theme](docs/screenshots/route-light.png)
 
-## What's new in 0.4
+## What's new in 0.5
 
-- **Several goals, a deadline and a pace:** route to one goal or all of them, and see when you finish at your pace.
-- **Learning journal:** every change of progress is appended to a file per month and device, and the side panel sums up your activity.
-- **Review with FSRS:** mastered concepts come back when you are about to forget them, in **Review today**, without blocking the route.
-- **Self-check:** questions as callouts in a concept's note, asked one at a time before you mark it mastered and when you review it.
-- **A smaller `main.js`:** translations no longer repeat their keys.
+- **Suggested links:** start a map from the links your notes already have, in a preview where nothing is written until you add it.
+- **Map from a list:** paste a list, headings or a book's table of contents, and each line becomes a concept, with nesting as links.
+- **Reviews a day and a pause:** today's queue keeps to a daily limit, reviews spread evenly over the days, and a pause holds them until the day you come back.
+- **In your notes:** a `tropa` code block shows the route, today's reviews or the next step in any note, such as a daily note.
+- **Status bar and page preview:** what is due and the next step at the bottom of the window, and a note's preview on hovering its node with Ctrl or Cmd.
 
-Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
+Requires Obsidian 1.13.0. Update Tropa on every device that shares the vault. The full list is in the [changelog](CHANGELOG.md). The full list is in the [changelog](CHANGELOG.md).
 
 ## Features
 
@@ -57,6 +57,9 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 | Review: a concept due, with the four ratings | ![Review, light](docs/screenshots/review-light.png) | ![Review, dark](docs/screenshots/review-dark.png) |
 | Self-check with the answer shown | ![Self-check, light](docs/screenshots/check-light.png) | ![Self-check, dark](docs/screenshots/check-dark.png) |
 | Two goals, the route to both, deadline and pace | ![Goals, light](docs/screenshots/goals-light.png) | ![Goals, dark](docs/screenshots/goals-dark.png) |
+| Suggested links from a course outline and the notes' own links | ![Suggested links, light](docs/screenshots/links-light.png) | ![Suggested links, dark](docs/screenshots/links-dark.png) |
+| A map from a pasted list, before the notes are created | ![Map from a list, light](docs/screenshots/outline-light.png) | ![Map from a list, dark](docs/screenshots/outline-dark.png) |
+| The `tropa` block in a note, beside the map, and the status bar | ![Tropa block, light](docs/screenshots/block-light.png) | ![Tropa block, dark](docs/screenshots/block-dark.png) |
 
 The map audit, opened from its button in the map's bar: a cycle, a link to a missing note, a duplicate name, concepts without materials and a lone note.
 
