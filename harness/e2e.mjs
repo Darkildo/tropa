@@ -2147,6 +2147,104 @@ for (const [lang, title, reveal, grades, dir] of [
   await page.close();
 }
 
+// --- suggested links from plain notes
+const linkRows = (page, section) => page.locator(`.tropa-batch-section.is-${section} .tropa-batch-row`);
+const linkRow = (page, from, to) => page.locator(`.tropa-batch-row[data-from="Course/${from}.md"][data-to="Course/${to}.md"]`);
+const pickScope = async (page, text) => {
+  await page.keyboard.type(text); await wait(page, 100); await page.keyboard.press("Enter"); await wait(page, 200);
+};
+{
+  const { page, errors } = await open({ query: "?scenario=links" });
+  ok("links: command is registered", await page.evaluate(() => tropa.plugin.commands.some((c) => c.id === "suggest-links" && c.name === "Suggest links from your notes")));
+  ok("links: undo command waits for a batch", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-links").checkCallback(true) === false));
+  await runCommand(page, "suggest-links"); await wait(page, 150);
+  const scopes = await page.locator(".modal .tropa-pick-text > div:first-child").allInnerTexts();
+  ok("links: scopes are the whole vault and the folders", scopes[0] === "All notes" && scopes.includes("Course") && scopes.includes("Other"), scopes.join(", "));
+  await pickScope(page, "Course");
+  ok("links: preview opens with the folder in its title", (await page.locator(".tropa-batch-modal .modal-title").innerText()) === "Suggested links: Course");
+  const counts = {};
+  for (const section of ["list", "link", "mutual"]) counts[section] = await linkRows(page, section).count();
+  ok("links: rows by where they were found", JSON.stringify(counts) === JSON.stringify({ list: 2, link: 2, mutual: 1 }), JSON.stringify(counts));
+  ok("links: list rows are ticked and read as sentences", (await linkRow(page, "Derivatives", "Limits").locator("input").isChecked())
+    && (await linkRow(page, "Derivatives", "Limits").innerText()).replace(/\s+/g, " ").startsWith("Derivatives needs recommends Limits")
+    && (await linkRow(page, "Derivatives", "Limits").locator("select").inputValue()) === "requires");
+  ok("links: the list is named", (await linkRow(page, "Derivatives", "Limits").locator(".tropa-batch-meta").innerText()) === "In the list of Calculus course");
+  ok("links: text links unticked", !(await linkRow(page, "Limits", "Functions").locator("input").isChecked()));
+  ok("links: a link both ways is recommended", (await linkRow(page, "Integrals", "Series").locator("select").inputValue()) === "recommends");
+  ok("links: a pair from the list is not offered again from the text", (await linkRow(page, "Derivatives", "Integrals").count()) === 0);
+  ok("links: materials, other note types, embeds and notes far away are left out", (await page.locator('.tropa-batch-row[data-to="Course/Calculus book.md"], .tropa-batch-row[data-from^="Course/Daily"], .tropa-batch-row[data-to="Other/Far note.md"], .tropa-batch-row[data-to="Course/graph.png"]').count()) === 0);
+  ok("links: apply counts the ticked rows", (await page.locator(".tropa-batch-apply").innerText()) === "Add links (2)");
+  const loop = linkRow(page, "Wrap-up", "Old A");
+  // A refused tick does not stick, so this is a click rather than check().
+  await loop.locator("input").click(); await wait(page, 100);
+  ok("links: a link that closes a loop is refused", !(await loop.locator("input").isChecked()) && (await loop.getAttribute("class")).includes("is-refused"));
+  ok("links: the loop is spelled out", (await loop.locator(".tropa-batch-loop").innerText()) === "Would close a loop: Wrap-up → Old A → Old B → Wrap-up", await loop.locator(".tropa-batch-loop").innerText());
+  await loop.locator("select").selectOption("recommends"); await wait(page, 100);
+  ok("links: as recommended it is taken", (await loop.locator("input").isChecked()) && !(await loop.getAttribute("class")).includes("is-refused"));
+  await linkRow(page, "Limits", "Functions").locator("input").check(); await wait(page, 100);
+  await page.locator(".tropa-batch-modal input[type=search]").fill("seri"); await wait(page, 100);
+  ok("links: the filter hides other rows", (await page.locator(".tropa-batch-row:not(.is-hidden)").count()) === 1);
+  await page.locator(".tropa-batch-modal input[type=search]").fill("");
+  await page.screenshot({ path: SHOTS + "70-links.png" });
+  ok("links: apply counts the chosen rows", (await page.locator(".tropa-batch-apply").innerText()) === "Add links (4)");
+  await page.click(".tropa-batch-apply"); await wait(page, 600);
+  const derivatives = await note(page, "Course/Derivatives.md");
+  ok("links: required link written with the concept type", /type: concept/.test(derivatives) && /requires:\s*\n\s*- "?\[\[Limits\]\]/.test(derivatives) && derivatives.endsWith("Leads to [[Integrals]].\n"), derivatives);
+  ok("links: a target becomes a concept too", /type: concept/.test(await note(page, "Course/Functions.md")));
+  ok("links: recommended link written", /recommends:\s*\n\s*- "?\[\[Old A\]\]/.test(await note(page, "Course/Wrap-up.md")));
+  ok("links: the notice counts the links", (await page.evaluate("tropa.notices")).includes("Links added: 4Undo"), JSON.stringify(await page.evaluate("tropa.notices")));
+  ok("links: the map follows", await page.evaluate(() => tropa.plugin.store.graph.nodes.get("Course/Integrals.md")?.requires.includes("Course/Derivatives.md")));
+  await page.locator(".notice .tropa-notice-undo").click(); await wait(page, 600);
+  ok("links: undo takes the batch back", !(await note(page, "Course/Derivatives.md")).includes("requires") && !(await note(page, "Course/Functions.md")).includes("type")
+    && !(await note(page, "Course/Wrap-up.md")).includes("recommends") && (await note(page, "Course/Wrap-up.md")).includes("type: concept"));
+  ok("links: undone", (await page.evaluate("tropa.notices")).includes("The suggested links were removed."));
+  // Again, then a hand edit before undoing: that note keeps the edit.
+  await runCommand(page, "suggest-links"); await wait(page, 150);
+  await pickScope(page, "Course");
+  await page.click(".tropa-batch-apply"); await wait(page, 600);
+  await page.evaluate(() => tropa.plugin.store.addLink("Course/Derivatives.md", "requiresKey", "Course/Functions.md")); await wait(page, 300);
+  ok("links: undo command is offered after a batch", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-links").checkCallback(true)));
+  await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-links").checkCallback(false)); await wait(page, 600);
+  ok("links: a note edited since keeps its edit", (await note(page, "Course/Derivatives.md")).includes("[[Functions]]") && !(await note(page, "Course/Integrals.md")).includes("requires"));
+  ok("links: and the notice says so", (await page.evaluate("tropa.notices")).includes("The suggested links were removed. Notes changed since and left as they are: 1"), JSON.stringify(await page.evaluate("tropa.notices")));
+  ok("links: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=empty" });
+  await page.click('.tropa-empty button:text-is("Suggest links from my notes")'); await wait(page, 150);
+  await page.keyboard.press("Enter"); await wait(page, 200);
+  ok("links: the empty map offers suggestions, and says when there are none", (await page.evaluate("tropa.notices")).includes("No new links found in All notes."));
+  ok("links empty: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, title, dir] of [["ru", "Предложенные связи: Course", "ltr"], ["ar", "روابط مقترحة: ⁨Course⁩", "rtl"]]) {
+  const { page, errors } = await open({ query: `?scenario=links&lang=${lang}` });
+  await runCommand(page, "suggest-links"); await wait(page, 150);
+  await pickScope(page, "Course");
+  ok(`links ${lang}: title`, (await page.locator(".tropa-batch-modal .modal-title").innerText()) === title, await page.locator(".tropa-batch-modal .modal-title").innerText());
+  ok(`links ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector(".modal.tropa-batch-modal")).direction)) === dir);
+  ok(`links ${lang}: note names keep their own direction`, await page.evaluate(() => [...document.querySelectorAll(".tropa-batch-note")].every((el) => getComputedStyle(el).direction === "ltr")));
+  if (lang === "ru") ok("links ru: the kind reads in Russian", (await linkRow(page, "Derivatives", "Limits").locator("select option:checked").innerText()) === "требует");
+  await page.screenshot({ path: SHOTS + `71-links-${lang}.png` });
+  ok(`links ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?scenario=links&phone" });
+  await runCommand(page, "suggest-links"); await wait(page, 150);
+  await pickScope(page, "Course");
+  const fits = await page.evaluate(() => [...document.querySelectorAll(".tropa-batch-row")].every((row) => row.getBoundingClientRect().right <= innerWidth + 0.5) && document.documentElement.scrollWidth <= innerWidth);
+  ok("links phone: rows fit the screen", fits);
+  const select = await linkRow(page, "Derivatives", "Limits").locator("select").boundingBox();
+  ok("links phone: the kind is finger-sized", select && select.height >= 36, JSON.stringify(select));
+  await linkRow(page, "Limits", "Functions").locator("input").tap(); await wait(page, 100);
+  ok("links phone: a tap ticks a row", await linkRow(page, "Limits", "Functions").locator("input").isChecked());
+  await page.screenshot({ path: SHOTS + "72-links-phone.png" });
+  ok("links phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 await stop();
 const passed = results.filter(Boolean).length;
 console.log(passed, "/", results.length);
