@@ -67,6 +67,8 @@ body.is-phone #right, body.is-phone #note { display: none; }
 /* On a phone Obsidian opens the right sidebar as a drawer over the view, under its navigation bar. */
 body.is-phone.is-right-open #right { display: block; position: fixed; z-index: 30; inset: 0 0 0 40px; width: auto; }
 body.is-phone .view-content { padding: 0; }
+.status-bar { position: fixed; z-index: 35; right: 0; bottom: 0; display: flex; gap: 8px; padding: 2px 10px; border-top-left-radius: 6px; background: var(--background-secondary); color: var(--text-muted); font-size: 12px; }
+.status-bar-item.mod-clickable { cursor: pointer; }
 .notice { position: fixed; z-index: 70; top: 16px; right: 16px; padding: 10px 14px; border-radius: 8px; background: var(--text-normal); color: var(--background-primary); }
 </style>
 <link rel="stylesheet" href="styles.css">
