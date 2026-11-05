@@ -153,6 +153,13 @@ if (scenario === "links") {
   vault.seed("Course/Old B.md", '---\ntype: concept\nrequires: ["[[Wrap-up]]"]\n---\n');
   vault.seed("Course/Wrap-up.md", "---\ntype: concept\n---\nAll of [[Old A]] again.\n");
 }
+// A map from a list: a concept and a plain note to match, a material of the same name to pass over, a ghost to spell.
+if (scenario === "outline") {
+  vault.seed("Algebra/Linear Algebra.md", "---\ntype: concept\n---\n");
+  vault.seed("Probability.md", "Chance and odds.\n");
+  vault.seed("Books/Statistics.md", "---\ntype: source\nformat: book\n---\n");
+  vault.seed("Old/Goal.md", '---\ntype: concept\nrequires: ["[[Calculus]]"]\n---\n');
+}
 // Folder and tag exclusions: the progress file and an attachment sit in excluded folders but must keep working.
 if (scenario === "scope") {
   vault.seed("Goal.md", `---\ntype: concept\ntags: [course]\nrequires: ["[[Base]]", "[[Archived]]", "[[Private note]]", "[[Inline tagged]]", "[[Kept]]"]\n---\n`);

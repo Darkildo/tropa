@@ -137,11 +137,13 @@ export class Vault extends Events {
   files = new Map<string, TFile>();
   folders = new Set<string>();
   contents = new Map<string, string>();
+  /** Paths sent to the trash, for checks. */
+  trashed: string[] = [];
   adapter = { exists: async (path: string) => this.files.has(path) || this.folders.has(path) };
 
   getMarkdownFiles() { return [...this.files.values()].filter((file) => file.extension === "md"); }
   getFiles() { return [...this.files.values()]; }
-  getAbstractFileByPath(path: string) { return this.files.get(path) ?? (this.folders.has(path) ? new TFolder(path) : null); }
+  getAbstractFileByPath(path: string) { return this.files.get(path) ?? (this.folders.has(path) ? this.folderAt(path) : null); }
   getFolderByPath(path: string) {
     const prefix = `${path}/`;
     const known = this.folders.has(path) || [...this.files.keys()].some((file) => file.startsWith(prefix));
@@ -311,6 +313,14 @@ class MetadataCache extends Events {
 }
 
 class FileManager {
+  async trashFile(file: TAbstractFile) {
+    app.vault.trashed.push(file.path);
+    if (file instanceof TFile) {
+      await app.vault.delete(file);
+      return;
+    }
+    for (const path of [...app.vault.folders]) if (path === file.path || path.startsWith(`${file.path}/`)) app.vault.folders.delete(path);
+  }
   async processFrontMatter(file: TFile, fn: (frontmatter: any) => void) {
     const content = app.vault.contents.get(file.path) ?? "";
     const match = FRONTMATTER.exec(content);
@@ -640,6 +650,10 @@ export class Setting {
   addDropdown(cb: (dropdown: any) => void) {
     const select = (this.control as any).createEl("select", { cls: "dropdown" }) as HTMLSelectElement;
     const api = {
+      addOption(value: string, text: string) {
+        (select as any).createEl("option", { text, attr: { value } });
+        return api;
+      },
       addOptions(options: Record<string, string>) {
         for (const [value, text] of Object.entries(options)) (select as any).createEl("option", { text, attr: { value } });
         return api;
