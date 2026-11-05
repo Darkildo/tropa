@@ -102,10 +102,13 @@ export class Journal extends Events {
     this.record(progressEvents(before, after, cause));
   }
 
-  /** Appends events with the current time. Several calls in one task end up in one write. */
-  record(events: JournalEvent[]) {
+  /**
+   * Appends events with the current time, or `at` when the caller already worked with a time (a
+   * review shifted for that moment). Several calls in one task end up in one write.
+   */
+  record(events: JournalEvent[], at?: Date) {
     if (!this.settings().journal || events.length === 0) return;
-    const date = new Date();
+    const date = at ?? new Date();
     for (const event of events) this.queue.push({ date, event });
     if (this.scheduled) return;
     this.scheduled = true;

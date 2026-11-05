@@ -1,5 +1,6 @@
 import { Notice, Platform, Plugin, TFile, debounce, getLanguage, normalizePath, type TAbstractFile } from "obsidian";
-import { STATE_ICON } from "./core/format";
+import { STATE_ICON, formatDate } from "./core/format";
+import { parseDate } from "./core/plan";
 import { isGoal } from "./core/graph";
 import { attempt } from "./attempt";
 import { exampleLang, setLocale, t } from "./i18n";
@@ -18,6 +19,7 @@ import { PANEL_VIEW, PanelView } from "./ui/panel-view";
 import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
 import { PlanModal } from "./ui/plan";
+import { openPause, resumeReview } from "./ui/pause";
 
 /** How long a notice with an undo button stays. */
 const NOTICE_MS = 6000;
@@ -249,6 +251,24 @@ export default class TropaPlugin extends Plugin {
 
     this.addCommand({ id: "review-next", name: t.review.nextCommand, callback: () => attempt(this.reviewNext(), "open the next review") });
     this.addCommand({ id: "review-queue", name: t.review.queueCommand, callback: () => attempt(this.showReviewQueue(), "open the review queue") });
+    this.addCommand({
+      id: "review-pause",
+      name: t.review.pauseCommand,
+      checkCallback: (checking) => {
+        if (!this.reviews.enabled || this.reviews.paused()) return false;
+        if (!checking) openPause(this.app, this.reviews);
+        return true;
+      },
+    });
+    this.addCommand({
+      id: "review-resume",
+      name: t.review.resumeCommand,
+      checkCallback: (checking) => {
+        if (!this.reviews.enabled || !this.reviews.paused()) return false;
+        if (!checking) resumeReview(this.reviews);
+        return true;
+      },
+    });
   }
 
   /** The longest overdue concept, in the panel; on a phone, on the map, whose sheet is the panel there. */
@@ -259,7 +279,14 @@ export default class TropaPlugin extends Plugin {
     }
     const id = this.reviews.next();
     if (!id) {
-      new Notice(t.review.nothingDue);
+      const day = this.reviews.day();
+      new Notice(
+        day.paused
+          ? t.review.pausedUntil({ date: formatDate(parseDate(day.paused.until)) })
+          : day.waiting > 0
+            ? `${t.review.limitDone} ${t.review.waiting({ count: day.waiting })}`
+            : t.review.nothingDue,
+      );
       return;
     }
     if (Platform.isPhone) await this.showMap((map) => map.focusNode(id));

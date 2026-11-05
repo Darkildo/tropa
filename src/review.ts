@@ -1,6 +1,8 @@
 import { Events, Notice, type EventRef } from "obsidian";
-import { baselineSpread, DEFAULT_RETENTION, Scheduler, type Baseline, type ReviewRating, type Schedule } from "./core/review";
+import { baselineSpread, DEFAULT_RETENTION, RATINGS, Scheduler, type Baseline, type ReviewRating, type Schedule } from "./core/review";
 import { UNDO } from "./core/journal";
+import { chooseShift, dayQueue, DEFAULT_LIMIT, isPaused, latestPause, loadByDay, reviewsOn, type Pause } from "./core/load";
+import { routeTargets } from "./core/graph";
 import { formatDate } from "./core/format";
 import { t } from "./i18n";
 import type { TropaSettings } from "./defaults";
@@ -16,6 +18,23 @@ const NOTICE_MS = 6000;
  */
 export type ReviewCheck = (id: string) => (() => Promise<ReviewRating | null>) | null;
 
+/** What review asks for today. */
+export interface ReviewDay {
+  /** Due and within today's limit, the easiest to forget first. */
+  queue: Schedule[];
+  /** Due but over today's limit: they wait for the next days. */
+  waiting: number;
+  /** Reviews already done today, which count against the limit. */
+  done: number;
+  /** Reviews a day, 0 for no limit. */
+  limit: number;
+  /** The pause in force now, if any: the queue is empty until it ends. */
+  paused: Pause | null;
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+const MINUTE = 60 * 1000;
+
 /**
  * Schedules of mastered concepts, replayed from the journal. Review needs the journal: it is the
  * only place reviews are kept and the way they reach other devices. With the journal off, review
@@ -26,6 +45,8 @@ export class Reviews extends Events {
   private cacheKey: unknown[] = [];
   private scheduler: Scheduler | null = null;
   private dueKey = "";
+  private dayCache: { key: unknown[]; day: ReviewDay; due: Set<string> } | null = null;
+  private pauseCache: { history: unknown; pause: Pause | null } | null = null;
   private checks: ReviewCheck[] = [];
   /** The review the open notice can take back. */
   private undoable: { id: string; count: number } | null = null;
@@ -99,22 +120,98 @@ export class Reviews extends Events {
     return this.schedules.get(id) ?? null;
   }
 
+  /** Due now and in today's queue: within the limit and not paused. */
   isDue(id: string, now = Date.now()) {
-    const schedule = this.schedule(id);
-    return schedule !== null && schedule.due <= now;
+    return this.today(now).due.has(id);
   }
 
-  /** Concepts due now, longest overdue first. */
+  /** Concepts to review now: today's queue, the easiest to forget first. */
   due(now = Date.now()): Schedule[] {
-    return [...this.schedules.values()].filter((schedule) => schedule.due <= now).sort((a, b) => a.due - b.due || a.id.localeCompare(b.id));
+    return this.today(now).day.queue;
+  }
+
+  /** Today's queue with what it leaves out. Cached for the minute, as the map asks for every node. */
+  day(now = Date.now()): ReviewDay {
+    return this.today(now).day;
+  }
+
+  /** The latest pause in the journal of any device, if any. */
+  get pause(): Pause | null {
+    const history = this.journal.entries;
+    if (this.pauseCache?.history !== history) this.pauseCache = { history, pause: latestPause(history.entries) };
+    return this.pauseCache.pause;
+  }
+
+  paused(now = Date.now()) {
+    return isPaused(this.pause, now);
+  }
+
+  /** Pauses review until the local day `until` (YYYY-MM-DD), on every device. */
+  pauseUntil(until: string) {
+    if (!this.enabled) return;
+    this.journal.record([{ action: "pause", id: null, fields: { until } }]);
+  }
+
+  resume() {
+    if (!this.enabled || !this.paused()) return;
+    this.journal.record([{ action: "resume", id: null }]);
+  }
+
+  private today(now: number) {
+    const schedules = this.schedules;
+    const settings = this.settings();
+    const limit = Math.max(0, Math.floor(settings.reviewLimit ?? DEFAULT_LIMIT));
+    const history = this.journal.entries;
+    const key = [schedules, Math.floor(now / MINUTE), limit, history, this.store.revision];
+    const cached = this.dayCache;
+    if (cached && key.every((part, index) => part === cached.key[index])) return cached;
+
+    const done = reviewsOn(history.entries, now, (id) => schedules.has(id));
+    const { queue, waiting, paused } = dayQueue(schedules.values(), now, {
+      limit,
+      done,
+      pause: this.pause,
+      recall: (schedule) => this.retrievability(schedule, now),
+      needed: this.neededByGoals(),
+    });
+    const day: ReviewDay = { queue, waiting, done, limit, paused };
+    this.dayCache = { key, day, due: new Set(queue.map((schedule) => schedule.id)) };
+    return this.dayCache;
+  }
+
+  /** Concepts the goals lead through: at the same chance to recall, they come first. */
+  private neededByGoals() {
+    const { graph, progress } = this.store;
+    const needed = new Set<string>();
+    for (const goal of routeTargets(progress)) {
+      if (!graph.nodes.has(goal)) continue;
+      needed.add(goal);
+      for (const id of graph.ancestors(goal)) needed.add(id);
+    }
+    return needed;
   }
 
   retrievability(schedule: Schedule, now = Date.now()) {
     return this.engine.retrievability(schedule, now);
   }
 
+  /** When the concept would come back after each rating, balanced as the review will be. */
   preview(schedule: Schedule, now = Date.now()) {
-    return this.engine.preview(schedule, now);
+    const result = {} as Record<ReviewRating, number>;
+    const load = this.load(schedule.id);
+    for (const rating of RATINGS) {
+      const { due, days } = this.engine.rated(schedule, now, rating);
+      result[rating] = due + (load ? chooseShift(due, days, load) : 0) * DAY;
+    }
+    return result;
+  }
+
+  /** Concepts due on each day but this one, to balance against; null when balancing is off. */
+  private load(except: string) {
+    if (!this.settings().reviewBalance) return null;
+    const dues: number[] = [];
+    for (const schedule of this.schedules.values()) if (schedule.id !== except) dues.push(schedule.due);
+    return loadByDay(dues);
   }
 
   /**
@@ -124,7 +221,17 @@ export class Reviews extends Events {
    */
   rate(id: string, rating: ReviewRating, action: "reviewed" | "checked" = "reviewed") {
     if (action === "checked" ? !this.settings().journal : !this.enabled || !this.schedule(id)) return;
-    this.journal.record([{ action, id, fields: { rating: String(rating) } }]);
+    // The line keeps this second, so the replay sees the same fuzz and the shift lands where it was chosen.
+    const at = new Date(Math.floor(Date.now() / 1000) * 1000);
+    const fields: Record<string, string> = { rating: String(rating) };
+    const schedule = this.enabled ? this.schedule(id) : null;
+    const load = schedule ? this.load(id) : null;
+    if (schedule && load) {
+      const { due, days } = this.engine.rated(schedule, at.getTime(), rating);
+      const shift = chooseShift(due, days, load);
+      if (shift !== 0) fields.shift = String(shift);
+    }
+    this.journal.record([{ action, id, fields }], at);
     this.lastAction = action;
     const count = (this.undoable?.id === id ? this.undoable.count : 0) + 1;
     const token = { id, count };
@@ -171,25 +278,30 @@ export class Reviews extends Events {
     return true;
   }
 
-  /** The concept to review next: the longest overdue one. */
+  /** The concept to review next: the first in today's queue. */
   next(now = Date.now()) {
     return this.due(now)[0]?.id ?? null;
   }
 
   /** Called when the journal, the progress or the settings change, and every few minutes, as time makes concepts due. */
   refresh() {
-    const due = this.due().map((schedule) => schedule.id).join("\n");
-    this.dueKey = due;
+    this.dueKey = this.dayKey();
     this.trigger("change");
   }
 
   /** Only reports when the set of due concepts changed since the last look. */
   tick() {
     if (!this.enabled) return;
-    const due = this.due().map((schedule) => schedule.id).join("\n");
-    if (due === this.dueKey) return;
-    this.dueKey = due;
+    const key = this.dayKey();
+    if (key === this.dueKey) return;
+    this.dueKey = key;
     this.trigger("change");
+  }
+
+  /** What the queue shows: its concepts, how many wait, and whether a pause holds it. */
+  private dayKey() {
+    const day = this.day();
+    return [...day.queue.map((schedule) => schedule.id), day.waiting, day.paused?.until ?? ""].join("\n");
   }
 
   /**
