@@ -3,9 +3,24 @@ import type { BatchRow, LinkBatch, LinkEdit, LinkKindName, LinkOrigin } from "..
 import { isRtl, t } from "../i18n";
 import { typedDirection } from "./pick";
 
+/** A group of rows in the preview, by where its links come from. */
+export interface BatchSection {
+  origin: LinkOrigin;
+  title: string;
+  hint: string;
+}
+
 export interface BatchPreviewOptions {
   title: string;
   intro: string;
+  /** The groups of rows, in order. By default those of links found in notes. */
+  sections?: BatchSection[];
+  /** Draws what comes before the rows, such as the notes a batch creates. */
+  prelude?: (el: HTMLElement) => void;
+  /** The label of the apply button for the number of links chosen. */
+  applyLabel?: (count: number) => string;
+  /** The batch does something with no link chosen too, such as creating notes. */
+  applyEmpty?: boolean;
   /** How a note is named in a row. */
   titleOf: (id: string) => string;
   /** The line under a row: where the link was found. */
@@ -15,7 +30,7 @@ export interface BatchPreviewOptions {
   onApply: (edits: LinkEdit[]) => void;
 }
 
-const SECTIONS: LinkOrigin[] = ["list", "link", "mutual"];
+const FOUND_IN_NOTES = ["list", "link", "mutual"] as const;
 
 /**
  * A batch of links before it is written: each row reads as a sentence, "A needs B", with a box to
@@ -36,6 +51,7 @@ export class BatchPreviewModal extends Modal {
     this.modalEl.addClass("tropa-batch-modal");
     const { contentEl } = this;
     contentEl.createEl("p", { cls: "tropa-hint", text: this.options.intro });
+    this.options.prelude?.(contentEl.createDiv({ cls: "tropa-batch-prelude" }));
     const filter = contentEl.createEl("input", {
       type: "search",
       cls: "tropa-known-filter",
@@ -43,7 +59,8 @@ export class BatchPreviewModal extends Modal {
     });
     typedDirection(filter);
     const list = contentEl.createDiv({ cls: "tropa-batch-list" });
-    for (const origin of SECTIONS) this.section(list, origin);
+    const sections = this.options.sections ?? FOUND_IN_NOTES.map((origin) => ({ origin, title: t.links.section[origin], hint: t.links.sectionHint[origin] }));
+    for (const section of sections) this.section(list, section);
     if (this.options.footer) contentEl.createEl("p", { cls: "tropa-hint tropa-batch-footer", text: this.options.footer });
 
     const buttons = contentEl.createDiv({ cls: "modal-button-container" });
@@ -61,16 +78,16 @@ export class BatchPreviewModal extends Modal {
     window.setTimeout(() => (this.batch.rows.length > 8 ? filter : this.apply).focus());
   }
 
-  private section(list: HTMLElement, origin: LinkOrigin) {
+  private section(list: HTMLElement, { origin, title, hint }: BatchSection) {
     const indices = this.batch.rows.flatMap((row, index) => (row.origin === origin ? [index] : []));
     if (!indices.length) return;
     const section = list.createDiv({ cls: `tropa-batch-section is-${origin}` });
     const head = section.createDiv({ cls: "tropa-batch-head" });
-    head.createEl("h3", { text: t.links.section[origin] });
+    head.createEl("h3", { text: title });
     head.createSpan({ cls: "tropa-audit-count", text: String(indices.length) });
     const all = head.createEl("button", { cls: "tropa-batch-all", text: t.links.selectAll });
     const none = head.createEl("button", { cls: "tropa-batch-none", text: t.links.selectNone });
-    section.createEl("p", { cls: "tropa-audit-hint", text: t.links.sectionHint[origin] });
+    section.createEl("p", { cls: "tropa-audit-hint", text: hint });
     for (const index of indices) this.row(section, index);
 
     const setAll = (checked: boolean) => {
@@ -128,13 +145,13 @@ export class BatchPreviewModal extends Modal {
   private update() {
     for (const refresh of this.refreshers) refresh?.();
     const count = this.batch.chosen.length;
-    this.apply.setText(t.links.apply({ count }));
-    this.apply.disabled = count === 0;
+    this.apply.setText(this.options.applyLabel?.(count) ?? t.links.apply({ count }));
+    this.apply.disabled = count === 0 && !this.options.applyEmpty;
   }
 
   private confirm() {
     const edits = this.batch.chosen;
-    if (!edits.length) return;
+    if (!edits.length && !this.options.applyEmpty) return;
     this.close();
     this.options.onApply(edits);
   }

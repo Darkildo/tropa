@@ -2,8 +2,8 @@ import type { LearningGraph } from "./graph";
 
 export type LinkKindName = "requires" | "recommends";
 
-/** Where a suggested link was found. */
-export type LinkOrigin = "list" | "link" | "mutual";
+/** Where a suggested link was found: in the notes (list, link, mutual) or in a pasted outline (nest, order). */
+export type LinkOrigin = "list" | "link" | "mutual" | "nest" | "order";
 
 /** A link to add to a note: `from` gets `to` in its `requires` or `recommends`. Both are vault paths. */
 export interface LinkEdit {
@@ -49,7 +49,7 @@ export const LIST_MIN_LINKS = 3;
 /** More than this many suggestions are cut, so the preview stays usable; a smaller scope shows the rest. */
 export const MAX_SUGGESTIONS = 500;
 
-const ORIGIN_RANK: Record<LinkOrigin, number> = { list: 0, link: 1, mutual: 2 };
+const ORIGIN_RANK: Record<LinkOrigin, number> = { list: 0, link: 1, mutual: 2, nest: 3, order: 4 };
 
 /**
  * Links the notes already imply, as candidates for `requires` and `recommends`:
@@ -124,7 +124,7 @@ function outlines(note: NoteText, eligible: (id: string) => boolean, offer: (can
 }
 
 /** Already linked in either direction, hard or soft. */
-function linked(graph: LearningGraph, a: string, b: string) {
+export function linked(graph: LearningGraph, a: string, b: string) {
   const one = graph.nodes.get(a);
   const other = graph.nodes.get(b);
   return Boolean(one?.requires.includes(b) || one?.recommends.includes(b) || other?.requires.includes(a) || other?.recommends.includes(a));

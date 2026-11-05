@@ -1,4 +1,4 @@
-import { TFile, type App } from "obsidian";
+import { TFile, TFolder, normalizePath, type App } from "obsidian";
 import type { LinkEdit } from "./core/batch-links";
 import type { LearningGraph } from "./core/graph";
 import { linkTargets, toList } from "./core/links";
@@ -11,25 +11,36 @@ interface NoteEdit {
   after: Record<string, unknown>;
 }
 
+/** A note a batch created, with its text when the batch was done: changed since, it is not taken back. */
+interface CreatedNote {
+  path: string;
+  content: string;
+}
+
 /** What a batch changed, enough to put the notes back as they were. */
 export interface LinkUndo {
   notes: NoteEdit[];
   links: number;
+  /** Notes the batch created, and folders made for them, newest last. */
+  created: CreatedNote[];
+  folders: string[];
 }
 
 /**
  * Adds a batch of links to the notes' properties, one write per note. A note that is not a concept
- * on the map yet becomes one (`type: concept`), so a recommended link or a link to it shows up too.
+ * on the map yet becomes one (`type: concept`), so a recommended link or a link to it shows up too;
+ * so do the notes in `also`, links or not.
  */
-export async function applyLinkEdits(app: App, settings: TropaSettings, graph: LearningGraph, edits: LinkEdit[]): Promise<LinkUndo> {
+export async function applyLinkEdits(app: App, settings: TropaSettings, graph: LearningGraph, edits: LinkEdit[], also: string[] = []): Promise<LinkUndo> {
   const keys = [settings.typeKey, settings.requiresKey, settings.recommendsKey];
   const byNote = new Map<string, LinkEdit[]>();
   for (const edit of edits) {
     byNote.set(edit.from, [...(byNote.get(edit.from) ?? []), edit]);
     if (!byNote.has(edit.to)) byNote.set(edit.to, []);
   }
+  for (const path of also) if (!byNote.has(path)) byNote.set(path, []);
 
-  const undo: LinkUndo = { notes: [], links: 0 };
+  const undo: LinkUndo = { notes: [], links: 0, created: [], folders: [] };
   for (const [path, own] of byNote) {
     const file = app.vault.getAbstractFileByPath(path);
     if (!(file instanceof TFile)) continue;
@@ -66,7 +77,10 @@ export async function applyLinkEdits(app: App, settings: TropaSettings, graph: L
 export async function undoLinkEdits(app: App, undo: LinkUndo): Promise<{ restored: number; kept: number }> {
   let restored = 0;
   let kept = 0;
+  const created = new Set(undo.created.map((note) => note.path));
   for (const note of undo.notes) {
+    // A note the batch created goes as a whole, below.
+    if (created.has(note.path)) continue;
     const file = app.vault.getAbstractFileByPath(note.path);
     if (!(file instanceof TFile)) {
       kept++;
@@ -86,7 +100,55 @@ export async function undoLinkEdits(app: App, undo: LinkUndo): Promise<{ restore
       else restored++;
     });
   }
+  for (const note of undo.created) {
+    const file = app.vault.getAbstractFileByPath(note.path);
+    if (!(file instanceof TFile)) continue;
+    if ((await app.vault.read(file)) !== note.content) {
+      kept++;
+      continue;
+    }
+    await app.fileManager.trashFile(file);
+    restored++;
+  }
+  // Folders made for the notes go too, when nothing else has been put in them.
+  for (const path of [...undo.folders].reverse()) {
+    const folder = app.vault.getAbstractFileByPath(path);
+    if (folder instanceof TFolder && folder.children.length === 0) await app.fileManager.trashFile(folder);
+  }
   return { restored, kept };
+}
+
+/**
+ * Creates concept notes with nothing but their type, making their folders first. A path taken in
+ * the meantime gets a free name next to it. Returns the paths as created, in the order given.
+ */
+export async function createConceptNotes(app: App, typeKey: string, paths: string[]): Promise<{ paths: Map<string, string>; folders: string[] }> {
+  const folders: string[] = [];
+  const made = new Map<string, string>();
+  for (const wanted of paths) {
+    const parts = normalizePath(wanted).split("/").slice(0, -1);
+    for (let depth = 1; depth <= parts.length; depth++) {
+      const folder = parts.slice(0, depth).join("/");
+      if (app.vault.getAbstractFileByPath(folder)) continue;
+      await app.vault.createFolder(folder);
+      folders.push(folder);
+    }
+    const base = wanted.replace(/\.md$/, "");
+    let path = wanted;
+    for (let i = 2; app.vault.getAbstractFileByPath(path); i++) path = `${base} ${i}.md`;
+    await app.vault.create(path, `---\n${typeKey}: concept\n---\n\n`);
+    made.set(wanted, path);
+  }
+  return { paths: made, folders };
+}
+
+/** Remembers the text of the notes a batch created, as the batch left them, so undo can tell whether they were changed since. */
+export async function rememberCreated(app: App, undo: LinkUndo, paths: Iterable<string>, folders: string[]) {
+  for (const path of paths) {
+    const file = app.vault.getAbstractFileByPath(path);
+    if (file instanceof TFile) undo.created.push({ path, content: await app.vault.read(file) });
+  }
+  undo.folders.push(...folders);
 }
 
 /** The values of `keys`, copied; a missing property is kept as undefined so undo can remove it. */

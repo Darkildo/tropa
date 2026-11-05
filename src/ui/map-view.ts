@@ -1071,6 +1071,8 @@ export class MapView extends ItemView implements DetailHost {
     create.addEventListener("click", () => this.plugin.promptNewConcept());
     const suggest = actions.createEl("button", { cls: "tropa-empty-suggest", text: t.links.button });
     suggest.addEventListener("click", () => this.plugin.links.pickScope());
+    const outline = actions.createEl("button", { cls: "tropa-empty-outline", text: t.outline.button });
+    outline.addEventListener("click", () => this.plugin.outline.open());
   }
 
   private buildControls() {

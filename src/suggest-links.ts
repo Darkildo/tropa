@@ -81,7 +81,6 @@ export class LinkSuggestions {
   /** Reads the notes of the scope and returns what they suggest, without the links the map already has. */
   suggest(scope: LinkScope) {
     const { vault, metadataCache } = this.app;
-    const settings = this.plugin.settings;
     const graph = this.store.graph;
     const texts = new Map<string, NoteText>();
     const textOf = (file: TFile): NoteText => {
@@ -105,16 +104,7 @@ export class LinkSuggestions {
         ? [this.store.fileOf(scope.path)].filter((file): file is TFile => file !== null)
         : vault.getMarkdownFiles().filter((file) => inScope(file.path));
 
-    const eligible = (id: string) => {
-      const file = this.store.fileOf(id);
-      if (!file || file.extension !== "md" || this.store.isOwnFile(id) || this.store.isExcluded(file)) return false;
-      if (graph.nodes.get(id)?.kind === "source") return false;
-      const frontmatter = metadataCache.getFileCache(file)?.frontmatter;
-      const type: unknown = frontmatter?.[settings.typeKey];
-      // Another type of note, or a material by its properties, is not a concept to link.
-      if (type !== undefined) return type === "concept";
-      return !(frontmatter && settings.teachesKey in frontmatter);
-    };
+    const eligible = (id: string) => this.canBeConcept(id);
     const nearby = (id: string) => {
       const node = graph.nodes.get(id);
       return (node?.kind === "concept" && !node.ghost) || inScope(id);
@@ -124,6 +114,19 @@ export class LinkSuggestions {
       return file ? textOf(file).links.map((link) => link.to) : [];
     };
     return suggestLinks({ notes: notes.map(textOf), linksOf, eligible, nearby, graph });
+  }
+
+  /** A note that can be a concept on the map: not a material or another type of note, not Tropa's own file, not left out of the map. */
+  canBeConcept(id: string) {
+    const file = this.store.fileOf(id);
+    if (!file || file.extension !== "md" || this.store.isOwnFile(id) || this.store.isExcluded(file)) return false;
+    if (this.store.graph.nodes.get(id)?.kind === "source") return false;
+    const settings = this.plugin.settings;
+    const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+    const type: unknown = frontmatter?.[settings.typeKey];
+    // Another type of note, or a material by its properties, is not a concept to link.
+    if (type !== undefined) return type === "concept";
+    return !(frontmatter && settings.teachesKey in frontmatter);
   }
 
   private scopeName(scope: LinkScope) {

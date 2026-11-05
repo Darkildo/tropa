@@ -2367,6 +2367,147 @@ for (const [lang, title, dir] of [["ru", "Предложенные связи: C
   await page.close();
 }
 
+// --- a map from a pasted list
+const OUTLINE = ["- Machine learning", "  - linear algebra", "  - Probability", "    - Bayes' theorem", "  - calculus", "  - Statistics", "  - C++: tools?"].join("\n");
+const NEW = "Tropa/Concepts";
+const journalText = async (page) => {
+  await page.evaluate(() => tropa.plugin.journal.settled());
+  return page.evaluate(() => [...tropa.app.vault.contents].filter(([path]) => path.startsWith(tropa.plugin.settings.journalFolder + "/")).map(([, text]) => text).join("\n"));
+};
+const isGoal = (page, path) => page.evaluate((p) => tropa.plugin.store.progress.goal === p || (tropa.plugin.store.progress.goals ?? []).includes(p), path);
+const pasteOutline = async (page, text = OUTLINE) => {
+  await runCommand(page, "map-from-list"); await wait(page, 150);
+  await page.fill(".tropa-outline-text", text); await wait(page, 100);
+};
+{
+  const { page, errors } = await open({ query: "?scenario=outline" });
+  ok("outline: command is registered", await page.evaluate(() => tropa.plugin.commands.some((c) => c.id === "map-from-list" && c.name === "Create a map from a list")));
+  ok("outline: undo command waits for a map", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-map-from-list").checkCallback(true) === false));
+  await runCommand(page, "map-from-list"); await wait(page, 150);
+  ok("outline: preview waits for a list", await page.locator(".tropa-outline-preview").isDisabled());
+  ok("outline: new notes go to the concepts folder by default", (await page.locator(".tropa-outline-folder").inputValue()) === NEW);
+  await page.fill(".tropa-outline-text", "\n\n"); await wait(page, 100);
+  ok("outline: blank text is nothing yet", (await page.locator(".tropa-outline-count").innerText()) === "" && await page.locator(".tropa-outline-preview").isDisabled());
+  await page.fill(".tropa-outline-text", "```\n- code\n```"); await wait(page, 100);
+  ok("outline: says when there are no items", (await page.locator(".tropa-outline-count").innerText()) === "No items found. Put one concept per line.");
+  await page.fill(".tropa-outline-text", OUTLINE); await wait(page, 100);
+  ok("outline: counts the items", (await page.locator(".tropa-outline-count").innerText()) === "Items: 7");
+  await page.screenshot({ path: SHOTS + "73-outline-form.png" });
+  ok("outline: nesting reads as parts by default, chain off", (await page.locator(".tropa-outline-order select").inputValue()) === "parts" && !(await page.locator(".tropa-outline-chain input").isChecked()));
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  ok("outline: the preview opens", (await page.locator(".tropa-batch-modal .modal-title").innerText()) === "Map from a list");
+  const chips = (cls) => page.locator(`.tropa-outline-notes.${cls} .tropa-outline-chip`).allInnerTexts();
+  ok("outline: new notes listed, a ghost spelled as the map has it, a file name cleaned", JSON.stringify(await chips("is-new")) === JSON.stringify(["Machine learning", "Bayes' theorem", "calculus", "Statistics", "C++: tools? (file: C++ tools)"]), JSON.stringify(await chips("is-new")));
+  ok("outline: the new notes' folder is named", (await page.locator(".tropa-outline-notes.is-new h3").innerText()) === `New notes in ${NEW}: 5`);
+  ok("outline: notes in the vault matched by name, a material passed over", JSON.stringify(await chips("is-existing")) === JSON.stringify(["linear algebra", "Probability"]), JSON.stringify(await chips("is-existing")));
+  ok("outline: the ghost's note takes its spelling", (await page.locator(`.tropa-outline-chip[data-path="${NEW}/Calculus.md"]`).count()) === 1);
+  ok("outline: nesting rows ticked, order rows not", (await page.locator(".tropa-batch-section.is-nest .tropa-batch-row.is-checked").count()) === 6
+    && (await page.locator(".tropa-batch-section.is-order .tropa-batch-row").count()) === 4 && (await page.locator(".tropa-batch-section.is-order .tropa-batch-row.is-checked").count()) === 0);
+  const sentence = page.locator(`.tropa-batch-row[data-from="${NEW}/Machine learning.md"][data-to="Algebra/Linear Algebra.md"]`);
+  ok("outline: a row reads as a sentence", (await sentence.locator(".tropa-batch-note").allInnerTexts()).join(" | ") === "Machine learning | linear algebra" && (await sentence.locator("select option:checked").innerText()) === "needs");
+  ok("outline: apply counts notes and links", (await page.locator(".tropa-batch-apply").innerText()) === "Create notes: 5, links: 6");
+  await page.screenshot({ path: SHOTS + "73-outline.png" });
+  // Cancel keeps the list for another try.
+  await page.click('.tropa-batch-modal button:text-is("Cancel")'); await wait(page, 150);
+  await runCommand(page, "map-from-list"); await wait(page, 150);
+  ok("outline: the list is kept after a cancel", (await page.locator(".tropa-outline-text").inputValue()) === OUTLINE);
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  await page.locator(`.tropa-batch-row[data-from="${NEW}/Calculus.md"][data-to="Probability.md"] input`).check(); await wait(page, 100);
+  ok("outline: an order row can be ticked", (await page.locator(".tropa-batch-apply").innerText()) === "Create notes: 5, links: 7");
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  const ml = await note(page, `${NEW}/Machine learning.md`);
+  ok("outline: a new note is a concept with its parts", /type: concept/.test(ml) && /\[\[Linear Algebra\]\]/.test(ml) && /\[\[Probability\]\]/.test(ml) && /\[\[C\+\+ tools\]\]/.test(ml), ml);
+  ok("outline: a name shared with a material links by path", /\[\[Tropa\/Concepts\/Statistics\]\]/.test(ml), ml);
+  const probability = await note(page, "Probability.md");
+  ok("outline: a plain note becomes a concept and keeps its text", /type: concept/.test(probability) && /\[\[Bayes' theorem\]\]/.test(probability) && probability.endsWith("Chance and odds.\n"), probability);
+  ok("outline: the order link is written", /\[\[Probability\]\]/.test(await note(page, `${NEW}/Calculus.md`)));
+  ok("outline: the ghost is a note now", await page.evaluate((path) => tropa.plugin.store.graph.nodes.get("Old/Goal.md").requires.includes(path) && !tropa.plugin.store.graph.nodes.get(path).ghost, `${NEW}/Calculus.md`));
+  ok("outline: the notice counts notes and links", (await page.evaluate("tropa.notices")).includes("Notes created: 5. Links added: 7UndoSet Machine learning as goal"), JSON.stringify(await page.evaluate("tropa.notices")));
+  ok("outline: undo is offered", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-map-from-list").checkCallback(true)));
+  ok("outline: the notice offers the top item as the goal", (await page.locator(".tropa-notice-goal").innerText()) === "Set Machine learning as goal");
+  await page.click(".tropa-notice-goal"); await wait(page, 500);
+  ok("outline: the top item is the goal", await page.evaluate((p) => tropa.plugin.store.progress.goal === p, `${NEW}/Machine learning.md`));
+  ok("outline: the goal is announced, and the button goes", (await page.evaluate("tropa.notices")).includes("Goal: Machine learning") && (await page.locator(".tropa-notice-goal").count()) === 0);
+  ok("outline: the goal goes to the journal", /\sgoal \[\[Machine learning\]\]/.test(await journalText(page)), await journalText(page));
+  ok("outline: the route leads to it", await page.evaluate(() => document.querySelector(".tropa-goal-label")?.textContent === "Machine learning"));
+  await page.click(".tropa-notice-undo"); await wait(page, 700);
+  ok("outline: undo takes the goal back too", !(await isGoal(page, `${NEW}/Machine learning.md`)));
+  ok("outline: undo trashes the new notes", await page.evaluate((folder) => ![...tropa.app.vault.files.keys()].some((path) => path.startsWith(folder + "/")), NEW));
+  const restored = await note(page, "Probability.md");
+  ok("outline: and puts the plain note back", !/type|requires/.test(restored) && restored.endsWith("Chance and odds.\n"), restored);
+  ok("outline: undone", (await page.evaluate("tropa.notices")).includes("The map from the list was removed."));
+  // Again, then an edit to a new note before undoing: that note stays.
+  await pasteOutline(page);
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  await page.evaluate((path) => tropa.app.vault.modify(tropa.app.vault.getAbstractFileByPath(path), tropa.app.vault.contents.get(path) + "My notes.\n"), `${NEW}/Statistics.md`); await wait(page, 300);
+  await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-map-from-list").checkCallback(false)); await wait(page, 700);
+  ok("outline: a note changed since stays", (await note(page, `${NEW}/Statistics.md`)).includes("My notes.") && (await note(page, `${NEW}/Bayes' theorem.md`)) === "");
+  ok("outline: and the notice says so", (await page.evaluate("tropa.notices")).includes("The map from the list was removed. Notes changed since and left as they are: 1"), JSON.stringify(await page.evaluate("tropa.notices")));
+  // A table of contents, the other way round, with the chain.
+  await pasteOutline(page, "1 Basics 1\n1.1 Sets ..... 2\n1.2 Logic 5\n2 Proofs 9");
+  await page.selectOption(".tropa-outline-order select", "topic");
+  await page.locator(".tropa-outline-chain input").check();
+  await page.fill(".tropa-outline-folder", "Book"); await wait(page, 100);
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  ok("outline toc: page numbers dropped", JSON.stringify(await chips("is-new")) === JSON.stringify(["Basics", "Sets", "Logic", "Proofs"]), JSON.stringify(await chips("is-new")));
+  ok("outline toc: parts need their topic, the chain is ticked", await page.locator('.tropa-batch-row[data-from="Book/Sets.md"][data-to="Book/Basics.md"] input').isChecked()
+    && await page.locator('.tropa-batch-row[data-from="Book/Logic.md"][data-to="Book/Sets.md"] input').isChecked()
+    && await page.locator('.tropa-batch-row[data-from="Book/Proofs.md"][data-to="Book/Basics.md"] input').isChecked());
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  ok("outline toc: notes in the chosen folder", /\[\[Basics\]\]/.test(await note(page, "Book/Sets.md")));
+  ok("outline: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?scenario=empty" });
+  await page.click('.tropa-empty button:text-is("Map from a list")'); await wait(page, 150);
+  ok("outline: the empty map offers a map from a list", (await page.locator(".tropa-outline-modal .modal-title").innerText()) === "Map from a list");
+  await page.fill(".tropa-outline-text", "- One\n  - Two"); await wait(page, 100);
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  await page.click(".tropa-batch-apply"); await wait(page, 800);
+  ok("outline: the empty map fills", await page.evaluate(() => tropa.plugin.store.graph.nodes.get("Tropa/Concepts/One.md")?.requires.includes("Tropa/Concepts/Two.md")));
+  ok("outline empty: no console errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, title, dir, apply, goal, goalSet] of [
+  ["ru", "Карта из списка", "ltr", "Создать заметок: 5, связей: 6", "Сделать целью: Machine learning", "Цель: Machine learning"],
+  ["ar", "خريطة من قائمة", "rtl", "إنشاء ملاحظات: 5، روابط: 6", "تعيين \u2068Machine learning\u2069 هدفًا", "الهدف: \u2068Machine learning\u2069"],
+]) {
+  const { page, errors } = await open({ query: `?scenario=outline&lang=${lang}` });
+  await pasteOutline(page);
+  ok(`outline ${lang}: title`, (await page.locator(".tropa-outline-modal .modal-title").innerText()) === title);
+  ok(`outline ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector(".modal.tropa-outline-modal")).direction)) === dir);
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  ok(`outline ${lang}: apply label`, (await page.locator(".tropa-batch-apply").innerText()) === apply, await page.locator(".tropa-batch-apply").innerText());
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  ok(`outline ${lang}: the goal button`, (await page.locator(".tropa-notice-goal").innerText()) === goal, await page.locator(".tropa-notice-goal").innerText());
+  await page.screenshot({ path: SHOTS + `76-outline-goal-${lang}.png` });
+  await page.click(".tropa-notice-goal"); await wait(page, 500);
+  ok(`outline ${lang}: the goal is set`, await isGoal(page, `${lang === "ru" ? "Tropa/Концепты" : NEW}/Machine learning.md`));
+  ok(`outline ${lang}: and announced`, (await page.evaluate("tropa.notices")).includes(goalSet), JSON.stringify(await page.evaluate("tropa.notices")));
+  ok(`outline ${lang}: note names keep their own direction`, await page.evaluate(() => [...document.querySelectorAll(".tropa-outline-chip")].every((el) => getComputedStyle(el).direction === "ltr")));
+  await page.screenshot({ path: SHOTS + `74-outline-${lang}.png` });
+  ok(`outline ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?scenario=outline&phone" });
+  await pasteOutline(page);
+  const fits = () => page.evaluate(() => [...document.querySelectorAll(".modal *")].every((el) => el.getBoundingClientRect().right <= innerWidth + 0.5) && document.documentElement.scrollWidth <= innerWidth);
+  ok("outline phone: the form fits the screen", await fits());
+  await page.click(".tropa-outline-preview"); await wait(page, 200);
+  ok("outline phone: the preview fits the screen", await fits());
+  await page.screenshot({ path: SHOTS + "75-outline-phone.png" });
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  const goalButton = await page.locator(".tropa-notice-goal").boundingBox();
+  ok("outline phone: the goal button fits the screen", goalButton && goalButton.x >= 0 && goalButton.x + goalButton.width <= 390.5, JSON.stringify(goalButton));
+  await page.locator(".tropa-notice-goal").tap(); await wait(page, 500);
+  ok("outline phone: a tap sets the goal", await isGoal(page, `${NEW}/Machine learning.md`));
+  ok("outline phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
 await stop();
 const passed = results.filter(Boolean).length;
 console.log(passed, "/", results.length);
