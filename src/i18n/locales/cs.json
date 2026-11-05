@@ -369,6 +369,44 @@
     "cyclesHint": "Každý pojem vyžaduje další a poslední vyžaduje první, takže žádný nejde naučit jako první.",
     "showOnMap": "Ukázat na mapě"
   },
+  "links": {
+    "command": "Navrhnout vazby z vašich poznámek",
+    "undoCommand": "Vrátit naposledy navržené vazby",
+    "button": "Navrhnout vazby z mých poznámek",
+    "menu": "Navrhnout vazby pro mapu učení",
+    "scopePrompt": "Které poznámky má Tropa přečíst?",
+    "wholeVault": "Všechny poznámky",
+    "folder": "Složka",
+    "openNote": "Otevřená poznámka",
+    "title": "Navržené vazby: {scope}",
+    "intro": "Tropa našla tyto vazby ve vašich poznámkách. Dokud je nepřidáte, nic se nezmění. Vyberte, co každá poznámka potřebuje nejdřív a co jen doporučuje: doporučená poznámka pomáhá, ale nic neblokuje.",
+    "filter": "Filtrovat podle názvu poznámky",
+    "section": {
+      "list": "Ze seznamů",
+      "link": "Odkazy v textu",
+      "mutual": "Odkazy oběma směry"
+    },
+    "sectionHint": {
+      "list": "Položky seznamu odkazů na poznámky, v pořadí: každá potřebuje předchozí. Tyto jsou zaškrtnuté.",
+      "link": "Poznámka odkazuje na jinou, která neodkazuje zpět, takže odkazovaná je asi první.",
+      "mutual": "Poznámky na sebe odkazují navzájem, žádná není jasně první. Nabízeny jako doporučené."
+    },
+    "kindLabel": "Druh vazby",
+    "kind": {
+      "requires": "potřebuje",
+      "recommends": "doporučuje"
+    },
+    "inList": "V seznamu poznámky {note}",
+    "selectAll": "Vybrat vše",
+    "selectNone": "Zrušit výběr",
+    "loop": "Uzavřelo by smyčku: {chain}",
+    "apply": "Přidat vazby ({count})",
+    "more": "Nezobrazeno: {count}. Vyberte menší složku, abyste je viděli.",
+    "nothing": "V {scope} nebyly nalezeny žádné nové vazby.",
+    "added": "Přidané vazby: {count}",
+    "undone": "Navržené vazby byly odebrány.",
+    "kept": "Poznámky od té doby změněné, ponechané beze změny: {count}"
+  },
   "exportMap": "Export mapy",
   "exportCanvas": "Exportovat mapu do Canvasu",
   "exportSvg": "Exportovat mapu jako SVG",

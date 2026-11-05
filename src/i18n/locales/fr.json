@@ -351,6 +351,44 @@
     "cyclesHint": "Chaque concept exige le suivant et le dernier exige le premier : aucun ne peut être appris en premier.",
     "showOnMap": "Afficher sur la carte"
   },
+  "links": {
+    "command": "Suggérer des liens à partir de vos notes",
+    "undoCommand": "Annuler les derniers liens suggérés",
+    "button": "Suggérer des liens à partir de mes notes",
+    "menu": "Suggérer des liens pour la carte d'apprentissage",
+    "scopePrompt": "Quelles notes Tropa doit-il lire ?",
+    "wholeVault": "Toutes les notes",
+    "folder": "Dossier",
+    "openNote": "Note ouverte",
+    "title": "Liens suggérés : {scope}",
+    "intro": "Tropa a trouvé ces liens dans vos notes. Rien ne change tant que vous ne les ajoutez pas. Choisissez ce dont chaque note a besoin d'abord, ou ce qu'elle recommande : une note recommandée aide mais ne bloque rien.",
+    "filter": "Filtrer par nom de note",
+    "section": {
+      "list": "Depuis des listes",
+      "link": "Liens dans le texte",
+      "mutual": "Liens dans les deux sens"
+    },
+    "sectionHint": {
+      "list": "Éléments d'une liste de notes liées, dans l'ordre : chacun a besoin du précédent. Ceux-ci sont cochés.",
+      "link": "Une note renvoie à une autre qui ne renvoie pas vers elle : la note liée vient sans doute en premier.",
+      "mutual": "Les notes renvoient l'une à l'autre, aucune ne vient clairement en premier. Proposées comme recommandées."
+    },
+    "kindLabel": "Type de lien",
+    "kind": {
+      "requires": "nécessite",
+      "recommends": "recommande"
+    },
+    "inList": "Dans la liste de {note}",
+    "selectAll": "Tout sélectionner",
+    "selectNone": "Effacer",
+    "loop": "Fermerait une boucle : {chain}",
+    "apply": "Ajouter les liens ({count})",
+    "more": "Non affichés : {count}. Choisissez un dossier plus petit pour les voir.",
+    "nothing": "Aucun nouveau lien trouvé dans {scope}.",
+    "added": "Liens ajoutés : {count}",
+    "undone": "Les liens suggérés ont été retirés.",
+    "kept": "Notes modifiées depuis et laissées telles quelles : {count}"
+  },
   "exportMap": "Exporter la carte",
   "exportCanvas": "Exporter la carte vers Canvas",
   "exportSvg": "Exporter la carte en SVG",

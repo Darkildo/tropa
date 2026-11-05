@@ -1268,6 +1268,32 @@ body.is-phone .tropa-panel {
 .modal[dir="rtl"] .tropa-known-title[dir="auto"] { text-align: right; }
 .tropa-notice-undo { margin-inline-start: 12px; }
 
+/* Suggested links */
+.tropa-batch-modal .tropa-known-filter { width: 100%; margin-bottom: 8px; }
+.tropa-batch-list { max-height: 55vh; overflow-y: auto; margin-bottom: 8px; }
+.tropa-batch-section + .tropa-batch-section { margin-top: 16px; }
+.tropa-batch-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
+.tropa-batch-head h3 { margin: 0; font-size: var(--font-ui-medium); }
+.tropa-batch-head .tropa-batch-all { margin-inline-start: auto; }
+.tropa-batch-head button { padding: 2px 8px; font-size: var(--font-ui-smaller); }
+.tropa-batch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 6px 4px; border-radius: var(--radius-s); }
+.tropa-batch-row + .tropa-batch-row { border-top: 1px solid var(--background-modifier-border); }
+.tropa-batch-row.is-hidden { display: none; }
+.tropa-batch-row:not(.is-checked) .tropa-batch-note { color: var(--text-muted); }
+.tropa-batch-line { display: inline-flex; align-items: center; gap: 8px; min-width: 0; cursor: pointer; }
+.tropa-batch-line input { margin: 0; flex: none; }
+.tropa-batch-note { min-width: 0; overflow-wrap: anywhere; font-weight: var(--font-medium); }
+.tropa-batch-kind { flex: none; font-size: var(--font-ui-small); }
+.tropa-batch-meta,
+.tropa-batch-loop { flex: 1 0 100%; padding-inline-start: 24px; color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.tropa-batch-loop { display: none; align-items: center; gap: 4px; color: var(--text-error); }
+.tropa-batch-row.is-refused .tropa-batch-loop { display: flex; }
+.tropa-batch-loop-icon { display: inline-flex; flex: none; }
+.tropa-batch-loop-icon svg { width: 14px; height: 14px; }
+.tropa-batch-footer { margin: 0 0 8px; }
+body.is-phone .tropa-batch-kind { min-height: 36px; }
+body.is-phone .tropa-batch-line input { width: 20px; height: 20px; }
+
 /* Export */
 
 .tropa-export-modal .is-hidden { display: none; }

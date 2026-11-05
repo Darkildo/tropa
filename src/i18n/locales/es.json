@@ -351,6 +351,44 @@
     "cyclesHint": "Cada concepto requiere el siguiente y el último requiere el primero, así que ninguno se puede aprender primero.",
     "showOnMap": "Mostrar en el mapa"
   },
+  "links": {
+    "command": "Sugerir enlaces a partir de tus notas",
+    "undoCommand": "Deshacer los últimos enlaces sugeridos",
+    "button": "Sugerir enlaces a partir de mis notas",
+    "menu": "Sugerir enlaces para el mapa de aprendizaje",
+    "scopePrompt": "¿Qué notas debe leer Tropa?",
+    "wholeVault": "Todas las notas",
+    "folder": "Carpeta",
+    "openNote": "Nota abierta",
+    "title": "Enlaces sugeridos: {scope}",
+    "intro": "Tropa encontró estos enlaces en tus notas. Nada cambia hasta que los añadas. Elige qué necesita primero cada nota, o qué recomienda: una nota recomendada ayuda, pero no bloquea nada.",
+    "filter": "Filtrar por nombre de nota",
+    "section": {
+      "list": "De listas",
+      "link": "Enlaces en el texto",
+      "mutual": "Enlaces en ambos sentidos"
+    },
+    "sectionHint": {
+      "list": "Elementos de una lista de notas enlazadas, en orden: cada uno necesita el anterior. Estos están marcados.",
+      "link": "Una nota enlaza otra que no la enlaza de vuelta, así que la enlazada probablemente va primero.",
+      "mutual": "Las notas se enlazan entre sí, así que ninguna va claramente primero. Se ofrecen como recomendadas."
+    },
+    "kindLabel": "Tipo de enlace",
+    "kind": {
+      "requires": "necesita",
+      "recommends": "recomienda"
+    },
+    "inList": "En la lista de {note}",
+    "selectAll": "Seleccionar todo",
+    "selectNone": "Borrar",
+    "loop": "Cerraría un ciclo: {chain}",
+    "apply": "Añadir enlaces ({count})",
+    "more": "No mostrados: {count}. Elige una carpeta más pequeña para verlos.",
+    "nothing": "No se encontraron enlaces nuevos en {scope}.",
+    "added": "Enlaces añadidos: {count}",
+    "undone": "Se quitaron los enlaces sugeridos.",
+    "kept": "Notas cambiadas desde entonces y dejadas como están: {count}"
+  },
   "exportMap": "Exportar mapa",
   "exportCanvas": "Exportar el mapa a Canvas",
   "exportSvg": "Exportar el mapa como SVG",

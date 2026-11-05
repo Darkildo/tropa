@@ -333,6 +333,44 @@
     "cyclesHint": "Jokainen käsite vaatii seuraavan ja viimeinen ensimmäisen, joten mitään ei voi oppia ensin.",
     "showOnMap": "Näytä kartalla"
   },
+  "links": {
+    "command": "Ehdota yhteyksiä muistiinpanoistasi",
+    "undoCommand": "Kumoa viimeksi ehdotetut yhteydet",
+    "button": "Ehdota yhteyksiä muistiinpanoistani",
+    "menu": "Ehdota yhteyksiä oppimiskarttaan",
+    "scopePrompt": "Mitkä muistiinpanot Tropa lukee?",
+    "wholeVault": "Kaikki muistiinpanot",
+    "folder": "Kansio",
+    "openNote": "Avoin muistiinpano",
+    "title": "Ehdotetut yhteydet: {scope}",
+    "intro": "Tropa löysi nämä yhteydet muistiinpanoistasi. Mikään ei muutu ennen kuin lisäät ne. Valitse, mitä kukin muistiinpano tarvitsee ensin tai mitä se suosittelee: suositeltu muistiinpano auttaa mutta ei estä mitään.",
+    "filter": "Suodata muistiinpanon nimen mukaan",
+    "section": {
+      "list": "Luetteloista",
+      "link": "Linkit tekstissä",
+      "mutual": "Linkit molempiin suuntiin"
+    },
+    "sectionHint": {
+      "list": "Linkitettyjen muistiinpanojen luettelon kohdat järjestyksessä: kukin tarvitsee edellisen. Nämä on valittu.",
+      "link": "Muistiinpano linkittää toiseen, joka ei linkitä takaisin, joten linkitetty tulee luultavasti ensin.",
+      "mutual": "Muistiinpanot linkittävät toisiinsa, joten kumpikaan ei selvästi tule ensin. Tarjotaan suositeltuina."
+    },
+    "kindLabel": "Yhteyden laji",
+    "kind": {
+      "requires": "tarvitsee",
+      "recommends": "suosittelee"
+    },
+    "inList": "Muistiinpanon {note} luettelossa",
+    "selectAll": "Valitse kaikki",
+    "selectNone": "Tyhjennä",
+    "loop": "Sulkisi silmukan: {chain}",
+    "apply": "Lisää yhteydet ({count})",
+    "more": "Ei näytetty: {count}. Valitse pienempi kansio nähdäksesi ne.",
+    "nothing": "Kohteesta {scope} ei löytynyt uusia yhteyksiä.",
+    "added": "Yhteyksiä lisätty: {count}",
+    "undone": "Ehdotetut yhteydet poistettiin.",
+    "kept": "Sittemmin muuttuneet muistiinpanot jätettiin ennalleen: {count}"
+  },
   "exportMap": "Vie kartta",
   "exportCanvas": "Vie kartta Canvasiin",
   "exportSvg": "Vie kartta SVG-muodossa",

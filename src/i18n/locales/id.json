@@ -315,6 +315,44 @@
     "cyclesHint": "Setiap konsep mensyaratkan konsep berikutnya dan yang terakhir mensyaratkan yang pertama, jadi tidak ada yang bisa dipelajari lebih dulu.",
     "showOnMap": "Tampilkan di peta"
   },
+  "links": {
+    "command": "Sarankan tautan dari catatan Anda",
+    "undoCommand": "Batalkan tautan saran terakhir",
+    "button": "Sarankan tautan dari catatan saya",
+    "menu": "Sarankan tautan untuk peta belajar",
+    "scopePrompt": "Catatan mana yang harus dibaca Tropa?",
+    "wholeVault": "Semua catatan",
+    "folder": "Folder",
+    "openNote": "Catatan terbuka",
+    "title": "Tautan yang disarankan: {scope}",
+    "intro": "Tropa menemukan tautan ini di catatan Anda. Tidak ada yang berubah sampai Anda menambahkannya. Pilih apa yang dibutuhkan tiap catatan lebih dulu, atau apa yang direkomendasikannya: catatan yang direkomendasikan membantu tetapi tidak memblokir apa pun.",
+    "filter": "Saring menurut nama catatan",
+    "section": {
+      "list": "Dari daftar",
+      "link": "Tautan dalam teks",
+      "mutual": "Tautan dua arah"
+    },
+    "sectionHint": {
+      "list": "Butir daftar catatan bertaut, berurutan: masing-masing membutuhkan yang sebelumnya. Yang ini dicentang.",
+      "link": "Sebuah catatan menautkan catatan lain yang tidak menaut balik, jadi yang ditautkan kemungkinan lebih dulu.",
+      "mutual": "Catatan saling menautkan, tidak ada yang jelas lebih dulu. Ditawarkan sebagai rekomendasi."
+    },
+    "kindLabel": "Jenis tautan",
+    "kind": {
+      "requires": "membutuhkan",
+      "recommends": "merekomendasikan"
+    },
+    "inList": "Di daftar {note}",
+    "selectAll": "Pilih semua",
+    "selectNone": "Hapus pilihan",
+    "loop": "Akan menutup lingkaran: {chain}",
+    "apply": "Tambahkan tautan ({count})",
+    "more": "Tidak ditampilkan: {count}. Pilih folder yang lebih kecil untuk melihatnya.",
+    "nothing": "Tidak ada tautan baru di {scope}.",
+    "added": "Tautan ditambahkan: {count}",
+    "undone": "Tautan saran telah dihapus.",
+    "kept": "Catatan yang berubah sejak itu dan dibiarkan apa adanya: {count}"
+  },
   "exportMap": "Ekspor peta",
   "exportCanvas": "Ekspor peta ke Canvas",
   "exportSvg": "Ekspor peta sebagai SVG",

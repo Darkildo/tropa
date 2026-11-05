@@ -369,6 +369,44 @@
     "cyclesHint": "Każde pojęcie wymaga następnego, a ostatnie pierwszego, więc żadnego nie da się poznać jako pierwszego.",
     "showOnMap": "Pokaż na mapie"
   },
+  "links": {
+    "command": "Zaproponuj powiązania z twoich notatek",
+    "undoCommand": "Cofnij ostatnio zaproponowane powiązania",
+    "button": "Zaproponuj powiązania z moich notatek",
+    "menu": "Zaproponuj powiązania dla mapy nauki",
+    "scopePrompt": "Które notatki ma przeczytać Tropa?",
+    "wholeVault": "Wszystkie notatki",
+    "folder": "Folder",
+    "openNote": "Otwarta notatka",
+    "title": "Proponowane powiązania: {scope}",
+    "intro": "Tropa znalazła te powiązania w twoich notatkach. Nic się nie zmieni, dopóki ich nie dodasz. Wybierz, czego każda notatka potrzebuje najpierw, a co tylko poleca: polecana notatka pomaga, ale niczego nie blokuje.",
+    "filter": "Filtruj według nazwy notatki",
+    "section": {
+      "list": "Z list",
+      "link": "Linki w tekście",
+      "mutual": "Linki w obie strony"
+    },
+    "sectionHint": {
+      "list": "Punkty listy linków do notatek, po kolei: każdy wymaga poprzedniego. Te są zaznaczone.",
+      "link": "Notatka linkuje do innej, która nie linkuje z powrotem, więc ta druga zapewne jest pierwsza.",
+      "mutual": "Notatki linkują do siebie nawzajem, żadna nie jest wyraźnie pierwsza. Proponowane jako polecane."
+    },
+    "kindLabel": "Rodzaj powiązania",
+    "kind": {
+      "requires": "wymaga",
+      "recommends": "poleca"
+    },
+    "inList": "Na liście w {note}",
+    "selectAll": "Zaznacz wszystkie",
+    "selectNone": "Wyczyść",
+    "loop": "Zamknęłoby pętlę: {chain}",
+    "apply": "Dodaj powiązania ({count})",
+    "more": "Nie pokazano: {count}. Wybierz mniejszy folder, aby je zobaczyć.",
+    "nothing": "Nie znaleziono nowych powiązań w {scope}.",
+    "added": "Dodano powiązania: {count}",
+    "undone": "Proponowane powiązania zostały usunięte.",
+    "kept": "Notatki zmienione od tamtej pory, pozostawione bez zmian: {count}"
+  },
   "exportMap": "Eksport mapy",
   "exportCanvas": "Eksportuj mapę do Canvas",
   "exportSvg": "Eksportuj mapę jako SVG",

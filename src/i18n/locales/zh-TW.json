@@ -315,6 +315,44 @@
     "cyclesHint": "每個概念依賴下一個，最後一個又依賴第一個，所以哪個都無法先學。",
     "showOnMap": "在導圖上顯示"
   },
+  "links": {
+    "command": "從筆記中建議連結",
+    "undoCommand": "復原上次建議的連結",
+    "button": "從我的筆記中建議連結",
+    "menu": "為學習地圖建議連結",
+    "scopePrompt": "Tropa 應讀取哪些筆記？",
+    "wholeVault": "所有筆記",
+    "folder": "資料夾",
+    "openNote": "目前筆記",
+    "title": "建議的連結：{scope}",
+    "intro": "Tropa 在你的筆記中找到了這些連結。在你加入之前不會有任何改變。選擇每則筆記需要先學的內容，或它推薦的內容：推薦的筆記有幫助，但不會阻擋任何內容。",
+    "filter": "依筆記名稱篩選",
+    "section": {
+      "list": "來自清單",
+      "link": "內文中的連結",
+      "mutual": "雙向連結"
+    },
+    "sectionHint": {
+      "list": "由筆記連結組成的清單項目，依序：每一項都需要前一項。這些已勾選。",
+      "link": "一則筆記連結到另一則，而對方沒有連結回來，所以被連結的筆記可能在前。",
+      "mutual": "筆記互相連結，無法明確哪則在前。以推薦方式提供。"
+    },
+    "kindLabel": "連結類型",
+    "kind": {
+      "requires": "需要",
+      "recommends": "推薦"
+    },
+    "inList": "在 {note} 的清單中",
+    "selectAll": "全選",
+    "selectNone": "清除",
+    "loop": "會形成循環：{chain}",
+    "apply": "加入連結（{count}）",
+    "more": "未顯示：{count}。選擇較小的資料夾以查看。",
+    "nothing": "在 {scope} 中找不到新連結。",
+    "added": "已加入連結：{count}",
+    "undone": "已移除建議的連結。",
+    "kept": "之後已變更、保持原樣的筆記：{count}"
+  },
   "exportMap": "匯出地圖",
   "exportCanvas": "將地圖匯出為 Canvas",
   "exportSvg": "將地圖匯出為 SVG",
