@@ -15,6 +15,8 @@ const scope = self as unknown as WorkerScope;
 
 /** Compiled on the first request that asks for it; `null` once it failed, then TypeScript takes over. */
 let wasm: LayoutEngine | null | undefined;
+/** Why WebAssembly is out, sent back with every reply so the runner can tell; not logged, it is not an error. */
+let fallback: string | undefined;
 
 function engine(id: string): LayoutEngine {
   if (id !== "wasm") return ENGINES[id] ?? ENGINES.ts;
@@ -22,7 +24,7 @@ function engine(id: string): LayoutEngine {
     try {
       wasm = wasmEngine(fromBase64(wasmBase64));
     } catch (error) {
-      console.warn("Tropa: WebAssembly layout unavailable, using TypeScript", error);
+      fallback = `WebAssembly layout unavailable: ${String(error)}`;
       wasm = null;
     }
   }
@@ -38,14 +40,14 @@ scope.onmessage = (event) => {
       output = used.layout(input);
     } catch (error) {
       if (used.id === "ts") throw error;
-      console.warn("Tropa: WebAssembly layout failed, using TypeScript", error);
+      fallback = `WebAssembly layout failed: ${String(error)}`;
       wasm = null;
       used = ENGINES.ts;
       output = used.layout(input);
     }
     // Writing out the paths is a good share of the work on large maps, so it is done here too.
     const result = { output, paths: svgPaths(output) };
-    scope.postMessage({ id, engine: used.id, result }, [output.x.buffer, output.y.buffer, output.pathStart.buffer, output.pathPoints.buffer]);
+    scope.postMessage({ id, engine: used.id, fallback, result }, [output.x.buffer, output.y.buffer, output.pathStart.buffer, output.pathPoints.buffer]);
   } catch (error) {
     scope.postMessage({ id, error: String(error) }, []);
   }
