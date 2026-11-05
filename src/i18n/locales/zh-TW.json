@@ -380,7 +380,9 @@
     "sequenceHint": "每個項目需要同一層級的前一個項目。",
     "apply": "建立筆記：{notes}，連結：{links}",
     "done": "已建立筆記：{notes}。已加入連結：{links}",
-    "undone": "已移除從清單建立的地圖。"
+    "undone": "已移除從清單建立的地圖。",
+    "goal": "將 {title} 設為目標",
+    "goalSet": "目標：{title}"
   },
   "exportMap": "匯出地圖",
   "exportCanvas": "將地圖匯出為 Canvas",

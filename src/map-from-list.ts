@@ -1,6 +1,7 @@
 import { Notice, normalizePath } from "obsidian";
 import { attempt } from "./attempt";
 import { normalizeTitle } from "./core/audit";
+import { allGoalsOf } from "./core/graph";
 import { LinkBatch, type LinkEdit } from "./core/batch-links";
 import { safeFileName } from "./core/format";
 import { planOutline, type OutlineItem, type OutlinePlan } from "./core/outline";
@@ -17,6 +18,8 @@ const NOTICE_MS = 10000;
 export class OutlineImport {
   /** The last map made in this session, until it is undone. */
   last: LinkUndo | null = null;
+  /** The goal set from the notice of the last map, taken back with it. */
+  private goal: string | null = null;
   /** What was typed last time, so closing the preview to fix the list does not lose it. */
   private draft: OutlineRequest | null = null;
 
@@ -131,11 +134,26 @@ export class OutlineImport {
     const undo = await applyLinkEdits(this.app, settings, this.store.graph, placed, existing);
     await rememberCreated(this.app, undo, paths.values(), folders);
     this.last = undo;
+    this.goal = null;
     this.draft = null;
+    const root = plan.root ? where(plan.root) : null;
     const content = createFragment((fragment) => {
       fragment.createSpan({ text: t.outline.done({ notes: paths.size, links: undo.links }) });
       const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });
       button.addEventListener("click", () => attempt(this.undo(), "undo the map from the list"));
+      if (root && this.store.progress.goal !== root) {
+        const title = plan.notes.find((note) => note.path === plan.root)?.title ?? root;
+        const goal = fragment.createEl("button", { cls: "tropa-notice-goal", text: t.outline.goal({ title }) });
+        goal.addEventListener("click", (event) => {
+          // The notice closes on a click; the goal is set first.
+          event.stopPropagation();
+          goal.remove();
+          if (this.last !== undo) return;
+          this.goal = allGoalsOf(this.store.progress).includes(root) ? null : root;
+          this.store.addGoal(root);
+          new Notice(t.outline.goalSet({ title }));
+        });
+      }
     });
     new Notice(content, NOTICE_MS);
     await this.plugin.showMap();
@@ -146,6 +164,10 @@ export class OutlineImport {
     const undo = this.last;
     if (!undo) return;
     this.last = null;
+    // A goal set from the notice goes with the map, as long as it is still a goal.
+    const goal = this.goal;
+    this.goal = null;
+    if (goal && allGoalsOf(this.store.progress).includes(goal)) this.store.removeGoal(goal);
     const { kept } = await undoLinkEdits(this.app, undo);
     new Notice(kept ? `${t.outline.undone} ${t.links.kept({ count: kept })}` : t.outline.undone);
   }

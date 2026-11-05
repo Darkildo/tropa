@@ -416,7 +416,9 @@
     "sequenceHint": "כל פריט צריך את הקודם לו באותה רמה.",
     "apply": "יצירת פתקים: {notes}, קישורים: {links}",
     "done": "נוצרו פתקים: {notes}. נוספו קישורים: {links}",
-    "undone": "המפה מהרשימה הוסרה."
+    "undone": "המפה מהרשימה הוסרה.",
+    "goal": "הגדרת {title} כיעד",
+    "goalSet": "יעד: {title}"
   },
   "exportMap": "ייצוא מפה",
   "exportCanvas": "ייצוא המפה ל-Canvas",

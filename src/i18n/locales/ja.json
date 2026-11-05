@@ -380,7 +380,9 @@
     "sequenceHint": "各項目には同じ階層の前の項目が必要です。",
     "apply": "ノートを作成: {notes}、リンク: {links}",
     "done": "作成したノート: {notes}。追加したリンク: {links}",
-    "undone": "リストから作成したマップを取り消しました。"
+    "undone": "リストから作成したマップを取り消しました。",
+    "goal": "{title} を目標にする",
+    "goalSet": "目標：{title}"
   },
   "exportMap": "マップを書き出す",
   "exportCanvas": "マップをCanvasに書き出す",

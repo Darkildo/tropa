@@ -398,7 +398,9 @@
     "sequenceHint": "Jeder Eintrag braucht den vorherigen auf derselben Ebene.",
     "apply": "Notizen erstellen: {notes}, Verknüpfungen: {links}",
     "done": "Notizen erstellt: {notes}. Verknüpfungen hinzugefügt: {links}",
-    "undone": "Die Karte aus der Liste wurde entfernt."
+    "undone": "Die Karte aus der Liste wurde entfernt.",
+    "goal": "{title} als Ziel festlegen",
+    "goalSet": "Ziel: {title}"
   },
   "exportMap": "Karte exportieren",
   "exportCanvas": "Karte als Canvas exportieren",

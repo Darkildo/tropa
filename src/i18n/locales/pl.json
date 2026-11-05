@@ -434,7 +434,9 @@
     "sequenceHint": "Każda pozycja potrzebuje poprzedniej na tym samym poziomie.",
     "apply": "Utwórz notatki: {notes}, powiązania: {links}",
     "done": "Utworzono notatki: {notes}. Dodano powiązania: {links}",
-    "undone": "Mapa z listy została usunięta."
+    "undone": "Mapa z listy została usunięta.",
+    "goal": "Ustaw {title} jako cel",
+    "goalSet": "Cel: {title}"
   },
   "exportMap": "Eksport mapy",
   "exportCanvas": "Eksportuj mapę do Canvas",

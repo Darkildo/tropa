@@ -398,7 +398,9 @@
     "sequenceHint": "Elk item heeft het vorige op hetzelfde niveau nodig.",
     "apply": "Notities maken: {notes}, koppelingen: {links}",
     "done": "Notities gemaakt: {notes}. Koppelingen toegevoegd: {links}",
-    "undone": "De kaart van de lijst is verwijderd."
+    "undone": "De kaart van de lijst is verwijderd.",
+    "goal": "{title} als doel instellen",
+    "goalSet": "Doel: {title}"
   },
   "exportMap": "Kaart exporteren",
   "exportCanvas": "Kaart naar Canvas exporteren",

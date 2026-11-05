@@ -398,7 +398,9 @@
     "sequenceHint": "Hvert punkt trenger det forrige på samme nivå.",
     "apply": "Lag notater: {notes}, koblinger: {links}",
     "done": "Notater laget: {notes}. Koblinger lagt til: {links}",
-    "undone": "Kartet fra listen ble fjernet."
+    "undone": "Kartet fra listen ble fjernet.",
+    "goal": "Sett {title} som mål",
+    "goalSet": "Mål: {title}"
   },
   "exportMap": "Eksporter kart",
   "exportCanvas": "Eksporter kartet til Canvas",

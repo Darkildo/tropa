@@ -416,7 +416,9 @@
     "sequenceHint": "Fiecare element are nevoie de cel dinainte de pe același nivel.",
     "apply": "Creează notițe: {notes}, legături: {links}",
     "done": "Notițe create: {notes}. Legături adăugate: {links}",
-    "undone": "Harta din listă a fost eliminată."
+    "undone": "Harta din listă a fost eliminată.",
+    "goal": "Setează {title} ca obiectiv",
+    "goalSet": "Obiectiv: {title}"
   },
   "exportMap": "Exportă harta",
   "exportCanvas": "Exportă harta în Canvas",

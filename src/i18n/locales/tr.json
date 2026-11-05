@@ -398,7 +398,9 @@
     "sequenceHint": "Her öğe aynı düzeydeki bir öncekine ihtiyaç duyar.",
     "apply": "Not oluştur: {notes}, bağlantı: {links}",
     "done": "Oluşturulan not: {notes}. Eklenen bağlantı: {links}",
-    "undone": "Listeden oluşturulan harita kaldırıldı."
+    "undone": "Listeden oluşturulan harita kaldırıldı.",
+    "goal": "{title} hedef yap",
+    "goalSet": "Hedef: {title}"
   },
   "exportMap": "Haritayı dışa aktar",
   "exportCanvas": "Haritayı Canvas'a aktar",

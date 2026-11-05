@@ -380,7 +380,9 @@
     "sequenceHint": "각 항목에는 같은 수준의 앞 항목이 필요합니다.",
     "apply": "노트 만들기: {notes}, 링크: {links}",
     "done": "만든 노트: {notes}. 추가한 링크: {links}",
-    "undone": "목록으로 만든 지도를 제거했습니다."
+    "undone": "목록으로 만든 지도를 제거했습니다.",
+    "goal": "{title}을(를) 목표로 정하기",
+    "goalSet": "목표: {title}"
   },
   "exportMap": "지도 내보내기",
   "exportCanvas": "지도를 Canvas로 내보내기",

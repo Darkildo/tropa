@@ -384,6 +384,8 @@ export const en = {
     apply: "Create notes: {notes}, links: {links}",
     done: "Notes created: {notes}. Links added: {links}",
     undone: "The map from the list was removed.",
+    goal: "Set {title} as goal",
+    goalSet: "Goal: {title}",
   },
   journal: {
     fileText: "Tropa adds a line here for each change of progress on this device. Statistics are read from these lines, so keep their format.",

@@ -380,7 +380,9 @@
     "sequenceHint": "每个条目需要同一层级的前一个条目。",
     "apply": "创建笔记：{notes}，链接：{links}",
     "done": "已创建笔记：{notes}。已添加链接：{links}",
-    "undone": "已移除从列表创建的地图。"
+    "undone": "已移除从列表创建的地图。",
+    "goal": "将 {title} 设为目标",
+    "goalSet": "目标：{title}"
   },
   "exportMap": "导出地图",
   "exportCanvas": "将地图导出为 Canvas",

@@ -106,6 +106,7 @@ describe("planOutline", () => {
   it("a topic needs its parts, and neighbours are offered unticked", () => {
     const plan = planOutline(items, parts, host(new LearningGraph([])));
     expect(plan.notes.map((note) => note.path)).toEqual(["New/ML.md", "New/Algebra.md", "New/Probability.md", "New/Statistics.md"]);
+    expect(plan.root).toBe("New/ML.md");
     expect(links(plan)).toEqual([
       "New/ML.md -> New/Algebra.md nest",
       "New/ML.md -> New/Probability.md nest",
@@ -131,6 +132,7 @@ describe("planOutline", () => {
     const outline = parseOutline(["- ML", "  - algebra", "  - Probability", "- Probability", "  - [[ML]]"].join("\n"));
     const plan = planOutline(outline, parts, host(graph, ["Old/Algebra.md", "Old/ML.md"]));
     expect(plan.notes.map((note) => `${note.path}${note.existing ? " (existing)" : ""}`)).toEqual(["Old/ML.md (existing)", "Old/Algebra.md (existing)", "New/Probability.md"]);
+    expect(plan.root).toBe("Old/ML.md");
     // ML already needs Algebra; Probability under ML and ML under Probability are one pair, offered once.
     expect(links(plan)).toEqual(["Old/ML.md -> New/Probability.md nest", "New/Probability.md -> Old/Algebra.md order (off)"]);
   });

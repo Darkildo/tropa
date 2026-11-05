@@ -2370,6 +2370,11 @@ for (const [lang, title, dir] of [["ru", "Предложенные связи: C
 // --- a map from a pasted list
 const OUTLINE = ["- Machine learning", "  - linear algebra", "  - Probability", "    - Bayes' theorem", "  - calculus", "  - Statistics", "  - C++: tools?"].join("\n");
 const NEW = "Tropa/Concepts";
+const journalText = async (page) => {
+  await page.evaluate(() => tropa.plugin.journal.settled());
+  return page.evaluate(() => [...tropa.app.vault.contents].filter(([path]) => path.startsWith(tropa.plugin.settings.journalFolder + "/")).map(([, text]) => text).join("\n"));
+};
+const isGoal = (page, path) => page.evaluate((p) => tropa.plugin.store.progress.goal === p || (tropa.plugin.store.progress.goals ?? []).includes(p), path);
 const pasteOutline = async (page, text = OUTLINE) => {
   await runCommand(page, "map-from-list"); await wait(page, 150);
   await page.fill(".tropa-outline-text", text); await wait(page, 100);
@@ -2417,9 +2422,16 @@ const pasteOutline = async (page, text = OUTLINE) => {
   ok("outline: a plain note becomes a concept and keeps its text", /type: concept/.test(probability) && /\[\[Bayes' theorem\]\]/.test(probability) && probability.endsWith("Chance and odds.\n"), probability);
   ok("outline: the order link is written", /\[\[Probability\]\]/.test(await note(page, `${NEW}/Calculus.md`)));
   ok("outline: the ghost is a note now", await page.evaluate((path) => tropa.plugin.store.graph.nodes.get("Old/Goal.md").requires.includes(path) && !tropa.plugin.store.graph.nodes.get(path).ghost, `${NEW}/Calculus.md`));
-  ok("outline: the notice counts notes and links", (await page.evaluate("tropa.notices")).includes("Notes created: 5. Links added: 7Undo"), JSON.stringify(await page.evaluate("tropa.notices")));
+  ok("outline: the notice counts notes and links", (await page.evaluate("tropa.notices")).includes("Notes created: 5. Links added: 7UndoSet Machine learning as goal"), JSON.stringify(await page.evaluate("tropa.notices")));
   ok("outline: undo is offered", await page.evaluate(() => tropa.plugin.commands.find((c) => c.id === "undo-map-from-list").checkCallback(true)));
+  ok("outline: the notice offers the top item as the goal", (await page.locator(".tropa-notice-goal").innerText()) === "Set Machine learning as goal");
+  await page.click(".tropa-notice-goal"); await wait(page, 500);
+  ok("outline: the top item is the goal", await page.evaluate((p) => tropa.plugin.store.progress.goal === p, `${NEW}/Machine learning.md`));
+  ok("outline: the goal is announced, and the button goes", (await page.evaluate("tropa.notices")).includes("Goal: Machine learning") && (await page.locator(".tropa-notice-goal").count()) === 0);
+  ok("outline: the goal goes to the journal", /\sgoal \[\[Machine learning\]\]/.test(await journalText(page)), await journalText(page));
+  ok("outline: the route leads to it", await page.evaluate(() => document.querySelector(".tropa-goal-label")?.textContent === "Machine learning"));
   await page.click(".tropa-notice-undo"); await wait(page, 700);
+  ok("outline: undo takes the goal back too", !(await isGoal(page, `${NEW}/Machine learning.md`)));
   ok("outline: undo trashes the new notes", await page.evaluate((folder) => ![...tropa.app.vault.files.keys()].some((path) => path.startsWith(folder + "/")), NEW));
   const restored = await note(page, "Probability.md");
   ok("outline: and puts the plain note back", !/type|requires/.test(restored) && restored.endsWith("Chance and odds.\n"), restored);
@@ -2458,13 +2470,22 @@ const pasteOutline = async (page, text = OUTLINE) => {
   ok("outline empty: no console errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
-for (const [lang, title, dir, apply] of [["ru", "Карта из списка", "ltr", "Создать заметок: 5, связей: 6"], ["ar", "خريطة من قائمة", "rtl", "إنشاء ملاحظات: 5، روابط: 6"]]) {
+for (const [lang, title, dir, apply, goal, goalSet] of [
+  ["ru", "Карта из списка", "ltr", "Создать заметок: 5, связей: 6", "Сделать целью: Machine learning", "Цель: Machine learning"],
+  ["ar", "خريطة من قائمة", "rtl", "إنشاء ملاحظات: 5، روابط: 6", "تعيين \u2068Machine learning\u2069 هدفًا", "الهدف: \u2068Machine learning\u2069"],
+]) {
   const { page, errors } = await open({ query: `?scenario=outline&lang=${lang}` });
   await pasteOutline(page);
   ok(`outline ${lang}: title`, (await page.locator(".tropa-outline-modal .modal-title").innerText()) === title);
   ok(`outline ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector(".modal.tropa-outline-modal")).direction)) === dir);
   await page.click(".tropa-outline-preview"); await wait(page, 200);
   ok(`outline ${lang}: apply label`, (await page.locator(".tropa-batch-apply").innerText()) === apply, await page.locator(".tropa-batch-apply").innerText());
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  ok(`outline ${lang}: the goal button`, (await page.locator(".tropa-notice-goal").innerText()) === goal, await page.locator(".tropa-notice-goal").innerText());
+  await page.screenshot({ path: SHOTS + `76-outline-goal-${lang}.png` });
+  await page.click(".tropa-notice-goal"); await wait(page, 500);
+  ok(`outline ${lang}: the goal is set`, await isGoal(page, `${lang === "ru" ? "Tropa/Концепты" : NEW}/Machine learning.md`));
+  ok(`outline ${lang}: and announced`, (await page.evaluate("tropa.notices")).includes(goalSet), JSON.stringify(await page.evaluate("tropa.notices")));
   ok(`outline ${lang}: note names keep their own direction`, await page.evaluate(() => [...document.querySelectorAll(".tropa-outline-chip")].every((el) => getComputedStyle(el).direction === "ltr")));
   await page.screenshot({ path: SHOTS + `74-outline-${lang}.png` });
   ok(`outline ${lang}: no errors`, errors.length === 0, errors.join("; "));
@@ -2478,6 +2499,11 @@ for (const [lang, title, dir, apply] of [["ru", "Карта из списка", 
   await page.click(".tropa-outline-preview"); await wait(page, 200);
   ok("outline phone: the preview fits the screen", await fits());
   await page.screenshot({ path: SHOTS + "75-outline-phone.png" });
+  await page.click(".tropa-batch-apply"); await wait(page, 700);
+  const goalButton = await page.locator(".tropa-notice-goal").boundingBox();
+  ok("outline phone: the goal button fits the screen", goalButton && goalButton.x >= 0 && goalButton.x + goalButton.width <= 390.5, JSON.stringify(goalButton));
+  await page.locator(".tropa-notice-goal").tap(); await wait(page, 500);
+  ok("outline phone: a tap sets the goal", await isGoal(page, `${NEW}/Machine learning.md`));
   ok("outline phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }

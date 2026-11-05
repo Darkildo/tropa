@@ -380,7 +380,9 @@
     "sequenceHint": "Setiap butir membutuhkan butir sebelumnya di tingkat yang sama.",
     "apply": "Buat catatan: {notes}, tautan: {links}",
     "done": "Catatan dibuat: {notes}. Tautan ditambahkan: {links}",
-    "undone": "Peta dari daftar telah dihapus."
+    "undone": "Peta dari daftar telah dihapus.",
+    "goal": "Jadikan {title} tujuan",
+    "goalSet": "Tujuan: {title}"
   },
   "exportMap": "Ekspor peta",
   "exportCanvas": "Ekspor peta ke Canvas",

@@ -258,7 +258,7 @@ Each item becomes a note in the folder you choose (the concepts folder by defaul
 
 **Nesting** says which way the links go: a topic needs what is under it (the default, so a chapter as a goal routes through its sections), or what is under a topic needs the topic. **Each item needs the one before it** also links items of one level in order, as in a course; it is off by default and its rows can be ticked in the preview anyway.
 
-The preview lists the new notes and the notes already in your vault, then the links, in the same rows as suggested links: a link that would close a loop is refused. **Create** makes the notes, `type: concept` and nothing else, and writes the links; a note already in your vault becomes a concept too. **Undo** in the notice, or the command **Undo the last map from a list**, moves the new notes to the trash and puts back the properties of the others, except notes changed since, which stay as they are. Closing the preview keeps the list, so it can be fixed and tried again.
+The preview lists the new notes and the notes already in your vault, then the links, in the same rows as suggested links: a link that would close a loop is refused. **Create** makes the notes, `type: concept` and nothing else, and writes the links; a note already in your vault becomes a concept too. **Undo** in the notice, or the command **Undo the last map from a list**, moves the new notes to the trash and puts back the properties of the others, except notes changed since, which stay as they are. **Set … as goal** in the same notice makes the first item at the top your goal, the same way as **Add as goal**; an undo takes that goal back with the map. Closing the preview keeps the list, so it can be fixed and tried again.
 
 ## Privacy
 

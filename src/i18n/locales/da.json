@@ -398,7 +398,9 @@
     "sequenceHint": "Hvert punkt kræver det foregående på samme niveau.",
     "apply": "Opret noter: {notes}, forbindelser: {links}",
     "done": "Noter oprettet: {notes}. Forbindelser tilføjet: {links}",
-    "undone": "Kortet fra listen blev fjernet."
+    "undone": "Kortet fra listen blev fjernet.",
+    "goal": "Sæt {title} som mål",
+    "goalSet": "Mål: {title}"
   },
   "exportMap": "Eksportér kort",
   "exportCanvas": "Eksportér kortet til Canvas",

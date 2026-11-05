@@ -1285,6 +1285,7 @@ body.is-phone .tropa-panel {
 .tropa-known-row input { margin: 0; }
 .modal[dir="rtl"] .tropa-known-title[dir="auto"] { text-align: right; }
 .tropa-notice-undo { margin-inline-start: 12px; }
+.tropa-notice-goal { margin-inline-start: 8px; }
 
 /* Suggested links */
 .tropa-batch-modal .tropa-known-filter { width: 100%; margin-bottom: 8px; }

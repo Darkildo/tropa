@@ -434,7 +434,9 @@
     "sequenceHint": "Každá položka potřebuje předchozí na stejné úrovni.",
     "apply": "Vytvořit poznámky: {notes}, vazby: {links}",
     "done": "Vytvořeno poznámek: {notes}. Přidáno vazeb: {links}",
-    "undone": "Mapa ze seznamu byla odebrána."
+    "undone": "Mapa ze seznamu byla odebrána.",
+    "goal": "Nastavit {title} jako cíl",
+    "goalSet": "Cíl: {title}"
   },
   "exportMap": "Export mapy",
   "exportCanvas": "Exportovat mapu do Canvasu",

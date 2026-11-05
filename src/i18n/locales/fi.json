@@ -398,7 +398,9 @@
     "sequenceHint": "Jokainen kohta tarvitsee saman tason edellisen.",
     "apply": "Luo muistiinpanoja: {notes}, yhteyksiä: {links}",
     "done": "Muistiinpanoja luotu: {notes}. Yhteyksiä lisätty: {links}",
-    "undone": "Luettelosta tehty kartta poistettiin."
+    "undone": "Luettelosta tehty kartta poistettiin.",
+    "goal": "Aseta {title} tavoitteeksi",
+    "goalSet": "Tavoite: {title}"
   },
   "exportMap": "Vie kartta",
   "exportCanvas": "Vie kartta Canvasiin",

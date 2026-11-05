@@ -380,7 +380,9 @@
     "sequenceHint": "Mỗi mục cần mục trước nó ở cùng cấp.",
     "apply": "Tạo ghi chú: {notes}, liên kết: {links}",
     "done": "Đã tạo ghi chú: {notes}. Đã thêm liên kết: {links}",
-    "undone": "Đã gỡ bản đồ từ danh sách."
+    "undone": "Đã gỡ bản đồ từ danh sách.",
+    "goal": "Đặt {title} làm mục tiêu",
+    "goalSet": "Mục tiêu: {title}"
   },
   "exportMap": "Xuất bản đồ",
   "exportCanvas": "Xuất bản đồ sang Canvas",

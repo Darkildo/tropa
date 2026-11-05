@@ -398,7 +398,9 @@
     "sequenceHint": "Minden tételhez kell az azonos szinten lévő előző.",
     "apply": "Jegyzetek létrehozása: {notes}, kapcsolatok: {links}",
     "done": "Létrehozott jegyzetek: {notes}. Hozzáadott kapcsolatok: {links}",
-    "undone": "A listából készült térkép eltávolítva."
+    "undone": "A listából készült térkép eltávolítva.",
+    "goal": "{title} beállítása célként",
+    "goalSet": "Cél: {title}"
   },
   "exportMap": "Térkép exportálása",
   "exportCanvas": "Térkép exportálása Canvasba",

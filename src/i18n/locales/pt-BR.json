@@ -416,7 +416,9 @@
     "sequenceHint": "Cada item precisa do anterior no mesmo nível.",
     "apply": "Criar notas: {notes}, links: {links}",
     "done": "Notas criadas: {notes}. Links adicionados: {links}",
-    "undone": "O mapa a partir da lista foi removido."
+    "undone": "O mapa a partir da lista foi removido.",
+    "goal": "Definir {title} como objetivo",
+    "goalSet": "Objetivo: {title}"
   },
   "exportMap": "Exportar mapa",
   "exportCanvas": "Exportar o mapa para Canvas",

@@ -416,7 +416,9 @@
     "sequenceHint": "Ogni voce ha bisogno della precedente allo stesso livello.",
     "apply": "Crea note: {notes}, collegamenti: {links}",
     "done": "Note create: {notes}. Collegamenti aggiunti: {links}",
-    "undone": "La mappa dall'elenco è stata rimossa."
+    "undone": "La mappa dall'elenco è stata rimossa.",
+    "goal": "Imposta {title} come obiettivo",
+    "goalSet": "Obiettivo: {title}"
   },
   "exportMap": "Esporta mappa",
   "exportCanvas": "Esporta la mappa in Canvas",

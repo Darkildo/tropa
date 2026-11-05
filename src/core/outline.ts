@@ -130,6 +130,8 @@ export interface OutlineHost {
 export interface OutlinePlan {
   notes: OutlineNote[];
   candidates: LinkCandidate[];
+  /** The note of the first item at the top, the natural goal of the map. */
+  root: string | null;
 }
 
 /**
@@ -184,5 +186,5 @@ export function planOutline(items: OutlineItem[], options: OutlineOptions, host:
     if (before !== undefined) offer(ids[index], ids[before], "order", options.chain);
     lastChild.set(item.parent, index);
   });
-  return { notes, candidates };
+  return { notes, candidates, root: ids[items.findIndex((item) => item.parent < 0)] ?? null };
 }

@@ -434,7 +434,9 @@
     "sequenceHint": "Každá položka potrebuje predchádzajúcu na rovnakej úrovni.",
     "apply": "Vytvoriť poznámky: {notes}, väzby: {links}",
     "done": "Vytvorené poznámky: {notes}. Pridané väzby: {links}",
-    "undone": "Mapa zo zoznamu bola odstránená."
+    "undone": "Mapa zo zoznamu bola odstránená.",
+    "goal": "Nastaviť {title} ako cieľ",
+    "goalSet": "Cieľ: {title}"
   },
   "exportMap": "Export mapy",
   "exportCanvas": "Exportovať mapu do Canvasu",

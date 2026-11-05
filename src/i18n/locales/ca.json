@@ -416,7 +416,9 @@
     "sequenceHint": "Cada element necessita l'anterior del mateix nivell.",
     "apply": "Crea notes: {notes}, enllaços: {links}",
     "done": "Notes creades: {notes}. Enllaços afegits: {links}",
-    "undone": "S'ha tret el mapa a partir de la llista."
+    "undone": "S'ha tret el mapa a partir de la llista.",
+    "goal": "Fixa {title} com a objectiu",
+    "goalSet": "Objectiu: {title}"
   },
   "exportMap": "Exporta el mapa",
   "exportCanvas": "Exporta el mapa a Canvas",
