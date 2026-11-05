@@ -165,7 +165,7 @@ const { open, stop } = await start();
   ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
   ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 14);
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 15);
   ok("self-check settings: offered by default, audit off", await page.locator('#settings input[data-key="offerCheck"]').isChecked() &&
     !(await page.locator('#settings input[data-key="auditQuestions"]').isChecked()) && (await field("checkCallout").inputValue()) === "question");
   ok("review is on by default", await page.locator('#settings input[data-key="review"]').isChecked());
@@ -1868,7 +1868,7 @@ const lastNotice = (page) => page.evaluate(() => tropa.notices.at(-1) ?? "");
   await box.locator('button[data-rating="3"]').click();
   await settled(page); await wait(page, 200);
   const own = (await journalFiles(page)).find((path) => !path.includes("phone-beef"));
-  ok("review: written to this device's journal", own && /\n- \S+ reviewed \[\[Derivatives\]\] rating=3\n$/.test(await note(page, own)), own);
+  ok("review: written to this device's journal", own && /\n- \S+ reviewed \[\[Derivatives\]\] rating=3( shift=-?[1-3])?\n$/.test(await note(page, own)), own);
   ok("review: no longer due", !(await state(page, "Derivatives")).includes("is-due") && (await page.locator("#right .tropa-review-queue").count()) === 0);
   ok("review: says when it comes back", (await lastNotice(page)).startsWith("Review of Derivatives saved. Next one"), await lastNotice(page));
   ok("review: the next review is shown", (await page.locator("#right .tropa-review .tropa-review-head").innerText()).startsWith("Next review"));
@@ -1877,7 +1877,7 @@ const lastNotice = (page) => page.evaluate(() => tropa.notices.at(-1) ?? "");
 
   await page.locator(".notice .tropa-notice-undo").last().click();
   await settled(page); await wait(page, 200);
-  ok("review: Undo adds a line that takes it back", /reviewed \[\[Derivatives\]\] rating=3\n- \S+ reviewed \[\[Derivatives\]\] undo\n$/.test(await note(page, own)), await note(page, own));
+  ok("review: Undo adds a line that takes it back", /reviewed \[\[Derivatives\]\] rating=3( shift=-?[1-3])?\n- \S+ reviewed \[\[Derivatives\]\] undo\n$/.test(await note(page, own)), await note(page, own));
   ok("review: due again after Undo", (await state(page, "Derivatives")).includes("is-due"));
   ok("review: an undone review does not count", (await statsCell(page, "is-reviews")) === "0");
 
@@ -1939,7 +1939,7 @@ const lastNotice = (page) => page.evaluate(() => tropa.notices.at(-1) ?? "");
   await page.locator("#right .tropa-review-queue .tropa-review-item").first().click(); await wait(page, 150);
   await page.locator('#right .tropa-review button[data-rating="2"]').click();
   await settled(page); await wait(page, 200);
-  ok("review goals: rating works", !(await state(page, "Derivatives")).includes("is-due") && /reviewed \[\[Derivatives\]\] rating=2\n$/.test(await note(page, journal)));
+  ok("review goals: rating works", !(await state(page, "Derivatives")).includes("is-due") && /reviewed \[\[Derivatives\]\] rating=2( shift=-?[1-3])?\n$/.test(await note(page, journal)));
   ok("review goals: the goals are untouched", await page.evaluate(() => tropa.plugin.store.progress.allGoals && tropa.plugin.store.route?.goals.length === 2));
   ok("review goals: no errors", errors.length === 0, errors.join("; "));
   await page.close();
@@ -1984,6 +1984,128 @@ for (const [lang, queueTitle, ratings, dir] of [
   await page.evaluate(() => tropa.plugin.journal.settled()); await wait(page, 200);
   ok("review phone: a tap rates it", !(await state(page, "Derivatives")).includes("is-due"));
   ok("review phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- review load: a daily limit, balancing and a pause written to the journal
+// The three mastered concepts of the example, all marked 40 days ago on another device.
+const seedOldMarks = async (page, days = 40) => {
+  await page.evaluate(async (d) => {
+    const store = tropa.plugin.store;
+    const time = new Date(Date.now() - d * 86400000).toISOString().replace(/\.\d+Z$/, "Z");
+    const lines = [...store.progress.mastered].map((id) => `- ${time} mastered [[${store.graph.nodes.get(id).title}]]`);
+    await tropa.app.vault.create(`${tropa.plugin.settings.journalFolder}/2026-09 phone-beef.md`, `${lines.join("\n")}\n`);
+  }, days);
+  await wait(page, 200);
+};
+const checkCommand = (page, id, checking) => page.evaluate(([cid, c]) => tropa.plugin.commands.find((cmd) => cmd.id === cid).checkCallback(c), [id, checking]);
+const dueCount = (page) => page.locator(".tropa-node.is-due").count();
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  ok("review load: the limit setting, 20 a day by default", (await page.evaluate(() => tropa.plugin.settingTab.getControlValue("reviewLimit"))) === "20");
+  ok("review load: balancing is on by default", (await page.evaluate(() => tropa.plugin.settingTab.getControlValue("reviewBalance"))) === true);
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("reviewLimit", "10"));
+  ok("review load: a limit from the list is saved", await page.evaluate(() => tropa.plugin.settings.reviewLimit === 10));
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("reviewLimit", "7"));
+  ok("review load: a limit not in the list falls back to 20", await page.evaluate(() => tropa.plugin.settings.reviewLimit === 20));
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("reviewBalance", false));
+  ok("review load: balancing can be turned off", await page.evaluate(() => tropa.plugin.settings.reviewBalance === false));
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("reviewBalance", true));
+
+  await seedOldMarks(page);
+  ok("review load: without a limit in reach, all three are due", (await dueCount(page)) === 3);
+  // Two a day, as data.json could hold it.
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 2; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const queue = page.locator("#right .tropa-review-queue");
+  ok("review load: today's queue keeps to the limit", (await queue.locator(".tropa-review-item").count()) === 2 && (await dueCount(page)) === 2);
+  ok("review load: the count says how many of all", (await queue.locator(".tropa-section-count").innerText()) === "2 of 3", await queue.locator(".tropa-section-count").innerText());
+  ok("review load: what waits is said", (await queue.locator(".tropa-review-waiting").innerText()) === "Waiting for the next days: 1");
+  const held = await page.evaluate(() => {
+    const reviews = tropa.plugin.reviews;
+    const id = [...reviews.schedules.keys()].find((key) => !reviews.isDue(key));
+    tropa.app.workspace.right.view.select(id);
+    return tropa.plugin.store.graph.nodes.get(id).title;
+  }); await wait(page, 150);
+  ok("review load: a concept over the limit says so", (await page.locator("#right .tropa-review .tropa-review-head").innerText()) === "Due, over today's limit");
+  ok("review load: its ratings wait behind Review now", (await page.locator("#right .tropa-review-rating").count()) === 0 && (await page.locator("#right button.tropa-review-early").count()) === 1);
+  ok("review load: no due mark on it", !(await state(page, held)).includes("is-due"));
+  await page.evaluate(() => tropa.app.workspace.right.view.select(null)); await wait(page, 150);
+  await queue.locator(".tropa-review-item").first().click(); await wait(page, 150);
+  await page.locator('#right .tropa-review button[data-rating="3"]').click();
+  await settled(page); await wait(page, 250);
+  await page.evaluate(() => tropa.app.workspace.right.view.select(null)); await wait(page, 150);
+  ok("review load: a review counts against the limit, the queue does not refill", (await queue.locator(".tropa-review-item").count()) === 1 && (await queue.locator(".tropa-section-count").innerText()) === "1 of 2",
+    await queue.locator(".tropa-section-count").innerText());
+  const own = (await journalFiles(page)).find((path) => !path.includes("phone-beef"));
+  ok("review load: the review line keeps its form, a shift only when there is one", /\n- \S+ reviewed \[\[[^\]]+\]\] rating=3( shift=-?[1-3])?\n$/.test(await note(page, own)), await note(page, own));
+
+  // Pause from the queue's head.
+  ok("review load: pause command offered, resume not", (await checkCommand(page, "review-pause", true)) === true && (await checkCommand(page, "review-resume", true)) === false);
+  await queue.locator("button.tropa-review-pause").click(); await wait(page, 150);
+  const until = await page.locator(".modal .tropa-pause-until").inputValue();
+  ok("review load: the pause dialog offers a week", /^\d{4}-\d{2}-\d{2}$/.test(until) && (await page.locator(".modal").innerText()).includes("on all your devices"), until);
+  await page.locator(".modal .tropa-pause-until").fill("2000-01-01");
+  await page.locator('.modal button:text-is("Pause")').click(); await wait(page, 100);
+  ok("review load: a day in the past is refused", (await lastNotice(page)) === "Choose a day after today" && (await page.locator(".modal").count()) === 1);
+  await page.locator(".modal .tropa-pause-until").fill(until);
+  await page.locator('.modal button:text-is("Pause")').click();
+  await settled(page); await wait(page, 250);
+  ok("review load: the pause goes to the journal", new RegExp(`\\n- \\S+ pause - until=${until}\\n$`).test(await note(page, own)), await note(page, own));
+  ok("review load: paused, the queue says when it comes back", (await queue.locator(".tropa-review-paused").innerText()).startsWith("Review paused, back on") && (await queue.locator(".tropa-review-item").count()) === 0);
+  ok("review load: no due marks while paused", (await dueCount(page)) === 0);
+  await runCommand(page, "review-next"); await wait(page, 50);
+  ok("review load: the next review says it is paused", (await lastNotice(page)).startsWith("Review paused, back on"), await lastNotice(page));
+  ok("review load: resume command offered, pause not", (await checkCommand(page, "review-pause", true)) === false && (await checkCommand(page, "review-resume", true)) === true);
+  await page.screenshot({ path: SHOTS + "99-review-paused.png" });
+  await queue.locator("button.tropa-review-resume").click();
+  await settled(page); await wait(page, 250);
+  ok("review load: resume goes to the journal", /\n- \S+ resume -\n$/.test(await note(page, own)), await note(page, own));
+  ok("review load: the queue is back after resume", (await queue.locator(".tropa-review-item").count()) === 1 && (await dueCount(page)) === 1);
+  // The day's limit done: the queue stays, empty, and says what waits.
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  ok("review load: limit done, the queue says so", (await queue.locator(".tropa-review-done").innerText()) === "Today's reviews are done." && (await queue.locator(".tropa-review-waiting").innerText()) === "Waiting for the next days: 2");
+  await runCommand(page, "review-next"); await wait(page, 50);
+  ok("review load: the next review says the limit is done", (await lastNotice(page)) === "Today's reviews are done. Waiting for the next days: 2", await lastNotice(page));
+  ok("review load: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, paused, resume, count, dir] of [
+  ["ru", "Повторение на паузе, вернётся", "Возобновить", "1 из 3", "ltr"],
+  ["ar", "المراجعة متوقفة مؤقتًا، تعود في", "استئناف", "1 من 3", "rtl"],
+]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  await seedOldMarks(page);
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const queue = page.locator("#right .tropa-review-queue");
+  ok(`review load ${lang}: the count translated`, (await queue.locator(".tropa-section-count").innerText()) === count, await queue.locator(".tropa-section-count").innerText());
+  ok(`review load ${lang}: what waits translated, no raw placeholders`, !/[{}]/.test(await queue.innerText()));
+  await queue.locator("button.tropa-review-pause").click(); await wait(page, 150);
+  ok(`review load ${lang}: the dialog direction`, (await page.locator(".modal").getAttribute("dir")) === (dir === "rtl" ? "rtl" : null));
+  await page.locator(".modal button.mod-cta").click();
+  await settled(page); await wait(page, 250);
+  const line = await queue.locator(".tropa-review-paused").innerText();
+  ok(`review load ${lang}: paused translated`, line.startsWith(paused) && line.includes(resume) && !/[{}]/.test(line), line);
+  ok(`review load ${lang}: direction`, (await page.evaluate(() => getComputedStyle(document.querySelector("#right .tropa-review-queue")).direction)) === dir);
+  await page.screenshot({ path: SHOTS + `99-review-paused-${lang}.png` });
+  ok(`review load ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?phone" });
+  await seedOldMarks(page);
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 2; tropa.plugin.reviews.refresh(); }); await wait(page, 300);
+  const queue = page.locator("#center .tropa-review-queue");
+  await queue.scrollIntoViewIfNeeded();
+  ok("review load phone: the queue on the sheet keeps to the limit", (await queue.locator(".tropa-review-item").count()) === 2 && (await queue.locator(".tropa-section-count").innerText()) === "2 of 3");
+  const pause = await queue.locator("button.tropa-review-pause").boundingBox();
+  ok("review load phone: the pause button is finger-sized and on screen", pause && pause.width >= 36 && pause.height >= 36 && pause.x + pause.width <= 390, JSON.stringify(pause));
+  await queue.locator("button.tropa-review-pause").tap(); await wait(page, 200);
+  ok("review load phone: the pause dialog opens", (await page.locator(".modal .tropa-pause-until").count()) === 1);
+  await page.locator(".modal button.mod-cta").tap();
+  await page.evaluate(() => tropa.plugin.journal.settled()); await wait(page, 300);
+  ok("review load phone: paused", (await queue.locator(".tropa-review-paused").count()) === 1 && (await dueCount(page)) === 0);
+  await page.screenshot({ path: SHOTS + "99-review-paused-phone.png" });
+  ok("review load phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 
