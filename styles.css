@@ -1312,6 +1312,21 @@ body.is-phone .tropa-panel {
 body.is-phone .tropa-batch-kind { min-height: 36px; }
 body.is-phone .tropa-batch-line input { width: 20px; height: 20px; }
 
+/* Map from a list */
+.tropa-outline-text { width: 100%; min-height: 12em; resize: vertical; font-family: var(--font-monospace); font-size: var(--font-ui-small); }
+.tropa-outline-count { min-height: 1.5em; margin: 4px 0 0; }
+.tropa-outline-folder { width: 100%; }
+.tropa-outline-order { flex-wrap: wrap; gap: 8px; }
+.tropa-outline-order .setting-item-control { flex: 1 1 12em; min-width: 0; }
+.tropa-outline-order select { max-width: 100%; }
+.tropa-batch-prelude { max-height: 25vh; overflow-y: auto; margin-bottom: 8px; }
+.tropa-outline-notes + .tropa-outline-notes { margin-top: 8px; }
+.tropa-outline-notes h3 { margin: 0 0 4px; font-size: var(--font-ui-medium); }
+.tropa-outline-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.tropa-outline-chip { padding: 2px 8px; border-radius: var(--radius-s); background: var(--background-modifier-hover); font-size: var(--font-ui-small); overflow-wrap: anywhere; }
+.tropa-outline-chip.is-renamed { color: var(--text-warning); }
+body.is-phone .tropa-outline-text { font-size: var(--font-ui-medium); }
+
 /* Export */
 
 .tropa-export-modal .is-hidden { display: none; }

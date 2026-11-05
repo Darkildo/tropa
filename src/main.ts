@@ -9,6 +9,7 @@ import { Journal } from "./journal";
 import { Reviews } from "./review";
 import { SelfChecks } from "./self-check";
 import { LinkSuggestions } from "./suggest-links";
+import { OutlineImport } from "./map-from-list";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -34,6 +35,7 @@ export default class TropaPlugin extends Plugin {
   reviews!: Reviews;
   checks!: SelfChecks;
   links!: LinkSuggestions;
+  outline!: OutlineImport;
 
   async onload() {
     setLocale(getLanguage());
@@ -49,6 +51,7 @@ export default class TropaPlugin extends Plugin {
     this.register(this.reviews.registerCheck((id) => this.checks.reviewCheck(id)));
     this.registerEvent(this.store.on("change", () => attempt(this.checks.sync(), "read self-check questions")));
     this.links = new LinkSuggestions(this);
+    this.outline = new OutlineImport(this);
     this.registerEvent(
       this.app.workspace.on("file-menu", (menu, file) => {
         const scope = this.links.scopeOf(file);
@@ -168,6 +171,16 @@ export default class TropaPlugin extends Plugin {
       checkCallback: (checking) => {
         if (!this.links.last) return false;
         if (!checking) attempt(this.links.undo(), "undo the suggested links");
+        return true;
+      },
+    });
+    this.addCommand({ id: "map-from-list", name: t.outline.command, callback: () => this.outline.open() });
+    this.addCommand({
+      id: "undo-map-from-list",
+      name: t.outline.undoCommand,
+      checkCallback: (checking) => {
+        if (!this.outline.last) return false;
+        if (!checking) attempt(this.outline.undo(), "undo the map from the list");
         return true;
       },
     });
