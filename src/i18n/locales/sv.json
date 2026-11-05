@@ -333,6 +333,44 @@
     "cyclesHint": "Varje begrepp kräver nästa och det sista kräver det första, så inget kan läras först.",
     "showOnMap": "Visa på kartan"
   },
+  "links": {
+    "command": "Föreslå kopplingar från dina anteckningar",
+    "undoCommand": "Ångra de senaste föreslagna kopplingarna",
+    "button": "Föreslå kopplingar från mina anteckningar",
+    "menu": "Föreslå kopplingar för inlärningskartan",
+    "scopePrompt": "Vilka anteckningar ska Tropa läsa?",
+    "wholeVault": "Alla anteckningar",
+    "folder": "Mapp",
+    "openNote": "Öppen anteckning",
+    "title": "Föreslagna kopplingar: {scope}",
+    "intro": "Tropa hittade de här kopplingarna i dina anteckningar. Inget ändras förrän du lägger till dem. Välj vad varje anteckning behöver först, eller vad den rekommenderar: en rekommenderad anteckning hjälper men blockerar inget.",
+    "filter": "Filtrera efter anteckningsnamn",
+    "section": {
+      "list": "Från listor",
+      "link": "Länkar i texten",
+      "mutual": "Länkar åt båda håll"
+    },
+    "sectionHint": {
+      "list": "Punkter i en lista med länkade anteckningar, i ordning: varje behöver den före. Dessa är markerade.",
+      "link": "En anteckning länkar till en annan som inte länkar tillbaka, så den länkade kommer troligen först.",
+      "mutual": "Anteckningarna länkar till varandra, så ingen kommer tydligt först. Erbjuds som rekommenderade."
+    },
+    "kindLabel": "Typ av koppling",
+    "kind": {
+      "requires": "behöver",
+      "recommends": "rekommenderar"
+    },
+    "inList": "I listan i {note}",
+    "selectAll": "Markera alla",
+    "selectNone": "Rensa",
+    "loop": "Skulle sluta en slinga: {chain}",
+    "apply": "Lägg till kopplingar ({count})",
+    "more": "Visas inte: {count}. Välj en mindre mapp för att se dem.",
+    "nothing": "Inga nya kopplingar hittades i {scope}.",
+    "added": "Kopplingar tillagda: {count}",
+    "undone": "De föreslagna kopplingarna togs bort.",
+    "kept": "Anteckningar ändrade sedan dess och lämnade som de är: {count}"
+  },
   "exportMap": "Exportera karta",
   "exportCanvas": "Exportera kartan till Canvas",
   "exportSvg": "Exportera kartan som SVG",

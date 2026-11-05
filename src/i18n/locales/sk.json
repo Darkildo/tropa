@@ -369,6 +369,44 @@
     "cyclesHint": "Každý pojem vyžaduje ďalší a posledný vyžaduje prvý, takže žiadny sa nedá naučiť ako prvý.",
     "showOnMap": "Ukázať na mape"
   },
+  "links": {
+    "command": "Navrhnúť väzby z vašich poznámok",
+    "undoCommand": "Vrátiť naposledy navrhnuté väzby",
+    "button": "Navrhnúť väzby z mojich poznámok",
+    "menu": "Navrhnúť väzby pre mapu učenia",
+    "scopePrompt": "Ktoré poznámky má Tropa prečítať?",
+    "wholeVault": "Všetky poznámky",
+    "folder": "Priečinok",
+    "openNote": "Otvorená poznámka",
+    "title": "Navrhnuté väzby: {scope}",
+    "intro": "Tropa našla tieto väzby vo vašich poznámkach. Kým ich nepridáte, nič sa nezmení. Vyberte, čo každá poznámka potrebuje najprv a čo len odporúča: odporúčaná poznámka pomáha, ale nič neblokuje.",
+    "filter": "Filtrovať podľa názvu poznámky",
+    "section": {
+      "list": "Zo zoznamov",
+      "link": "Odkazy v texte",
+      "mutual": "Odkazy oboma smermi"
+    },
+    "sectionHint": {
+      "list": "Položky zoznamu odkazov na poznámky, v poradí: každá potrebuje predchádzajúcu. Tieto sú zaškrtnuté.",
+      "link": "Poznámka odkazuje na inú, ktorá neodkazuje späť, takže odkazovaná je asi prvá.",
+      "mutual": "Poznámky na seba odkazujú navzájom, žiadna nie je jasne prvá. Ponúknuté ako odporúčané."
+    },
+    "kindLabel": "Druh väzby",
+    "kind": {
+      "requires": "potrebuje",
+      "recommends": "odporúča"
+    },
+    "inList": "V zozname poznámky {note}",
+    "selectAll": "Vybrať všetko",
+    "selectNone": "Zrušiť výber",
+    "loop": "Uzavrelo by slučku: {chain}",
+    "apply": "Pridať väzby ({count})",
+    "more": "Nezobrazené: {count}. Vyberte menší priečinok, aby ste ich videli.",
+    "nothing": "V {scope} sa nenašli žiadne nové väzby.",
+    "added": "Pridané väzby: {count}",
+    "undone": "Navrhnuté väzby boli odstránené.",
+    "kept": "Poznámky odvtedy zmenené, ponechané bez zmeny: {count}"
+  },
   "exportMap": "Export mapy",
   "exportCanvas": "Exportovať mapu do Canvasu",
   "exportSvg": "Exportovať mapu ako SVG",

@@ -333,6 +333,44 @@
     "cyclesHint": "Her kavram bir sonrakini, sonuncusu da ilkini gerektiriyor; bu yüzden hiçbiri önce öğrenilemez.",
     "showOnMap": "Haritada göster"
   },
+  "links": {
+    "command": "Notlarınızdan bağlantı öner",
+    "undoCommand": "Son önerilen bağlantıları geri al",
+    "button": "Notlarımdan bağlantı öner",
+    "menu": "Öğrenme haritası için bağlantı öner",
+    "scopePrompt": "Tropa hangi notları okusun?",
+    "wholeVault": "Tüm notlar",
+    "folder": "Klasör",
+    "openNote": "Açık not",
+    "title": "Önerilen bağlantılar: {scope}",
+    "intro": "Tropa bu bağlantıları notlarınızda buldu. Siz eklemeden hiçbir şey değişmez. Her notun önce neye ihtiyaç duyduğunu ya da neyi önerdiğini seçin: önerilen bir not yardımcı olur ama hiçbir şeyi engellemez.",
+    "filter": "Not adına göre filtrele",
+    "section": {
+      "list": "Listelerden",
+      "link": "Metindeki bağlantılar",
+      "mutual": "İki yönlü bağlantılar"
+    },
+    "sectionHint": {
+      "list": "Bağlantılı notlardan oluşan bir listenin öğeleri, sırayla: her biri bir öncekine ihtiyaç duyar. Bunlar işaretli.",
+      "link": "Bir not geri bağlantı vermeyen başka bir nota bağlanıyor, yani bağlanan not muhtemelen önce gelir.",
+      "mutual": "Notlar birbirine bağlanıyor, hiçbiri açıkça önce gelmiyor. Önerilen olarak sunuldu."
+    },
+    "kindLabel": "Bağlantı türü",
+    "kind": {
+      "requires": "gerektirir",
+      "recommends": "önerir"
+    },
+    "inList": "{note} listesinde",
+    "selectAll": "Tümünü seç",
+    "selectNone": "Temizle",
+    "loop": "Bir döngüyü kapatır: {chain}",
+    "apply": "Bağlantıları ekle ({count})",
+    "more": "Gösterilmeyen: {count}. Görmek için daha küçük bir klasör seçin.",
+    "nothing": "{scope} içinde yeni bağlantı bulunamadı.",
+    "added": "Eklenen bağlantılar: {count}",
+    "undone": "Önerilen bağlantılar kaldırıldı.",
+    "kept": "O zamandan beri değişen ve olduğu gibi bırakılan notlar: {count}"
+  },
   "exportMap": "Haritayı dışa aktar",
   "exportCanvas": "Haritayı Canvas'a aktar",
   "exportSvg": "Haritayı SVG olarak aktar",

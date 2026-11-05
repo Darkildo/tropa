@@ -333,6 +333,44 @@
     "cyclesHint": "Minden fogalom a következőt igényli, az utolsó pedig az elsőt, így egyiket sem lehet elsőként megtanulni.",
     "showOnMap": "Megjelenítés a térképen"
   },
+  "links": {
+    "command": "Kapcsolatok javaslása a jegyzeteidből",
+    "undoCommand": "Az utoljára javasolt kapcsolatok visszavonása",
+    "button": "Kapcsolatok javaslása a jegyzeteimből",
+    "menu": "Kapcsolatok javaslása a tanulási térképhez",
+    "scopePrompt": "Mely jegyzeteket olvassa a Tropa?",
+    "wholeVault": "Minden jegyzet",
+    "folder": "Mappa",
+    "openNote": "Megnyitott jegyzet",
+    "title": "Javasolt kapcsolatok: {scope}",
+    "intro": "A Tropa ezeket a kapcsolatokat találta a jegyzeteidben. Semmi sem változik, amíg hozzá nem adod őket. Válaszd ki, mire van szüksége előbb az egyes jegyzeteknek, vagy mit ajánlanak: az ajánlott jegyzet segít, de semmit sem blokkol.",
+    "filter": "Szűrés jegyzetnév szerint",
+    "section": {
+      "list": "Listákból",
+      "link": "Hivatkozások a szövegben",
+      "mutual": "Kölcsönös hivatkozások"
+    },
+    "sectionHint": {
+      "list": "Hivatkozott jegyzetek listájának elemei sorrendben: mindegyikhez kell az előző. Ezek be vannak jelölve.",
+      "link": "Egy jegyzet hivatkozik egy másikra, amely nem hivatkozik vissza, így a hivatkozott valószínűleg előbb jön.",
+      "mutual": "A jegyzetek egymásra hivatkoznak, egyik sem jön egyértelműen előbb. Ajánlottként felkínálva."
+    },
+    "kindLabel": "Kapcsolat fajtája",
+    "kind": {
+      "requires": "igényli",
+      "recommends": "ajánlja"
+    },
+    "inList": "{note} listájában",
+    "selectAll": "Összes kijelölése",
+    "selectNone": "Törlés",
+    "loop": "Kört zárna be: {chain}",
+    "apply": "Kapcsolatok hozzáadása ({count})",
+    "more": "Nem látható: {count}. Válassz kisebb mappát, hogy lásd őket.",
+    "nothing": "Nincs új kapcsolat itt: {scope}.",
+    "added": "Hozzáadott kapcsolatok: {count}",
+    "undone": "A javasolt kapcsolatok eltávolítva.",
+    "kept": "Azóta módosult, változatlanul hagyott jegyzetek: {count}"
+  },
   "exportMap": "Térkép exportálása",
   "exportCanvas": "Térkép exportálása Canvasba",
   "exportSvg": "Térkép exportálása SVG-ként",

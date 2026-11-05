@@ -136,6 +136,23 @@ if (params.has("nowasm")) {
   };
 }
 if (scenario === "empty") vault.seed("Plain note.md", "Text.\n");
+// Plain notes with links but no Tropa properties yet, for suggested links.
+if (scenario === "links") {
+  vault.seed("Course/Calculus course.md", "# Calculus\n\nIn this order:\n\n1. [[Limits]]\n2. [[Derivatives]]\n3. [[Integrals]]\n");
+  vault.seed("Course/Limits.md", "Builds on [[Functions]]. Read [[Calculus book]] and see ![[graph.png]].\n");
+  vault.seed("Course/Functions.md", "A function maps inputs to outputs. Far away: [[Far note]].\n");
+  vault.seed("Course/Derivatives.md", "Leads to [[Integrals]].\n");
+  vault.seed("Course/Integrals.md", "Related: [[Series]].\n");
+  vault.seed("Course/Series.md", "Back to [[Integrals]].\n");
+  vault.seed("Course/Calculus book.md", '---\ntype: source\nformat: book\nteaches: ["[[Limits]]"]\n---\n');
+  vault.seed("Course/Daily 2026-11-05.md", "---\ntype: daily\n---\nStudied [[Limits]].\n");
+  vault.seed("Course/graph.png", "");
+  vault.seed("Other/Far note.md", "Unrelated.\n");
+  // Already on the map: Old A needs Old B, Old B needs Wrap-up; a link from Wrap-up back to Old A would close a loop.
+  vault.seed("Course/Old A.md", '---\ntype: concept\nrequires: ["[[Old B]]"]\n---\n');
+  vault.seed("Course/Old B.md", '---\ntype: concept\nrequires: ["[[Wrap-up]]"]\n---\n');
+  vault.seed("Course/Wrap-up.md", "---\ntype: concept\n---\nAll of [[Old A]] again.\n");
+}
 // Folder and tag exclusions: the progress file and an attachment sit in excluded folders but must keep working.
 if (scenario === "scope") {
   vault.seed("Goal.md", `---\ntype: concept\ntags: [course]\nrequires: ["[[Base]]", "[[Archived]]", "[[Private note]]", "[[Inline tagged]]", "[[Kept]]"]\n---\n`);

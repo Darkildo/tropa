@@ -333,6 +333,44 @@
     "cyclesHint": "Hvert begreb kræver det næste, og det sidste kræver det første, så intet kan læres først.",
     "showOnMap": "Vis på kortet"
   },
+  "links": {
+    "command": "Foreslå forbindelser fra dine noter",
+    "undoCommand": "Fortryd de seneste foreslåede forbindelser",
+    "button": "Foreslå forbindelser fra mine noter",
+    "menu": "Foreslå forbindelser til læringskortet",
+    "scopePrompt": "Hvilke noter skal Tropa læse?",
+    "wholeVault": "Alle noter",
+    "folder": "Mappe",
+    "openNote": "Åben note",
+    "title": "Foreslåede forbindelser: {scope}",
+    "intro": "Tropa fandt disse forbindelser i dine noter. Intet ændres, før du tilføjer dem. Vælg, hvad hver note har brug for først, eller hvad den anbefaler: en anbefalet note hjælper, men blokerer intet.",
+    "filter": "Filtrer efter notenavn",
+    "section": {
+      "list": "Fra lister",
+      "link": "Links i teksten",
+      "mutual": "Links begge veje"
+    },
+    "sectionHint": {
+      "list": "Punkter i en liste af linkede noter, i rækkefølge: hvert kræver det forrige. Disse er markeret.",
+      "link": "En note linker til en anden, der ikke linker tilbage, så den linkede kommer nok først.",
+      "mutual": "Noterne linker til hinanden, så ingen kommer tydeligt først. Tilbudt som anbefalede."
+    },
+    "kindLabel": "Type forbindelse",
+    "kind": {
+      "requires": "kræver",
+      "recommends": "anbefaler"
+    },
+    "inList": "I listen i {note}",
+    "selectAll": "Vælg alle",
+    "selectNone": "Ryd",
+    "loop": "Ville lukke en løkke: {chain}",
+    "apply": "Tilføj forbindelser ({count})",
+    "more": "Ikke vist: {count}. Vælg en mindre mappe for at se dem.",
+    "nothing": "Ingen nye forbindelser fundet i {scope}.",
+    "added": "Forbindelser tilføjet: {count}",
+    "undone": "De foreslåede forbindelser blev fjernet.",
+    "kept": "Noter ændret siden og ladet være: {count}"
+  },
   "exportMap": "Eksportér kort",
   "exportCanvas": "Eksportér kortet til Canvas",
   "exportSvg": "Eksportér kortet som SVG",

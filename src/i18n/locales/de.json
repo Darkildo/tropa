@@ -333,6 +333,44 @@
     "cyclesHint": "Jedes Konzept setzt das nächste voraus und das letzte das erste, daher kann keines zuerst gelernt werden.",
     "showOnMap": "Auf der Karte zeigen"
   },
+  "links": {
+    "command": "Verknüpfungen aus deinen Notizen vorschlagen",
+    "undoCommand": "Zuletzt vorgeschlagene Verknüpfungen rückgängig machen",
+    "button": "Verknüpfungen aus meinen Notizen vorschlagen",
+    "menu": "Verknüpfungen für die Lernkarte vorschlagen",
+    "scopePrompt": "Welche Notizen soll Tropa lesen?",
+    "wholeVault": "Alle Notizen",
+    "folder": "Ordner",
+    "openNote": "Geöffnete Notiz",
+    "title": "Vorgeschlagene Verknüpfungen: {scope}",
+    "intro": "Tropa hat diese Verknüpfungen in deinen Notizen gefunden. Nichts ändert sich, bis du sie hinzufügst. Wähle, was jede Notiz zuerst braucht oder was sie empfiehlt: Eine empfohlene Notiz hilft, blockiert aber nichts.",
+    "filter": "Nach Notizname filtern",
+    "section": {
+      "list": "Aus Listen",
+      "link": "Links im Text",
+      "mutual": "Links in beide Richtungen"
+    },
+    "sectionHint": {
+      "list": "Punkte einer Liste verlinkter Notizen, der Reihe nach: Jeder braucht den vorherigen. Diese sind angehakt.",
+      "link": "Eine Notiz verlinkt eine andere, die nicht zurückverlinkt, also kommt die verlinkte wohl zuerst.",
+      "mutual": "Die Notizen verlinken einander, keine kommt eindeutig zuerst. Als empfohlen angeboten."
+    },
+    "kindLabel": "Art der Verknüpfung",
+    "kind": {
+      "requires": "braucht",
+      "recommends": "empfiehlt"
+    },
+    "inList": "In der Liste von {note}",
+    "selectAll": "Alle auswählen",
+    "selectNone": "Leeren",
+    "loop": "Würde einen Kreis schließen: {chain}",
+    "apply": "Verknüpfungen hinzufügen ({count})",
+    "more": "Nicht angezeigt: {count}. Wähle einen kleineren Ordner, um sie zu sehen.",
+    "nothing": "Keine neuen Verknüpfungen in {scope} gefunden.",
+    "added": "Verknüpfungen hinzugefügt: {count}",
+    "undone": "Die vorgeschlagenen Verknüpfungen wurden entfernt.",
+    "kept": "Seitdem geänderte Notizen, unverändert gelassen: {count}"
+  },
   "exportMap": "Karte exportieren",
   "exportCanvas": "Karte als Canvas exportieren",
   "exportSvg": "Karte als SVG exportieren",

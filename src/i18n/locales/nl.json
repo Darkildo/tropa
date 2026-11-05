@@ -333,6 +333,44 @@
     "cyclesHint": "Elk concept vereist het volgende en het laatste vereist het eerste, dus geen enkel kan als eerste geleerd worden.",
     "showOnMap": "Tonen op de kaart"
   },
+  "links": {
+    "command": "Koppelingen voorstellen uit je notities",
+    "undoCommand": "Laatst voorgestelde koppelingen ongedaan maken",
+    "button": "Koppelingen voorstellen uit mijn notities",
+    "menu": "Koppelingen voorstellen voor de leerkaart",
+    "scopePrompt": "Welke notities moet Tropa lezen?",
+    "wholeVault": "Alle notities",
+    "folder": "Map",
+    "openNote": "Geopende notitie",
+    "title": "Voorgestelde koppelingen: {scope}",
+    "intro": "Tropa vond deze koppelingen in je notities. Er verandert niets tot je ze toevoegt. Kies wat elke notitie eerst nodig heeft, of wat ze aanbeveelt: een aanbevolen notitie helpt maar blokkeert niets.",
+    "filter": "Filteren op notitienaam",
+    "section": {
+      "list": "Uit lijsten",
+      "link": "Links in de tekst",
+      "mutual": "Links in beide richtingen"
+    },
+    "sectionHint": {
+      "list": "Items van een lijst met gelinkte notities, op volgorde: elk heeft de vorige nodig. Deze zijn aangevinkt.",
+      "link": "Een notitie linkt naar een andere die niet terug linkt, dus de gelinkte komt waarschijnlijk eerst.",
+      "mutual": "De notities linken naar elkaar, geen komt duidelijk eerst. Aangeboden als aanbevolen."
+    },
+    "kindLabel": "Soort koppeling",
+    "kind": {
+      "requires": "heeft nodig",
+      "recommends": "beveelt aan"
+    },
+    "inList": "In de lijst van {note}",
+    "selectAll": "Alles selecteren",
+    "selectNone": "Wissen",
+    "loop": "Zou een kring sluiten: {chain}",
+    "apply": "Koppelingen toevoegen ({count})",
+    "more": "Niet getoond: {count}. Kies een kleinere map om ze te zien.",
+    "nothing": "Geen nieuwe koppelingen gevonden in {scope}.",
+    "added": "Koppelingen toegevoegd: {count}",
+    "undone": "De voorgestelde koppelingen zijn verwijderd.",
+    "kept": "Sindsdien gewijzigde notities, ongemoeid gelaten: {count}"
+  },
   "exportMap": "Kaart exporteren",
   "exportCanvas": "Kaart naar Canvas exporteren",
   "exportSvg": "Kaart als SVG exporteren",

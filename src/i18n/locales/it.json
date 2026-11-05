@@ -351,6 +351,44 @@
     "cyclesHint": "Ogni concetto richiede il successivo e l’ultimo richiede il primo, quindi nessuno si può imparare per primo.",
     "showOnMap": "Mostra sulla mappa"
   },
+  "links": {
+    "command": "Suggerisci collegamenti dalle tue note",
+    "undoCommand": "Annulla gli ultimi collegamenti suggeriti",
+    "button": "Suggerisci collegamenti dalle mie note",
+    "menu": "Suggerisci collegamenti per la mappa di apprendimento",
+    "scopePrompt": "Quali note deve leggere Tropa?",
+    "wholeVault": "Tutte le note",
+    "folder": "Cartella",
+    "openNote": "Nota aperta",
+    "title": "Collegamenti suggeriti: {scope}",
+    "intro": "Tropa ha trovato questi collegamenti nelle tue note. Non cambia nulla finché non li aggiungi. Scegli di cosa ha bisogno prima ogni nota, o cosa consiglia: una nota consigliata aiuta ma non blocca nulla.",
+    "filter": "Filtra per nome della nota",
+    "section": {
+      "list": "Dagli elenchi",
+      "link": "Collegamenti nel testo",
+      "mutual": "Collegamenti in entrambi i sensi"
+    },
+    "sectionHint": {
+      "list": "Voci di un elenco di note collegate, in ordine: ognuna richiede la precedente. Queste sono spuntate.",
+      "link": "Una nota collega un'altra che non la ricollega, quindi quella collegata probabilmente viene prima.",
+      "mutual": "Le note si collegano a vicenda, nessuna viene chiaramente prima. Proposte come consigliate."
+    },
+    "kindLabel": "Tipo di collegamento",
+    "kind": {
+      "requires": "richiede",
+      "recommends": "consiglia"
+    },
+    "inList": "Nell'elenco di {note}",
+    "selectAll": "Seleziona tutto",
+    "selectNone": "Cancella",
+    "loop": "Chiuderebbe un ciclo: {chain}",
+    "apply": "Aggiungi collegamenti ({count})",
+    "more": "Non mostrati: {count}. Scegli una cartella più piccola per vederli.",
+    "nothing": "Nessun nuovo collegamento trovato in {scope}.",
+    "added": "Collegamenti aggiunti: {count}",
+    "undone": "I collegamenti suggeriti sono stati rimossi.",
+    "kept": "Note modificate nel frattempo e lasciate così: {count}"
+  },
   "exportMap": "Esporta mappa",
   "exportCanvas": "Esporta la mappa in Canvas",
   "exportSvg": "Esporta la mappa come SVG",

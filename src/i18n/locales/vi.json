@@ -315,6 +315,44 @@
     "cyclesHint": "Mỗi khái niệm yêu cầu khái niệm tiếp theo và khái niệm cuối yêu cầu khái niệm đầu, nên không cái nào học trước được.",
     "showOnMap": "Hiện trên bản đồ"
   },
+  "links": {
+    "command": "Gợi ý liên kết từ ghi chú của bạn",
+    "undoCommand": "Hoàn tác các liên kết được gợi ý gần nhất",
+    "button": "Gợi ý liên kết từ ghi chú của tôi",
+    "menu": "Gợi ý liên kết cho bản đồ học tập",
+    "scopePrompt": "Tropa nên đọc những ghi chú nào?",
+    "wholeVault": "Tất cả ghi chú",
+    "folder": "Thư mục",
+    "openNote": "Ghi chú đang mở",
+    "title": "Liên kết được gợi ý: {scope}",
+    "intro": "Tropa tìm thấy các liên kết này trong ghi chú của bạn. Không có gì thay đổi cho đến khi bạn thêm chúng. Chọn điều mỗi ghi chú cần trước, hoặc điều nó khuyên dùng: ghi chú được khuyên dùng có ích nhưng không chặn gì.",
+    "filter": "Lọc theo tên ghi chú",
+    "section": {
+      "list": "Từ danh sách",
+      "link": "Liên kết trong văn bản",
+      "mutual": "Liên kết hai chiều"
+    },
+    "sectionHint": {
+      "list": "Các mục của một danh sách ghi chú có liên kết, theo thứ tự: mỗi mục cần mục trước nó. Các mục này đã được đánh dấu.",
+      "link": "Một ghi chú liên kết tới ghi chú khác không liên kết ngược lại, nên ghi chú được liên kết có lẽ đi trước.",
+      "mutual": "Các ghi chú liên kết lẫn nhau, không cái nào rõ ràng đi trước. Được đề xuất như khuyên dùng."
+    },
+    "kindLabel": "Loại liên kết",
+    "kind": {
+      "requires": "cần",
+      "recommends": "khuyên dùng"
+    },
+    "inList": "Trong danh sách của {note}",
+    "selectAll": "Chọn tất cả",
+    "selectNone": "Bỏ chọn",
+    "loop": "Sẽ khép một vòng lặp: {chain}",
+    "apply": "Thêm liên kết ({count})",
+    "more": "Không hiển thị: {count}. Chọn thư mục nhỏ hơn để xem chúng.",
+    "nothing": "Không tìm thấy liên kết mới trong {scope}.",
+    "added": "Đã thêm liên kết: {count}",
+    "undone": "Đã gỡ các liên kết được gợi ý.",
+    "kept": "Ghi chú đã thay đổi từ đó và được giữ nguyên: {count}"
+  },
   "exportMap": "Xuất bản đồ",
   "exportCanvas": "Xuất bản đồ sang Canvas",
   "exportSvg": "Xuất bản đồ dạng SVG",

@@ -7,6 +7,7 @@ import { LEGACY_PROGRESS, defaultSettings, type TropaSettings } from "./defaults
 import { Journal } from "./journal";
 import { Reviews } from "./review";
 import { SelfChecks } from "./self-check";
+import { LinkSuggestions } from "./suggest-links";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
 import { Store } from "./store";
@@ -30,6 +31,7 @@ export default class TropaPlugin extends Plugin {
   journal!: Journal;
   reviews!: Reviews;
   checks!: SelfChecks;
+  links!: LinkSuggestions;
 
   async onload() {
     setLocale(getLanguage());
@@ -44,6 +46,13 @@ export default class TropaPlugin extends Plugin {
     this.checks = new SelfChecks(this.app, () => this.settings, () => this.saveSettings(), this.store, this.reviews);
     this.register(this.reviews.registerCheck((id) => this.checks.reviewCheck(id)));
     this.registerEvent(this.store.on("change", () => attempt(this.checks.sync(), "read self-check questions")));
+    this.links = new LinkSuggestions(this);
+    this.registerEvent(
+      this.app.workspace.on("file-menu", (menu, file) => {
+        const scope = this.links.scopeOf(file);
+        if (scope) menu.addItem((item) => item.setTitle(t.links.menu).setIcon("route").onClick(() => this.links.open(scope)));
+      }),
+    );
 
     this.registerView(MAP_VIEW, (leaf) => new MapView(leaf, this));
     this.registerView(PANEL_VIEW, (leaf) => new PanelView(leaf, this));
@@ -150,6 +159,16 @@ export default class TropaPlugin extends Plugin {
     this.addCommand({ id: "audit-map", name: t.audit.command, callback: () => attempt(this.showAudit(), "open the map audit") });
     this.addCommand({ id: "export-canvas", name: t.exportCanvas, callback: () => attempt(this.showMap((map) => map.exportCanvas()), "export the map") });
     this.addCommand({ id: "export-svg", name: t.exportSvg, callback: () => attempt(this.showMap((map) => map.exportSvg()), "export the map") });
+    this.addCommand({ id: "suggest-links", name: t.links.command, callback: () => this.links.pickScope() });
+    this.addCommand({
+      id: "undo-links",
+      name: t.links.undoCommand,
+      checkCallback: (checking) => {
+        if (!this.links.last) return false;
+        if (!checking) attempt(this.links.undo(), "undo the suggested links");
+        return true;
+      },
+    });
 
     this.addCommand({
       id: "find-concept",

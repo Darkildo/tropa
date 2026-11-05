@@ -351,6 +351,44 @@
     "cyclesHint": "Cada concepte requereix el següent i l’últim requereix el primer, de manera que cap no es pot aprendre primer.",
     "showOnMap": "Mostra al mapa"
   },
+  "links": {
+    "command": "Suggereix enllaços a partir de les teves notes",
+    "undoCommand": "Desfés els últims enllaços suggerits",
+    "button": "Suggereix enllaços a partir de les meves notes",
+    "menu": "Suggereix enllaços per al mapa d'aprenentatge",
+    "scopePrompt": "Quines notes ha de llegir Tropa?",
+    "wholeVault": "Totes les notes",
+    "folder": "Carpeta",
+    "openNote": "Nota oberta",
+    "title": "Enllaços suggerits: {scope}",
+    "intro": "Tropa ha trobat aquests enllaços a les teves notes. No canvia res fins que els afegeixis. Tria què necessita primer cada nota, o què recomana: una nota recomanada ajuda, però no bloqueja res.",
+    "filter": "Filtra pel nom de la nota",
+    "section": {
+      "list": "De llistes",
+      "link": "Enllaços al text",
+      "mutual": "Enllaços en tots dos sentits"
+    },
+    "sectionHint": {
+      "list": "Elements d'una llista de notes enllaçades, en ordre: cadascun necessita l'anterior. Aquests estan marcats.",
+      "link": "Una nota enllaça una altra que no l'enllaça de tornada, així que l'enllaçada probablement va primer.",
+      "mutual": "Les notes s'enllacen entre si, cap no va clarament primer. S'ofereixen com a recomanades."
+    },
+    "kindLabel": "Tipus d'enllaç",
+    "kind": {
+      "requires": "necessita",
+      "recommends": "recomana"
+    },
+    "inList": "A la llista de {note}",
+    "selectAll": "Selecciona-ho tot",
+    "selectNone": "Esborra",
+    "loop": "Tancaria un cicle: {chain}",
+    "apply": "Afegeix enllaços ({count})",
+    "more": "No mostrats: {count}. Tria una carpeta més petita per veure'ls.",
+    "nothing": "No s'han trobat enllaços nous a {scope}.",
+    "added": "Enllaços afegits: {count}",
+    "undone": "S'han tret els enllaços suggerits.",
+    "kept": "Notes canviades des de llavors i deixades tal com són: {count}"
+  },
   "exportMap": "Exporta el mapa",
   "exportCanvas": "Exporta el mapa a Canvas",
   "exportSvg": "Exporta el mapa com a SVG",

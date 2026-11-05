@@ -120,6 +120,9 @@ export const normalizePath = (path: string) => path.replace(/\\/g, "/").replace(
 
 export const getLanguage = () => localStorage.getItem("language") ?? "en";
 
+/** The note part of a link: no heading or block. */
+export const getLinkpath = (link: string) => link.split(/[#^]/)[0];
+
 export function debounce(fn: Callback, wait = 0) {
   let timer = 0;
   return (...args: any[]) => {
@@ -213,7 +216,45 @@ export class Vault extends Events {
   }
 }
 
-type Cache = { frontmatter?: any; tags?: { tag: string }[] };
+type Position = { start: { line: number }; end: { line: number } };
+type Cache = {
+  frontmatter?: any;
+  tags?: { tag: string }[];
+  links?: { link: string; position: Position }[];
+  listItems?: { parent: number; position: Position }[];
+};
+
+const at = (line: number): Position => ({ start: { line }, end: { line } });
+
+/**
+ * Links and list items of the body, by file line as Obsidian counts them. A list item's parent is the
+ * line of the item it is nested in, or minus the line of the list's first item at the top of a list.
+ */
+function bodyCache(lines: string[], from: number) {
+  const links: NonNullable<Cache["links"]> = [];
+  const listItems: NonNullable<Cache["listItems"]> = [];
+  const stack: { indent: number; line: number }[] = [];
+  let first = -1;
+  for (let line = from; line < lines.length; line++) {
+    const text = lines[line];
+    // Embeds (![[...]]) are not links.
+    for (const match of text.matchAll(/(!?)\[\[([^\]]+)\]\]/g)) if (!match[1]) links.push({ link: match[2].split("|")[0], position: at(line) });
+    const item = /^(\s*)(?:[-*+]|\d+\.)\s/.exec(text);
+    if (!item) {
+      if (text.trim()) {
+        stack.length = 0;
+        first = -1;
+      }
+      continue;
+    }
+    const indent = item[1].length;
+    while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop();
+    if (!stack.length && first < 0) first = line;
+    listItems.push({ parent: stack.length ? stack[stack.length - 1].line : -first, position: at(line) });
+    stack.push({ indent, line });
+  }
+  return { ...(links.length ? { links } : {}), ...(listItems.length ? { listItems } : {}) };
+}
 
 // Inline tags of the body, as Obsidian lists them in the cache: `#` included, nested parts kept.
 const INLINE_TAG = /(?:^|\s)(#[\p{L}\p{N}_/-]+)/gu;
@@ -233,7 +274,13 @@ class MetadataCache extends Events {
     const match = FRONTMATTER.exec(content);
     const body = match ? content.slice(match[0].length) : content;
     const tags = [...body.matchAll(INLINE_TAG)].map((found) => ({ tag: found[1] }));
-    this.cache.set(file.path, { ...(match ? { frontmatter: parse(match[1]) ?? {} } : {}), ...(tags.length ? { tags } : {}) });
+    const lines = content.split("\n");
+    const from = match ? match[0].split("\n").length - (match[0].endsWith("\n") ? 1 : 0) : 0;
+    this.cache.set(file.path, {
+      ...(match ? { frontmatter: parse(match[1]) ?? {} } : {}),
+      ...(tags.length ? { tags } : {}),
+      ...bodyCache(lines, from),
+    });
   }
   reindex(file: TFile) {
     // Real indexing is asynchronous, so this is too.

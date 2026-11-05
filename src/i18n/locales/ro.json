@@ -351,6 +351,44 @@
     "cyclesHint": "Fiecare concept îl cere pe următorul, iar ultimul pe primul, așa că niciunul nu poate fi învățat primul.",
     "showOnMap": "Arată pe hartă"
   },
+  "links": {
+    "command": "Sugerează legături din notițele tale",
+    "undoCommand": "Anulează ultimele legături sugerate",
+    "button": "Sugerează legături din notițele mele",
+    "menu": "Sugerează legături pentru harta de învățare",
+    "scopePrompt": "Ce notițe să citească Tropa?",
+    "wholeVault": "Toate notițele",
+    "folder": "Dosar",
+    "openNote": "Notița deschisă",
+    "title": "Legături sugerate: {scope}",
+    "intro": "Tropa a găsit aceste legături în notițele tale. Nimic nu se schimbă până nu le adaugi. Alege de ce are nevoie mai întâi fiecare notiță sau ce recomandă: o notiță recomandată ajută, dar nu blochează nimic.",
+    "filter": "Filtrează după numele notiței",
+    "section": {
+      "list": "Din liste",
+      "link": "Linkuri în text",
+      "mutual": "Linkuri în ambele sensuri"
+    },
+    "sectionHint": {
+      "list": "Elementele unei liste de notițe legate, în ordine: fiecare are nevoie de cel dinainte. Acestea sunt bifate.",
+      "link": "O notiță trimite la alta care nu trimite înapoi, deci cea legată vine probabil prima.",
+      "mutual": "Notițele trimit una la alta, niciuna nu vine clar prima. Oferite ca recomandate."
+    },
+    "kindLabel": "Tipul legăturii",
+    "kind": {
+      "requires": "necesită",
+      "recommends": "recomandă"
+    },
+    "inList": "În lista din {note}",
+    "selectAll": "Selectează tot",
+    "selectNone": "Golește",
+    "loop": "Ar închide o buclă: {chain}",
+    "apply": "Adaugă legături ({count})",
+    "more": "Neafișate: {count}. Alege un dosar mai mic pentru a le vedea.",
+    "nothing": "Nu s-au găsit legături noi în {scope}.",
+    "added": "Legături adăugate: {count}",
+    "undone": "Legăturile sugerate au fost eliminate.",
+    "kept": "Notițe modificate între timp și lăsate așa: {count}"
+  },
   "exportMap": "Exportă harta",
   "exportCanvas": "Exportă harta în Canvas",
   "exportSvg": "Exportă harta ca SVG",

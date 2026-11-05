@@ -333,6 +333,44 @@
     "cyclesHint": "Hvert begrep krever det neste, og det siste krever det første, så ingen kan læres først.",
     "showOnMap": "Vis på kartet"
   },
+  "links": {
+    "command": "Foreslå koblinger fra notatene dine",
+    "undoCommand": "Angre de siste foreslåtte koblingene",
+    "button": "Foreslå koblinger fra notatene mine",
+    "menu": "Foreslå koblinger for læringskartet",
+    "scopePrompt": "Hvilke notater skal Tropa lese?",
+    "wholeVault": "Alle notater",
+    "folder": "Mappe",
+    "openNote": "Åpent notat",
+    "title": "Foreslåtte koblinger: {scope}",
+    "intro": "Tropa fant disse koblingene i notatene dine. Ingenting endres før du legger dem til. Velg hva hvert notat trenger først, eller hva det anbefaler: et anbefalt notat hjelper, men blokkerer ingenting.",
+    "filter": "Filtrer etter notatnavn",
+    "section": {
+      "list": "Fra lister",
+      "link": "Lenker i teksten",
+      "mutual": "Lenker begge veier"
+    },
+    "sectionHint": {
+      "list": "Punkter i en liste med lenkede notater, i rekkefølge: hvert trenger det forrige. Disse er avkrysset.",
+      "link": "Et notat lenker til et annet som ikke lenker tilbake, så det lenkede kommer trolig først.",
+      "mutual": "Notatene lenker til hverandre, så ingen kommer tydelig først. Tilbudt som anbefalte."
+    },
+    "kindLabel": "Type kobling",
+    "kind": {
+      "requires": "trenger",
+      "recommends": "anbefaler"
+    },
+    "inList": "I listen i {note}",
+    "selectAll": "Velg alle",
+    "selectNone": "Fjern",
+    "loop": "Ville lukke en sløyfe: {chain}",
+    "apply": "Legg til koblinger ({count})",
+    "more": "Ikke vist: {count}. Velg en mindre mappe for å se dem.",
+    "nothing": "Fant ingen nye koblinger i {scope}.",
+    "added": "Koblinger lagt til: {count}",
+    "undone": "De foreslåtte koblingene ble fjernet.",
+    "kept": "Notater endret siden og latt være: {count}"
+  },
   "exportMap": "Eksporter kart",
   "exportCanvas": "Eksporter kartet til Canvas",
   "exportSvg": "Eksporter kartet som SVG",

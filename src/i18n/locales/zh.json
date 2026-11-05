@@ -315,6 +315,44 @@
     "cyclesHint": "每个概念依赖下一个，最后一个又依赖第一个，所以哪个都无法先学。",
     "showOnMap": "在导图上显示"
   },
+  "links": {
+    "command": "从笔记中建议链接",
+    "undoCommand": "撤销上次建议的链接",
+    "button": "从我的笔记中建议链接",
+    "menu": "为学习地图建议链接",
+    "scopePrompt": "Tropa 应读取哪些笔记？",
+    "wholeVault": "全部笔记",
+    "folder": "文件夹",
+    "openNote": "当前笔记",
+    "title": "建议的链接：{scope}",
+    "intro": "Tropa 在你的笔记中找到了这些链接。在你添加之前不会有任何改变。选择每条笔记需要先学的内容，或它推荐的内容：推荐的笔记有帮助，但不会阻塞任何内容。",
+    "filter": "按笔记名称筛选",
+    "section": {
+      "list": "来自列表",
+      "link": "正文中的链接",
+      "mutual": "双向链接"
+    },
+    "sectionHint": {
+      "list": "由笔记链接组成的列表项，按顺序：每一项都需要前一项。这些已勾选。",
+      "link": "一条笔记链接到另一条，而对方没有链接回来，所以被链接的笔记可能在前。",
+      "mutual": "笔记互相链接，无法明确哪条在前。作为推荐提供。"
+    },
+    "kindLabel": "链接类型",
+    "kind": {
+      "requires": "需要",
+      "recommends": "推荐"
+    },
+    "inList": "在 {note} 的列表中",
+    "selectAll": "全选",
+    "selectNone": "清除",
+    "loop": "会形成循环：{chain}",
+    "apply": "添加链接（{count}）",
+    "more": "未显示：{count}。选择更小的文件夹以查看。",
+    "nothing": "在 {scope} 中未找到新链接。",
+    "added": "已添加链接：{count}",
+    "undone": "已移除建议的链接。",
+    "kept": "之后已更改、保持原样的笔记：{count}"
+  },
   "exportMap": "导出地图",
   "exportCanvas": "将地图导出为 Canvas",
   "exportSvg": "将地图导出为 SVG",

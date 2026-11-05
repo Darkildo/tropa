@@ -27,6 +27,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Focus and fold.** **Focus** (or F) shows only what is near the selected concept: what it needs, what it opens and soft links, one to three steps around, with their materials when **Materials** is on. Esc or the cross brings back the map as it was. The badge under a concept folds away everything that needs it and then shows how many concepts it hides; a highlighted badge means route steps are among them, and the route list marks them. Picking such a step unfolds its branch. Focus and folds belong to the map view: they are kept with Obsidian's workspace layout, never in notes or progress.
 - **Export.** The download button in the bar, or the commands **Export map to Canvas** and **Export map as SVG**, save the map as it is drawn now: route or whole map, with materials, focus and folds. The canvas keeps the positions and points at your notes, so it opens in Obsidian Canvas; coloring it by your progress is optional, so a map can be shared without it. JSON Canvas has no dashed lines, so soft links are orange with a label and material links cyan. The SVG takes the colors and fonts of the current theme. An existing file is never replaced without asking.
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
+- **Suggested links.** Your notes already link to each other. **Suggest links from your notes** reads a folder, the whole vault or one note and offers those links for the map, in a preview: nothing is written until you add it, and a batch can be undone. See [Suggested links](#suggested-links).
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
@@ -80,7 +81,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 ## Usage
 
 1. Open the map with the route icon in the left ribbon or the command **Tropa: Learning map**.
-2. In an empty vault, choose **Show example** to add an example map, or **Create first concept**.
+2. In an empty vault, choose **Show example** to add an example map, or **Create first concept**. If your notes already link to each other, **Suggest links from my notes** starts the map from them.
 3. Choose a goal in the top left corner. The panel on the right lists the steps and what to study first. The same button later adds more goals, switches between them, shows the route to all of them and opens **Deadline and pace…**.
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
@@ -95,7 +96,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 - The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
 - The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
 
-Other commands: check yourself on the open concept, review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: suggest links from your notes and undo the last suggested links, check yourself on the open concept, review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -211,11 +212,23 @@ Questions are callouts in the body of a concept's note. The title is the questio
 - Closing the window saves nothing. Undo in the notice after a check appends a `reviewed … undo` line.
 - Tropa only reads the note, never changes it. **Settings → Tropa → Self-check** sets the callout type (`question` by default), turns the offer off, and adds concepts without questions to the map audit.
 
+### Suggested links
+
+**Suggest links from your notes**, also on the empty map and in the file menu of a folder or a note, reads the notes of a folder and below it, the whole vault or one note, and offers links for `requires` and `recommends` from what the notes already say:
+
+- **From lists.** A list with at least three items that link to notes, such as the contents of a course or a map of content, is read in order: each item needs the one before it. Only neighbouring items count, an item without a link breaks the chain, and a nested list is read on its own. These rows are ticked.
+- **Links in the text.** A note that links to another, which does not link back, probably builds on it: the linked note is offered as needed first.
+- **Links both ways.** Two notes that link to each other are offered as recommended, since neither clearly comes first.
+
+Left out: pairs the map already links either way, materials, notes with another `type`, notes out of the map's scope, Tropa's own files, embeds, and links in the text to notes outside the folder unless they are concepts on the map already (a list may point anywhere). A pair is offered once, a list first. At most 500 suggestions are shown at once; a smaller folder shows the rest.
+
+In the preview each row reads as a sentence, "Derivatives needs Limits": tick it, or change the kind. A needed link that would close a loop, with the map or with the other ticked links, is refused and the row spells the loop out; it can still be added as recommended. **Add links** writes them in one go: each note gets the links in its properties, and a note that is not a concept yet, at either end of a link, gets `type: concept`. The notice after it has **Undo**, and so does the command **Undo the last suggested links** until the next batch: it puts each property back as it was, but a note changed since keeps the change.
+
 ## Privacy
 
 Tropa works offline: it makes no network requests and sends nothing anywhere.
 
-- **Reads** the Markdown notes of your vault to find concepts, materials and their links (frontmatter, and the self-check callouts of a concept you check). Notes left out by the map scope are dropped. The vault's other files are listed only to offer them when you pick an attachment as a material. The journal is read from its own folder.
+- **Reads** the Markdown notes of your vault to find concepts, materials and their links (frontmatter, the self-check callouts of a concept you check, and the links in the text of the notes you ask to suggest links from). Notes left out by the map scope are dropped. The vault's other files are listed only to offer them when you pick an attachment as a material. The journal is read from its own folder.
 - **Writes** only on your action: the progress file, the journal files, the frontmatter of notes you link or mark, notes you create from the map, the example map and exports to Canvas or SVG. Settings are kept in the plugin's `data.json`; the device name for the journal stays in Obsidian's local storage, outside the vault.
 
 ## Demo vault (optional)
