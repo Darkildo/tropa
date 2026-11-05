@@ -16,6 +16,8 @@ export interface LayoutReply {
   id: number;
   /** The engine that did the work: the one asked for, or `ts` when it could not run. */
   engine?: string;
+  /** Why the worker runs TypeScript instead of WebAssembly, once WebAssembly could not run. */
+  fallback?: string;
   result?: EngineResult;
   error?: string;
 }
@@ -48,7 +50,7 @@ export class LayoutRunner {
   private job: Job | null = null;
   private nextId = 1;
   private readonly cache = new Map<string, EngineResult>();
-  readonly stats = { computed: 0, cached: 0, inWorker: 0, cancelled: 0, engine: "" };
+  readonly stats = { computed: 0, cached: 0, inWorker: 0, cancelled: 0, engine: "", fallback: "" };
 
   /**
    * @param source The worker script, bundled from `layout-worker.ts`.
@@ -156,6 +158,7 @@ export class LayoutRunner {
     }
     this.job = null;
     this.stats.inWorker++;
+    if (reply.fallback) this.stats.fallback = reply.fallback;
     this.used(reply.engine ?? this.engine, "in a worker");
     this.remember(job.key, reply.result);
     job.resolve(reply.result);
@@ -172,11 +175,9 @@ export class LayoutRunner {
     if (job) job.resolve(this.compute(job.key, job.input));
   }
 
-  /** Says once which engine lays the map out, and again whenever that changes. */
+  /** Which engine lays the map out, and where; kept in `stats` instead of the console. */
   private used(engine: string, where: string) {
-    const said = `${engine} ${where}`;
-    if (said !== this.stats.engine) console.debug(`Tropa: map layout by ${engine} ${where}`);
-    this.stats.engine = said;
+    this.stats.engine = `${engine} ${where}`;
   }
 
   private remember(key: string, result: EngineResult) {

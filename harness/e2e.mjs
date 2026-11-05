@@ -1298,7 +1298,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   ok("large graph laid out in the worker", (await page.evaluate(`${view}.layouts.stats.inWorker`)) >= 1);
   const engine = await page.evaluate(`${view}.layouts.stats.engine`);
   ok("WebAssembly engine runs in the worker", engine === "wasm in a worker", engine);
-  ok("engine choice is logged once", logs.filter((line) => line.startsWith("Tropa: map layout by")).join() === "Tropa: map layout by wasm in a worker", logs.join(" | "));
+  ok("the engine choice stays out of the console", !logs.some((line) => line.startsWith("Tropa")), logs.join(" | "));
   const ms = await page.evaluate(`(()=>{const t=performance.now(); const v=${view}; v.layoutKey=''; v.render(); return performance.now()-t})()`);
   console.log("400 nodes, cached layout, render ms", Math.round(ms));
   ok("same shape comes from the cache", (await page.evaluate(`${view}.layouts.stats.cached`)) >= 1);
@@ -1443,7 +1443,7 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   ok("fold on a big map is cheap and the layout does not freeze", timing.foldMs < 50 && timing.longest < 150, JSON.stringify(timing));
   const after = await shape();
   ok("a fold is a new map shape laid out by wasm in the worker", after.key !== before.key && after.inWorker > before.inWorker && after.engine === "wasm in a worker", JSON.stringify({ before, after }));
-  ok("the engine is logged", logs.includes("Tropa: map layout by wasm in a worker"), logs.join(" | "));
+  ok("big fold: nothing in the console", !logs.some((line) => line.startsWith("Tropa")), logs.join(" | "));
   await page.evaluate(() => document.querySelector('.tropa-node[data-id="Node 100.md"] .tropa-fold').click());
   ok("unfold comes from the cache", (await page.locator(".tropa-canvas.is-laying-out").count()) === 0 && (await nodeCount(page)) === 1000);
   ok("big fold: no errors", errors.length === 0, errors.join("; "));
@@ -1462,7 +1462,9 @@ const layoutDone = (page) => page.waitForFunction(() => !document.querySelector(
   await layoutDone(page);
   const engine = await page.evaluate(`${view}.layouts.stats.engine`);
   ok("without WebAssembly the map lays out with TypeScript in the worker", (await page.locator(".tropa-node").count()) === 400 && engine === "ts in a worker", engine);
-  ok("without WebAssembly the choice is logged", logs.some((line) => line === "Tropa: map layout by ts in a worker"), logs.join(" | "));
+  const fallback = await page.evaluate(`${view}.layouts.stats.fallback`);
+  ok("without WebAssembly the reason is kept in stats", fallback.startsWith("WebAssembly layout unavailable"), fallback);
+  ok("without WebAssembly: nothing in the console", !logs.some((line) => line.startsWith("Tropa")), logs.join(" | "));
   ok("without WebAssembly: no page errors", errors.length === 0, errors.join("; "));
   await page.close();
 }

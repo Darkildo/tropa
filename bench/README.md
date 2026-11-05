@@ -1,8 +1,8 @@
 # Layout benchmark
 
 Compares the map layout with the one Tropa 0.1 shipped (dagre, kept in `dagre-as-shipped.ts`): time
-and the quality of the drawing. The WebAssembly engine is timed next to the TypeScript one when
-`dist/wasm/tropa_layout.wasm` is built (`npm run build:wasm`); it draws the same, so its quality is
+and the quality of the drawing. The WebAssembly engine (`assets/wasm/tropa_layout.wasm`) is timed next to
+the TypeScript one; it draws the same, so its quality is
 not measured twice. Not part of the plugin build.
 
 ```bash

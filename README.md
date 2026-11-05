@@ -211,9 +211,16 @@ Questions are callouts in the body of a concept's note. The title is the questio
 - Closing the window saves nothing. Undo in the notice after a check appends a `reviewed … undo` line.
 - Tropa only reads the note, never changes it. **Settings → Tropa → Self-check** sets the callout type (`question` by default), turns the offer off, and adds concepts without questions to the map audit.
 
+## Privacy
+
+Tropa works offline: it makes no network requests and sends nothing anywhere.
+
+- **Reads** the Markdown notes of your vault to find concepts, materials and their links (frontmatter, and the self-check callouts of a concept you check). Notes left out by the map scope are dropped. The vault's other files are listed only to offer them when you pick an attachment as a material. The journal is read from its own folder.
+- **Writes** only on your action: the progress file, the journal files, the frontmatter of notes you link or mark, notes you create from the map, the example map and exports to Canvas or SVG. Settings are kept in the plugin's `data.json`; the device name for the journal stays in Obsidian's local storage, outside the vault.
+
 ## Demo vault (optional)
 
-Each release has ready-made vaults with the example map and the plugin already installed: [`tropa-demo-vault.zip`](https://github.com/Darkildo/tropa/releases/latest/download/tropa-demo-vault.zip) (English) and [`tropa-demo-vault-ru.zip`](https://github.com/Darkildo/tropa/releases/latest/download/tropa-demo-vault-ru.zip) (Russian). Unzip one, choose **Open folder as vault** in Obsidian, then **Trust author and enable plugins**. You do not need them to use Tropa.
+Ready-made vaults with the example map and the plugin already installed are in the [demo release](https://github.com/Darkildo/tropa/releases/tag/demo), updated with every version: [`tropa-demo-vault.zip`](https://github.com/Darkildo/tropa/releases/download/demo/tropa-demo-vault.zip) (English) and [`tropa-demo-vault-ru.zip`](https://github.com/Darkildo/tropa/releases/download/demo/tropa-demo-vault-ru.zip) (Russian). Unzip one, choose **Open folder as vault** in Obsidian, then **Trust author and enable plugins**. You do not need them to use Tropa.
 
 ## Languages
 
@@ -235,7 +242,7 @@ These are the languages that have a finished Obsidian app translation and a webs
 
 ```bash
 npm install
-npm run build:wasm   # the layout engine's WebAssembly, needed by build, e2e and the benchmark (see Building)
+npm run build:wasm   # rebuilds the layout engine's WebAssembly in assets/wasm from Rust (see Building)
 npm run lint         # ESLint with the Obsidian plugin rules
 npm test             # core: graph, states, cycles, route, layout, example map, i18n
 npm run build        # main.js
@@ -257,32 +264,34 @@ npm run bench:chromium  # the same in Chromium, plus how long the interface free
 - `src/ui`: map, sidebar panel, modals.
 - `harness`: a mock of the Obsidian API that runs the real plugin code in a browser.
 
-To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md), run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json`, `styles.css` and the demo vaults; the changelog section becomes the release notes, and the build fails if it is missing.
+To release, add a section for the new version to [`CHANGELOG.md`](CHANGELOG.md), run `npm version patch` (or `minor`, `major`) and push the tag: `git push --follow-tags`. The workflow builds the plugin and publishes a release with `main.js`, `manifest.json` and `styles.css`, with [artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) for them; the changelog section becomes the release notes, and the build fails if it is missing. The demo vaults go to the separate `demo` release, which never becomes the latest one.
 
 ## Building
 
 `main.js` carries the layout engine twice: in TypeScript (`src/core/sugiyama.ts`) and as WebAssembly compiled from its Rust port (`crates/tropa-layout`), which makes the whole layout 2–3 times faster. The worker uses the WebAssembly one. Where WebAssembly or workers are unavailable, the TypeScript one runs instead. Both draw the same map to the last bit: `npm test` compares them on every benchmark graph.
 
-The WebAssembly is built from source and is not kept in git:
+The WebAssembly is kept in git as `assets/wasm/tropa_layout.wasm`, so `npm ci && npm run build` works without Rust and gives the same `main.js` as the release. To rebuild it from source after changing `crates/tropa-layout`:
 
 1. Install Rust with [rustup](https://rustup.rs). `crates/tropa-layout/rust-toolchain.toml` pins the compiler (1.99.1) and the `wasm32-unknown-unknown` target; rustup installs both on first use.
-2. Run `npm run build:wasm`. It compiles the crate (`opt-level=3`, LTO, one codegen unit, `panic=abort`), optimizes the result with `wasm-opt -O3` from the `binaryen` npm package (pinned), and writes `dist/wasm/tropa_layout.wasm` with its size and sha256.
+2. Run `npm run build:wasm`. It compiles the crate (`opt-level=3`, LTO, one codegen unit, `panic=abort`), optimizes the result with `wasm-opt -O3` from the `binaryen` npm package (pinned), and writes `assets/wasm/tropa_layout.wasm` with its size and sha256. Commit it with the Rust change.
 3. `npm run build` then inlines it into `main.js` as base64.
 
-`npm run build:wasm -- --verify` builds it a second time from scratch and fails unless both builds match byte for byte. CI runs that check on every pull request.
+`npm run build:wasm -- --verify` writes nothing: it builds the module twice from scratch and fails unless both builds and `assets/wasm/tropa_layout.wasm` match byte for byte. CI runs that check on every pull request and before every release, so the module in git is always the one the source builds.
 
 Translations go into `main.js` as JSON text without their keys (`locales.esbuild.mjs`): each language is an array of its values in the order of the English keys in `src/i18n/en.ts`, so the keys are written once instead of in every language. At startup `src/i18n/pack.ts` parses only the active language and puts the keys back. The files you edit stay ordinary JSON in `src/i18n/locales`, and `npm test` checks that every language comes out of the bundle exactly as its file.
 
 ### For reviewers of the community catalog
 
-The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. The release workflow builds it from `crates/tropa-layout` (no dependencies), prints its sha256 in the log and adds it to the release notes.
+The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. It exports its linear memory because that is how the worker hands it the input arrays and reads the results back; nothing else can reach it. The module is `assets/wasm/tropa_layout.wasm`; the release workflow rebuilds it from `crates/tropa-layout` (no dependencies), fails if it differs from the one in git, prints its sha256 in the log and adds it to the release notes.
+
+`node:fs` and other Node.js modules appear only in tests, build scripts and the benchmark (`test`, `scripts`, `bench`, `harness`, `*.mjs`), which run in Node and are not part of `main.js`. The plugin itself uses only the Obsidian API. What it reads and writes is under [Privacy](#privacy).
 
 The one runtime dependency bundled into `main.js` is [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2 (MIT, no dependencies of its own), the review scheduler. Translations are readable JSON text.
 
 To check a release:
-1. Check out its tag and run `npm ci && npm run build:wasm`.
-2. Compare the printed sha256 with the one in the release notes.
-3. Optionally, decode the base64 string in `main.js` (`tropa:layout-wasm`) and compare that too.
+1. Check that its files were built by the release workflow from the tag: `gh attestation verify main.js -R Darkildo/tropa` (the same for `styles.css` and `manifest.json`).
+2. Check out its tag and run `npm ci && npm run build:wasm -- --verify` (needs Rust): it rebuilds the WebAssembly twice and compares it with `assets/wasm/tropa_layout.wasm`. Compare the sha256 of that file with the one in the release notes.
+3. Optionally, run `npm run build` and compare `main.js` with the one in the release.
 
 ## Limitations
 

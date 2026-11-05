@@ -40,8 +40,9 @@ jobs:
             echo "CHANGELOG.md has no section for $version"
             exit 1
           fi
-      # The layout engine's WebAssembly, built from crates/tropa-layout and inlined into main.js.
-      # Two builds from scratch must match; the sha256 goes into the log and the release notes.
+      # The layout engine's WebAssembly, kept in git (assets/wasm) and inlined into main.js.
+      # Two builds from crates/tropa-layout must match each other and the copy in git;
+      # the sha256 goes into the log and the release notes.
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: 1.99.1
@@ -49,7 +50,7 @@ jobs:
       - name: WebAssembly
         run: |
           npm run build:wasm -- --verify
-          hash=$(sha256sum dist/wasm/tropa_layout.wasm | cut -d' ' -f1)
+          hash=$(sha256sum assets/wasm/tropa_layout.wasm | cut -d' ' -f1)
           echo "tropa_layout.wasm sha256 $hash"
           printf '\nLayout engine WebAssembly (inlined in main.js), sha256 `%s`. Rebuild it from the source of this tag with `npm run build:wasm`.\n' "$hash" >> release-notes.md
       - run: npm run lint
@@ -79,10 +80,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: release
+      # Lets anyone check that the plugin files were built here from this tag: gh attestation verify main.js -R Darkildo/tropa
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            main.js
+            styles.css
+            manifest.json
+      # The catalog expects only the plugin files in a version's release.
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -90,4 +101,20 @@ jobs:
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
             --notes-file release-notes.md \
-            main.js manifest.json styles.css tropa-demo-vault.zip tropa-demo-vault-ru.zip
+            main.js manifest.json styles.css
+      # The demo vaults live in a release of their own, tagged demo, which never becomes the latest one.
+      # Its tag is moved to this commit, so the vaults always match the newest version.
+      - name: Publish demo vaults
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="Demo vaults with the example map and Tropa $GITHUB_REF_NAME installed. Unzip one and open the folder as a vault in Obsidian."
+          if gh release view demo --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/demo" -f sha="$GITHUB_SHA" -F force=true > /dev/null
+            gh release edit demo --repo "$GITHUB_REPOSITORY" --notes "$notes" --prerelease --latest=false
+            gh release upload demo --repo "$GITHUB_REPOSITORY" --clobber tropa-demo-vault.zip tropa-demo-vault-ru.zip
+          else
+            gh release create demo --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "Demo vaults" --notes "$notes" --prerelease --latest=false \
+              tropa-demo-vault.zip tropa-demo-vault-ru.zip
+          fi

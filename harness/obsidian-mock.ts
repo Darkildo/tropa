@@ -112,6 +112,7 @@ export class TFile extends TAbstractFile {
 }
 
 export class TFolder extends TAbstractFile {
+  children: TAbstractFile[] = [];
   constructor(path: string) { super(); this.path = path; }
 }
 
@@ -129,7 +130,7 @@ export function debounce(fn: Callback, wait = 0) {
 
 const FRONTMATTER = /^---\n([\s\S]*?)\n?---\n?/;
 
-class Vault extends Events {
+export class Vault extends Events {
   files = new Map<string, TFile>();
   folders = new Set<string>();
   contents = new Map<string, string>();
@@ -138,6 +139,37 @@ class Vault extends Events {
   getMarkdownFiles() { return [...this.files.values()].filter((file) => file.extension === "md"); }
   getFiles() { return [...this.files.values()]; }
   getAbstractFileByPath(path: string) { return this.files.get(path) ?? (this.folders.has(path) ? new TFolder(path) : null); }
+  getFolderByPath(path: string) {
+    const prefix = `${path}/`;
+    const known = this.folders.has(path) || [...this.files.keys()].some((file) => file.startsWith(prefix));
+    return known ? this.folderAt(path) : null;
+  }
+  static recurseChildren(root: TFolder, cb: (file: TAbstractFile) => void) {
+    cb(root);
+    for (const child of root.children) {
+      if (child instanceof TFolder) Vault.recurseChildren(child, cb);
+      else cb(child);
+    }
+  }
+  /** A folder with its children, built from the flat lists of files and folders. */
+  private folderAt(path: string): TFolder {
+    const folder = new TFolder(path);
+    const prefix = `${path}/`;
+    const subfolders = new Set<string>();
+    for (const [file, entry] of this.files) {
+      if (!file.startsWith(prefix)) continue;
+      const slash = file.indexOf("/", prefix.length);
+      if (slash < 0) folder.children.push(entry);
+      else subfolders.add(file.slice(0, slash));
+    }
+    for (const sub of this.folders) {
+      if (!sub.startsWith(prefix)) continue;
+      const slash = sub.indexOf("/", prefix.length);
+      subfolders.add(slash < 0 ? sub : sub.slice(0, slash));
+    }
+    for (const sub of subfolders) folder.children.push(this.folderAt(sub));
+    return folder;
+  }
   async read(file: TFile) { return this.contents.get(file.path) ?? ""; }
   async cachedRead(file: TFile) { return this.contents.get(file.path) ?? ""; }
   async process(file: TFile, fn: (data: string) => string) {

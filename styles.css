@@ -1173,7 +1173,7 @@ button.tropa-more { display: none; }
 
 .tropa-map.is-phone .tropa-progress { position: absolute; right: 0; bottom: 0; left: 0; width: auto; gap: 0; }
 .tropa-map.is-phone .tropa-progress-text,
-.tropa-map.is-phone .tropa-progress-time { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.tropa-map.is-phone .tropa-progress-time { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; white-space: nowrap; }
 .tropa-map.is-phone .tropa-meter { flex: 1; width: auto; height: 3px; border-radius: 0; }
 .tropa-map.is-phone .tropa-meter-fill { border-radius: 0; }
 

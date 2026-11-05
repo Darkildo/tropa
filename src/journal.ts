@@ -1,4 +1,4 @@
-import { Events, Platform, TFile, normalizePath, type App, type EventRef, type TAbstractFile } from "obsidian";
+import { Events, Platform, TFile, Vault, normalizePath, type App, type EventRef, type TAbstractFile } from "obsidian";
 import {
   formatEntry,
   JournalHistory,
@@ -76,7 +76,12 @@ export class Journal extends Events {
   /** Reads every journal file. Called once the vault is ready and when the folder setting changes. */
   async load() {
     this.files.clear();
-    const files = this.app.vault.getMarkdownFiles().filter((file) => this.contains(file.path));
+    // Only the journal folder is walked, not the whole vault.
+    const files: TFile[] = [];
+    const folder = this.folder === "" ? null : this.app.vault.getFolderByPath(this.folder);
+    if (folder) Vault.recurseChildren(folder, (file) => {
+      if (file instanceof TFile && this.contains(file.path)) files.push(file);
+    });
     await Promise.all(files.map((file) => this.read(file)));
     this.changed();
   }

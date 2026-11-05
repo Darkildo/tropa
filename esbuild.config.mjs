@@ -14,6 +14,8 @@ const context = await esbuild.context({
   sourcemap: production ? false : "inline",
   minify: production,
   treeShaking: true,
+  // The console in production is for errors only. This also drops the notices of bundled ts-fsrs.
+  pure: ["console.debug", "console.warn"],
   outfile: "main.js",
   // Keeps non-Latin strings as UTF-8 instead of \u escapes, which would triple their size.
   charset: "utf8",

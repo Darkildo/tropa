@@ -2,6 +2,18 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
+## [0.4.1] - 2026-11-05
+
+Fixes for the checks of the community catalog. Nothing changes in how Tropa works.
+
+### Changed
+- The release holds only `main.js`, `manifest.json` and `styles.css`, with GitHub artifact attestations for them (`gh attestation verify main.js -R Darkildo/tropa`). The demo vaults moved to a release of their own, [`demo`](https://github.com/Darkildo/tropa/releases/tag/demo), updated with every version; the links in the README point there.
+- The layout engine's WebAssembly is kept in git (`assets/wasm/tropa_layout.wasm`), so `npm ci && npm run build` works without Rust and gives the same `main.js` as the release. CI still builds it twice from `crates/tropa-layout` and fails unless both builds match the file in git byte for byte.
+- The console stays quiet unless something fails: which layout engine runs, and why WebAssembly was skipped, are kept in the layout statistics instead of the console, and the notices of the bundled ts-fsrs are left out of `main.js`.
+- The learning journal is read by walking its own folder instead of every Markdown file of the vault.
+- The phone progress bar hides its text without `clip-path`, which the catalog check marks as only partly supported.
+- The README has a Privacy section: what Tropa reads and writes, and that it makes no network requests.
+
 ## [0.4.0] - 2026-11-03
 
 Tropa now teaches, not only plans: several goals with a deadline and a pace, a learning journal, review of mastered concepts with FSRS and self-check questions in concept notes. Requires Obsidian 1.13.0 or later. The new strings are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. New dependency: [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2 (MIT, no dependencies of its own).
@@ -147,6 +159,7 @@ Requires Obsidian 1.13.0 or later. The strings added in this release are machine
 - First release: a graph of concepts and materials built from note properties, a personal route to any goal, progress kept in `Tropa/Progress.md`.
 - English and Russian interface, example map and demo vaults in both languages.
 
+[0.4.1]: https://github.com/Darkildo/tropa/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/Darkildo/tropa/compare/0.3.2...0.4.0
 [0.3.2]: https://github.com/Darkildo/tropa/compare/0.3.1...0.3.2
 [0.3.1]: https://github.com/Darkildo/tropa/compare/0.3.0...0.3.1

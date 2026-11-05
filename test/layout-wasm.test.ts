@@ -5,10 +5,10 @@ import { ENGINES } from "../src/core/layout-engine";
 import { wasmEngine } from "../src/core/layout-wasm";
 import { benchCases } from "../bench/gen";
 
-// Built by `npm run build:wasm`. CI always builds it; locally the check is skipped without Rust.
-const file = "dist/wasm/tropa_layout.wasm";
+// Kept in git and checked against a build from source by `npm run build:wasm -- --verify`.
+const file = "assets/wasm/tropa_layout.wasm";
 const built = existsSync(file);
-if (!built && process.env.CI) throw new Error(`${file} is missing: CI must run npm run build:wasm before the tests`);
+if (!built && process.env.CI) throw new Error(`${file} is missing`);
 
 const largest = (a: ArrayLike<number>, b: ArrayLike<number>) => {
   let diff = 0;

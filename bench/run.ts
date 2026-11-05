@@ -21,7 +21,7 @@ interface Row {
 }
 
 // The WebAssembly engine draws the same as "tropa" (test/layout-wasm.test.ts); here it is only timed.
-const WASM = "dist/wasm/tropa_layout.wasm";
+const WASM = "assets/wasm/tropa_layout.wasm";
 const engines = existsSync(WASM) ? [...ENGINES, withEngine("wasm", "own Sugiyama, WebAssembly", wasmEngine(new Uint8Array(readFileSync(WASM))))] : ENGINES;
 
 const rows = new Map<string, Row>();
