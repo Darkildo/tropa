@@ -14,6 +14,7 @@ All notable changes to Tropa are listed here. The format follows [Keep a Changel
 
 ### Changed
 - **Review today** lists the concepts easiest to forget first, instead of the longest overdue first.
+- Update Tropa on every device that shares the vault. A device still on 0.4 skips the `pause` and `resume` lines and ignores `shift=N`: it does not see the pause, and its review dates may differ by up to three days. Nothing breaks, and the dates agree again once all devices run 0.5.
 
 ## [0.4.1] - 2026-11-05
 
