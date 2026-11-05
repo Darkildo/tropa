@@ -1337,3 +1337,27 @@ body.is-phone .tropa-outline-text { font-size: var(--font-ui-medium); }
 .tropa-export-modal .tropa-export-path-setting .setting-item-control { flex: 1 0 100%; margin-top: 8px; }
 .tropa-export-modal .tropa-export-path { width: 100%; }
 button.tropa-export { flex: none; width: 32px; height: 32px; padding: 0; }
+
+/* Presence: the status bar, the tropa block in notes, previews */
+.tropa-status.is-hidden { display: none; }
+.tropa-block {
+  margin: 0 0 var(--p-spacing, 1em);
+  padding: 10px 12px;
+  border: 1px solid var(--tropa-line);
+  border-radius: var(--radius-m);
+}
+.tropa-block-goal { font-weight: var(--font-semibold); }
+.tropa-block-count,
+.tropa-block-hint { color: var(--text-muted); font-size: var(--font-ui-small); }
+.tropa-block-error { color: var(--text-error); font-size: var(--font-ui-small); }
+ul.tropa-block-list { margin: 6px 0 0; padding-inline-start: 0; list-style: none; }
+.tropa-block-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; padding: 2px 0; }
+.tropa-block-item .task-list-item-checkbox { flex: none; margin: 0; margin-inline-end: 4px; }
+.tropa-block-item.is-next > .internal-link { font-weight: var(--font-semibold); }
+.tropa-block-meta { flex: 1 0 100%; padding-inline-start: 24px; color: var(--text-muted); font-size: var(--font-ui-small); }
+.tropa-block-when { margin-inline-start: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.tropa-block-more { margin-top: 6px; }
+button.tropa-block-button { height: auto; padding: 2px 8px; font-size: var(--font-ui-small); }
+.tropa-review-modal .tropa-review { margin: 0; }
+body.is-phone .tropa-block-item { padding: 4px 0; }
+body.is-phone .tropa-block-item .task-list-item-checkbox { width: 20px; height: 20px; }

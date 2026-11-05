@@ -548,5 +548,26 @@
     "keys": "Пробіл показує відповідь, 1–3 — оцінка",
     "auditTitle": "Концепти без запитань",
     "auditHint": "Поки нічим перевірити себе. Додайте callout, наприклад > [!question]-, з відповіддю всередині."
+  },
+  "presence": {
+    "group": "Рядок стану",
+    "statusBar": "Показувати в рядку стану",
+    "statusBarDesc": "Повторення на сьогодні й наступний крок маршруту внизу вікна. Лише на комп'ютері.",
+    "statusDue": "До повторення: {count}",
+    "statusNext": "Далі: {title}",
+    "statusPaused": "Повторення на паузі до {date}",
+    "statusQueue": "Tropa: відкрити повторення на сьогодні",
+    "statusStep": "Tropa: показати наступний крок",
+    "errUnknown": "Блок Tropa: невідомий параметр {key}. Використовуйте show, goal і limit.",
+    "errShow": "Блок Tropa: show приймає route, review або next.",
+    "errLimit": "Блок Tropa: limit — ціле число від 1 до {max}.",
+    "errGoal": "Блок Tropa: {goal} — не концепт на карті.",
+    "goal": "Мета: {title}",
+    "noGoal": "Мету ще не вибрано.",
+    "openMap": "Відкрити карту",
+    "more": "Ще на карті: {count}",
+    "nextNone": "Зараз на маршруті нічого почати.",
+    "master": "Позначити {title} опанованим",
+    "review": "Повторити {title}"
   }
 }

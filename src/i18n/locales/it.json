@@ -529,5 +529,26 @@
     "keys": "Spazio mostra la risposta, da 1 a 3 la valutano",
     "auditTitle": "Concetti senza domande",
     "auditHint": "Ancora niente con cui verificarsi. Aggiungi un callout come > [!question]- con la risposta dentro."
+  },
+  "presence": {
+    "group": "Barra di stato",
+    "statusBar": "Mostra nella barra di stato",
+    "statusBarDesc": "I ripassi di oggi e il prossimo passo del percorso, in fondo alla finestra. Solo su computer.",
+    "statusDue": "Da ripassare: {count}",
+    "statusNext": "Prossimo: {title}",
+    "statusPaused": "Ripasso in pausa fino al {date}",
+    "statusQueue": "Tropa: apri i ripassi di oggi",
+    "statusStep": "Tropa: mostra il prossimo passo",
+    "errUnknown": "Blocco Tropa: opzione sconosciuta {key}. Usa show, goal e limit.",
+    "errShow": "Blocco Tropa: show accetta route, review o next.",
+    "errLimit": "Blocco Tropa: limit accetta un numero intero da 1 a {max}.",
+    "errGoal": "Blocco Tropa: {goal} non è un concetto della mappa.",
+    "goal": "Obiettivo: {title}",
+    "noGoal": "Nessun obiettivo per ora.",
+    "openMap": "Apri la mappa",
+    "more": "Altri sulla mappa: {count}",
+    "nextNone": "Al momento non si può iniziare nulla del percorso.",
+    "master": "Segna {title} come padroneggiato",
+    "review": "Ripassa {title}"
   }
 }

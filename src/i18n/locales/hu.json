@@ -510,5 +510,26 @@
     "keys": "Szóköz mutatja a választ, 1–3 értékeli",
     "auditTitle": "Kérdés nélküli fogalmak",
     "auditHint": "Még nincs mivel ellenőrizni magad. Adj hozzá egy callout-ot, például > [!question]-, benne a válasszal."
+  },
+  "presence": {
+    "group": "Állapotsor",
+    "statusBar": "Megjelenítés az állapotsorban",
+    "statusBarDesc": "A mai ismétlések és az útvonal következő lépése az ablak alján. Csak számítógépen.",
+    "statusDue": "Ismétlendő: {count}",
+    "statusNext": "Következő: {title}",
+    "statusPaused": "Ismétlés szüneteltetve eddig: {date}",
+    "statusQueue": "Tropa: mai ismétlések megnyitása",
+    "statusStep": "Tropa: következő lépés megjelenítése",
+    "errUnknown": "Tropa-blokk: ismeretlen beállítás: {key}. Használd a show, goal és limit beállításokat.",
+    "errShow": "Tropa-blokk: a show értéke route, review vagy next lehet.",
+    "errLimit": "Tropa-blokk: a limit 1 és {max} közötti egész szám.",
+    "errGoal": "Tropa-blokk: {goal} nem fogalom a térképen.",
+    "goal": "Cél: {title}",
+    "noGoal": "Még nincs cél.",
+    "openMap": "Térkép megnyitása",
+    "more": "Továbbiak a térképen: {count}",
+    "nextNone": "Az útvonalon most semmi sem kezdhető el.",
+    "master": "{title} megjelölése elsajátítottként",
+    "review": "{title} ismétlése"
   }
 }

@@ -510,5 +510,26 @@
     "keys": "Mellomrom viser svaret, 1–3 vurderer det",
     "auditTitle": "Begreper uten spørsmål",
     "auditHint": "Ingenting å teste deg med ennå. Legg til en callout som > [!question]- med svaret inni."
+  },
+  "presence": {
+    "group": "Statuslinje",
+    "statusBar": "Vis i statuslinjen",
+    "statusBarDesc": "Dagens repetisjoner og rutens neste steg nederst i vinduet. Bare på datamaskin.",
+    "statusDue": "Til repetisjon: {count}",
+    "statusNext": "Neste: {title}",
+    "statusPaused": "Repetisjon satt på pause til {date}",
+    "statusQueue": "Tropa: åpne dagens repetisjoner",
+    "statusStep": "Tropa: vis neste steg",
+    "errUnknown": "Tropa-blokk: ukjent valg {key}. Bruk show, goal og limit.",
+    "errShow": "Tropa-blokk: show tar route, review eller next.",
+    "errLimit": "Tropa-blokk: limit tar et heltall fra 1 til {max}.",
+    "errGoal": "Tropa-blokk: {goal} er ikke et begrep på kartet.",
+    "goal": "Mål: {title}",
+    "noGoal": "Ingen mål ennå.",
+    "openMap": "Åpne kartet",
+    "more": "Flere på kartet: {count}",
+    "nextNone": "Ingenting på ruten kan påbegynnes akkurat nå.",
+    "master": "Merk {title} som mestret",
+    "review": "Repeter {title}"
   }
 }

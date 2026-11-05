@@ -548,5 +548,26 @@
     "keys": "Spacja pokazuje odpowiedź, 1–3 ją oceniają",
     "auditTitle": "Pojęcia bez pytań",
     "auditHint": "Na razie nie ma czym się sprawdzić. Dodaj callout, np. > [!question]-, z odpowiedzią w środku."
+  },
+  "presence": {
+    "group": "Pasek stanu",
+    "statusBar": "Pokazuj na pasku stanu",
+    "statusBarDesc": "Dzisiejsze powtórki i następny krok trasy na dole okna. Tylko na komputerze.",
+    "statusDue": "Do powtórki: {count}",
+    "statusNext": "Dalej: {title}",
+    "statusPaused": "Powtórki wstrzymane do {date}",
+    "statusQueue": "Tropa: otwórz dzisiejsze powtórki",
+    "statusStep": "Tropa: pokaż następny krok",
+    "errUnknown": "Blok Tropa: nieznana opcja {key}. Użyj show, goal i limit.",
+    "errShow": "Blok Tropa: show przyjmuje route, review lub next.",
+    "errLimit": "Blok Tropa: limit przyjmuje liczbę całkowitą od 1 do {max}.",
+    "errGoal": "Blok Tropa: {goal} nie jest pojęciem na mapie.",
+    "goal": "Cel: {title}",
+    "noGoal": "Nie ma jeszcze celu.",
+    "openMap": "Otwórz mapę",
+    "more": "Więcej na mapie: {count}",
+    "nextNone": "Teraz nic na trasie nie da się zacząć.",
+    "master": "Oznacz {title} jako opanowane",
+    "review": "Powtórz {title}"
   }
 }

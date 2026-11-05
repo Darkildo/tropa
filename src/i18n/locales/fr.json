@@ -529,5 +529,26 @@
     "keys": "Espace affiche la réponse, 1 à 3 la notent",
     "auditTitle": "Concepts sans questions",
     "auditHint": "Rien pour s’évaluer pour l’instant. Ajoutez un callout comme > [!question]- avec la réponse dedans."
+  },
+  "presence": {
+    "group": "Barre d'état",
+    "statusBar": "Afficher dans la barre d'état",
+    "statusBarDesc": "Les révisions du jour et la prochaine étape du parcours, en bas de la fenêtre. Sur ordinateur uniquement.",
+    "statusDue": "À réviser : {count}",
+    "statusNext": "Ensuite : {title}",
+    "statusPaused": "Révisions en pause jusqu'au {date}",
+    "statusQueue": "Tropa : ouvrir les révisions du jour",
+    "statusStep": "Tropa : afficher la prochaine étape",
+    "errUnknown": "Bloc Tropa : option inconnue {key}. Utilisez show, goal et limit.",
+    "errShow": "Bloc Tropa : show accepte route, review ou next.",
+    "errLimit": "Bloc Tropa : limit accepte un nombre entier de 1 à {max}.",
+    "errGoal": "Bloc Tropa : {goal} n'est pas un concept de la carte.",
+    "goal": "Objectif : {title}",
+    "noGoal": "Pas encore d'objectif.",
+    "openMap": "Ouvrir la carte",
+    "more": "Autres sur la carte : {count}",
+    "nextNone": "Rien sur le parcours ne peut être commencé pour l'instant.",
+    "master": "Marquer {title} comme maîtrisé",
+    "review": "Réviser {title}"
   }
 }

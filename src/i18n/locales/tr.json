@@ -510,5 +510,26 @@
     "keys": "Boşluk cevabı gösterir, 1–3 değerlendirir",
     "auditTitle": "Sorusuz kavramlar",
     "auditHint": "Henüz kendinizi sınayacak bir şey yok. > [!question]- gibi bir callout ekleyip cevabı içine yazın."
+  },
+  "presence": {
+    "group": "Durum çubuğu",
+    "statusBar": "Durum çubuğunda göster",
+    "statusBarDesc": "Bugünkü tekrarlar ve rotanın sonraki adımı, pencerenin altında. Yalnızca bilgisayarda.",
+    "statusDue": "Tekrar edilecek: {count}",
+    "statusNext": "Sıradaki: {title}",
+    "statusPaused": "Tekrar {date} tarihine kadar duraklatıldı",
+    "statusQueue": "Tropa: bugünkü tekrarları aç",
+    "statusStep": "Tropa: sonraki adımı göster",
+    "errUnknown": "Tropa bloğu: bilinmeyen seçenek {key}. show, goal ve limit kullanın.",
+    "errShow": "Tropa bloğu: show route, review veya next alır.",
+    "errLimit": "Tropa bloğu: limit 1 ile {max} arasında bir tam sayı alır.",
+    "errGoal": "Tropa bloğu: {goal} haritada bir kavram değil.",
+    "goal": "Hedef: {title}",
+    "noGoal": "Henüz hedef yok.",
+    "openMap": "Haritayı aç",
+    "more": "Haritada daha fazlası: {count}",
+    "nextNone": "Rotada şu anda başlanabilecek bir şey yok.",
+    "master": "{title} öğrenildi olarak işaretle",
+    "review": "{title} tekrar et"
   }
 }

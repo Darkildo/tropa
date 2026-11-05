@@ -529,5 +529,26 @@
     "keys": "Spațiu arată răspunsul, 1–3 îl notează",
     "auditTitle": "Concepte fără întrebări",
     "auditHint": "Încă nu ai cu ce să te verifici. Adaugă un callout precum > [!question]- cu răspunsul înăuntru."
+  },
+  "presence": {
+    "group": "Bara de stare",
+    "statusBar": "Afișează în bara de stare",
+    "statusBarDesc": "Recapitulările de azi și următorul pas al traseului, în partea de jos a ferestrei. Doar pe computer.",
+    "statusDue": "De recapitulat: {count}",
+    "statusNext": "Urmează: {title}",
+    "statusPaused": "Recapitularea e în pauză până pe {date}",
+    "statusQueue": "Tropa: deschide recapitulările de azi",
+    "statusStep": "Tropa: arată următorul pas",
+    "errUnknown": "Bloc Tropa: opțiune necunoscută {key}. Folosește show, goal și limit.",
+    "errShow": "Bloc Tropa: show acceptă route, review sau next.",
+    "errLimit": "Bloc Tropa: limit acceptă un număr întreg de la 1 la {max}.",
+    "errGoal": "Bloc Tropa: {goal} nu este un concept de pe hartă.",
+    "goal": "Țintă: {title}",
+    "noGoal": "Încă nu există o țintă.",
+    "openMap": "Deschide harta",
+    "more": "Altele pe hartă: {count}",
+    "nextNone": "Acum nu se poate începe nimic de pe traseu.",
+    "master": "Marchează {title} ca stăpânit",
+    "review": "Recapitulează {title}"
   }
 }

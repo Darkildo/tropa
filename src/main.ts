@@ -12,7 +12,7 @@ import { LinkSuggestions } from "./suggest-links";
 import { OutlineImport } from "./map-from-list";
 import { parseFolders, parseTags } from "./core/scope";
 import { TropaSettingTab } from "./settings";
-import { Store } from "./store";
+import { Store, type Undo } from "./store";
 import { sample } from "./sample";
 import { MAP_VIEW, MapView } from "./ui/map-view";
 import { AUDIT_VIEW, AuditView } from "./ui/audit-view";
@@ -21,6 +21,7 @@ import { openKnownModal } from "./ui/detail";
 import { PickModal } from "./ui/pick";
 import { PlanModal } from "./ui/plan";
 import { openPause, resumeReview } from "./ui/pause";
+import { HOVER_SOURCE, StatusBar, TropaBlock } from "./ui/presence";
 
 /** How long a notice with an undo button stays. */
 const NOTICE_MS = 6000;
@@ -36,6 +37,7 @@ export default class TropaPlugin extends Plugin {
   checks!: SelfChecks;
   links!: LinkSuggestions;
   outline!: OutlineImport;
+  statusBar: StatusBar | null = null;
 
   async onload() {
     setLocale(getLanguage());
@@ -64,6 +66,12 @@ export default class TropaPlugin extends Plugin {
     this.registerView(AUDIT_VIEW, (leaf) => new AuditView(leaf, this));
     this.addSettingTab(new TropaSettingTab(this.app, this));
     this.addRibbonIcon("route", t.mapTitle, () => attempt(this.showMap(), "open the map"));
+    this.registerHoverLinkSource(HOVER_SOURCE, { display: "Tropa", defaultMod: true });
+    this.registerMarkdownCodeBlockProcessor("tropa", (source, el, ctx) => {
+      ctx.addChild(new TropaBlock(el, this, source, ctx.sourcePath));
+    });
+    // Obsidian on a phone or a tablet has no status bar.
+    if (!Platform.isMobile) this.statusBar = new StatusBar(this);
 
     const rebuild = debounce(() => this.store.rebuild(), 120, true);
     this.app.workspace.onLayoutReady(() => {
@@ -82,34 +90,47 @@ export default class TropaPlugin extends Plugin {
       this.watchJournal();
     });
 
+    // A change made away from the map, from a command or a block in a note, is announced here with its undo.
     this.registerEvent(
-      this.store.on("mastered", (id, unlocked) => {
-        if (this.app.workspace.getLeavesOfType(MAP_VIEW).length > 0) return;
+      this.store.on("mastered", (id, unlocked, undo) => {
+        if (this.mapShown()) return;
         const title = this.store.graph.nodes.get(id)?.title ?? "";
         const names = unlocked.map((u) => this.store.graph.nodes.get(u)?.title).join(t.listSeparator);
-        new Notice(names ? t.unlocked({ names }) : t.mastered({ title }));
+        this.undoNotice(names ? t.unlocked({ names }) : t.mastered({ title }), undo);
       }),
     );
     this.registerEvent(
       this.store.on("undoable", (message, _unlocked, undo) => {
-        if (this.app.workspace.getLeavesOfType(MAP_VIEW).length > 0) return;
-        const content = createFragment((fragment) => {
-          fragment.createSpan({ text: message });
-          const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });
-          button.addEventListener("click", () => this.store.undo(undo));
-        });
-        const notice = new Notice(content, NOTICE_MS);
-        // Another change to the progress makes this undo stale: it would revert that change too.
-        const watch = this.store.on("change", () => {
-          if (this.store.canUndo(undo)) return;
-          notice.hide();
-          this.store.offref(watch);
-        });
-        window.setTimeout(() => this.store.offref(watch), NOTICE_MS);
+        if (this.mapShown()) return;
+        this.undoNotice(message, undo);
       }),
     );
 
     this.addCommands();
+  }
+
+  /** The map announces changes in its own toast, when it is in sight. */
+  private mapShown() {
+    return this.app.workspace.getLeavesOfType(MAP_VIEW).some((leaf) => leaf.view.containerEl.isShown());
+  }
+
+  private undoNotice(message: string, undo: Undo) {
+    const content = createFragment((fragment) => {
+      fragment.createSpan({ text: message });
+      const button = fragment.createEl("button", { cls: "tropa-notice-undo", text: t.undo });
+      button.addEventListener("click", () => {
+        notice.hide();
+        this.store.undo(undo);
+      });
+    });
+    const notice = new Notice(content, NOTICE_MS);
+    // Another change to the progress makes this undo stale: it would revert that change too.
+    const watch = this.store.on("change", () => {
+      if (this.store.canUndo(undo)) return;
+      notice.hide();
+      this.store.offref(watch);
+    });
+    window.setTimeout(() => this.store.offref(watch), NOTICE_MS);
   }
 
   /** Journal files come and change from other devices through sync; each is read again on its own. */
@@ -321,6 +342,18 @@ export default class TropaPlugin extends Plugin {
       await this.showPanel();
       const panel = this.app.workspace.getLeavesOfType(PANEL_VIEW)[0]?.view;
       if (panel instanceof PanelView) panel.showQueue();
+    }
+  }
+
+  /** The route's next step, in the panel; on a phone, on the map. */
+  async showNextStep() {
+    const id = this.store.route?.next;
+    if (!id) return;
+    if (Platform.isPhone) await this.showMap((map) => map.focusNode(id));
+    else {
+      await this.showPanel();
+      const panel = this.app.workspace.getLeavesOfType(PANEL_VIEW)[0]?.view;
+      if (panel instanceof PanelView) panel.select(id);
     }
   }
 

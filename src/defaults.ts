@@ -36,6 +36,8 @@ export interface TropaSettings {
   offerCheck: boolean;
   /** The map audit also lists concepts without questions. */
   auditQuestions: boolean;
+  /** Reviews due today and the next step in the status bar, on desktop. */
+  statusBar: boolean;
   mapMode: MapMode;
   showSources: boolean;
 }
@@ -66,6 +68,7 @@ export function defaultSettings(language: Lang): TropaSettings {
     checkCallout: "question",
     offerCheck: true,
     auditQuestions: false,
+    statusBar: true,
     mapMode: "route",
     showSources: false,
   };

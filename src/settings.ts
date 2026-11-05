@@ -12,7 +12,7 @@ const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey", "ma
 const SCOPE = ["excludeFolders", "excludeTags"] as const;
 type TextSetting = (typeof FILES)[number] | (typeof PROPERTIES)[number] | "journalFolder";
 type ScopeSetting = (typeof SCOPE)[number];
-type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention" | "reviewLimit" | "reviewBalance" | "checkCallout" | "offerCheck" | "auditQuestions";
+type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention" | "reviewLimit" | "reviewBalance" | "checkCallout" | "offerCheck" | "auditQuestions" | "statusBar";
 
 const TEXT_SETTINGS: readonly string[] = [...FILES, ...PROPERTIES, "journalFolder"];
 const isTextSetting = (key: string): key is TextSetting => TEXT_SETTINGS.includes(key);
@@ -76,6 +76,11 @@ export class TropaSettingTab extends PluginSettingTab {
           { name: t.check.audit, desc: t.check.auditDesc, control: { type: "toggle", key: "auditQuestions" } },
         ],
       },
+      {
+        type: "group",
+        heading: t.presence.group,
+        items: [{ name: t.presence.statusBar, desc: t.presence.statusBarDesc, control: { type: "toggle", key: "statusBar" } }],
+      },
     ];
   }
 
@@ -85,7 +90,7 @@ export class TropaSettingTab extends PluginSettingTab {
     if (key === "retention") return String(this.plugin.settings.retention);
     if (key === "reviewLimit") return String(this.plugin.settings.reviewLimit);
     if (key === "reviewBalance") return this.plugin.settings.reviewBalance;
-    if (key === "checkCallout" || key === "offerCheck" || key === "auditQuestions") return this.plugin.settings[key];
+    if (key === "checkCallout" || key === "offerCheck" || key === "auditQuestions" || key === "statusBar") return this.plugin.settings[key];
     if (isScopeSetting(key)) return this.plugin.settings[key].map((value) => (key === "excludeTags" ? `#${value}` : value)).join("\n");
     return isTextSetting(key) ? this.plugin.settings[key] : undefined;
   }
@@ -102,6 +107,12 @@ export class TropaSettingTab extends PluginSettingTab {
       this.plugin.settings.checkCallout = calloutType(typeof value === "string" ? value : "");
       await this.plugin.saveSettings();
       await this.plugin.checks.reset();
+      return;
+    }
+    if (key === "statusBar") {
+      this.plugin.settings.statusBar = value === true || value === "true";
+      await this.plugin.saveSettings();
+      this.plugin.statusBar?.update();
       return;
     }
     if (key === "offerCheck" || key === "auditQuestions") {

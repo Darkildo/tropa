@@ -529,5 +529,26 @@
     "keys": "Espaço mostra a resposta, 1 a 3 avaliam",
     "auditTitle": "Conceitos sem perguntas",
     "auditHint": "Ainda não há como se autoavaliar. Adicione um callout como > [!question]- com a resposta dentro."
+  },
+  "presence": {
+    "group": "Barra de status",
+    "statusBar": "Mostrar na barra de status",
+    "statusBarDesc": "As revisões de hoje e o próximo passo da rota, na parte de baixo da janela. Só no computador.",
+    "statusDue": "Para revisar: {count}",
+    "statusNext": "Próximo: {title}",
+    "statusPaused": "Revisão pausada até {date}",
+    "statusQueue": "Tropa: abrir as revisões de hoje",
+    "statusStep": "Tropa: mostrar o próximo passo",
+    "errUnknown": "Bloco Tropa: opção desconhecida {key}. Use show, goal e limit.",
+    "errShow": "Bloco Tropa: show aceita route, review ou next.",
+    "errLimit": "Bloco Tropa: limit aceita um número inteiro de 1 a {max}.",
+    "errGoal": "Bloco Tropa: {goal} não é um conceito do mapa.",
+    "goal": "Meta: {title}",
+    "noGoal": "Ainda sem meta.",
+    "openMap": "Abrir o mapa",
+    "more": "Mais no mapa: {count}",
+    "nextNone": "No momento nada da rota pode ser começado.",
+    "master": "Marcar {title} como dominado",
+    "review": "Revisar {title}"
   }
 }

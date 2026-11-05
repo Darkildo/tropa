@@ -491,5 +491,26 @@
     "keys": "เว้นวรรคเพื่อแสดงคำตอบ 1–3 เพื่อให้คะแนน",
     "auditTitle": "แนวคิดที่ไม่มีคำถาม",
     "auditHint": "ยังไม่มีอะไรให้ทดสอบตัวเอง เพิ่ม callout เช่น > [!question]- แล้วใส่คำตอบไว้ข้างใน"
+  },
+  "presence": {
+    "group": "แถบสถานะ",
+    "statusBar": "แสดงในแถบสถานะ",
+    "statusBarDesc": "รายการทบทวนวันนี้และขั้นถัดไปของเส้นทาง ที่ด้านล่างของหน้าต่าง เฉพาะบนคอมพิวเตอร์",
+    "statusDue": "ต้องทบทวน: {count}",
+    "statusNext": "ถัดไป: {title}",
+    "statusPaused": "หยุดการทบทวนชั่วคราวถึง {date}",
+    "statusQueue": "Tropa: เปิดรายการทบทวนวันนี้",
+    "statusStep": "Tropa: แสดงขั้นถัดไป",
+    "errUnknown": "บล็อก Tropa: ไม่รู้จักตัวเลือก {key} ใช้ show, goal และ limit",
+    "errShow": "บล็อก Tropa: show รับค่า route, review หรือ next",
+    "errLimit": "บล็อก Tropa: limit รับจำนวนเต็มตั้งแต่ 1 ถึง {max}",
+    "errGoal": "บล็อก Tropa: {goal} ไม่ใช่แนวคิดบนแผนที่",
+    "goal": "เป้าหมาย: {title}",
+    "noGoal": "ยังไม่มีเป้าหมาย",
+    "openMap": "เปิดแผนที่",
+    "more": "อีกบนแผนที่: {count}",
+    "nextNone": "ตอนนี้ยังไม่มีขั้นใดบนเส้นทางที่เริ่มได้",
+    "master": "ทำเครื่องหมายว่าเชี่ยวชาญ {title} แล้ว",
+    "review": "ทบทวน {title}"
   }
 }

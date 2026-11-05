@@ -499,7 +499,7 @@ const RATING_NAME: Record<ReviewRating, "again" | "hard" | "good" | "easy"> = { 
  * When the concept comes back, and the four ratings. Shown at once when it is due; before that
  * behind "Review now", so a look at a mastered concept does not invite a review by accident.
  */
-function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
+export function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode, onRated?: () => void) {
   const schedule = reviews.schedule(node.id);
   if (!schedule) return;
   const now = Date.now();
@@ -529,7 +529,9 @@ function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
       button.addEventListener("click", () => {
         attempt(
           check().then((rating) => {
-            if (rating) reviews.rate(node.id, rating, "checked");
+            if (!rating) return;
+            reviews.rate(node.id, rating, "checked");
+            onRated?.();
           }),
           `check ${node.title}`,
         );
@@ -546,7 +548,10 @@ function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
       });
       button.createSpan({ cls: "tropa-review-rating-name", text: t.review[RATING_NAME[rating]] });
       button.createSpan({ cls: "tropa-review-rating-interval tropa-nowrap", text: interval });
-      button.addEventListener("click", () => reviews.rate(node.id, rating));
+      button.addEventListener("click", () => {
+        reviews.rate(node.id, rating);
+        onRated?.();
+      });
     }
   };
   if (due) showRatings();

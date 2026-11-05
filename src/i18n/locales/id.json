@@ -491,5 +491,26 @@
     "keys": "Spasi menampilkan jawaban, 1–3 menilainya",
     "auditTitle": "Konsep tanpa pertanyaan",
     "auditHint": "Belum ada bahan uji diri. Tambahkan callout seperti > [!question]- dengan jawaban di dalamnya."
+  },
+  "presence": {
+    "group": "Bilah status",
+    "statusBar": "Tampilkan di bilah status",
+    "statusBarDesc": "Ulasan hari ini dan langkah berikutnya dari rute, di bagian bawah jendela. Hanya di komputer.",
+    "statusDue": "Perlu diulas: {count}",
+    "statusNext": "Berikutnya: {title}",
+    "statusPaused": "Ulasan dijeda sampai {date}",
+    "statusQueue": "Tropa: buka ulasan hari ini",
+    "statusStep": "Tropa: tampilkan langkah berikutnya",
+    "errUnknown": "Blok Tropa: opsi tidak dikenal {key}. Gunakan show, goal, dan limit.",
+    "errShow": "Blok Tropa: show menerima route, review, atau next.",
+    "errLimit": "Blok Tropa: limit menerima bilangan bulat dari 1 sampai {max}.",
+    "errGoal": "Blok Tropa: {goal} bukan konsep di peta.",
+    "goal": "Tujuan: {title}",
+    "noGoal": "Belum ada tujuan.",
+    "openMap": "Buka peta",
+    "more": "Lainnya di peta: {count}",
+    "nextNone": "Saat ini tidak ada yang bisa dimulai di rute.",
+    "master": "Tandai {title} sudah dikuasai",
+    "review": "Ulas {title}"
   }
 }

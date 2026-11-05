@@ -548,5 +548,26 @@
     "keys": "Mezerník zobrazí odpověď, 1–3 ji ohodnotí",
     "auditTitle": "Pojmy bez otázek",
     "auditHint": "Zatím není čím se otestovat. Přidejte callout jako > [!question]- s odpovědí uvnitř."
+  },
+  "presence": {
+    "group": "Stavový řádek",
+    "statusBar": "Zobrazovat ve stavovém řádku",
+    "statusBarDesc": "Dnešní opakování a další krok trasy dole v okně. Jen na počítači.",
+    "statusDue": "K opakování: {count}",
+    "statusNext": "Dále: {title}",
+    "statusPaused": "Opakování pozastaveno do {date}",
+    "statusQueue": "Tropa: otevřít dnešní opakování",
+    "statusStep": "Tropa: ukázat další krok",
+    "errUnknown": "Blok Tropa: neznámá volba {key}. Použijte show, goal a limit.",
+    "errShow": "Blok Tropa: show přijímá route, review nebo next.",
+    "errLimit": "Blok Tropa: limit přijímá celé číslo od 1 do {max}.",
+    "errGoal": "Blok Tropa: {goal} není pojem na mapě.",
+    "goal": "Cíl: {title}",
+    "noGoal": "Zatím žádný cíl.",
+    "openMap": "Otevřít mapu",
+    "more": "Další na mapě: {count}",
+    "nextNone": "Na trase teď nelze nic začít.",
+    "master": "Označit {title} jako zvládnuté",
+    "review": "Zopakovat {title}"
   }
 }

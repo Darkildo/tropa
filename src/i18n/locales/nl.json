@@ -510,5 +510,26 @@
     "keys": "Spatie toont het antwoord, 1 tot 3 beoordelen het",
     "auditTitle": "Concepten zonder vragen",
     "auditHint": "Nog niets om jezelf mee te toetsen. Voeg een callout toe zoals > [!question]- met het antwoord erin."
+  },
+  "presence": {
+    "group": "Statusbalk",
+    "statusBar": "In de statusbalk tonen",
+    "statusBarDesc": "Herhalingen van vandaag en de volgende stap van de route, onderaan het venster. Alleen op een computer.",
+    "statusDue": "Te herhalen: {count}",
+    "statusNext": "Volgende: {title}",
+    "statusPaused": "Herhalen gepauzeerd tot {date}",
+    "statusQueue": "Tropa: herhalingen van vandaag openen",
+    "statusStep": "Tropa: volgende stap tonen",
+    "errUnknown": "Tropa-blok: onbekende optie {key}. Gebruik show, goal en limit.",
+    "errShow": "Tropa-blok: show neemt route, review of next.",
+    "errLimit": "Tropa-blok: limit neemt een geheel getal van 1 tot {max}.",
+    "errGoal": "Tropa-blok: {goal} is geen concept op de kaart.",
+    "goal": "Doel: {title}",
+    "noGoal": "Nog geen doel.",
+    "openMap": "Kaart openen",
+    "more": "Meer op de kaart: {count}",
+    "nextNone": "Op de route kan nu niets worden begonnen.",
+    "master": "{title} als beheerst markeren",
+    "review": "{title} herhalen"
   }
 }

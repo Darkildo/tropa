@@ -510,5 +510,26 @@
     "keys": "فاصله پاسخ را نشان می‌دهد، ۱ تا ۳ ارزیابی می‌کند",
     "auditTitle": "مفهوم‌های بدون پرسش",
     "auditHint": "هنوز چیزی برای خودآزمایی نیست. یک callout مانند > [!question]- اضافه کنید و پاسخ را داخل آن بنویسید."
+  },
+  "presence": {
+    "group": "نوار وضعیت",
+    "statusBar": "نمایش در نوار وضعیت",
+    "statusBarDesc": "مرورهای امروز و گام بعدی مسیر، پایین پنجره. فقط روی رایانه.",
+    "statusDue": "برای مرور: {count}",
+    "statusNext": "بعدی: {title}",
+    "statusPaused": "مرور تا {date} متوقف است",
+    "statusQueue": "Tropa: باز کردن مرورهای امروز",
+    "statusStep": "Tropa: نمایش گام بعدی",
+    "errUnknown": "بلوک Tropa: گزینهٔ ناشناخته {key}. از show و goal و limit استفاده کنید.",
+    "errShow": "بلوک Tropa: show یکی از route یا review یا next را می‌پذیرد.",
+    "errLimit": "بلوک Tropa: limit یک عدد صحیح از ۱ تا {max} می‌پذیرد.",
+    "errGoal": "بلوک Tropa: {goal} مفهومی روی نقشه نیست.",
+    "goal": "هدف: {title}",
+    "noGoal": "هنوز هدفی نیست.",
+    "openMap": "باز کردن نقشه",
+    "more": "موارد بیشتر روی نقشه: {count}",
+    "nextNone": "اکنون هیچ چیزی در مسیر قابل شروع نیست.",
+    "master": "علامت‌گذاری {title} به‌عنوان آموخته‌شده",
+    "review": "مرور {title}"
   }
 }

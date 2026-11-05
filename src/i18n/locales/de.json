@@ -510,5 +510,26 @@
     "keys": "Leertaste zeigt die Antwort, 1 bis 3 bewerten sie",
     "auditTitle": "Konzepte ohne Fragen",
     "auditHint": "Noch nichts zum Selbsttest. Fügen Sie ein Callout wie > [!question]- mit der Antwort darin hinzu."
+  },
+  "presence": {
+    "group": "Statusleiste",
+    "statusBar": "In der Statusleiste anzeigen",
+    "statusBarDesc": "Heute fällige Wiederholungen und der nächste Schritt der Route, unten im Fenster. Nur am Computer.",
+    "statusDue": "Zu wiederholen: {count}",
+    "statusNext": "Weiter: {title}",
+    "statusPaused": "Wiederholung pausiert bis {date}",
+    "statusQueue": "Tropa: heutige Wiederholungen öffnen",
+    "statusStep": "Tropa: nächsten Schritt zeigen",
+    "errUnknown": "Tropa-Block: unbekannte Option {key}. Verwende show, goal und limit.",
+    "errShow": "Tropa-Block: show erwartet route, review oder next.",
+    "errLimit": "Tropa-Block: limit erwartet eine ganze Zahl von 1 bis {max}.",
+    "errGoal": "Tropa-Block: {goal} ist kein Konzept auf der Karte.",
+    "goal": "Ziel: {title}",
+    "noGoal": "Noch kein Ziel.",
+    "openMap": "Karte öffnen",
+    "more": "Weitere auf der Karte: {count}",
+    "nextNone": "Auf der Route lässt sich gerade nichts beginnen.",
+    "master": "{title} als beherrscht markieren",
+    "review": "{title} wiederholen"
   }
 }

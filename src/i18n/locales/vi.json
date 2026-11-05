@@ -491,5 +491,26 @@
     "keys": "Phím cách hiện câu trả lời, 1–3 để chấm",
     "auditTitle": "Khái niệm chưa có câu hỏi",
     "auditHint": "Chưa có gì để tự kiểm tra. Thêm một callout như > [!question]- kèm câu trả lời bên trong."
+  },
+  "presence": {
+    "group": "Thanh trạng thái",
+    "statusBar": "Hiển thị trên thanh trạng thái",
+    "statusBarDesc": "Các lượt ôn hôm nay và bước tiếp theo của lộ trình, ở cuối cửa sổ. Chỉ trên máy tính.",
+    "statusDue": "Cần ôn: {count}",
+    "statusNext": "Tiếp theo: {title}",
+    "statusPaused": "Tạm dừng ôn tập đến {date}",
+    "statusQueue": "Tropa: mở các lượt ôn hôm nay",
+    "statusStep": "Tropa: hiện bước tiếp theo",
+    "errUnknown": "Khối Tropa: tùy chọn không xác định {key}. Hãy dùng show, goal và limit.",
+    "errShow": "Khối Tropa: show nhận route, review hoặc next.",
+    "errLimit": "Khối Tropa: limit nhận số nguyên từ 1 đến {max}.",
+    "errGoal": "Khối Tropa: {goal} không phải là khái niệm trên bản đồ.",
+    "goal": "Mục tiêu: {title}",
+    "noGoal": "Chưa có mục tiêu.",
+    "openMap": "Mở bản đồ",
+    "more": "Thêm trên bản đồ: {count}",
+    "nextNone": "Hiện chưa thể bắt đầu bước nào trên lộ trình.",
+    "master": "Đánh dấu {title} đã thành thạo",
+    "review": "Ôn {title}"
   }
 }
