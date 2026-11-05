@@ -529,5 +529,28 @@
     "keys": "Espacio muestra la respuesta, 1 a 3 la califican",
     "auditTitle": "Conceptos sin preguntas",
     "auditHint": "Aún no hay con qué autoevaluarse. Añade un callout como > [!question]- con la respuesta dentro."
+  },
+  "presence": {
+    "group": "Barra de estado",
+    "statusBar": "Mostrar en la barra de estado",
+    "statusBarDesc": "Los repasos de hoy y el siguiente paso de la ruta, en la parte inferior de la ventana. Solo en el ordenador.",
+    "statusDue": "Por repasar: {count}",
+    "statusNext": "Siguiente: {title}",
+    "statusPaused": "Repaso en pausa hasta el {date}",
+    "statusQueue": "Tropa: abrir los repasos de hoy",
+    "statusStep": "Tropa: mostrar el siguiente paso",
+    "errUnknown": "Bloque de Tropa: opción desconocida {key}. Usa show, goal y limit.",
+    "errShow": "Bloque de Tropa: show admite route, review o next.",
+    "errLimit": "Bloque de Tropa: limit admite un número entero del 1 al {max}.",
+    "errGoal": "Bloque de Tropa: {goal} no es un concepto del mapa.",
+    "goal": "Meta: {title}",
+    "noGoal": "Aún no hay meta.",
+    "openMap": "Abrir el mapa",
+    "more": "Más en el mapa: {count}",
+    "nextNone": "Ahora mismo no se puede empezar nada de la ruta.",
+    "master": "Marcar {title} como dominado",
+    "review": "Repasar {title}",
+    "waitingGoal": "Esperan a los próximos días, en el camino a esta meta: {count}",
+    "nothingGoal": "Ahora no hay nada que repasar en el camino a esta meta"
   }
 }

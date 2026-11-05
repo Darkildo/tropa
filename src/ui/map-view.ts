@@ -1,4 +1,4 @@
-import { ItemView, Menu, Notice, Platform, setIcon, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, Notice, Platform, setIcon, type HoverParent, type HoverPopover, type ViewStateResult, type WorkspaceLeaf } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatDate, formatMinutes } from "../core/format";
 import { finishLayout, prepareLayout, type Layout, type LaidOutNode } from "../core/layout";
 import { LayoutRunner } from "../core/layout-runner";
@@ -18,6 +18,7 @@ import { parseDate } from "../core/plan";
 import { basename } from "../core/links";
 import { navbarOverlap } from "./phone";
 import { ExportModal } from "./export";
+import { hoverNote } from "./presence";
 import { fileName } from "../core/export-path";
 import { buildCanvas, canvasText, CANVAS_COLOR, type ExportNode } from "../core/canvas";
 import { buildSvg, wrapText, type SvgBox, type SvgIcon, type SvgPath, type SvgText } from "../core/svg";
@@ -78,7 +79,8 @@ interface Pinch {
   y: number;
 }
 
-export class MapView extends ItemView implements DetailHost {
+export class MapView extends ItemView implements DetailHost, HoverParent {
+  hoverPopover: HoverPopover | null = null;
   private root!: HTMLElement;
   private bar!: HTMLElement;
   private stage!: HTMLElement;
@@ -579,6 +581,12 @@ export class MapView extends ItemView implements DetailHost {
       });
     }
     el.addEventListener("pointerenter", () => this.highlight(node.id));
+    // Page preview shows the note behind the node, with the modifier key by default.
+    el.addEventListener("mouseover", (event) => {
+      const current = this.store.graph.nodes.get(node.id);
+      const path = current?.inline ? current.file : current && !current.ghost ? current.id : null;
+      if (path) hoverNote(this.app, this, event, el, path);
+    });
     el.addEventListener("pointerleave", () => this.highlight(null));
     el.addEventListener("focus", () => this.highlight(node.id));
     el.addEventListener("blur", () => this.highlight(null));

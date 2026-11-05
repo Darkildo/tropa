@@ -510,5 +510,28 @@
     "keys": "Mellanslag visar svaret, 1–3 bedömer det",
     "auditTitle": "Begrepp utan frågor",
     "auditHint": "Inget att testa dig med ännu. Lägg till en callout som > [!question]- med svaret inuti."
+  },
+  "presence": {
+    "group": "Statusfält",
+    "statusBar": "Visa i statusfältet",
+    "statusBarDesc": "Dagens repetitioner och ruttens nästa steg längst ned i fönstret. Bara på dator.",
+    "statusDue": "Att repetera: {count}",
+    "statusNext": "Nästa: {title}",
+    "statusPaused": "Repetition pausad till {date}",
+    "statusQueue": "Tropa: öppna dagens repetitioner",
+    "statusStep": "Tropa: visa nästa steg",
+    "errUnknown": "Tropa-block: okänt alternativ {key}. Använd show, goal och limit.",
+    "errShow": "Tropa-block: show tar route, review eller next.",
+    "errLimit": "Tropa-block: limit tar ett heltal från 1 till {max}.",
+    "errGoal": "Tropa-block: {goal} är inte ett begrepp på kartan.",
+    "goal": "Mål: {title}",
+    "noGoal": "Inget mål ännu.",
+    "openMap": "Öppna kartan",
+    "more": "Fler på kartan: {count}",
+    "nextNone": "Inget på rutten kan påbörjas just nu.",
+    "master": "Markera {title} som behärskad",
+    "review": "Repetera {title}",
+    "waitingGoal": "Väntar på kommande dagar, på vägen mot det här målet: {count}",
+    "nothingGoal": "Inget att repetera på vägen mot det här målet just nu"
   }
 }

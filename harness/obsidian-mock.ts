@@ -53,6 +53,7 @@ elementProto.removeClass = function (...c: string[]) { this.classList.remove(...
 elementProto.toggleClass = function (c: string, on: boolean) { this.classList.toggle(c, on); };
 elementProto.setText = function (text: string) { this.textContent = text; };
 elementProto.setAttr = function (k: string, v: string) { this.setAttribute(k, v); };
+elementProto.isShown = function () { return this.isConnected && this.getClientRects().length > 0; };
 
 const pascal = (name: string) => name.replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase());
 export const missingIcons = new Set<string>();
@@ -372,6 +373,13 @@ class Workspace extends Events {
   getLeaf() { return this.note; }
   getRightLeaf() { return this.right; }
   async revealLeaf() {}
+  /** Links opened by plugin code, with whether a new tab was asked for. */
+  opened: { linktext: string; sourcePath: string; newLeaf: unknown }[] = [];
+  async openLinkText(linktext: string, sourcePath: string, newLeaf?: unknown) {
+    this.opened.push({ linktext, sourcePath, newLeaf: newLeaf ?? false });
+    const file = app.metadataCache.getFirstLinkpathDest(linktext);
+    if (file) await this.note.openFile(file);
+  }
   /** Counts saves, so checks can see that view state changes ask for one. */
   layoutSaves = 0;
   requestSaveLayout = () => {
@@ -410,6 +418,18 @@ export class ItemView extends Component {
   async setState() {}
 }
 
+/** Code block processors and hover link sources the plugin registered, by language and id. */
+export const codeBlocks = new Map<string, (source: string, el: HTMLElement, ctx: any) => void>();
+export const hoverSources = new Map<string, { display: string; defaultMod: boolean }>();
+
+export class MarkdownRenderChild extends Component {
+  constructor(readonly containerEl: HTMLElement) { super(); }
+}
+
+export const Keymap = {
+  isModEvent: (event?: MouseEvent | KeyboardEvent | null) => Boolean(event && (event.ctrlKey || event.metaKey)) && "tab",
+};
+
 export class Plugin extends Component {
   app = app;
   data: any = null;
@@ -421,6 +441,12 @@ export class Plugin extends Component {
   registerView(type: string, factory: any) { app.workspace.factories.set(type, factory); }
   addSettingTab(tab: any) { this.settingTab = tab; }
   addRibbonIcon() { return document.createElement("div"); }
+  addStatusBarItem() {
+    const bar = document.querySelector(".status-bar") ?? (document.body as any).createDiv({ cls: "status-bar" });
+    return (bar as any).createDiv({ cls: "status-bar-item plugin-tropa" });
+  }
+  registerMarkdownCodeBlockProcessor(language: string, handler: any) { codeBlocks.set(language, handler); }
+  registerHoverLinkSource(id: string, info: any) { hoverSources.set(id, info); }
   addCommand(command: any) { this.commands.push(command); return command; }
 }
 

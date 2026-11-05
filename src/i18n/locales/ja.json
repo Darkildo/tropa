@@ -491,5 +491,28 @@
     "keys": "スペースで答えを表示、1〜3 で評価",
     "auditTitle": "質問のない概念",
     "auditHint": "まだセルフチェックの材料がありません。> [!question]- のようなコールアウトを追加し、中に答えを書いてください。"
+  },
+  "presence": {
+    "group": "ステータスバー",
+    "statusBar": "ステータスバーに表示",
+    "statusBarDesc": "今日の復習とルートの次のステップを、ウィンドウ下部に表示します。パソコンのみ。",
+    "statusDue": "復習: {count}",
+    "statusNext": "次: {title}",
+    "statusPaused": "{date}まで復習を一時停止中",
+    "statusQueue": "Tropa: 今日の復習を開く",
+    "statusStep": "Tropa: 次のステップを表示",
+    "errUnknown": "Tropaブロック: 不明なオプション {key}。show、goal、limit を使ってください。",
+    "errShow": "Tropaブロック: show には route、review、next のいずれかを指定します。",
+    "errLimit": "Tropaブロック: limit には 1〜{max} の整数を指定します。",
+    "errGoal": "Tropaブロック: {goal} はマップ上の概念ではありません。",
+    "goal": "目標: {title}",
+    "noGoal": "まだ目標がありません。",
+    "openMap": "マップを開く",
+    "more": "マップにさらに {count} 件",
+    "nextNone": "今ルート上で始められるものはありません。",
+    "master": "{title} を習得済みにする",
+    "review": "{title} を復習",
+    "waitingGoal": "この目標への道で、次の日以降に回るもの: {count}",
+    "nothingGoal": "今はこの目標への道で復習するものはありません"
   }
 }

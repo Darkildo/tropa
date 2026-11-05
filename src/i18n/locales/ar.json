@@ -586,5 +586,28 @@
     "keys": "المسافة تُظهر الإجابة، و1 إلى 3 لتقييمها",
     "auditTitle": "مفاهيم بلا أسئلة",
     "auditHint": "لا يوجد بعد ما تختبر به نفسك. أضف وسيلة إبراز مثل > [!question]- واكتب الإجابة داخلها."
+  },
+  "presence": {
+    "group": "شريط الحالة",
+    "statusBar": "العرض في شريط الحالة",
+    "statusBarDesc": "مراجعات اليوم والخطوة التالية في المسار، أسفل النافذة. على الحاسوب فقط.",
+    "statusDue": "للمراجعة: {count}",
+    "statusNext": "التالي: {title}",
+    "statusPaused": "المراجعة متوقفة مؤقتًا حتى {date}",
+    "statusQueue": "Tropa: فتح مراجعات اليوم",
+    "statusStep": "Tropa: إظهار الخطوة التالية",
+    "errUnknown": "كتلة Tropa: خيار غير معروف {key}. استخدم show وgoal وlimit.",
+    "errShow": "كتلة Tropa: يقبل show القيم route أو review أو next.",
+    "errLimit": "كتلة Tropa: يقبل limit عددًا صحيحًا من 1 إلى {max}.",
+    "errGoal": "كتلة Tropa: {goal} ليس مفهومًا على الخريطة.",
+    "goal": "الهدف: {title}",
+    "noGoal": "لا يوجد هدف بعد.",
+    "openMap": "فتح الخريطة",
+    "more": "المزيد على الخريطة: {count}",
+    "nextNone": "لا يمكن بدء أي شيء في المسار الآن.",
+    "master": "وضع علامة على {title} كمتقَن",
+    "review": "مراجعة {title}",
+    "waitingGoal": "تنتظر الأيام التالية، في الطريق إلى هذا الهدف: {count}",
+    "nothingGoal": "لا شيء للمراجعة الآن في الطريق إلى هذا الهدف"
   }
 }

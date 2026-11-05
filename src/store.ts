@@ -58,6 +58,8 @@ export class Store extends Events {
   topologyKey = "";
   /** Counts changes of the progress, made here or read from the file (another device, a hand edit). */
   revision = 0;
+  /** Set once the vault has been read: until then an empty graph means nothing yet, not an empty vault. */
+  loaded = false;
 
   private signature = "";
   private scope: Scope = { folders: [], tags: [] };
@@ -133,6 +135,7 @@ export class Store extends Events {
       .map((node) => [node.id, node.requires, node.teaches, node.recommends].join("|"))
       .sort()
       .join("\n");
+    this.loaded = true;
     this.readProgress();
     this.derive();
     this.announceExcludedGoal();

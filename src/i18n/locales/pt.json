@@ -529,5 +529,28 @@
     "keys": "Espaço mostra a resposta, 1 a 3 avaliam-na",
     "auditTitle": "Conceitos sem perguntas",
     "auditHint": "Ainda não há com que se autoavaliar. Adicione um callout como > [!question]- com a resposta dentro."
+  },
+  "presence": {
+    "group": "Barra de estado",
+    "statusBar": "Mostrar na barra de estado",
+    "statusBarDesc": "As revisões de hoje e o próximo passo do percurso, no fundo da janela. Só no computador.",
+    "statusDue": "Por rever: {count}",
+    "statusNext": "A seguir: {title}",
+    "statusPaused": "Revisão em pausa até {date}",
+    "statusQueue": "Tropa: abrir as revisões de hoje",
+    "statusStep": "Tropa: mostrar o próximo passo",
+    "errUnknown": "Bloco Tropa: opção desconhecida {key}. Use show, goal e limit.",
+    "errShow": "Bloco Tropa: show aceita route, review ou next.",
+    "errLimit": "Bloco Tropa: limit aceita um número inteiro de 1 a {max}.",
+    "errGoal": "Bloco Tropa: {goal} não é um conceito do mapa.",
+    "goal": "Objetivo: {title}",
+    "noGoal": "Ainda sem objetivo.",
+    "openMap": "Abrir o mapa",
+    "more": "Mais no mapa: {count}",
+    "nextNone": "Neste momento não é possível começar nada no percurso.",
+    "master": "Marcar {title} como dominado",
+    "review": "Rever {title}",
+    "waitingGoal": "À espera dos próximos dias, no caminho para este objetivo: {count}",
+    "nothingGoal": "Neste momento não há nada para rever no caminho para este objetivo"
   }
 }

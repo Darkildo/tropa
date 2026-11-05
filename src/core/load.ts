@@ -172,7 +172,7 @@ export interface DayOptions<T> {
  */
 export function dayQueue<T extends Due>(items: Iterable<T>, now: number, options: DayOptions<T>) {
   const paused = isPaused(options.pause, now) ? options.pause : null;
-  if (paused) return { queue: [] as T[], waiting: 0, paused };
+  if (paused) return { queue: [] as T[], held: [] as T[], waiting: 0, paused };
   const all = [...items];
   const moved = afterPause(all, options.pause);
   const due = all.filter((item) => (moved.get(item.id) ?? item.due) <= now);
@@ -180,7 +180,9 @@ export function dayQueue<T extends Due>(items: Iterable<T>, now: number, options
   const needed = (item: T) => Number(options.needed.has(item.id));
   due.sort((a, b) => recall.get(a.id)! - recall.get(b.id)! || needed(b) - needed(a) || a.due - b.due || a.id.localeCompare(b.id));
   const queue = options.limit > 0 ? due.slice(0, Math.max(0, options.limit - options.done)) : due;
-  return { queue, waiting: due.length - queue.length, paused: null };
+  // Due but over today's limit, in the same order: what waits for the next days.
+  const held = due.slice(queue.length);
+  return { queue, held, waiting: held.length, paused: null };
 }
 
 /**

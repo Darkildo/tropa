@@ -161,11 +161,12 @@ const { open, stop } = await start();
     document.getElementById("note").dataset.open = "";
   });
   const headings = await page.locator("#settings .setting-item-heading").allInnerTexts();
-  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal|Review|Self-check", headings.join("|"));
+  ok("settings groups", headings.join("|") === "Files|Note properties|Map scope|Learning journal|Review|Self-check|Status bar", headings.join("|"));
   ok("scope settings are text areas", (await page.locator("#settings textarea[data-key]").count()) === 2);
   const field = (key) => page.locator(`#settings input[data-key="${key}"]`);
   ok("scope settings empty by default", (await page.locator('#settings textarea[data-key="excludeFolders"]').inputValue()) === "");
-  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 15);
+  ok("settings controls", (await page.locator("#settings input[data-key]").count()) === 16);
+  ok("the status bar is on by default", await page.locator('#settings input[data-key="statusBar"]').isChecked());
   ok("self-check settings: offered by default, audit off", await page.locator('#settings input[data-key="offerCheck"]').isChecked() &&
     !(await page.locator('#settings input[data-key="auditQuestions"]').isChecked()) && (await field("checkCallout").inputValue()) === "question");
   ok("review is on by default", await page.locator('#settings input[data-key="review"]').isChecked());
@@ -2303,7 +2304,7 @@ const pickScope = async (page, text) => {
   ok("links: the loop is spelled out", (await loop.locator(".tropa-batch-loop").innerText()) === "Would close a loop: Wrap-up → Old A → Old B → Wrap-up", await loop.locator(".tropa-batch-loop").innerText());
   await loop.locator("select").selectOption("recommends"); await wait(page, 100);
   ok("links: as recommended it is taken", (await loop.locator("input").isChecked()) && !(await loop.getAttribute("class")).includes("is-refused"));
-  await linkRow(page, "Limits", "Functions").locator("input").check(); await wait(page, 100);
+  await linkRow(page, "Limits", "Functions").locator("input").click(); await wait(page, 100);
   await page.locator(".tropa-batch-modal input[type=search]").fill("seri"); await wait(page, 100);
   ok("links: the filter hides other rows", (await page.locator(".tropa-batch-row:not(.is-hidden)").count()) === 1);
   await page.locator(".tropa-batch-modal input[type=search]").fill("");
@@ -2505,6 +2506,206 @@ for (const [lang, title, dir, apply, goal, goalSet] of [
   await page.locator(".tropa-notice-goal").tap(); await wait(page, 500);
   ok("outline phone: a tap sets the goal", await isGoal(page, `${NEW}/Machine learning.md`));
   ok("outline phone: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+
+// --- presence: the status bar, the tropa block in notes, page previews
+const statusEl = (page) => page.locator(".status-bar-item.tropa-status");
+const statusText = async (page) => ((await statusEl(page).getAttribute("class")).includes("is-hidden") ? "" : await statusEl(page).innerText());
+// The block just drawn, found by its place, so it stays the same block as others are added.
+const renderBlock = async (page, source, path) => {
+  const index = await page.locator(".block-language-tropa").count();
+  await page.evaluate(([s, p]) => tropa.renderBlock(s, p), [source, path]);
+  await wait(page, 150);
+  return page.locator(".block-language-tropa").nth(index);
+};
+const listeners = (page) => page.evaluate(() => ["store", "reviews"].map((name) => tropa.plugin[name].handlers.get("change")?.size ?? 0).join("/"));
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  ok("presence: the hover source is registered for Page preview", await page.evaluate(() => JSON.stringify(tropa.hoverSources.get("tropa")) === JSON.stringify({ display: "Tropa", defaultMod: true })));
+  // The status bar: the next step alone, then reviews first.
+  ok("presence: the status bar shows the next step", (await statusText(page)) === "Next: Chain rule", await statusText(page));
+  ok("presence: its label says where a click goes", (await statusEl(page).getAttribute("aria-label")) === "Tropa: show the next step");
+  await statusEl(page).click(); await wait(page, 200);
+  ok("presence: a click shows the next step in the panel", (await page.locator("#right .tropa-title").first().innerText()) === "Chain rule");
+  await seedOldMarks(page);
+  ok("presence: reviews come first in the status bar", (await statusText(page)) === "To review: 3 · Next: Chain rule", await statusText(page));
+  ok("presence: then a click opens the queue", (await statusEl(page).getAttribute("aria-label")) === "Tropa: open today's reviews");
+  await statusEl(page).click(); await wait(page, 200);
+  ok("presence: the queue is in the panel", (await page.locator("#right .tropa-review-queue .tropa-review-item").count()) === 3);
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 2; tropa.plugin.reviews.refresh(); }); await wait(page, 150);
+  ok("presence: the status bar keeps to today's limit", (await statusText(page)).startsWith("To review: 2 ·"), await statusText(page));
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("statusBar", false)); await wait(page, 100);
+  ok("presence: the status bar can be turned off", (await statusText(page)) === "" && (await page.evaluate(() => tropa.plugin.settingTab.getControlValue("statusBar"))) === false);
+  await page.evaluate(() => tropa.plugin.settingTab.setControlValue("statusBar", true)); await wait(page, 100);
+  ok("presence: and on again", (await statusText(page)).startsWith("To review: 2"));
+
+  // A block listens to the store and the queue while it is there, and lets go when it is unloaded.
+  const before = await listeners(page);
+  await renderBlock(page, "show: next");
+  const during = await listeners(page);
+  await page.evaluate(() => tropa.unloadBlocks());
+  ok("presence: a block listens while drawn and lets go once unloaded", during !== before && (await listeners(page)) === before, `${before} → ${during} → ${await listeners(page)}`);
+
+  // The route block.
+  const route = await renderBlock(page, "limit: 3");
+  ok("presence: the route block names the goal as a link", (await route.locator(".tropa-block-goal .internal-link").innerText()) === "Transformer");
+  ok("presence: it counts the steps and the time left", (await route.locator(".tropa-block-count").innerText()).startsWith("14 steps to the goal · "));
+  ok("presence: limit keeps three steps", (await route.locator(".tropa-block-item").count()) === 3);
+  ok("presence: the next step comes with its material", (await route.locator(".tropa-block-item.is-next .tropa-block-meta").innerText()).includes("Essence of calculus"));
+  ok("presence: the rest is counted", (await route.locator(".tropa-block-more").innerText()) === "More on the map: 11");
+  ok("presence: steps are internal links, as in a note", (await route.locator(".tropa-block-item > a.internal-link").first().getAttribute("data-href")) === "Chain rule");
+  await route.locator(".tropa-block-item").first().locator("input").click(); await wait(page, 300);
+  ok("presence: a ticked step is mastered", await page.evaluate(() => tropa.plugin.store.progress.mastered.has([...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "Chain rule").id)));
+  ok("presence: the block follows: the step is gone", !(await route.innerText()).includes("Chain rule") && (await route.locator(".tropa-block-count").innerText()).startsWith("13 steps"));
+  ok("presence: the map, in sight, offers the undo", (await page.locator(".tropa-toast").innerText()).includes("Undo"));
+  await page.click(".tropa-toast button"); await wait(page, 300);
+  ok("presence: undo brings the step back to the block", (await route.locator(".tropa-block-item").first().innerText()).startsWith("Chain rule"));
+  // Out of sight, the map leaves the undo to a notice.
+  await page.evaluate(() => (document.getElementById("center").hidden = true));
+  await route.locator(".tropa-block-item").first().locator("input").click(); await wait(page, 300);
+  ok("presence: with the map out of sight a notice offers the undo", (await page.locator(".notice .tropa-notice-undo").count()) === 1, await lastNotice(page));
+  await page.locator(".notice .tropa-notice-undo").click(); await wait(page, 300);
+  ok("presence: the notice's undo works", (await route.locator(".tropa-block-item").first().innerText()).startsWith("Chain rule"));
+  await page.evaluate(() => (document.getElementById("center").hidden = false));
+
+  // Next, another goal, review.
+  const next = await renderBlock(page, "show: next");
+  ok("presence: the next block shows one step with its material", (await next.locator(".tropa-block-item").count()) === 1 && (await next.locator(".tropa-block-meta").count()) === 1);
+  const other = await renderBlock(page, "goal: [[Gradient descent]]");
+  const steps = await page.evaluate(() => tropa.plugin.store.routeTo([...tropa.plugin.store.graph.nodes.values()].find((n) => n.title === "Gradient descent").id).steps.length);
+  ok("presence: goal leads the block to that goal", (await other.locator(".tropa-block-goal").innerText()) === "Goal: Gradient descent" && (await other.locator(".tropa-block-count").innerText()).startsWith(`${steps} step`));
+  const review = await renderBlock(page, "show: review");
+  ok("presence: the review block keeps to today's queue", (await review.locator(".tropa-block-item.is-due").count()) === 2 && (await review.locator(".tropa-block-count").innerText()) === "Review today: 2 of 3", await review.locator(".tropa-block-count").innerText());
+  const reviewed = await review.locator(".tropa-block-item a.internal-link").first().innerText();
+  await review.locator(".tropa-block-item input").first().click(); await wait(page, 150);
+  ok("presence: ticking a review asks how well it was recalled", (await page.locator(".modal .tropa-review-rating").count()) === 4 && (await page.locator(".modal-title").innerText()) === reviewed);
+  await page.locator('.modal button[data-rating="3"]').click();
+  await settled(page); await wait(page, 250);
+  ok("presence: a rating closes the dialog and saves the review", (await page.locator(".modal").count()) === 0 && (await lastNotice(page)).startsWith(`Review of ${reviewed} saved`), await lastNotice(page));
+  ok("presence: the review block follows", (await review.locator(".tropa-block-item").count()) === 1 && !(await review.innerText()).includes(reviewed));
+  ok("presence: and so does the status bar", (await statusText(page)).startsWith("To review: 1 ·"), await statusText(page));
+  await page.evaluate(() => tropa.plugin.reviews.pauseUntil("2099-01-01"));
+  await settled(page); await wait(page, 200);
+  ok("presence: paused, the review block says so", (await review.innerText()).startsWith("Review paused until January 1, 2099"), await review.innerText());
+  ok("presence: paused, the status bar says so", (await statusText(page)) === "Review paused until January 1, 2099 · Next: Chain rule", await statusText(page));
+  await page.evaluate(() => tropa.plugin.reviews.resume());
+  await settled(page); await wait(page, 200);
+
+  // Mistakes are said in the block.
+  for (const [source, text] of [
+    ["show: map", "Tropa block: show takes route, review or next."],
+    ["limit: 0", "Tropa block: limit takes a whole number from 1 to 100."],
+    ["colour: red", "Tropa block: unknown option colour. Use show, goal and limit."],
+    ["goal: [[Nowhere]]", "Tropa block: Nowhere is not a concept on the map."],
+  ]) {
+    const el = await renderBlock(page, source);
+    ok(`presence: "${source}" is explained in the block`, (await el.locator(".tropa-block-error").innerText()) === text, await el.innerText());
+  }
+  await page.screenshot({ path: SHOTS + "80-presence.png" });
+
+  // Previews: a link in a block, a node on the map.
+  await route.locator("a.internal-link", { hasText: "Gradient descent" }).first().hover(); await wait(page, 50);
+  ok("presence: a link in a block asks for a preview", await page.evaluate(() => { const h = tropa.hovers.at(-1); return h.source === "tropa" && h.linktext === "Gradient descent" && h.sourcePath === "Daily.md" && h.parent; }), JSON.stringify(await page.evaluate(() => tropa.hovers.at(-1))));
+  await node(page, "Derivatives").hover(); await wait(page, 50);
+  ok("presence: a node on the map asks for a preview of its note", await page.evaluate(() => { const h = tropa.hovers.at(-1); return h.source === "tropa" && h.linktext.endsWith("/Derivatives.md") && h.parent && h.target.includes("tropa-node"); }));
+  // A link opens its note, in a new tab with the modifier. The mocked note view replaces the block.
+  await page.evaluate(() => tropa.unloadBlocks());
+  let linkBlock = await renderBlock(page, "limit: 2");
+  await linkBlock.locator("a.internal-link", { hasText: "Gradient" }).last().click({ modifiers: ["Control"] }); await wait(page, 150);
+  ok("presence: a link with the modifier opens in a new tab", await page.evaluate(() => { const o = tropa.app.workspace.opened.at(-1); return o.linktext === "Gradient" && o.newLeaf === "tab" && o.sourcePath === "Daily.md"; }));
+  await page.evaluate(() => tropa.unloadBlocks());
+  linkBlock = await renderBlock(page, "limit: 2");
+  await linkBlock.locator("a.internal-link", { hasText: "Chain rule" }).first().click(); await wait(page, 150);
+  ok("presence: a click opens the note", (await page.locator("#note .note-title").innerText()) === "Chain rule");
+  ok("presence: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  // No goal yet: the block says so and offers the map.
+  const { page, errors } = await open({ query: "?scenario=cycle" });
+  const el = await renderBlock(page, "show: route");
+  ok("presence: without a goal the block says so", (await el.locator(".tropa-block-hint").innerText()).startsWith("No goal yet.") && (await el.locator("button.tropa-block-button").innerText()) === "Open the map");
+  ok("presence: without a goal or reviews the status bar hides", (await statusText(page)) === "");
+  ok("presence: no goal, no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+// The review block with a goal: today's queue, only what lies on the way to the goal.
+const goalQueue = (page, title) => page.evaluate((t) => {
+  const { store, reviews } = tropa.plugin;
+  const goal = [...store.graph.nodes.values()].find((n) => n.title === t).id;
+  const path = new Set([goal, ...store.graph.ancestors(goal)]);
+  const day = reviews.day();
+  const name = (s) => store.graph.nodes.get(s.id).title;
+  return { queue: day.queue.filter((s) => path.has(s.id)).map(name), waiting: day.held.filter((s) => path.has(s.id)).length };
+}, title);
+const blockTitles = (el) => el.locator(".tropa-block-item a.internal-link").allInnerTexts();
+{
+  const { page, errors } = await open({ query: "?panel=1" });
+  await seedOldMarks(page);
+  const gradient = await renderBlock(page, "show: review\ngoal: [[Gradient]]");
+  const all = await renderBlock(page, "show: review");
+  ok("review by goal: the block names the goal", (await gradient.locator(".tropa-block-goal").innerText()) === "Goal: Gradient");
+  ok("review by goal: only what the goal requires, in queue order", JSON.stringify(await blockTitles(gradient)) === JSON.stringify((await goalQueue(page, "Gradient")).queue) &&
+    (await blockTitles(gradient)).sort().join("|") === "Derivatives|Vectors and matrices", (await blockTitles(gradient)).join("|"));
+  ok("review by goal: the count is of the filtered queue", (await gradient.locator(".tropa-block-count").innerText()) === "Review today: 2");
+  ok("review by goal: without a goal the whole queue", (await all.locator(".tropa-block-item").count()) === 3);
+  const apart = await renderBlock(page, "show: review\ngoal: [[Probability]]");
+  ok("review by goal: nothing on the way says so", (await apart.innerText()) === "Goal: Probability\nNothing on the way to this goal to review right now", await apart.innerText());
+  // One review a day: the filter takes the queue as the limit left it, and counts what of the goal waits.
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const expected = await goalQueue(page, "Gradient");
+  ok("review by goal: the limit applies first, the filter keeps what is left", JSON.stringify(await blockTitles(gradient)) === JSON.stringify(expected.queue), `${await blockTitles(gradient)} vs ${expected.queue}`);
+  const waitLine = `Waiting for the next days, on the way to this goal: ${expected.waiting}`;
+  ok("review by goal: what of the goal waits is counted", expected.queue.length
+    ? (await gradient.locator(".tropa-block-count").innerText()) === `Review today: ${expected.queue.length} of ${expected.queue.length + expected.waiting}` && (await gradient.locator(".tropa-block-waiting").innerText()) === waitLine
+    : (await gradient.innerText()).endsWith(`Today's reviews are done. ${waitLine}`), await gradient.innerText());
+  ok("review by goal: the whole queue keeps to the limit", (await all.locator(".tropa-block-item").count()) === 1 && (await all.locator(".tropa-block-waiting").innerText()) === "Waiting for the next days: 2");
+  await page.screenshot({ path: SHOTS + "80-presence-review-goal.png" });
+  ok("review by goal: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ query: "?lang=ar&panel=1" });
+  await seedOldMarks(page);
+  await page.evaluate(() => { tropa.plugin.settings.reviewLimit = 1; tropa.plugin.reviews.refresh(); }); await wait(page, 200);
+  const el = await renderBlock(page, "show: review\ngoal: [[Gradient]]");
+  // Names are isolated from the right-to-left text around them.
+  const text = (await el.innerText()).replace(/[\u2066-\u2069]/g, "");
+  ok("review by goal ar: translated, the goal named, no raw placeholders", text.startsWith("الهدف: Gradient") && text.includes("في الطريق إلى هذا الهدف") && !/[{}]/.test(text), text);
+  ok("review by goal ar: right to left", (await el.evaluate((e) => getComputedStyle(e).direction)) === "rtl");
+  ok("review by goal ar: no errors", errors.length === 0, errors.join("; "));
+  await page.close();
+}
+for (const [lang, goal, next, dir] of [
+  ["ru", "Цель: ", "Дальше: ", "ltr"],
+  ["ar", "الهدف: ", "التالي: ", "rtl"],
+]) {
+  const { page, errors } = await open({ query: `?lang=${lang}&panel=1` });
+  const el = await renderBlock(page, "limit: 2");
+  ok(`presence ${lang}: the block translated`, (await el.locator(".tropa-block-goal").innerText()).startsWith(goal) && !/[{}]/.test(await el.innerText()), await el.innerText());
+  ok(`presence ${lang}: the block's direction`, (await el.getAttribute("dir")) === dir && (await el.evaluate((e) => getComputedStyle(e).direction)) === dir);
+  ok(`presence ${lang}: the status bar translated`, (await statusText(page)).startsWith(next), await statusText(page));
+  const error = await renderBlock(page, "limit: 0");
+  ok(`presence ${lang}: mistakes translated`, !/[{}]/.test(await error.innerText()) && (await error.innerText()).includes("100"));
+  await page.screenshot({ path: SHOTS + `80-presence-${lang}.png` });
+  ok(`presence ${lang}: no errors`, errors.length === 0, errors.join("; "));
+  await page.close();
+}
+{
+  const { page, errors } = await open({ width: 390, height: 844, touch: true, query: "?phone" });
+  ok("presence phone: no status bar item on a phone", (await page.locator(".status-bar-item").count()) === 0);
+  await page.evaluate(() => { document.getElementById("note").style.cssText = "display:block;position:fixed;inset:0;z-index:20;width:auto;background:var(--background-primary)"; });
+  const el = await renderBlock(page, "limit: 3");
+  const fits = await page.evaluate(() => [...document.querySelectorAll(".block-language-tropa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 0.5));
+  ok("presence phone: the block fits the screen", fits);
+  await el.locator(".tropa-block-item input").first().tap(); await wait(page, 300);
+  ok("presence phone: a tap ticks a step", await page.evaluate(() => tropa.plugin.store.progress.mastered.size === 4));
+  await page.screenshot({ path: SHOTS + "80-presence-phone.png" });
+  const hovers = await page.evaluate(() => tropa.hovers.length);
+  await page.evaluate(() => document.querySelector("#center .tropa-node").dispatchEvent(new MouseEvent("mouseover", { bubbles: true })));
+  ok("presence phone: no previews on a phone", (await page.evaluate(() => tropa.hovers.length)) === hovers);
+  ok("presence phone: no errors", errors.length === 0, errors.join("; "));
   await page.close();
 }
 

@@ -1,4 +1,4 @@
-import { app, WorkspaceLeaf, missingIcons, notices } from "obsidian";
+import { app, WorkspaceLeaf, codeBlocks, hoverSources, missingIcons, notices } from "obsidian";
 import TropaPlugin from "../src/main";
 import { sample } from "../src/sample";
 import { defaultSettings } from "../src/defaults";
@@ -188,4 +188,32 @@ await workspace.center.setViewState({ type: "tropa-map" });
 await workspace.right.setViewState({ type: "tropa-panel" });
 requestAnimationFrame(() => workspace.center.view.render());
 
-Object.assign(window, { tropa: { app, plugin, notices, missingIcons, swipes } });
+/*
+  A `tropa` code block as a note in reading view would draw it: the registered processor gets the
+  source, an element and a context that loads the child. `unloadBlocks` lets go of them, as Obsidian
+  does when the note closes or the block's source changes.
+*/
+const blocks: any[] = [];
+const renderBlock = (source: string, sourcePath = "Daily.md") => {
+  const host = document.getElementById("note")!;
+  host.dataset.open = "true";
+  const el = (host as any).createDiv({ cls: "block-language-tropa" });
+  codeBlocks.get("tropa")!(source, el, {
+    sourcePath,
+    addChild(child: any) {
+      blocks.push(child);
+      child.load();
+    },
+  });
+  return el;
+};
+const unloadBlocks = () => {
+  for (const child of blocks.splice(0)) {
+    child.unload();
+    child.containerEl.remove();
+  }
+};
+const hovers: any[] = [];
+(app as any).workspace.on("hover-link", (info: any) => hovers.push({ source: info.source, linktext: info.linktext, sourcePath: info.sourcePath, parent: Boolean(info.hoverParent), target: info.targetEl?.className ?? "" }));
+
+Object.assign(window, { tropa: { app, plugin, notices, missingIcons, swipes, renderBlock, unloadBlocks, blocks, hovers, hoverSources } });

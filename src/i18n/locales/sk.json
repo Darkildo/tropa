@@ -548,5 +548,28 @@
     "keys": "Medzerník zobrazí odpoveď, 1–3 ju ohodnotia",
     "auditTitle": "Pojmy bez otázok",
     "auditHint": "Zatiaľ nie je čím sa otestovať. Pridajte callout ako > [!question]- s odpoveďou vnútri."
+  },
+  "presence": {
+    "group": "Stavový riadok",
+    "statusBar": "Zobrazovať v stavovom riadku",
+    "statusBarDesc": "Dnešné opakovania a ďalší krok trasy dole v okne. Len na počítači.",
+    "statusDue": "Na opakovanie: {count}",
+    "statusNext": "Ďalej: {title}",
+    "statusPaused": "Opakovanie pozastavené do {date}",
+    "statusQueue": "Tropa: otvoriť dnešné opakovania",
+    "statusStep": "Tropa: ukázať ďalší krok",
+    "errUnknown": "Blok Tropa: neznáma voľba {key}. Použite show, goal a limit.",
+    "errShow": "Blok Tropa: show prijíma route, review alebo next.",
+    "errLimit": "Blok Tropa: limit prijíma celé číslo od 1 do {max}.",
+    "errGoal": "Blok Tropa: {goal} nie je pojem na mape.",
+    "goal": "Cieľ: {title}",
+    "noGoal": "Zatiaľ žiadny cieľ.",
+    "openMap": "Otvoriť mapu",
+    "more": "Ďalšie na mape: {count}",
+    "nextNone": "Na trase sa teraz nedá nič začať.",
+    "master": "Označiť {title} ako zvládnuté",
+    "review": "Zopakovať {title}",
+    "waitingGoal": "Čakajú na ďalšie dni, na ceste k tomuto cieľu: {count}",
+    "nothingGoal": "Na ceste k tomuto cieľu teraz nie je čo opakovať"
   }
 }

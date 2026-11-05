@@ -510,5 +510,28 @@
     "keys": "Mellemrum viser svaret, 1–3 vurderer det",
     "auditTitle": "Begreber uden spørgsmål",
     "auditHint": "Intet at teste dig med endnu. Tilføj en callout som > [!question]- med svaret indeni."
+  },
+  "presence": {
+    "group": "Statuslinje",
+    "statusBar": "Vis i statuslinjen",
+    "statusBarDesc": "Dagens gentagelser og rutens næste skridt nederst i vinduet. Kun på computer.",
+    "statusDue": "Til gentagelse: {count}",
+    "statusNext": "Næste: {title}",
+    "statusPaused": "Gentagelse sat på pause til {date}",
+    "statusQueue": "Tropa: åbn dagens gentagelser",
+    "statusStep": "Tropa: vis næste skridt",
+    "errUnknown": "Tropa-blok: ukendt indstilling {key}. Brug show, goal og limit.",
+    "errShow": "Tropa-blok: show tager route, review eller next.",
+    "errLimit": "Tropa-blok: limit tager et helt tal fra 1 til {max}.",
+    "errGoal": "Tropa-blok: {goal} er ikke et begreb på kortet.",
+    "goal": "Mål: {title}",
+    "noGoal": "Intet mål endnu.",
+    "openMap": "Åbn kortet",
+    "more": "Flere på kortet: {count}",
+    "nextNone": "Intet på ruten kan påbegyndes lige nu.",
+    "master": "Markér {title} som mestret",
+    "review": "Gentag {title}",
+    "waitingGoal": "Venter på de næste dage, på vejen mod dette mål: {count}",
+    "nothingGoal": "Der er intet at gentage på vejen mod dette mål lige nu"
   }
 }

@@ -529,5 +529,28 @@
     "keys": "רווח מציג את התשובה, 1–3 מדרגים אותה",
     "auditTitle": "מושגים בלי שאלות",
     "auditHint": "עדיין אין במה לבדוק את עצמכם. הוסיפו callout כמו > [!question]- ובתוכו את התשובה."
+  },
+  "presence": {
+    "group": "שורת המצב",
+    "statusBar": "הצגה בשורת המצב",
+    "statusBarDesc": "החזרות של היום והצעד הבא במסלול, בתחתית החלון. במחשב בלבד.",
+    "statusDue": "לחזרה: {count}",
+    "statusNext": "הבא: {title}",
+    "statusPaused": "החזרה מושהית עד {date}",
+    "statusQueue": "Tropa: פתיחת החזרות של היום",
+    "statusStep": "Tropa: הצגת הצעד הבא",
+    "errUnknown": "בלוק Tropa: אפשרות לא מוכרת {key}. השתמשו ב-show, goal ו-limit.",
+    "errShow": "בלוק Tropa: show מקבל route, review או next.",
+    "errLimit": "בלוק Tropa: limit מקבל מספר שלם מ-1 עד {max}.",
+    "errGoal": "בלוק Tropa: {goal} אינו מושג במפה.",
+    "goal": "יעד: {title}",
+    "noGoal": "עדיין אין יעד.",
+    "openMap": "פתיחת המפה",
+    "more": "עוד במפה: {count}",
+    "nextNone": "כרגע אי אפשר להתחיל שום דבר במסלול.",
+    "master": "סימון {title} כנשלט",
+    "review": "חזרה על {title}",
+    "waitingGoal": "ממתינים לימים הבאים, בדרך ליעד הזה: {count}",
+    "nothingGoal": "כרגע אין מה לחזור עליו בדרך ליעד הזה"
   }
 }

@@ -529,5 +529,28 @@
     "keys": "L’espai mostra la resposta, de l’1 al 3 la valoren",
     "auditTitle": "Conceptes sense preguntes",
     "auditHint": "Encara no hi ha amb què autoavaluar-se. Afegeix un callout com > [!question]- amb la resposta a dins."
+  },
+  "presence": {
+    "group": "Barra d'estat",
+    "statusBar": "Mostra a la barra d'estat",
+    "statusBarDesc": "Els repassos d'avui i el pas següent de la ruta, a la part inferior de la finestra. Només a l'ordinador.",
+    "statusDue": "Per repassar: {count}",
+    "statusNext": "Següent: {title}",
+    "statusPaused": "Repàs en pausa fins al {date}",
+    "statusQueue": "Tropa: obre els repassos d'avui",
+    "statusStep": "Tropa: mostra el pas següent",
+    "errUnknown": "Bloc de Tropa: opció desconeguda {key}. Fes servir show, goal i limit.",
+    "errShow": "Bloc de Tropa: show admet route, review o next.",
+    "errLimit": "Bloc de Tropa: limit admet un nombre enter de l'1 al {max}.",
+    "errGoal": "Bloc de Tropa: {goal} no és un concepte del mapa.",
+    "goal": "Objectiu: {title}",
+    "noGoal": "Encara no hi ha cap objectiu.",
+    "openMap": "Obre el mapa",
+    "more": "Més al mapa: {count}",
+    "nextNone": "Ara mateix no es pot començar res de la ruta.",
+    "master": "Marca {title} com a dominat",
+    "review": "Repassa {title}",
+    "waitingGoal": "Esperen els dies següents, en el camí cap a aquest objectiu: {count}",
+    "nothingGoal": "Ara no hi ha res per repassar en el camí cap a aquest objectiu"
   }
 }

@@ -510,5 +510,28 @@
     "keys": "Välilyönti näyttää vastauksen, 1–3 arvioi sen",
     "auditTitle": "Käsitteet ilman kysymyksiä",
     "auditHint": "Ei vielä mitään, millä testata itseään. Lisää callout, kuten > [!question]-, ja vastaus sen sisään."
+  },
+  "presence": {
+    "group": "Tilarivi",
+    "statusBar": "Näytä tilarivillä",
+    "statusBarDesc": "Tämän päivän kertaukset ja reitin seuraava askel ikkunan alareunassa. Vain tietokoneella.",
+    "statusDue": "Kerrattavana: {count}",
+    "statusNext": "Seuraavaksi: {title}",
+    "statusPaused": "Kertaus tauolla {date} asti",
+    "statusQueue": "Tropa: avaa tämän päivän kertaukset",
+    "statusStep": "Tropa: näytä seuraava askel",
+    "errUnknown": "Tropa-lohko: tuntematon asetus {key}. Käytä asetuksia show, goal ja limit.",
+    "errShow": "Tropa-lohko: show hyväksyy arvon route, review tai next.",
+    "errLimit": "Tropa-lohko: limit hyväksyy kokonaisluvun 1–{max}.",
+    "errGoal": "Tropa-lohko: {goal} ei ole käsite kartalla.",
+    "goal": "Tavoite: {title}",
+    "noGoal": "Ei vielä tavoitetta.",
+    "openMap": "Avaa kartta",
+    "more": "Lisää kartalla: {count}",
+    "nextNone": "Reitillä ei voi juuri nyt aloittaa mitään.",
+    "master": "Merkitse {title} hallituksi",
+    "review": "Kertaa {title}",
+    "waitingGoal": "Odottaa seuraavia päiviä, matkalla tähän tavoitteeseen: {count}",
+    "nothingGoal": "Matkalla tähän tavoitteeseen ei ole nyt kerrattavaa"
   }
 }

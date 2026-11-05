@@ -29,6 +29,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Suggested links.** Your notes already link to each other. **Suggest links from your notes** reads a folder, the whole vault or one note and offers those links for the map, in a preview: nothing is written until you add it, and a batch can be undone. See [Suggested links](#suggested-links).
 - **Map from a list.** Paste a list, headings or the table of contents of a book: each line becomes a concept and nesting becomes links, in a preview that also shows which notes are new and which are already in your vault. See [Map from a list](#map-from-a-list).
+- **In your notes and the status bar.** A `tropa` code block shows the route, today's reviews or the next step in any note, such as a daily note, with boxes to tick. The status bar says how many concepts are due today and what comes next. Hover a node on the map, with Ctrl or Cmd, to preview its note. See [The tropa block and the status bar](#the-tropa-block-and-the-status-bar).
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
@@ -259,6 +260,33 @@ Each item becomes a note in the folder you choose (the concepts folder by defaul
 **Nesting** says which way the links go: a topic needs what is under it (the default, so a chapter as a goal routes through its sections), or what is under a topic needs the topic. **Each item needs the one before it** also links items of one level in order, as in a course; it is off by default and its rows can be ticked in the preview anyway.
 
 The preview lists the new notes and the notes already in your vault, then the links, in the same rows as suggested links: a link that would close a loop is refused. **Create** makes the notes, `type: concept` and nothing else, and writes the links; a note already in your vault becomes a concept too. **Undo** in the notice, or the command **Undo the last map from a list**, moves the new notes to the trash and puts back the properties of the others, except notes changed since, which stay as they are. **Set … as goal** in the same notice makes the first item at the top your goal, the same way as **Add as goal**; an undo takes that goal back with the map. Closing the preview keeps the list, so it can be fixed and tried again.
+
+### The tropa block and the status bar
+
+A `tropa` code block puts part of the map into any note. In a daily note, for example:
+
+````markdown
+```tropa
+show: review
+```
+
+```tropa
+goal: [[Transformer]]
+limit: 5
+```
+````
+
+- `show` is `route` (the default): the steps to the goal in order, with the time left and the material to start with on the next step; `review`: today's review queue, within the daily limit; or `next`: the next step alone.
+- `goal` is a link or the name of a concept; without it, the goal (or goals) the map routes to. With `show: review` it narrows today's queue to the goal and what it requires, all the way down; without it the block shows the whole queue.
+- `limit` is how many rows to show, 1 to 100, 10 by default. What does not fit is counted, with a button to the map or the queue.
+
+Each row is a link to its note: it opens on a click, in a new tab with Ctrl or Cmd, and shows a preview on hover. The box of a step marks it mastered, offering a self-check first like **Mark as mastered**; the box of a review asks how well you recalled the concept, with the same four ratings as its details. A notice offers **Undo** when the map is not in sight. The block follows your progress and the queue as they change, on every device. A mistake in the block, such as an unknown option or a goal that is not a concept, is said in the block itself.
+
+The daily limit is one for all reviews, wherever they are done. So a review block with a goal shows the concepts of today's queue that lie on the way to the goal, in the queue's order, and counts those of the goal that are over today's limit as waiting for the next days ("Review today: 1 of 3", "Waiting for the next days, on the way to this goal: 2") instead of listing them: reviewing them today would go past the limit.
+
+The status bar at the bottom of the window shows **To review: 3 · Next: Derivatives**, or the day a paused review comes back. A click opens today's queue, or the next step when nothing is due. It hides when there is nothing to say; **Settings → Status bar** turns it off. Obsidian has no status bar on phones and tablets.
+
+On the map, hovering a node with Ctrl or Cmd shows a preview of its note (the core plugin **Page preview**, where Tropa can be set to need no key).
 
 ## Privacy
 
