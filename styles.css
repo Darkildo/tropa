@@ -1038,6 +1038,23 @@ button.tropa-add svg { width: 14px; height: 14px; }
 
 .tropa-review-queue .tropa-review-when { margin-inline-start: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); }
 
+/* Review load: pause from the queue's head, the paused state, what waits over the limit */
+.tropa-review-queue .tropa-section-head { align-items: center; }
+button.tropa-review-pause {
+  width: 24px;
+  height: 24px;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-faint);
+}
+.tropa-review-pause svg { width: 14px; height: 14px; }
+.tropa-review-paused { color: var(--text-muted); }
+.tropa-review-resume { flex: none; }
+.tropa-review-queue .tropa-hint { margin: 4px 0 0; }
+
 /* Self-check: questions from the concept's note, one at a time */
 .tropa-check-block { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
 .tropa-check-count { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: var(--font-ui-small); }
@@ -1118,6 +1135,7 @@ button.tropa-add svg { width: 14px; height: 14px; }
 a.tropa-icon-button { opacity: 1; }
 .is-mobile .tropa-port { opacity: 1; transform: scale(1); }
 .is-mobile .tropa-fold { opacity: 1; }
+.is-mobile button.tropa-review-pause { width: 36px; height: 36px; }
 
 /* Elements of the bar that only a phone shows */
 .tropa-mode-icons,

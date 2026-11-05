@@ -1,6 +1,7 @@
 import { Notice, PluginSettingTab, type App, type SettingDefinitionItem, type SettingGroupItem } from "obsidian";
 import { inFolders, parseFolders, parseTags } from "./core/scope";
 import { DEFAULT_RETENTION, RETENTIONS } from "./core/review";
+import { DEFAULT_LIMIT, LIMITS } from "./core/load";
 import { DEFAULT_CALLOUT, calloutType } from "./core/questions";
 import { formatPercent } from "./ui/when";
 import { t } from "./i18n";
@@ -11,7 +12,7 @@ const PROPERTIES = ["typeKey", "requiresKey", "recommendsKey", "teachesKey", "ma
 const SCOPE = ["excludeFolders", "excludeTags"] as const;
 type TextSetting = (typeof FILES)[number] | (typeof PROPERTIES)[number] | "journalFolder";
 type ScopeSetting = (typeof SCOPE)[number];
-type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention" | "checkCallout" | "offerCheck" | "auditQuestions";
+type Key = TextSetting | ScopeSetting | "journal" | "review" | "retention" | "reviewLimit" | "reviewBalance" | "checkCallout" | "offerCheck" | "auditQuestions";
 
 const TEXT_SETTINGS: readonly string[] = [...FILES, ...PROPERTIES, "journalFolder"];
 const isTextSetting = (key: string): key is TextSetting => TEXT_SETTINGS.includes(key);
@@ -54,6 +55,16 @@ export class TropaSettingTab extends PluginSettingTab {
               options: Object.fromEntries(RETENTIONS.map((value) => [String(value), formatPercent(value)])),
             },
           },
+          {
+            name: t.review.limit,
+            desc: t.review.limitDesc,
+            control: {
+              type: "dropdown",
+              key: "reviewLimit",
+              options: Object.fromEntries(LIMITS.map((value) => [String(value), value === 0 ? t.review.noLimit : String(value)])),
+            },
+          },
+          { name: t.review.balance, desc: t.review.balanceDesc, control: { type: "toggle", key: "reviewBalance" } },
         ],
       },
       {
@@ -72,6 +83,8 @@ export class TropaSettingTab extends PluginSettingTab {
     if (key === "journal") return this.plugin.settings.journal;
     if (key === "review") return this.plugin.settings.review;
     if (key === "retention") return String(this.plugin.settings.retention);
+    if (key === "reviewLimit") return String(this.plugin.settings.reviewLimit);
+    if (key === "reviewBalance") return this.plugin.settings.reviewBalance;
     if (key === "checkCallout" || key === "offerCheck" || key === "auditQuestions") return this.plugin.settings[key];
     if (isScopeSetting(key)) return this.plugin.settings[key].map((value) => (key === "excludeTags" ? `#${value}` : value)).join("\n");
     return isTextSetting(key) ? this.plugin.settings[key] : undefined;
@@ -95,6 +108,18 @@ export class TropaSettingTab extends PluginSettingTab {
       this.plugin.settings[key] = value === true || value === "true";
       await this.plugin.saveSettings();
       if (key === "auditQuestions") this.plugin.checks.touch();
+      return;
+    }
+    if (key === "reviewLimit") {
+      const limit = Number(value);
+      this.plugin.settings.reviewLimit = (LIMITS as readonly number[]).includes(limit) ? limit : DEFAULT_LIMIT;
+      await this.plugin.saveSettings();
+      this.plugin.reviews.refresh();
+      return;
+    }
+    if (key === "reviewBalance") {
+      this.plugin.settings.reviewBalance = value === true || value === "true";
+      await this.plugin.saveSettings();
       return;
     }
     if (key === "retention") {

@@ -9,7 +9,8 @@ import type { Progress } from "./types";
     - 2026-11-03T14:05:20+03:00 unmastered [[Gradient]] undo
     - 2026-11-03T14:06:00+03:00 confidence [[Gradient]] level=4
     - 2026-11-03T14:07:00+03:00 done https://en.wikipedia.org/wiki/Gradient
-    - 2026-11-03T14:08:00+03:00 reviewed [[Gradient]] rating=3
+    - 2026-11-03T14:08:00+03:00 reviewed [[Gradient]] rating=3 shift=-1
+    - 2026-11-04T09:00:00+03:00 pause - until=2026-11-20
 
   A line is `- <time> <action> <target> [key=value | flag]...`. The target is a wiki link, so a
   rename that updates links keeps the history, or a URL for a material listed in a concept, or `-`
@@ -41,7 +42,11 @@ export type JournalAction =
   /** Recalled a concept and rated it, 1 to 4 as in FSRS: `rating=3`. */
   | "reviewed"
   /** Answered the self-check questions of a concept: `rating=` as above, optionally `right=` and `of=`. */
-  | "checked";
+  | "checked"
+  /** Review paused, for no note: `until=2026-12-01`, the day it comes back. */
+  | "pause"
+  /** Review back before the pause ends, for no note. */
+  | "resume";
 
 /** The flag on lines written by Undo: they put back what the action changed. */
 export const UNDO = "undo";

@@ -1,7 +1,7 @@
 import { setIcon, type App } from "obsidian";
 import { FORMAT_ICON, STATE_ICON, formatDate, formatMinutes } from "../core/format";
 import { allGoalsOf, isGhostId, isGoal, isPassed, knownCandidates, recommendMaterial, sourceState } from "../core/graph";
-import { forecast, roundPace, type Forecast } from "../core/plan";
+import { forecast, parseDate, roundPace, type Forecast } from "../core/plan";
 import { ATTACHMENT_EXTENSIONS, fileFormat, materialId } from "../core/materials";
 import { CONFIDENCE_LEVELS } from "../core/progress";
 import type { GraphNode, Route } from "../core/types";
@@ -13,6 +13,7 @@ import type { SelfChecks } from "../self-check";
 import { RATINGS, type ReviewRating } from "../core/review";
 import { KnownModal, PickModal, SourceModal, type PickItem } from "./pick";
 import { PlanModal } from "./plan";
+import { openPause, resumeReview } from "./pause";
 import { formatInterval, formatPercent, formatRelative } from "./when";
 
 export interface DetailHost {
@@ -50,7 +51,7 @@ function iconButton(parent: HTMLElement, icon: string, label: string, onClick: (
   return button;
 }
 
-function section(parent: HTMLElement, title: string, count?: number) {
+function section(parent: HTMLElement, title: string, count?: number | string) {
   const el = parent.createDiv({ cls: "tropa-section" });
   const head = el.createDiv({ cls: "tropa-section-head" });
   head.createSpan({ text: title });
@@ -502,11 +503,21 @@ function reviewBlock(parent: HTMLElement, reviews: Reviews, node: GraphNode) {
   const schedule = reviews.schedule(node.id);
   if (!schedule) return;
   const now = Date.now();
-  const due = schedule.due <= now;
+  // Due by FSRS but held back by today's limit or a pause: it says so, and waits behind "Review now".
+  const due = reviews.isDue(node.id, now);
+  const paused = reviews.day(now).paused;
   const box = parent.createDiv({ cls: `tropa-review${due ? " is-due" : ""}` });
   const head = box.createDiv({ cls: "tropa-review-head" });
   setIcon(head.createSpan({ cls: "tropa-review-icon" }), REVIEW_ICON);
-  head.createSpan({ text: due ? t.review.dueNow : t.review.nextOn({ date: formatDate(new Date(schedule.due), new Date(now)), when: formatRelative(schedule.due, now) }) });
+  head.createSpan({
+    text: due
+      ? t.review.dueNow
+      : schedule.due > now
+        ? t.review.nextOn({ date: formatDate(new Date(schedule.due), new Date(now)), when: formatRelative(schedule.due, now) })
+        : paused
+          ? t.review.pausedUntil({ date: formatDate(parseDate(paused.until), new Date(now)) })
+          : t.review.heldBack,
+  });
   box.createDiv({ cls: "tropa-hint", text: t.review.recall({ percent: formatPercent(reviews.retrievability(schedule, now)) }) });
 
   const body = box.createDiv({ cls: "tropa-review-body" });
@@ -567,13 +578,31 @@ const QUEUE_PREVIEW = 5;
 /** The queue stays open once "show all" was pressed, until the plugin reloads. */
 let queueOpen = false;
 
-/** Concepts due for review, above the route: the longest overdue first. */
+/**
+ * Concepts due for review, above the route: today's queue, the easiest to forget first, and how
+ * many wait for the next days. While review is paused, the day it comes back instead.
+ */
 function reviewQueue(parent: HTMLElement, host: DetailHost, reviews: Reviews) {
   const now = Date.now();
-  const due = reviews.due(now);
-  if (due.length === 0) return;
-  const list = section(parent, t.review.queue, due.length);
+  const day = reviews.day(now);
+  if (day.paused) {
+    const box = section(parent, t.review.queue);
+    box.addClass("tropa-review-queue", "is-paused");
+    const line = row(box, "tropa-review-paused");
+    setIcon(line.createSpan({ cls: "tropa-glyph is-small" }), "pause");
+    line.createSpan({ cls: "tropa-row-title", text: t.review.pausedUntil({ date: formatDate(parseDate(day.paused.until), new Date(now)) }) });
+    const resume = line.createEl("button", { cls: "tropa-review-resume", text: t.review.resume });
+    resume.addEventListener("click", () => resumeReview(reviews));
+    return;
+  }
+  const due = day.queue;
+  if (due.length === 0 && day.waiting === 0) return;
+  const total = due.length + day.waiting;
+  const list = section(parent, t.review.queue, due.length < total ? t.review.queueCount({ shown: due.length, total }) : due.length);
   list.addClass("tropa-review-queue");
+  const pause = list.querySelector<HTMLElement>(".tropa-section-head")!.createEl("button", { cls: "tropa-review-pause clickable-icon", attr: { "aria-label": t.review.pauseCommand } });
+  setIcon(pause, "pause");
+  pause.addEventListener("click", () => openPause(host.app, reviews));
   const shown = queueOpen ? due : due.slice(0, QUEUE_PREVIEW);
   for (const schedule of shown) {
     const node = host.store.graph.nodes.get(schedule.id);
@@ -605,6 +634,8 @@ function reviewQueue(parent: HTMLElement, host: DetailHost, reviews: Reviews) {
       list.replaceWith(...Array.from(fresh.childNodes));
     });
   }
+  if (due.length === 0) list.createDiv({ cls: "tropa-hint tropa-review-done", text: t.review.limitDone });
+  if (day.waiting > 0) list.createDiv({ cls: "tropa-hint tropa-review-waiting", text: t.review.waiting({ count: day.waiting }) });
 }
 
 /** What a deadline asks for, or nothing when there is no deadline or nothing to time. */

@@ -26,6 +26,10 @@ export interface TropaSettings {
   /** Where marks with no date in the journal start, set once when review is first on. */
   reviewSince?: string;
   reviewSpread?: number;
+  /** Reviews a day, 0 for no limit; the rest wait for the next days. */
+  reviewLimit: number;
+  /** Move a rated concept's next review by a few days to a less busy one. */
+  reviewBalance: boolean;
   /** Self-check questions are callouts of this type in a concept's note. */
   checkCallout: string;
   /** Marking a concept with questions mastered first offers a self-check. */
@@ -57,6 +61,8 @@ export function defaultSettings(language: Lang): TropaSettings {
     journal: true,
     review: true,
     retention: 0.9,
+    reviewLimit: 20,
+    reviewBalance: true,
     checkCallout: "question",
     offerCheck: true,
     auditQuestions: false,

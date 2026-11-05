@@ -173,7 +173,7 @@ Excluded notes leave the map completely: a `requires`, `recommends` or `teaches`
 - 2026-11-03T15:10:00+03:00 done https://en.wikipedia.org/wiki/Gradient
 ```
 
-- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`, `reviewed` and `checked` (a review and a self-check, with `rating=1`…`4`, see [Review](#review)).
+- A line is the local time with its offset, an action, the note as a link (a URL or `[[attachment]]` for a material listed in a concept, `-` for none) and optional `key=value` fields and flags. Actions: `goal` (the goal the route now leads to), `goal-added` and `goal-removed` (other goals kept or dropped), `deadline` (`date=` or `date=none`), `pace` (`hours=` or `hours=none`), `started`, `stopped`, `mastered`, `known` (marked with **I know this**), `unmastered`, `skipped`, `unskipped`, `done`, `undone`, `confidence`, `reviewed` and `checked` (a review and a self-check, with `rating=1`…`4` and an optional `shift=`, see [Review](#review)), `pause` (`until=`, the day review comes back) and `resume`.
 - Undo appends lines flagged `undo` that put things back, instead of erasing lines: the files only grow, so a sync never has to merge two versions of one.
 - The device name, like `desktop-3f9a` or `phone-07c1`, is kept by Obsidian on the device and is not synced. Each device writes only its own file and reads all of them, so the activity in the panel covers every device.
 - Links follow renames like any other links. Lines that do not parse, such as notes you add between them, are skipped.
@@ -190,11 +190,32 @@ Review is scheduled by FSRS ([ts-fsrs](https://github.com/open-spaced-repetition
 ```
 
 - The memory of a concept starts when it is marked mastered (as a **Recalled** answer) or known with **I know this** (as **Easy**), and every review after that is one more FSRS step. A self-check just before the mark sets how well it starts.
-- A concept is due when the chance to recall it falls below the target recall, 90% by default (**Settings → Tropa → Review**). It stays mastered and opens what it opened: review never blocks the route. The map marks it with a badge, and **Review today** in the panel lists the due concepts, the longest overdue first. On a phone they are in the panel at the bottom of the map.
+- A concept is due when the chance to recall it falls below the target recall, 90% by default (**Settings → Tropa → Review**). It stays mastered and opens what it opened: review never blocks the route. The map marks it with a badge, and **Review today** in the panel lists the due concepts, the easiest to forget first. On a phone they are in the panel at the bottom of the map.
 - Ratings: **Forgot**, **Hard**, **Recalled**, **Easy**, as FSRS's 1 to 4. A concept that is not due can be reviewed early with **Review now**. Undo after a rating appends a `reviewed … undo` line.
 - Marks made before the journal, or on a device without one, have no date. They start on the day review is first on and come due a few a day over one week to two months, so an old map does not come due all at once. The day and the spread are saved in the settings.
-- Commands: **Review the next concept** and **Open the review queue**.
+- Commands: **Review the next concept**, **Open the review queue**, **Pause review** and **Resume review**.
 - Review needs the journal: it is where reviews are kept and how they reach your other devices. With the journal off, review is off too.
+
+#### How many reviews a day
+
+None of these change what FSRS knows about a concept, only the day it is shown.
+
+- **Reviews a day** (**Settings → Tropa → Review**, 20 by default, or no limit): today's queue takes the concepts easiest to forget first, and at the same chance to recall, those your goals lead through. The rest wait for the next days, and the head of **Review today** says how many of all are shown, such as `20 of 37`. Reviews already done today count, so the queue does not fill up again as you work through it. A concept over the limit has no badge on the map; its details say it is due and keep the ratings behind **Review now**.
+- **Spread reviews evenly** (on by default): when you rate a concept, its next review may move by up to 5% of the interval, three days at most, to the day with the fewest reviews nearby. The move is written into the review line, so every device shows the same day:
+
+  ```markdown
+  - 2026-11-20T09:12:03+03:00 reviewed [[Gradient]] rating=3 shift=-1
+  ```
+
+  A shift that no longer fits the interval, after a change of the target recall, is ignored. Intervals under 20 days never move.
+- **Pause review**, from the pause button in the head of **Review today** or the command, asks for the day review comes back (a week by default) and writes it to the journal, so all your devices pause:
+
+  ```markdown
+  - 2026-11-04T09:00:00+03:00 pause - until=2026-11-20
+  - 2026-11-15T18:40:12+03:00 resume -
+  ```
+
+  While paused, the queue is empty and the map shows no review badges. When the pause ends, on its day or with **Resume**, what came due meanwhile is spread over as many days as the pause lasted, two weeks at most, a few concepts a day, instead of all at once. Versions before 0.5 skip these lines.
 
 ### Self-check
 
