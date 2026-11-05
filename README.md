@@ -28,6 +28,7 @@ Requires Obsidian 1.13.0. The full list is in the [changelog](CHANGELOG.md).
 - **Export.** The download button in the bar, or the commands **Export map to Canvas** and **Export map as SVG**, save the map as it is drawn now: route or whole map, with materials, focus and folds. The canvas keeps the positions and points at your notes, so it opens in Obsidian Canvas; coloring it by your progress is optional, so a map can be shared without it. JSON Canvas has no dashed lines, so soft links are orange with a label and material links cyan. The SVG takes the colors and fonts of the current theme. An existing file is never replaced without asking.
 - **Edit on the map.** Drag from the dot under a concept to another concept to link them, or to empty space to create the next one. Links that would create a cycle are refused.
 - **Suggested links.** Your notes already link to each other. **Suggest links from your notes** reads a folder, the whole vault or one note and offers those links for the map, in a preview: nothing is written until you add it, and a batch can be undone. See [Suggested links](#suggested-links).
+- **Map from a list.** Paste a list, headings or the table of contents of a book: each line becomes a concept and nesting becomes links, in a preview that also shows which notes are new and which are already in your vault. See [Map from a list](#map-from-a-list).
 - **Plain files.** The graph lives in note properties, so it syncs and travels like any other notes. Your goal and marks live in a separate file, so you can share a map without your progress.
 - **Sidebar panel.** Shows where the open note sits in the graph, and adds any note to the map in one click.
 - **Learning journal.** Every change of your progress is appended as a line to a journal file, one per month and device, so devices never edit the same file. The side panel sums it up: concepts mastered, time with finished materials and reviews over the last 7 and 30 days, from all your devices. See [Learning journal](#learning-journal).
@@ -81,7 +82,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 ## Usage
 
 1. Open the map with the route icon in the left ribbon or the command **Tropa: Learning map**.
-2. In an empty vault, choose **Show example** to add an example map, or **Create first concept**. If your notes already link to each other, **Suggest links from my notes** starts the map from them.
+2. In an empty vault, choose **Show example** to add an example map, or **Create first concept**. If your notes already link to each other, **Suggest links from my notes** starts the map from them; with a course outline or a book at hand, **Map from a list** does.
 3. Choose a goal in the top left corner. The panel on the right lists the steps and what to study first. The same button later adds more goals, switches between them, shows the route to all of them and opens **Deadline and pace…**.
 4. Click a concept, press **Start learning**, then **Mark as mastered** when you are done.
 5. Switch between **Route** and **Whole map**, and turn on **Materials** to see them on the map.
@@ -96,7 +97,7 @@ Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), run **BRAT: Add a 
 - The panel sits above Obsidian's navigation bar. Tap or drag its handle between the title, half the screen and nearly all of it.
 - The map opens and fits at a size you can read, centred on the selection, the next step or the goal.
 
-Other commands: suggest links from your notes and undo the last suggested links, check yourself on the open concept, review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
+Other commands: suggest links from your notes and undo the last suggested links, create a map from a list and undo it, check yourself on the open concept, review the next concept, open the review queue, audit the map, open the sidebar panel, create a concept, find a concept on the map, export the map to Canvas or SVG, make the open note a concept or a material, add it to your goals or remove it from them, set the deadline and pace, mark it mastered, skip it, and mark it known with everything it needs.
 
 ## Data model
 
@@ -245,12 +246,26 @@ Left out: pairs the map already links either way, materials, notes with another 
 
 In the preview each row reads as a sentence, "Derivatives needs Limits": tick it, or change the kind. A needed link that would close a loop, with the map or with the other ticked links, is refused and the row spells the loop out; it can still be added as recommended. **Add links** writes them in one go: each note gets the links in its properties, and a note that is not a concept yet, at either end of a link, gets `type: concept`. The notice after it has **Undo**, and so does the command **Undo the last suggested links** until the next batch: it puts each property back as it was, but a note changed since keeps the change.
 
+### Map from a list
+
+**Create a map from a list**, also on the empty map, takes a pasted outline and turns it into concepts:
+
+- **A Markdown list** nests by indentation, `-`, `*`, `+` and `1.` alike; tasks, links, emphasis and code marks are read as plain text.
+- **Headings** nest by level, and a list under a heading goes under it.
+- **A table of contents** nests by its numbers, `1`, `1.1`, `1.1.1`, once any line has a number like `1.2`; page numbers at the end are dropped, and lines such as a preface sit with the chapters.
+
+Each item becomes a note in the folder you choose (the concepts folder by default), unless your vault already has it: a `[[link]]` on the line, or a concept or note of the same name, case and accents aside, is used instead. Items with the same name are one note. A name with characters a file name cannot have is saved without them, and the preview shows the file name. When the map already links to a missing note of that name, the new note takes its spelling, so the link finds it.
+
+**Nesting** says which way the links go: a topic needs what is under it (the default, so a chapter as a goal routes through its sections), or what is under a topic needs the topic. **Each item needs the one before it** also links items of one level in order, as in a course; it is off by default and its rows can be ticked in the preview anyway.
+
+The preview lists the new notes and the notes already in your vault, then the links, in the same rows as suggested links: a link that would close a loop is refused. **Create** makes the notes, `type: concept` and nothing else, and writes the links; a note already in your vault becomes a concept too. **Undo** in the notice, or the command **Undo the last map from a list**, moves the new notes to the trash and puts back the properties of the others, except notes changed since, which stay as they are. Closing the preview keeps the list, so it can be fixed and tried again.
+
 ## Privacy
 
 Tropa works offline: it makes no network requests and sends nothing anywhere.
 
 - **Reads** the Markdown notes of your vault to find concepts, materials and their links (frontmatter, the self-check callouts of a concept you check, and the links in the text of the notes you ask to suggest links from). Notes left out by the map scope are dropped. The vault's other files are listed only to offer them when you pick an attachment as a material. The journal is read from its own folder.
-- **Writes** only on your action: the progress file, the journal files, the frontmatter of notes you link or mark, notes you create from the map, the example map and exports to Canvas or SVG. Settings are kept in the plugin's `data.json`; the device name for the journal stays in Obsidian's local storage, outside the vault.
+- **Writes** only on your action: the progress file, the journal files, the frontmatter of notes you link or mark, notes you create from the map or from a pasted list, the example map and exports to Canvas or SVG. Settings are kept in the plugin's `data.json`; the device name for the journal stays in Obsidian's local storage, outside the vault.
 
 ## Demo vault (optional)
 
