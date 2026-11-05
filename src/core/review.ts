@@ -10,6 +10,9 @@ import {
   type TSeedStrategy,
 } from "ts-fsrs";
 import { UNDO, type JournalEntry } from "./journal";
+import { allowedShift, hashId, parseShift } from "./load";
+
+export { hashId };
 
 /*
   Review of mastered concepts with FSRS. Nothing is stored but the journal: the state of a concept
@@ -20,6 +23,10 @@ import { UNDO, type JournalEntry } from "./journal";
   and each review after that is one more FSRS step. A mark with no date in the journal (made
   before the journal existed, or on a device that keeps none) starts on the day review was first
   turned on, spread over a few weeks, so an old map does not come due all at once.
+
+  A review line may carry `shift=N`: the days its next date was moved to a less busy day when it
+  was rated (core/load.ts). It moves only the due date, never what FSRS knows, and is ignored when
+  it no longer fits the interval.
 */
 
 /** 1 forgot, 2 hard, 3 recalled, 4 easy: the FSRS grades. */
@@ -59,16 +66,6 @@ export interface Schedule {
   reviews: number;
   /** The last review, or the anchor when there was none. */
   last: number;
-}
-
-/** FNV-1a: a stable number for an id, to spread old marks and seed the fuzz. */
-export function hashId(id: string) {
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < id.length; index++) {
-    hash ^= id.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return hash >>> 0;
 }
 
 interface Anchor {
@@ -111,7 +108,7 @@ export class Scheduler {
    */
   schedule(id: string, entries: readonly JournalEntry[], baseline: Baseline | null): Schedule | null {
     let anchor: Anchor | null = null;
-    let reviews: { time: number; rating: ReviewRating }[] = [];
+    let reviews: { time: number; rating: ReviewRating; shift: number }[] = [];
     // An undone unmark gives back the memory it took, reviews included.
     let lost: { anchor: Anchor; reviews: typeof reviews } | null = null;
     let check: { time: number; rating: ReviewRating } | null = null;
@@ -158,9 +155,10 @@ export class Scheduler {
           }
           const rating = parseRating(entry.fields.rating);
           if (!rating) break;
-          if (anchor) reviews.push({ time: entry.time, rating });
+          const shift = parseShift(entry.fields.shift);
+          if (anchor) reviews.push({ time: entry.time, rating, shift });
           else {
-            undated.push({ time: entry.time, rating });
+            undated.push({ time: entry.time, rating, shift });
             if (entry.action === "checked") check = { time: entry.time, rating };
           }
           break;
@@ -179,7 +177,10 @@ export class Scheduler {
     let last = anchor.time;
     for (const review of reviews) {
       if (review.time < anchor.time) continue;
-      card = { ...this.f.next(card, new Date(review.time), review.rating).card, [SEED]: seed } as Card;
+      card = this.next(card, review.time, review.rating, seed);
+      if (review.shift !== 0 && Math.abs(review.shift) <= allowedShift(card.scheduled_days)) {
+        card = { ...card, due: new Date(card.due.getTime() + review.shift * DAY) };
+      }
       last = review.time;
     }
     return { id, anchor: anchor.time, card, due: card.due.getTime(), reviews: reviews.length, last };
@@ -192,17 +193,27 @@ export class Scheduler {
     return Math.pow(1 + (factor * elapsed) / Math.max(schedule.card.stability, 0.01), decay);
   }
 
-  /** When the concept would come due after each rating given at `now`. */
+  /** When the concept would come due after each rating given at `now`, before any shift. */
   preview(schedule: Schedule, now: number): Record<ReviewRating, number> {
     const result = {} as Record<ReviewRating, number>;
-    for (const rating of RATINGS) result[rating] = this.f.next(schedule.card, new Date(now), rating).card.due.getTime();
+    for (const rating of RATINGS) result[rating] = this.rated(schedule, now, rating).due;
     return result;
+  }
+
+  /** The next date and interval in days if the concept is rated at `now`, as the replay will see it. */
+  rated(schedule: Schedule, now: number, rating: ReviewRating) {
+    const card = this.next(schedule.card, now, rating, hashId(schedule.id));
+    return { due: card.due.getTime(), days: card.scheduled_days };
+  }
+
+  private next(card: Card, time: number, rating: ReviewRating, seed: number): Card {
+    return { ...this.f.next(card, new Date(time), rating).card, [SEED]: seed } as Card;
   }
 
   private start(anchor: Anchor, seed: number): Card {
     const at = new Date(anchor.time);
     const empty = { ...createEmptyCard(at), [SEED]: seed } as Card;
-    const first = { ...this.f.next(empty, at, anchor.rating).card, [SEED]: seed } as Card;
+    const first = this.next(empty, anchor.time, anchor.rating, seed);
     if (anchor.days === undefined) return first;
     // A baseline mark comes due after its own number of days: its stability is set so that the
     // chance to recall falls to the target recall right then.
