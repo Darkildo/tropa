@@ -1,4 +1,4 @@
-import type { Layout } from "../src/core/layout";
+import type { Layout } from "../../src/core/layout";
 import { ENGINES } from "./core";
 import { benchCases } from "./gen";
 

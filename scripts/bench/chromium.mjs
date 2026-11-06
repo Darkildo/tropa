@@ -1,4 +1,4 @@
-// Runs the benchmark in Chromium: `node bench/chromium.mjs [--full]` for timings,
+// Runs the benchmark in Chromium: `node scripts/bench/chromium.mjs [--full]` for timings,
 // `--shots` for pictures of one graph laid out by both engines (dist/bench/shots).
 // CHROMIUM_PATH points at an installed browser when its revision differs from Playwright's.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";

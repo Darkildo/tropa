@@ -1,4 +1,4 @@
-import type { Layout, Point } from "../src/core/layout";
+import type { Layout, Point } from "../../src/core/layout";
 
 export interface Quality {
   /** Pairs of drawn edges that cross, edges sharing a node not counted. */

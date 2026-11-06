@@ -1,10 +1,10 @@
 // Bundles the benchmark for Chromium, with the layout worker inlined as in main.js.
 import esbuild from "esbuild";
-import { layoutWasm } from "../layout-wasm.esbuild.mjs";
-import { layoutWorker } from "../layout-worker.esbuild.mjs";
+import { layoutWasm } from "../../layout-wasm.esbuild.mjs";
+import { layoutWorker } from "../../layout-worker.esbuild.mjs";
 
 await esbuild.build({
-  entryPoints: ["bench/browser-entry.ts"],
+  entryPoints: ["scripts/bench/browser-entry.ts"],
   bundle: true,
   format: "esm",
   target: "es2022",
@@ -13,7 +13,7 @@ await esbuild.build({
   logLevel: "warning",
 });
 await esbuild.build({
-  entryPoints: ["bench/render-entry.ts"],
+  entryPoints: ["scripts/bench/render-entry.ts"],
   bundle: true,
   format: "esm",
   target: "es2022",

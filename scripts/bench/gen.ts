@@ -1,7 +1,7 @@
 import { parse } from "yaml";
-import { LearningGraph } from "../src/core/graph";
-import type { NoteInput, NoteRef, SourceFormat } from "../src/core/types";
-import { sample } from "../src/sample";
+import { LearningGraph } from "../../src/core/graph";
+import type { NoteInput, NoteRef, SourceFormat } from "../../src/core/types";
+import { sample } from "../../src/sample";
 
 export interface BenchCase {
   name: string;

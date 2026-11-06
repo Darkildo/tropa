@@ -2,10 +2,10 @@
 // npm run bench [-- --full]   --full adds dagre on the 1000-concept graphs (minutes, ~4 GB of heap)
 import { appendFileSync, existsSync, readFileSync } from "node:fs";
 import { ENGINES, time, withEngine, type Timing } from "./core";
-import { wasmEngine } from "../src/core/layout-wasm";
+import { wasmEngine } from "../../src/core/layout-wasm";
 import { benchCases } from "./gen";
 import { quality, rankAgreement, type Quality } from "./metrics";
-import type { Layout } from "../src/core/layout";
+import type { Layout } from "../../src/core/layout";
 
 const full = process.argv.includes("--full");
 

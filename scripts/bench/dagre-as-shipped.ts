@@ -1,11 +1,11 @@
 import dagre, { type EdgeLabel, type GraphLabel, type NodeLabel } from "@dagrejs/dagre";
-import type { LearningGraph } from "../src/core/graph";
-import type { LaidOutEdge, LaidOutNode, Layout, LayoutOptions, Point } from "../src/core/layout";
-import { CONCEPT_SIZE, SOURCE_SIZE } from "../src/core/layout";
+import type { LearningGraph } from "../../src/core/graph";
+import type { LaidOutEdge, LaidOutNode, Layout, LayoutOptions, Point } from "../../src/core/layout";
+import { CONCEPT_SIZE, SOURCE_SIZE } from "../../src/core/layout";
 
 type EdgeKind = LaidOutEdge["kind"];
 
-/** The layout of Tropa 0.1.x, kept as the reference for `bench/`. */
+/** The layout of Tropa 0.1.x, kept as the reference for `scripts/bench/`. */
 export function layoutDagre(graph: LearningGraph, options: LayoutOptions): Layout {
   const visible = new Set<string>();
   for (const node of graph.nodes.values()) {

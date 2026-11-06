@@ -3,7 +3,7 @@
  * breaking, network simplex (or tight tree) ranking, dummy chains, barycenter sweeps with dagre's
  * tie rules plus neighbour swaps, Brandes–Köpf coordinates. Soft links never change the ranks, but
  * their dummies take part in ordering, so they cross little, and fill gaps instead of taking room.
- * Typed arrays instead of dagre's graph objects make it 17–55 times faster (`bench/`).
+ * Typed arrays instead of dagre's graph objects make it 17–55 times faster (`scripts/bench/`).
  */
 import type { EngineInput, EngineOutput } from "./layout-engine";
 

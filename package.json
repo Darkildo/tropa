@@ -14,15 +14,15 @@
     "dev": "node esbuild.config.mjs",
     "build": "tsc --noEmit && node esbuild.config.mjs production",
     "test": "vitest run",
-    "lint": "eslint --max-warnings=0 src test scripts bench && npm run lint:css",
+    "lint": "eslint --max-warnings=0 src test scripts && npm run lint:css",
     "lint:css": "! grep -n '!important' styles.css",
     "demo": "tsx scripts/make-demo-vault.ts",
     "preview": "node harness/build.mjs",
     "e2e": "node harness/build.mjs && node harness/e2e.mjs",
     "screenshots": "node harness/build.mjs && node harness/screenshots.mjs",
     "version": "node version-bump.mjs && git add manifest.json versions.json",
-    "bench": "tsx bench/run.ts",
-    "bench:chromium": "node bench/build.mjs && node bench/chromium.mjs",
+    "bench": "tsx scripts/bench/run.ts",
+    "bench:chromium": "node scripts/bench/build.mjs && node scripts/bench/chromium.mjs",
     "build:wasm": "node scripts/build-wasm.mjs"
   },
   "devDependencies": {
