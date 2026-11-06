@@ -4,7 +4,7 @@ import globals from "globals";
 
 export default defineConfig([
   // harness is a mock of the Obsidian API for browser checks, not plugin code.
-  globalIgnores(["node_modules", "dist", "main.js", "harness", "crates", "*.mjs", "bench/*.mjs", "scripts/*.mjs"]),
+  globalIgnores(["node_modules", "dist", "main.js", "harness", "crates", "*.mjs", "scripts/**/*.mjs"]),
   ...obsidianmd.configs.recommended,
   {
     languageOptions: {
@@ -16,7 +16,7 @@ export default defineConfig([
   },
   {
     // Tests, the benchmark and the demo vault script run in Node, outside Obsidian, so they use Node APIs and the default config folder.
-    files: ["scripts/**", "test/**", "bench/**"],
+    files: ["scripts/**", "test/**"],
     languageOptions: { globals: globals.node },
     rules: {
       "obsidianmd/no-nodejs-modules": "off",

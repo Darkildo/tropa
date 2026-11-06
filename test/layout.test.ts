@@ -3,8 +3,8 @@ import { computeRoute, computeStates, emptyProgress, LearningGraph } from "../sr
 import { layoutGraph, prepareLayout, svgPaths } from "../src/core/layout";
 import { ENGINES, type EngineInput } from "../src/core/layout-engine";
 import { LayoutRunner, WORKER_FROM, shapeKey, type LayoutReply, type LayoutRequest, type LayoutWorker } from "../src/core/layout-runner";
-import { generate } from "../bench/gen";
-import { polyline, quality } from "../bench/metrics";
+import { generate } from "../scripts/bench/gen";
+import { polyline, quality } from "../scripts/bench/metrics";
 
 const big = new LearningGraph(generate(200, true));
 

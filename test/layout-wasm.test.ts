@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { prepareLayout } from "../src/core/layout";
 import { ENGINES } from "../src/core/layout-engine";
 import { wasmEngine } from "../src/core/layout-wasm";
-import { benchCases } from "../bench/gen";
+import { benchCases } from "../scripts/bench/gen";
 
 // Kept in git and checked against a build from source by `npm run build:wasm -- --verify`.
 const file = "assets/wasm/tropa_layout.wasm";

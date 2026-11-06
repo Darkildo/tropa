@@ -1,6 +1,6 @@
-import type { LearningGraph } from "../src/core/graph";
-import { finishLayout, layoutGraph, prepareLayout, svgPaths, type Layout, type LayoutOptions } from "../src/core/layout";
-import type { LayoutEngine } from "../src/core/layout-engine";
+import type { LearningGraph } from "../../src/core/graph";
+import { finishLayout, layoutGraph, prepareLayout, svgPaths, type Layout, type LayoutOptions } from "../../src/core/layout";
+import type { LayoutEngine } from "../../src/core/layout-engine";
 import { layoutDagre } from "./dagre-as-shipped";
 import type { BenchCase } from "./gen";
 

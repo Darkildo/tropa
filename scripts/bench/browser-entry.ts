@@ -2,10 +2,10 @@
 // while the map lays out, on the main thread and through the worker.
 import layoutWasm from "tropa:layout-wasm";
 import layoutWorker from "tropa:layout-worker";
-import { finishLayout, prepareLayout, svgPaths } from "../src/core/layout";
-import { ENGINES as LAYOUT_ENGINES } from "../src/core/layout-engine";
-import { LayoutRunner } from "../src/core/layout-runner";
-import { fromBase64, wasmEngine } from "../src/core/layout-wasm";
+import { finishLayout, prepareLayout, svgPaths } from "../../src/core/layout";
+import { ENGINES as LAYOUT_ENGINES } from "../../src/core/layout-engine";
+import { LayoutRunner } from "../../src/core/layout-runner";
+import { fromBase64, wasmEngine } from "../../src/core/layout-wasm";
 import { ENGINES, time, withEngine, type Timing } from "./core";
 import { benchCases } from "./gen";
 

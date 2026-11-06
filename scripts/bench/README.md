@@ -8,7 +8,7 @@ not measured twice. Not part of the plugin build.
 ```bash
 npm run bench                 # Node; add -- --full for dagre on 1000 concepts (minutes, ~4 GB)
 npm run bench:chromium        # Chromium: both engines, then how long the interface freezes
-node bench/chromium.mjs --shots   # one graph drawn by both engines, dist/bench/shots
+node scripts/bench/chromium.mjs --shots   # one graph drawn by both engines, dist/bench/shots
 ```
 
 Chromium runs need `CHROMIUM_PATH` when the installed browser's revision differs from

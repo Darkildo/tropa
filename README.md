@@ -361,7 +361,7 @@ Translations go into `main.js` as JSON text without their keys (`locales.esbuild
 
 The only binary in `main.js` is the base64 string of the layout engine's WebAssembly, inside the worker script. It has no imports: no network, no file system, no access to the page. It only receives node sizes and links, and returns positions and edge paths. It exports its linear memory because that is how the worker hands it the input arrays and reads the results back; nothing else can reach it. The module is `assets/wasm/tropa_layout.wasm`; the release workflow rebuilds it from `crates/tropa-layout` (no dependencies), fails if it differs from the one in git, prints its sha256 in the log and adds it to the release notes.
 
-`node:fs` and other Node.js modules appear only in tests, build scripts and the benchmark (`test`, `scripts`, `bench`, `harness`, `*.mjs`), which run in Node and are not part of `main.js`. The plugin itself uses only the Obsidian API. What it reads and writes is under [Privacy](#privacy).
+`node:fs` and other Node.js modules appear only in tests, build scripts and the benchmark (`test`, `scripts`, with the benchmark in `scripts/bench`, `harness`, `*.mjs`), which run in Node and are not part of `main.js`. The plugin itself uses only the Obsidian API. What it reads and writes is under [Privacy](#privacy).
 
 The one runtime dependency bundled into `main.js` is [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs) 5.4.2 (MIT, no dependencies of its own), the review scheduler. Translations are readable JSON text.
 
