@@ -2,7 +2,7 @@
 
 All notable changes to Tropa are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). The release workflow publishes the section of the tagged version as the release notes.
 
-## [0.5.0] - 2026-11-05
+## [0.5.0] - 2026-11-06
 
 Tropa starts on a vault you already have and keeps review in check: links suggested from your notes, a map from a pasted list, a daily limit and a pause for reviews, a `tropa` block for any note, the status bar and page previews of the map's nodes. Requires Obsidian 1.13.0 or later, as before. Update Tropa on every device that shares the vault: a device still on 0.4 does not see a pause and ignores the moves that spread reviews, so its review dates may differ by up to three days until it is updated. The new strings are machine translations into all 33 languages and wait for review by native speakers, especially Arabic, Persian, Hebrew, Bengali and Thai. No new dependencies.
 
